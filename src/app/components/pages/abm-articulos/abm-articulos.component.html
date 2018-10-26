@@ -1,0 +1,76 @@
+
+<h2>ARTÍCULOS</h2>
+<button [routerLink]="['/articulos','nuevo']" class="mine-btnbig" mat-flat-button>
+  NUEVO
+</button>
+<!--
+<mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      LISTA DE ARTÍCULOS
+    </mat-panel-title>
+  </mat-expansion-panel-header>-->
+
+  <div class="row" style="margin-top:10px; margin-bottom:5px;">
+    <table #tableArticulos mat-table [dataSource]="constArticulos" matSort class="mat-elevation-z1"
+      style="font-family: 'Lato', sans-serif !important;">
+
+      <!-- columna select -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()" style="color:#fff;">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row" style="width:60px;">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Columna Opciones -->
+      <ng-container matColumnDef="opciones">
+        <th mat-header-cell *matHeaderCellDef> </th>
+        <td mat-cell *matCellDef="let auxarticulo" style="width:60px;">
+          <!--<i class="material-icons" style="color:red;">close</i>-->
+          <a [routerLink]="['/articulos',auxarticulo.codigo]" style="color:#000;">
+            <i class="material-icons">edit</i>
+          </a>
+        </td>
+      </ng-container>
+      <!-- Columna Código -->
+      <ng-container matColumnDef="codigo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Código </th>
+        <td mat-cell *matCellDef="let auxarticulo" style="font-weight:bold;"> {{ auxarticulo.codigo }} </td>
+      </ng-container>
+      <!-- Columna Producto -->
+      <ng-container matColumnDef="articulo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Producto </th>
+        <td mat-cell *matCellDef="let auxarticulo" style="font-weight:bold;"> {{ auxarticulo.articulo }} </td>
+      </ng-container>
+      <!-- Columna Unidad de Medida -->
+      <ng-container matColumnDef="unidadMedida">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> U.M. </th>
+        <td mat-cell *matCellDef="let auxarticulo"> {{ auxarticulo.unidadMedida }} </td>
+      </ng-container>
+      <!-- Columna Precio Unitario -->
+      <ng-container matColumnDef="precioUnitario">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio Unitario </th>
+        <td mat-cell *matCellDef="let auxarticulo"> $ {{ auxarticulo.precioUnitario | number:'1.2-2'}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['select', 'opciones', 'codigo', 'articulo', 'unidadMedida', 'precioUnitario']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['select', 'opciones', 'codigo', 'articulo', 'unidadMedida', 'precioUnitario'];"></tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[3, 5, 10, 20]" showFirstLastButtons class="mat-elevation-z1"></mat-paginator>
+
+    <div class="col s12" style="margin-top:5px;" *ngIf="constArticulos.length < 1">
+      <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen artículos</i></mat-card>
+    </div>
+  </div>
+
+<!--</mat-expansion-panel>-->

@@ -1,0 +1,253 @@
+<h2>COMPRAS</h2>
+
+<form [formGroup]="forma" (ngSubmit)="guardarCabecera()" novalidate="novalidate">
+
+<mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      DATOS DE FACTURACIÓN
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+      <div class="col s8 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Proveedor</mat-label>
+          <input (keyup)="buscarProveedor()" #codProv matInput placeholder="" formControlName="proveedor">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s4 m2 l2" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s12 m6 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Razón Social</mat-label>
+          <input matInput placeholder="" formControlName="razonSocial" value="{{ compraProveedor?.razon_social }}">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>CUIT</mat-label>
+          <input matInput placeholder="" formControlName="cuit" value="{{ compraProveedor?.cuit }}">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Posición Fiscal</mat-label>
+          <input matInput placeholder=""  formControlName="posicionFiscal" value="{{ compraProveedor?.cond_iva }}">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m6 l4">
+        <mat-form-field appearance="outline" floatLabel="always"  style="width:100%;">
+          <mat-label>Comprobante</mat-label>
+          <!--<input matInput placeholder="" formControlName="comprobante">-->
+          <div style="display: flex;">
+            <input matInput formControlName="tipoComprobante">
+            <input matInput formControlName="nroComprobante">
+          </div>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Fecha</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder="" formControlName="fecha">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>CAI/CAE/CAEA</mat-label>
+          <input matInput placeholder="" formControlName="caicae">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Fecha Vencimiento</mat-label>
+          <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fechaVto">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Total</mat-label>
+          <input matInput placeholder="" style="text-align:right;" type="number" formControlName="totalCabecera">
+          <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m12 l12" *ngIf="editingCabecera">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Observaciones</mat-label>
+          <textarea matInput placeholder="" formControlName="observaciones"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="!editingCabecera">
+      <table #tableArticulos mat-table [dataSource]="articulosData" class="mat-elevation-z1"
+        style="font-family: 'Lato', sans-serif !important;">
+
+        <!-- Columna Opciones -->
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let element; let in = index" style="width:70px;">
+            <a (click)="eliminarArticulo(in)" style="color:#000;"><i class="material-icons" style="color:red;">close</i></a><!-- <i class="material-icons">edit</i>-->
+          </td>
+        </ng-container>
+        <!-- Columna Producto -->
+        <ng-container matColumnDef="producto">
+          <th mat-header-cell *matHeaderCellDef> Producto </th>
+          <td mat-cell *matCellDef="let auxarticulo" style="font-weight:bold;"> {{ auxarticulo.descripcion }} </td>
+        </ng-container>
+        <!-- Columna Cantidad -->
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Cantidad </th>
+          <td mat-cell *matCellDef="let auxarticulo" style="text-align: right;"> {{ auxarticulo.cantidad }} </td>
+        </ng-container>
+        <!-- Columna Unidad de Medida -->
+        <ng-container matColumnDef="unidadMedida">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> U.M. </th>
+          <td mat-cell *matCellDef="let auxarticulo" style="text-align: right;"> {{ auxarticulo.unidad_medida }} </td>
+        </ng-container>
+        <!-- Columna Precio Unitario -->
+        <ng-container matColumnDef="precioUnitario">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Precio Unitario </th>
+          <td mat-cell *matCellDef="let auxarticulo" style="text-align: right;"> $ {{ auxarticulo.precio_unitario | number:'1.2-2'}} </td>
+        </ng-container>
+        <!-- Columna Descuento -->
+        <ng-container matColumnDef="descuento">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Descuento </th>
+          <td mat-cell *matCellDef="let auxarticulo" style="text-align: right;"> {{ auxarticulo.descuento }} % </td>
+        </ng-container>
+        <!-- Columna Total -->
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Total </th>
+          <td mat-cell *matCellDef="let auxarticulo" style="font-weight:bold; text-align: right;">
+            $ {{ (auxarticulo.precio_unitario*auxarticulo.cantidad)*((100-auxarticulo.descuento)/100) | number:'1.2-2'}}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['opciones', 'producto', 'cantidad', 'unidadMedida', 'precioUnitario', 'descuento', 'total']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['opciones', 'producto', 'cantidad', 'unidadMedida', 'precioUnitario', 'descuento', 'total'];"></tr>
+      </table>
+      <div class="col s12" style="margin-top:5px;" *ngIf="articulosData.length < 1">
+        <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>Todavía no se ha cargado ningún artículo</i></mat-card>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && !addingItem && !addingArticulo">
+
+      <div class="col s12">
+        <button (click)="addArticulo()" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+          AGREGAR ARTÍCULO
+        </button>
+        <button (click)="addItem()" class="mine-btnbig-grey" mat-flat-button>
+          AGREGAR ITEM
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingArticulo)">
+      <form [formGroup]="formaArticulos" (ngSubmit)="guardarArticulo()" novalidate="novalidate">
+        <div class="col s8 m3 l1">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Código</mat-label>
+            <input (keyup)="buscarArticulo()" #codArt matInput placeholder="" formControlName="codigo">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m2 l1" style="margin-top:10px;">
+          <button class="mine-btnforms" mat-flat-button>
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
+        </div>
+        <div class="col s12 m7 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Artículo</mat-label>
+            <input matInput placeholder="" formControlName="articulo" value="{{ compraArticulo?.descripcion }}">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m2 l1">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Cantidad</mat-label>
+            <input #inputCantidad matInput placeholder="" type="number" formControlName="cantidad" style="text-align: right;"
+             value="{{ compraArticulo?.cantidad }}">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s8 m2 l1">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>U. Medida</mat-label>
+            <input matInput placeholder="" formControlName="unidadMedida" style="text-align: right;"
+             value="{{ compraArticulo?.unidad_medida }}">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m3 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>P. Unitario</mat-label>
+            <input matInput placeholder="" type="number" formControlName="precioUnitario" style="text-align: right;"
+             value="{{ compraArticulo?.precio_unitario }}">
+            <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m2 l1">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Desc.</mat-label>
+            <input #inputDescuento matInput placeholder="" type="number" formControlName="descuento" style="text-align: right;">
+            <span matSuffix style="font-family: 'Lato', sans-serif !important;">%&nbsp;</span>
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m3 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Total</mat-label>
+            <input matInput placeholder="" formControlName="total" style="text-align: right;"
+            value="{{ (inputCantidad.value * compraArticulo?.precio_unitario)*((100-inputDescuento.value)/100) }}">
+            <!-- value="{{ formaArticulos.value.cantidad*formaArticulos.value.precioUnitario*((100-formaArticulos.value.descuento)/100) | number:'1.2-2' }}" -->
+            <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+
+        <div class="col s12" style="text-align: right;">
+          <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaArticulos.valid">
+            AGREGAR
+          </button>
+          <button type="reset" (click)="cancelarArtItem()" class="mine-btnbig-grey" mat-flat-button>
+            CANCELAR
+          </button>
+        </div>
+      </form>
+    </div>
+    <!--panel totales-->
+    <div class="row" *ngIf="!editingCabecera">
+      <div class="col s12" style="text-align: right;">
+        <h5>Neto: $ {{ totalneto | number:'1.2-2' }}</h5>
+        <h5>Impuestos: $ {{ impuestosalicuotas | number:'1.2-2' }}</h5>
+        <h5><b>TOTAL: $ {{ totaltotal | number:'1.2-2' }}</b></h5>
+      </div>
+    </div>
+
+</mat-expansion-panel>
+
+<div class="row" style="height:0px;"></div>
+
+<div class="row" style="text-align: right;">
+  <button type="submit" class="mine-btnbig" mat-flat-button [disabled]="!forma.valid">
+    GUARDAR
+  </button>
+</div>
+</form>

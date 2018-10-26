@@ -1,0 +1,105 @@
+<h2>ARTÍCULOS</h2>
+<button [routerLink]="['/articulos']" class="mine-btnbig-grey" mat-flat-button>
+  VOLVER A LISTA
+</button>
+
+<form [formGroup]="forma" (ngSubmit)="guardarArticulo()" novalidate="novalidate">
+
+  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS DESCRIPTIVOS</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+      <div class="col s4 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Código</mat-label>
+          <input #codArt matInput placeholder="" type="number" formControlName="codigo">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s8 m8 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Artículo</mat-label>
+          <input matInput placeholder="" formControlName="articulo">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>U. Medida</mat-label>
+          <input matInput placeholder="" formControlName="unidadMedida">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>P. Unitario</mat-label>
+          <input matInput placeholder="" type="number" formControlName="precioUnitario">
+          <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+    </div>
+
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS DE STOCK</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+    </div>
+
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS DE UNIDADES DE MEDIDA</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+    </div>
+
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>COMPRAS Y VENTAS</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+    </div>
+
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS IMPOSITIVOS</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+    </div>
+
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS DE LOTES Y SERIES</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+      <div class="col s12" style="text-align: right;">
+        <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
+          GUARDAR
+        </button>
+        <button type="reset" class="mine-btnbig-grey" mat-flat-button>
+          CANCELAR
+        </button>
+      </div>
+    </div>
+
+  </mat-expansion-panel>
+
+</form>

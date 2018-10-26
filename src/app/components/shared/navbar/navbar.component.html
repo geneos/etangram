@@ -1,0 +1,16 @@
+<mat-toolbar style="background-color:#534d64">
+  <span>
+    <img src="assets/img/logo_etangram_png.png" style="height: 40px; margin-top: 12px; ">
+  </span>
+  <span style="flex: 1 1 auto;"></span>
+  <span>
+    <button mat-button [matMenuTriggerFor]="menu" style="color:#fff; font-family: 'Lato', sans-serif !important; font-size:16px;">
+      Emiliano <i class="material-icons" style="color:#fff; font-size:30px;">person_outline</i>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Mi perfil</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item>Cerrar sesión</button>
+    </mat-menu>
+  </span>
+</mat-toolbar>

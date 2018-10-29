@@ -305,8 +305,275 @@
          <!--<mat-hint>Hint</mat-hint>-->
        </mat-form-field>
      </div>
+
+     <!--Marco-->
+     <div class="col s12 m12 l12">
+        <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Lista de impuestos:</h6>
+      </div>
+
+     <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="!editingCabecera">
+      <table #tableImpuestos mat-table [dataSource]="impuestosData" class="mat-elevation-z1"
+        style="font-family: 'Lato', sans-serif !important;">
+
+        <!-- Columna Opciones -->
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let element; let in = index" style="width:70px;">
+            <a (click)="eliminarImpuesto(in)" style="color:#000;"><i class="material-icons" style="color:red;">close</i></a><!-- <i class="material-icons">edit</i>-->
+          </td>
+        </ng-container>
+        <!-- Columna Tipo -->
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef> Tipo </th>
+          <td mat-cell *matCellDef="let aaa" style="font-weight:bold;"> {{ aaa.tipo.value }} </td>
+        </ng-container>
+        <!-- Columna Modelo -->
+        <ng-container matColumnDef="modelo">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Modelo </th>
+          <td mat-cell *matCellDef="let aaa" style="text-align: right;"> {{ aaa.modelo.value }} </td>
+        </ng-container>
+        <!-- Columna Situación -->
+        <ng-container matColumnDef="situacion">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Situación </th>
+          <td mat-cell *matCellDef="let aaa" style="text-align: right;"> {{ aaa.situacion.value }} </td>
+        </ng-container>
+        <!-- Columna Código inscripción -->
+        <ng-container matColumnDef="codigoInscripcion">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Código inscripción </th>
+          <td mat-cell *matCellDef="let aaa" style="text-align: right;"> {{ aaa.codigoInscripcion.value }} </td>
+        </ng-container>
+        <!-- Columna Fecha inscripción -->
+        <ng-container matColumnDef="fechaInscripcion">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Fecha inscripción </th>
+          <td mat-cell *matCellDef="let aaa" style="text-align: right;">
+            {{ aaa.fechaInscripcion.value.getDate()+"/"+aaa.fechaInscripcion.value.getMonth()+"/"+aaa.fechaInscripcion.value.getFullYear() }} 
+          </td>
+        </ng-container>
+        <!-- Columna Exenciones -->
+        <ng-container matColumnDef="exenciones">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Exenciones </th>
+          <td mat-cell *matCellDef="let aaa" style="text-align: right;"> {{ aaa.exenciones.value }}</td>
+        </ng-container>
+        
+
+        <tr mat-header-row *matHeaderRowDef="['opciones', 'tipo', 'modelo', 'situacion', 'codigoInscripcion', 'fechaInscripcion', 'exenciones']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['opciones', 'tipo', 'modelo', 'situacion', 'codigoInscripcion', 'fechaInscripcion', 'exenciones'];"></tr>
+      </table>
+      <div class="col s12" style="margin-top:5px;" *ngIf="impuestosData.length < 1">
+        <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>Todavía no se ha cargado ningún impuesto</i></mat-card>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!addingImpuesto">
+
+      <div class="col s12">
+        <button (click)="addImpuesto()" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+          AGREGAR IMPUESTO
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="addingImpuesto">
+      <form [formGroup]="formaImpuesto" (ngSubmit)="guardarImpuesto()" novalidate="novalidate">
+        <div class="col s8 m3 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Tipo</mat-label>
+            <input #codArt matInput placeholder="" formControlName="tipo">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m5 l4">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Modelo</mat-label>
+            <input matInput placeholder="" formControlName="modelo" value="">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m4 l5">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Situación</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="situacion">
+            <mat-option value="1">Excento</mat-option>
+            <mat-option value="2">Inscripto</mat-option>
+            <mat-option value="3">No inscripto</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+        <div class="col s8 m4 l4">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Código inscripción</mat-label>
+            <input matInput placeholder="" formControlName="codigoInscripcion" style="text-align: right;"
+             value="">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s6 m4 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Fecha Inscripción</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaInscripcion">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="col s4 m4 l4">
+            <mat-checkbox formControlName="exenciones">¿Posee exenciones?</mat-checkbox>
+          
+        </div>
+        
+
+        <div class="col s12" style="text-align: right;">
+          <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaImpuesto.valid">
+            AGREGAR
+          </button>
+          <button type="reset" (click)="cancelarImpItem()" class="mine-btnbig-grey" mat-flat-button>
+            CANCELAR
+          </button>
+        </div>
+      </form>
+    </div>
    </div>
  </mat-expansion-panel>
+
+ <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
+   <mat-expansion-panel-header>
+     <mat-panel-title>DATOS STOCK</mat-panel-title>
+   </mat-expansion-panel-header>
+
+     <div class="col s12 m12 l12">
+        <h6 style="margin-top:15px !important; margin-bottom: 15px !important;">Lista stock</h6>
+      </div>
+
+     <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="!editingCabecera">
+      <table #tableStock mat-table [dataSource]="stockData" class="mat-elevation-z1"
+        style="font-family: 'Lato', sans-serif !important;">
+
+        <!-- Columna Opciones -->
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let element; let in = index" style="width:70px;">
+            <a (click)="eliminarStock(in)" style="color:#000;"><i class="material-icons" style="color:red;">close</i></a><!-- <i class="material-icons">edit</i>-->
+          </td>
+        </ng-container>
+        <!-- Columna Tipo -->
+        <ng-container matColumnDef="idArt">
+          <th mat-header-cell *matHeaderCellDef> ID Artículo </th>
+          <td mat-cell *matCellDef="let a" style="font-weight:bold;"> {{ a.idArt.value }} </td>
+        </ng-container>
+        <!-- Columna Modelo -->
+        <ng-container matColumnDef="fecUltCompra">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Fecha última compra </th>
+          <td mat-cell *matCellDef="let a" style="text-align: right;"> {{ a.fecUltCompra.value.getDate()+"/"+a.fecUltCompra.value.getMonth()+"/"+a.fecUltCompra.value.getFullYear() }} </td>
+        </ng-container>
+        <!-- Columna Situación -->
+        <ng-container matColumnDef="preUltCompra">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Precio última compra </th>
+          <td mat-cell *matCellDef="let a" style="text-align: right;"> {{ a.preUltCompra.value }} </td>
+        </ng-container>
+        <!-- Columna Código inscripción -->
+        <ng-container matColumnDef="moneda">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Moneda </th>
+          <td mat-cell *matCellDef="let a" style="text-align: right;"> {{ a.moneda.value }} </td>
+        </ng-container>
+        <!-- Columna Fecha inscripción -->
+        <ng-container matColumnDef="codArtPro">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Código artículo proveedor </th>
+          <td mat-cell *matCellDef="let a" style="text-align: right;">
+            {{ a.codArtPro.value }} 
+          </td>
+        </ng-container>
+        <!-- Columna Fecha inscripción -->
+        <ng-container matColumnDef="codBarPro">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Código barra proveedor </th>
+          <td mat-cell *matCellDef="let a" style="text-align: right;">
+            {{ a.codBarPro.value }} 
+          </td>
+        </ng-container>
+        
+        
+
+        <tr mat-header-row *matHeaderRowDef="['opciones', 'idArt', 'fecUltCompra', 'preUltCompra', 'moneda', 'codArtPro', 'codBarPro']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['opciones', 'idArt', 'fecUltCompra', 'preUltCompra', 'moneda', 'codArtPro', 'codBarPro'];"></tr>
+      </table>
+      <div class="col s12" style="margin-top:5px;" *ngIf="stockData.length < 1">
+        <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>Todavía no se ha cargado nada</i></mat-card>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!addingStock">
+
+      <div class="col s12">
+        <button (click)="addStock()" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+          AGREGAR STOCK
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="addingStock">
+      <form [formGroup]="formaStock" (ngSubmit)="guardarStock()" novalidate="novalidate">
+        <div class="col s4 m2 l1">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>ID Artículo</mat-label>
+            <input #codArt matInput placeholder="" formControlName="idArt" type="number">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s8 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Fecha última compra</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder="" formControlName="fecUltCompra">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        </div>
+        <div class="col s6 m3 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Precio última compra</mat-label>
+            <input matInput placeholder="" formControlName="preUltCompra" type="number" value="">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s6 m4 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Moneda</mat-label>
+            <input matInput placeholder="" formControlName="moneda" style="text-align: right;"
+             value="">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m6 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Código artículo proveedor</mat-label>
+            <input matInput placeholder="" formControlName="codArtPro" type="number" style="text-align: right;"
+             value="">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m6 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Código barra proveedor</mat-label>
+            <input matInput placeholder="" formControlName="codBarPro" style="text-align: right;"
+             value="">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        
+
+        <div class="col s12" style="text-align: right;">
+          <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaStock.valid">
+            AGREGAR
+          </button>
+          <button type="reset" (click)="cancelarStockItem()" class="mine-btnbig-grey" mat-flat-button>
+            CANCELAR
+          </button>
+        </div>
+      </form>
+    </div>
+  
+ </mat-expansion-panel>
+
+    <!--Marco-->
+
 
   <div class="row" style="margin-top:15px;">
     <div class="col s12" style="text-align: right;">

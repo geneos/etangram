@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 const PROVEEDORES:any[] = [
   {'numero':0,'razonSocial':'Deux IT SRL','cuit':'30-123456789-9','posicionFiscal':'IVA Responsable Inscripto'},
@@ -14,12 +15,24 @@ const PROVEEDORES:any[] = [
   styleUrls: ['./alta-proveedor.component.css']
 })
 export class AltaProveedorComponent implements OnInit {
+  
+  impuestosData: any[] = [];
+  addingImpuesto:boolean = false;
+
+  stockData: any[] = [];
+  addingStock:boolean = false;
+
   constProveedores = PROVEEDORES;
 
   forma:FormGroup;
+  formaImpuesto:FormGroup;
+  formaStock:FormGroup;
   id:any;
 
   existe:boolean;
+
+   @ViewChild('tableImpuestos') table: MatTable<any>;
+   @ViewChild('tableStock') table2: MatTable<any>;
 
   constructor( private route:ActivatedRoute ) {
     this.forma = new FormGroup({
@@ -71,6 +84,25 @@ export class AltaProveedorComponent implements OnInit {
 
     });
 
+
+     this.formaStock = new FormGroup({
+      'idArt': new FormControl('',Validators.required),
+      'fecUltCompra': new FormControl(),
+      'preUltCompra': new FormControl(1,Validators.required),
+      'moneda': new FormControl(),
+      'codArtPro': new FormControl(),
+      'codBarPro': new FormControl(0,Validators.required)
+    })
+
+    this.formaImpuesto = new FormGroup({
+      'tipo': new FormControl('',Validators.required),
+      'modelo': new FormControl(),
+      'situacion': new FormControl(1,Validators.required),
+      'codigoInscripcion': new FormControl(),
+      'fechaInscripcion': new FormControl('',Validators.required),
+      'exenciones': new FormControl(0,Validators.required)
+    })
+
   }
 
   ngOnInit() {
@@ -83,5 +115,43 @@ export class AltaProveedorComponent implements OnInit {
       //actualizando
     }
   }
+
+  addImpuesto(){
+    this.addingImpuesto = true;
+  }
+
+  addStock(){
+    this.addingStock = true;
+  }
+
+  cancelarImpItem(){
+    this.addingImpuesto = false;
+  }
+
+  cancelarStockItem(){
+    this.addingStock = false;
+  }
+
+  guardarImpuesto(){
+    console.log(this.formaImpuesto.controls);
+  this.impuestosData.push(this.formaImpuesto.controls);
+  this.table.renderRows();
+  }
+
+  guardarStock(){
+    console.log(this.formaStock.controls);
+  this.stockData.push(this.formaStock.controls);
+  this.table2.renderRows();
+  }
+
+  eliminarStock(ind:number){
+    this.stockData.splice(ind, 1);
+    this.table2.renderRows();
+  };
+
+  eliminarImpuesto(ind:number){
+    this.impuestosData.splice(ind, 1);
+    this.table.renderRows();
+  };
 
 }

@@ -60,10 +60,13 @@
       </div>
     <!--</div>-->
     <div class="col s12 m6 l6">
-    <div class="row" style="margin-top:15px; ">
+    <div class="row" style="margin-top:5px; ">
+      <div class="col s12 m12 l12">
+        <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Dirección de Facturación:</h6>
+      </div>
       <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Dirección</mat-label>
+          <mat-label>Calle</mat-label>
           <input matInput placeholder="" formControlName="facCalle">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
@@ -99,10 +102,13 @@
     </div>
     </div>
     <div class="col s12 m6 l6">
-    <div class="row" style="margin-top:15px;">
+    <div class="row" style="margin-top:5px; ">
+      <div class="col s12 m12 l12">
+        <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Dirección de Envío:</h6>
+      </div>
       <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Dirección</mat-label>
+          <mat-label>Calle</mat-label>
           <input matInput placeholder="" formControlName="envCalle">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
@@ -137,8 +143,6 @@
       </div>
     </div>
     </div>
-  </div>
-    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
 
       <div class="col s12 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -177,71 +181,73 @@
 
     <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
 
-      <div class="col s6 m6 l3">
+      <div class="col s12 m6 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Categoria del referente</mat-label>
+          <mat-label>Categoría del referente</mat-label>
           <input  matInput placeholder="" type="number" formControlName="telefono1">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s12 m6 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Zona</mat-label>
           <input  matInput placeholder="" type="number" formControlName="telefono2">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s6 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Vendedor</mat-label>
           <input  matInput placeholder="" type="number" formControlName="telefono3">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s8 m4 l4">
+      <div class="col s6 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cobrador</mat-label>
           <input matInput placeholder="" formControlName="observaciones">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
-        <div class="col s8 m4 l4">
+      </div>
+      <div class="col s12 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Límite de crédito</mat-label>
           <input matInput placeholder="" formControlName="observaciones">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      </div>
     </div>
-    
+
 
     <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-
-      <div class="col s6 m6 l3">
+      <div class="col s12 m12 l12">
+        <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Información Bancaria:</h6>
+      </div>
+      <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>CBU</mat-label>
           <input  matInput placeholder="" type="number" formControlName="telefono1">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s12 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo de cuenta</mat-label>
           <mat-select placeholder="Elija una opción">
             <mat-option value="1">Cuenta corriente</mat-option>
-            <mat-option value="1">Caja de ahorro</mat-option>
+            <mat-option value="2">Caja de ahorro</mat-option>
           </mat-select>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s8 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cuenta bancaria</mat-label>
           <input  matInput placeholder="" type="number" formControlName="observaciones">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s4 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código de sucursal</mat-label>
           <input  matInput placeholder="" type="number" formControlName="observaciones">
@@ -250,6 +256,57 @@
       </div>
     </div>
   </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
+   <mat-expansion-panel-header>
+     <mat-panel-title>DATOS DE IMPUESTOS</mat-panel-title>
+   </mat-expansion-panel-header>
+
+   <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+     <div class="col s12 m6 l6">
+       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+         <mat-label>Situación IVA</mat-label>
+         <input matInput placeholder="">
+         <!--<mat-hint>Hint</mat-hint>-->
+       </mat-form-field>
+     </div>
+     <div class="col s12 m6 l6">
+       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+         <mat-label>CUIT</mat-label>
+         <input matInput placeholder="">
+         <!--<mat-hint>Hint</mat-hint>-->
+       </mat-form-field>
+     </div>
+     <div class="col s12 m6 l6">
+       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+         <mat-label>CAI</mat-label>
+         <input matInput placeholder="">
+         <!--<mat-hint>Hint</mat-hint>-->
+       </mat-form-field>
+     </div>
+     <div class="col s12 m6 l6">
+       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+         <mat-label>Fecha Vencimiento CAI</mat-label>
+         <input matInput placeholder="">
+         <!--<mat-hint>Hint</mat-hint>-->
+       </mat-form-field>
+     </div>
+     <div class="col s12 m6 l6">
+       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+         <mat-label>CUIT del Exterior</mat-label>
+         <input matInput placeholder="">
+         <!--<mat-hint>Hint</mat-hint>-->
+       </mat-form-field>
+     </div>
+     <div class="col s12 m6 l6">
+       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+         <mat-label>Id Impositivo</mat-label>
+         <input matInput placeholder="">
+         <!--<mat-hint>Hint</mat-hint>-->
+       </mat-form-field>
+     </div>
+   </div>
+ </mat-expansion-panel>
 
   <div class="row" style="margin-top:15px;">
     <div class="col s12" style="text-align: right;">

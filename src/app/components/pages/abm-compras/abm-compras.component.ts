@@ -5,6 +5,8 @@ import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraArticulo } from "../../../interfaces/compraArticulo.interface";
 import { CompraProveedor } from "../../../interfaces/compraProveedor.interface";
 
+var auxProvData,auxArtiData:any;
+
 @Component({
   selector: 'app-abm-compras',
   templateUrl: './abm-compras.component.html',
@@ -46,16 +48,16 @@ export class AbmComprasComponent implements OnInit {
   constructor(public dialogArt: MatDialog, private _compraService:CompraService) {
 
     this.forma = new FormGroup({
-      'proveedor': new FormControl('',Validators.required),
+      'proveedor': new FormControl('',Validators.required,this.existeProveedor),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
       'posicionFiscal': new FormControl(),
       'tipoComprobante': new FormControl('',Validators.required),
-      'nroComprobante': new FormControl('',Validators.required),
+      'nroComprobante': new FormControl('',[Validators.required,Validators.pattern("^([a-z]|[A-Z]{1})([0-9]{4})-([0-9]{8})$")]),
       'fecha': new FormControl('',Validators.required),
-      'caicae': new FormControl('',Validators.required),
+      'caicae': new FormControl('',[Validators.required,Validators.minLength(14)]),
       'fechaVto': new FormControl('',Validators.required),
-      'totalCabecera': new FormControl('',Validators.required),
+      'totalCabecera': new FormControl('',[Validators.required]),
       'observaciones': new FormControl(),
     })
 
@@ -64,7 +66,7 @@ export class AbmComprasComponent implements OnInit {
     this.forma.controls['posicionFiscal'].disable();
 
     this.formaArticulos = new FormGroup({
-      'codigo': new FormControl('',Validators.required),
+      'codigo': new FormControl('',Validators.required,this.existeArticulo),
       'articulo': new FormControl(),
       'cantidad': new FormControl(1,Validators.required),
       'unidadMedida': new FormControl(),
@@ -81,12 +83,43 @@ export class AbmComprasComponent implements OnInit {
 
   ngOnInit() {}
 
+  test(){
+    //console.log(this.forma.controls['caicae'].errors)
+  }
+
+  existeProveedor( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxProvData==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
+  existeArticulo( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxArtiData==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
   buscarProveedor(){
     this._compraService.getProveedor( this.forma.controls['proveedor'].value, this.token )
     //this._compraService.getProveedores()
       .subscribe( dataP => {
         console.log(dataP);
           this.proveedorData = dataP;
+          auxProvData = this.proveedorData.dataset.length;
           if(this.proveedorData.returnset[0].RCode=="-6003"){
             //token invalido
             this.compraProveedor = null;
@@ -114,6 +147,7 @@ export class AbmComprasComponent implements OnInit {
       this._compraService.getArticulo( this.formaArticulos.controls['codigo'].value, this.token )
         .subscribe( dataA => {
           this.articuloData = dataA;
+          auxArtiData = this.articuloData.dataset.length;
           if(this.articuloData.dataset.length>0){
             this.compraArticulo = this.articuloData.dataset[0];
           } else {
@@ -124,8 +158,8 @@ export class AbmComprasComponent implements OnInit {
     if(this.addingItem){
       this._compraService.getItem( this.formaArticulos.controls['codigo'].value, this.token )
         .subscribe( dataA => {
-          console.log(dataA);
           this.articuloData = dataA;
+          auxArtiData = this.articuloData.dataset.length;
           if(this.articuloData.dataset.length>0){
             this.compraArticulo = this.articuloData.dataset[0];
           } else {
@@ -197,7 +231,11 @@ export class AbmComprasComponent implements OnInit {
     this.compraArticulo.descuento = this.formaArticulos.controls['descuento'].value;
 
     let auxTipoRenglon;
-    if(this.addingItem){auxTipoRenglon="I"};
+    if(this.addingItem){
+      auxTipoRenglon="I";
+      this.compraArticulo.precio_unitario=0;
+      this.compraArticulo.alicuota=0;
+    };
     if(this.addingArticulo){auxTipoRenglon="A"};
 
     let jsbody = {
@@ -222,7 +260,7 @@ export class AbmComprasComponent implements OnInit {
         //console.log("dentro: "+this.renglonId);
         console.log(this.articulosData[(this.articulosData.length-1)]);
         this.articulosData[(this.articulosData.length-1)].renglonId = this.renglonId;
-        console.log(this.articulosData[(this.articulosData.length-1)]);        
+        console.log(this.articulosData[(this.articulosData.length-1)]);
       });
 
     this.compraArticulo.renglonId="temp";

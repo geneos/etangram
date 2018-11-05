@@ -60,12 +60,12 @@
         <mat-form-field appearance="outline" floatLabel="always"  style="width:100%;">
           <mat-label>N° Comprobante</mat-label>
             <!--<input matInput formControlName="tipoComprobante">-->
-            <input matInput formControlName="nroComprobante" placeholder="">
+            <input matInput formControlName="nroComprobante" placeholder="A0000-00000000">
             <!--<div *ngIf="forma.controls['nroComprobante'].errors?.existe" class="form-control-feedback">
               EL usuario con el codigo 'strider' ya esta registrado
             </div>-->
           <mat-hint *ngIf="forma.controls['nroComprobante'].invalid && forma.controls['nroComprobante'].errors?.pattern">
-            Ej: A0000-00000000
+            No respeta el formato de AFIP
           </mat-hint>
         </mat-form-field>
       </div>
@@ -81,7 +81,7 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>CAI/CAE/CAEA</mat-label>
           <input matInput placeholder="" formControlName="caicae">
-          <mat-hint *ngIf="forma.controls['caicae'].invalid && forma.controls['caicae'].errors?.minlength">
+          <mat-hint *ngIf="forma.controls['caicae'].invalid && forma.controls['caicae'].errors?.pattern">
             Debe tener 14 dígitos
           </mat-hint>
         </mat-form-field>
@@ -118,7 +118,8 @@
         <ng-container matColumnDef="opciones">
           <th mat-header-cell *matHeaderCellDef> </th>
           <td mat-cell *matCellDef="let element; let in = index" style="width:70px;">
-            <a (click)="eliminarArticulo(in)" style="color:#000;"><i class="material-icons" style="color:red;">close</i></a><!-- <i class="material-icons">edit</i>-->
+            <a (click)="eliminarArticulo(in)" style="color:#000;"><i class="material-icons" style="color:red;">close</i></a>
+            <a (click)="editarArticulo(in)" style="color:#000;"><i class="material-icons">edit</i></a>
           </td>
         </ng-container>
         <!-- Columna Producto -->
@@ -162,7 +163,7 @@
       </div>
     </div>
 
-    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && !addingItem && !addingArticulo">
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && !addingItem && !addingArticulo && !editingAI">
 
       <div class="col s12">
         <button (click)="addArticulo()" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
@@ -174,7 +175,7 @@
       </div>
     </div>
 
-    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingArticulo)">
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingArticulo || editingAI)">
       <form [formGroup]="formaArticulos" (ngSubmit)="guardarArticulo()" novalidate="novalidate">
         <div class="col s8 m3 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -195,7 +196,7 @@
         </div>
         <div class="col s12 m7 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Artículo</mat-label>
+            <mat-label>Descripción</mat-label>
             <input matInput placeholder="" formControlName="articulo" value="{{ compraArticulo?.descripcion }}">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
@@ -245,8 +246,11 @@
         </div>
 
         <div class="col s12" style="text-align: right;">
-          <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaArticulos.valid">
+          <button *ngIf="!editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaArticulos.valid">
             AGREGAR
+          </button>
+          <button *ngIf="editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaArticulos.valid">
+            ACTUALIZAR
           </button>
           <button type="reset" (click)="cancelarArtItem()" class="mine-btnbig-grey" mat-flat-button>
             CANCELAR
@@ -267,9 +271,15 @@
 
 <div class="row" style="height:0px;"></div>
 
-<div class="row" style="text-align: right;">
+<div class="row" style="text-align: right;" *ngIf="editingCabecera">
   <button type="submit" class="mine-btnbig" mat-flat-button [disabled]="!forma.valid">
     GUARDAR
   </button>
 </div>
 </form>
+
+<div class="row" style="text-align: right;" *ngIf="!editingCabecera">
+  <button class="mine-btnbig" mat-flat-button [disabled]="false">
+    CONFIRMAR
+  </button>
+</div>

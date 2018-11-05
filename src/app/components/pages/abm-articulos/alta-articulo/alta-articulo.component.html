@@ -11,55 +11,167 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Tipo</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="tipo">
+            <mat-option value="1">Artículo</mat-option>
+            <mat-option value="2">Item</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
       <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Código</mat-label>
-          <input #codArt matInput placeholder="" type="number" formControlName="codigo">
+          <mat-label>Número</mat-label>
+          <input #nroArt matInput placeholder="" type="number" formControlName="nroArticulo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s8 m8 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Artículo</mat-label>
-          <input matInput placeholder="" formControlName="articulo">
+          <mat-label>Descripción</mat-label>
+          <input matInput placeholder="" formControlName="descripcion">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m6 l3">
+      <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>U. Medida</mat-label>
-          <input matInput placeholder="" formControlName="unidadMedida">
+          <mat-label>Código alternativo</mat-label>
+          <input matInput placeholder="" type="number" formControlName="codigoAlternativo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m6 l3">
+      <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>P. Unitario</mat-label>
-          <input matInput placeholder="" type="number" formControlName="precioUnitario">
-          <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+          <mat-label>Código de barra</mat-label>
+          <input matInput placeholder="" type="number" formControlName="codigoBarra">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-    </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Grupo</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idGrupo">
+            <mat-option value="1">Grupo1</mat-option>
+            <mat-option value="2">Grupo2</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Tipo Artículo</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idTipoArticulo">
+            <mat-option value="1">Insumos</mat-option>
+            <mat-option value="2">Productos terminados</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Procedencia</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="procedencia">
+            <mat-option value="1">Nacional</mat-option>
+            <mat-option value="2">Importado</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="propio">¿Elaboración propia?</mat-checkbox>
+      </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Marca</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idMarca">
+            <mat-option value="1">Nacional</mat-option>
+            <mat-option value="2">Importado</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Campo1</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idCampo1">
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Campo2</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idCampo2">
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Campo3</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idCampo3">
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Estado</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="estado">
+            <mat-option value="1">Pendiente</mat-option>
+            <mat-option value="2">Activo</mat-option>
+            <mat-option value="3">Inactivo</mat-option>
+            <mat-option value="4">Baja</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Categoría de Bloqueo</mat-label>
+          <input matInput placeholder="" type="text" formControlName="categoria_bloqueo">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="obsRegistroAutoVta">¿Ingresa observaciones automáticamente en la venta?</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="obsRegistroAutoCpa">¿Ingresa observaciones automáticamente en la compra?</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="obsIngresoVta">¿Ingresa observaciones en la venta?</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="obsIngresoCpa">¿Ingresa observaciones en la compra?</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="obsImprimeVta">¿Imprime observaciones en la factura?</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="obsAuditoriaVta">¿Audita observaciones en la venta?</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="obsAuditoriaCpa">¿Audita observaciones en la compra?</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="categoriaVenta">Categoría Ventas</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="categoriaInventario">Categoría Inventario</mat-checkbox>
+      </div>
+      <div class="col s4 m4 l4">
+          <mat-checkbox formControlName="categoriaCompra">Categoría Compra</mat-checkbox>
+      </div>
 
-  </mat-expansion-panel>
-
-  <mat-expansion-panel [expanded]=true [disabled]=true>
-    <mat-expansion-panel-header>
-      <mat-panel-title>DATOS DE STOCK</mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <div class="row" style="margin-top:15px;">
-    </div>
-
-  </mat-expansion-panel>
-
-  <mat-expansion-panel [expanded]=true [disabled]=true>
-    <mat-expansion-panel-header>
-      <mat-panel-title>DATOS DE UNIDADES DE MEDIDA</mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <div class="row" style="margin-top:15px;">
     </div>
 
   </mat-expansion-panel>
@@ -70,6 +182,40 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Precio última compra</mat-label>
+          <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltCompra">
+          <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Fecha última compra</mat-label>
+          <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fechaUltCompra">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Moneda</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra">
+            <mat-option value="1">Pesos</mat-option>
+            <mat-option value="2">Dólares</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Cantidad óptima de compra</mat-label>
+          <input matInput placeholder="" type="number" formControlName="cantidadOptimaDeCompra">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+
     </div>
 
   </mat-expansion-panel>
@@ -89,17 +235,36 @@
       <mat-panel-title>DATOS DE LOTES Y SERIES</mat-panel-title>
     </mat-expansion-panel-header>
 
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS DE STOCK</mat-panel-title>
+    </mat-expansion-panel-header>
+
     <div class="row" style="margin-top:15px;">
-      <div class="col s12" style="text-align: right;">
-        <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
-          GUARDAR
-        </button>
-        <button type="reset" class="mine-btnbig-grey" mat-flat-button>
-          CANCELAR
-        </button>
-      </div>
     </div>
 
   </mat-expansion-panel>
 
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS DE UNIDAD DE MEDIDA</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+    </div>
+
+  </mat-expansion-panel>
+
+  <div class="row" style="margin-top:15px;">
+    <div class="col s12" style="text-align: right;">
+      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
+        GUARDAR
+      </button>
+      <button type="reset" class="mine-btnbig-grey" mat-flat-button>
+        CANCELAR
+      </button>
+    </div>
+  </div>
 </form>

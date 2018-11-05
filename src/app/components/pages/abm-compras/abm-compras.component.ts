@@ -21,6 +21,8 @@ export class AbmComprasComponent implements OnInit {
   editingCabecera:boolean = true;
   addingArticulo:boolean = false;
   addingItem:boolean = false;
+  editingAI:boolean = false;
+  auxEditingArt:number = null;
 
   articulosData: any[] = [];
   //articulosDataSource = new MatTableDataSource(this.articulosData);
@@ -53,9 +55,9 @@ export class AbmComprasComponent implements OnInit {
       'cuit': new FormControl(),
       'posicionFiscal': new FormControl(),
       'tipoComprobante': new FormControl('',Validators.required),
-      'nroComprobante': new FormControl('',[Validators.required,Validators.pattern("^([a-z]|[A-Z]{1})([0-9]{4})-([0-9]{8})$")]),
+      'nroComprobante': new FormControl('',[Validators.required,Validators.pattern("^([a-z]|[A-Z]{1})([0-9]{4,5})-([0-9]{8})$")]),
       'fecha': new FormControl('',Validators.required),
-      'caicae': new FormControl('',[Validators.required,Validators.minLength(14)]),
+      'caicae': new FormControl('',[Validators.required,Validators.pattern("^([0-9]{14})$")]),
       'fechaVto': new FormControl('',Validators.required),
       'totalCabecera': new FormControl('',[Validators.required]),
       'observaciones': new FormControl(),
@@ -230,43 +232,53 @@ export class AbmComprasComponent implements OnInit {
     this.compraArticulo.cantidad = this.formaArticulos.controls['cantidad'].value;
     this.compraArticulo.descuento = this.formaArticulos.controls['descuento'].value;
 
-    let auxTipoRenglon;
-    if(this.addingItem){
-      auxTipoRenglon="I";
-      this.compraArticulo.precio_unitario=0;
-      this.compraArticulo.alicuota=0;
-    };
-    if(this.addingArticulo){auxTipoRenglon="A"};
+    if(this.editingAI){
+      //editando
+      this.articulosData[this.auxEditingArt] = this.compraArticulo;
+      this.table.renderRows();
 
-    let jsbody = {
-      "idCabecera":this.cabeceraId,
-      "codigoArticulo":this.compraArticulo.codigo,
-      "descArticulo":this.compraArticulo.descripcion,
-      "cantidad":this.compraArticulo.cantidad,
-      "precioUnitario":this.compraArticulo.precio_unitario,
-      "alicuotaIVA":this.compraArticulo.alicuota,
-      "Descuentolinea":this.compraArticulo.descuento,
-      "idUM":1,//this.compraArticulo.unidad_medida,
-      "TipoRenglon":auxTipoRenglon,
-      "idusuario":"1",//hardcoded
-    };
-    let jsonbody= JSON.stringify(jsbody);
-    console.log(jsonbody);
-    this._compraService.postArticulo( jsonbody, this.token )
-      .subscribe( resp => {
-        console.log(resp);
-        this.respRenglon = resp;
-        this.renglonId = this.respRenglon.returnset[0].RId;
-        //console.log("dentro: "+this.renglonId);
-        console.log(this.articulosData[(this.articulosData.length-1)]);
-        this.articulosData[(this.articulosData.length-1)].renglonId = this.renglonId;
-        console.log(this.articulosData[(this.articulosData.length-1)]);
-      });
+      this.editingAI=false;
+    }else{
+      //agregando nuevo
+      if(this.addingItem){
+        this.compraArticulo.tipoRenglon="I";
+        this.compraArticulo.precio_unitario=0;
+        this.compraArticulo.alicuota=0;
+      };
+      if(this.addingArticulo){this.compraArticulo.tipoRenglon="A"};
 
-    this.compraArticulo.renglonId="temp";
-    //console.log("fuera: "+this.renglonId);
-    this.articulosData.push(this.compraArticulo);
-    this.table.renderRows();
+      let jsbody = {
+        "idCabecera":this.cabeceraId,
+        "codigoArticulo":this.compraArticulo.codigo,
+        "descArticulo":this.compraArticulo.descripcion,
+        "cantidad":this.compraArticulo.cantidad,
+        "precioUnitario":this.compraArticulo.precio_unitario,
+        "alicuotaIVA":this.compraArticulo.alicuota,
+        "Descuentolinea":this.compraArticulo.descuento,
+        "idUM":1,//this.compraArticulo.unidad_medida,
+        "TipoRenglon":this.compraArticulo.tipoRenglon,
+        "idusuario":"1",//hardcoded
+      };
+      let jsonbody= JSON.stringify(jsbody);
+      //console.log(jsonbody);
+      this._compraService.postArticulo( jsonbody, this.token )
+        .subscribe( resp => {
+          console.log(resp);
+          this.respRenglon = resp;
+          this.renglonId = this.respRenglon.returnset[0].RId;
+          //console.log("dentro: "+this.renglonId);
+          //console.log(this.articulosData[(this.articulosData.length-1)]);
+          this.articulosData[(this.articulosData.length-1)].renglonId = this.renglonId;
+          //console.log(this.articulosData[(this.articulosData.length-1)]);
+        });
+
+      this.compraArticulo.renglonId="temp";
+      this.articulosData.push(this.compraArticulo);
+      this.table.renderRows();
+
+      this.addingArticulo=false;
+      this.addingItem=false;
+    }
 
     let auxtotal=(this.compraArticulo.precio_unitario*this.compraArticulo.cantidad)*((100-this.compraArticulo.descuento)/100);
     this.totalneto=this.totalneto+auxtotal;
@@ -277,15 +289,16 @@ export class AbmComprasComponent implements OnInit {
     this.formaArticulos.controls['cantidad'].setValue(1);
     this.formaArticulos.controls['descuento'].setValue(0);
     this.compraArticulo = null;
-
-    this.addingArticulo=false;
-    this.addingItem=false;
   }
 
   cancelarArtItem(){
     this.addingItem = false;
     this.addingArticulo = false;
+    this.editingAI = false;
+    this.compraArticulo = null;
     this.formaArticulos.controls['codigo'].setValue("");
+    this.formaArticulos.controls['cantidad'].setValue(1);
+    this.formaArticulos.controls['descuento'].setValue(0);
   }
 
   eliminarArticulo(ind:number){
@@ -296,6 +309,16 @@ export class AbmComprasComponent implements OnInit {
 
     this.articulosData.splice(ind, 1);
     this.table.renderRows();
+  };
+
+  editarArticulo(ind:number){
+    this.editingAI = true;
+    this.compraArticulo = this.articulosData[ind];
+    this.formaArticulos.controls['codigo'].setValue(this.articulosData[ind].codigo);
+    this.formaArticulos.controls['cantidad'].setValue(this.articulosData[ind].cantidad);
+    this.formaArticulos.controls['descuento'].setValue(this.articulosData[ind].descuento);
+    //console.log(this.compraArticulo);
+    this.auxEditingArt=ind;
   };
 
 }

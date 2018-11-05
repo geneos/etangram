@@ -346,7 +346,7 @@
         <ng-container matColumnDef="fechaInscripcion">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Fecha inscripción </th>
           <td mat-cell *matCellDef="let aaa" style="text-align: right;">
-            {{ aaa.fechaInscripcion.value.getDate()+"/"+aaa.fechaInscripcion.value.getMonth()+"/"+aaa.fechaInscripcion.value.getFullYear() }} 
+            {{ aaa.fechaInscripcion.value.getDate()+"/"+aaa.fechaInscripcion.value.getMonth()+"/"+aaa.fechaInscripcion.value.getFullYear() }}
           </td>
         </ng-container>
         <!-- Columna Exenciones -->
@@ -354,7 +354,7 @@
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Exenciones </th>
           <td mat-cell *matCellDef="let aaa" style="text-align: right;"> {{ aaa.exenciones.value }}</td>
         </ng-container>
-        
+
 
         <tr mat-header-row *matHeaderRowDef="['opciones', 'tipo', 'modelo', 'situacion', 'codigoInscripcion', 'fechaInscripcion', 'exenciones']"></tr>
         <tr mat-row *matRowDef="let row; columns: ['opciones', 'tipo', 'modelo', 'situacion', 'codigoInscripcion', 'fechaInscripcion', 'exenciones'];"></tr>
@@ -418,9 +418,8 @@
         </div>
         <div class="col s4 m4 l4">
             <mat-checkbox formControlName="exenciones">¿Posee exenciones?</mat-checkbox>
-          
         </div>
-        
+
 
         <div class="col s12" style="text-align: right;">
           <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaImpuesto.valid">
@@ -479,18 +478,18 @@
         <ng-container matColumnDef="codArtPro">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Código artículo proveedor </th>
           <td mat-cell *matCellDef="let a" style="text-align: right;">
-            {{ a.codArtPro.value }} 
+            {{ a.codArtPro.value }}
           </td>
         </ng-container>
         <!-- Columna Fecha inscripción -->
         <ng-container matColumnDef="codBarPro">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Código barra proveedor </th>
           <td mat-cell *matCellDef="let a" style="text-align: right;">
-            {{ a.codBarPro.value }} 
+            {{ a.codBarPro.value }}
           </td>
         </ng-container>
-        
-        
+
+
 
         <tr mat-header-row *matHeaderRowDef="['opciones', 'idArt', 'fecUltCompra', 'preUltCompra', 'moneda', 'codArtPro', 'codBarPro']"></tr>
         <tr mat-row *matRowDef="let row; columns: ['opciones', 'idArt', 'fecUltCompra', 'preUltCompra', 'moneda', 'codArtPro', 'codBarPro'];"></tr>
@@ -557,7 +556,7 @@
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
-        
+
 
         <div class="col s12" style="text-align: right;">
           <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaStock.valid">
@@ -569,7 +568,7 @@
         </div>
       </form>
     </div>
-  
+
  </mat-expansion-panel>
 
     <!--Marco-->

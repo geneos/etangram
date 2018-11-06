@@ -83,7 +83,6 @@ export class CompraService {
     return this.http.post( url, body, { headers });
   }
 
-//incompleto, a la espera de la respuesta en jira
   editArticulo( body:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,
@@ -91,6 +90,18 @@ export class CompraService {
     });
 
     let query = "api/proc/detalleUpd";
+    let url = this.urlCompra + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  deleteArticulo( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/DetalleDel";
     let url = this.urlCompra + query;
 
     return this.http.post( url, body, { headers });

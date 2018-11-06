@@ -234,6 +234,27 @@ export class AbmComprasComponent implements OnInit {
 
     if(this.editingAI){
       //editando
+      let jsbody = {
+        "idrenglon":this.articulosData[this.auxEditingArt].renglonId,
+        "codigoArticulo":this.compraArticulo.codigo,
+        "descArticulo":this.compraArticulo.descripcion,
+        "cantidad":this.compraArticulo.cantidad,
+        "precioUnitario":this.compraArticulo.precio_unitario,
+        "alicuotaIVA":21/*this.compraArticulo.alicuota*/,
+        "Descuentolinea":this.compraArticulo.descuento,
+        "idUM":1,//this.compraArticulo.unidad_medida,
+        "TipoRenglon":this.compraArticulo.tipoRenglon,
+        "idusuario":"1",//hardcoded
+      };
+      let jsonbody= JSON.stringify(jsbody);
+      console.log(jsonbody);
+      this._compraService.editArticulo( jsonbody, this.token )
+        .subscribe( resp => {
+          console.log(resp);
+          this.respRenglon = resp;
+          //this.renglonId = this.respRenglon.returnset[0].RId;
+        });
+
       this.articulosData[this.auxEditingArt] = this.compraArticulo;
       this.table.renderRows();
 
@@ -253,14 +274,14 @@ export class AbmComprasComponent implements OnInit {
         "descArticulo":this.compraArticulo.descripcion,
         "cantidad":this.compraArticulo.cantidad,
         "precioUnitario":this.compraArticulo.precio_unitario,
-        "alicuotaIVA":this.compraArticulo.alicuota,
+        "alicuotaIVA":21/*this.compraArticulo.alicuota*/,
         "Descuentolinea":this.compraArticulo.descuento,
         "idUM":1,//this.compraArticulo.unidad_medida,
         "TipoRenglon":this.compraArticulo.tipoRenglon,
         "idusuario":"1",//hardcoded
       };
       let jsonbody= JSON.stringify(jsbody);
-      //console.log(jsonbody);
+      console.log(jsonbody);
       this._compraService.postArticulo( jsonbody, this.token )
         .subscribe( resp => {
           console.log(resp);
@@ -302,6 +323,19 @@ export class AbmComprasComponent implements OnInit {
   }
 
   eliminarArticulo(ind:number){
+    let jsbody = {
+      "idrenglon":this.articulosData[ind].renglonId,
+      "idusuario":"1",//hardcoded
+    };
+    let jsonbody= JSON.stringify(jsbody);
+    console.log(jsonbody);
+    this._compraService.deleteArticulo( jsonbody, this.token )
+      .subscribe( resp => {
+        console.log(resp);
+        this.respRenglon = resp;
+        //this.renglonId = this.respRenglon.returnset[0].RId;
+      });
+
     let auxtotal=(this.articulosData[ind].precio_unitario*this.articulosData[ind].cantidad)*((100-this.articulosData[ind].descuento)/100);
     this.totalneto=this.totalneto-auxtotal;
     this.impuestosalicuotas=this.impuestosalicuotas-(auxtotal*(this.articulosData[ind].alicuota/100));

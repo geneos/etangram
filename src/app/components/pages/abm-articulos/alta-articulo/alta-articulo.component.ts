@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
+import { getMatFormFieldMissingControlError } from '@angular/material';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -56,6 +57,38 @@ export class AltaArticuloComponent implements OnInit {
       'fechaUltCompra': new FormControl(),
       'idMonedaUltCompra': new FormControl(),
       'cantidadOptimaDeCompra': new FormControl(),
+      'precioUltVenta': new FormControl(),
+      'fechaUltVenta': new FormControl(),
+      'idMonedaUltVenta': new FormControl(),
+      //Impositivo
+      'idGrupoRefContArticulo': new FormControl(),
+      'idAlicuotaIva': new FormControl(),
+      'idAlicuotaImpInt': new FormControl(),
+      'IIAreaAplicacionAlicuota': new FormControl(),
+      'IIAreaAplicacionImporteFijo': new FormControl(),
+      'IncorporarIIalCosto': new FormControl(),
+      'impuestoInternoFijo': new FormControl(),
+      //Lotes y Series
+      'gestionDespacho': new FormControl(),
+      'gestionLote': new FormControl(),
+      'gestionSerie': new FormControl(),
+      //Stock
+      'administraStock': new FormControl(),
+      'stockIdeal': new FormControl(),
+      'stockMaximo': new FormControl(),
+      'stockReposicion': new FormControl(),
+      //Datos Dimensiones
+      'Dimensiones': new FormControl(),
+      'Pesable': new FormControl(),
+      'Pesable_Estandar': new FormControl(),
+      'unidadMedidaBase': new FormControl(),
+      'aplicaConversionUnidadPrecio': new FormControl(),
+      'unidadMedidaLP': new FormControl(),
+      'largo': new FormControl(),
+      'ancho': new FormControl(),
+      'profundidad': new FormControl(),
+      'm3': new FormControl(),
+
 
       /*'articulo': new FormControl('',Validators.required),
       'unidadMedida': new FormControl('',Validators.required),

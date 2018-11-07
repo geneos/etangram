@@ -198,7 +198,7 @@
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Moneda</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra">
@@ -215,7 +215,32 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-
+      <div class="col s4 m4 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Precio última Venta</mat-label>
+            <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltVenta">
+            <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Fecha última venta</mat-label>
+            <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechaUltVenta">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+      </div>
+      <div class="col s6 m6 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Moneda</mat-label>
+            <mat-select placeholder="Elija una opción" formControlName="idMonedaUltVenta">
+              <mat-option value="1">Pesos</mat-option>
+              <mat-option value="2">Dólares</mat-option>
+            </mat-select>
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+      </div>
     </div>
 
   </mat-expansion-panel>
@@ -226,6 +251,64 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
+      <div class="col s6 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Grupo de referencia contable</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idGrupoRefContArticulo">
+            <mat-option value="1">#</mat-option>
+            <mat-option value="2">#</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Alicuota IVA</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idAlicuotaIva">
+            <mat-option value="1">21</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Alicuota Imp. Internos</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idAlicuotaImpInt">
+            <mat-option value="1">#</mat-option>
+            <mat-option value="2">#</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Área de aplicación Alicuota II</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionAlicuota">
+            <mat-option value="0">No Aplica</mat-option>
+            <mat-option value="1">Compras</mat-option>
+            <mat-option value="2">Ventas</mat-option>
+            <mat-option value="3">Ambas</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Área de aplicación de Importe Fijo II</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo">
+            <mat-option value="0">No Aplica</mat-option>
+            <mat-option value="1">Compras</mat-option>
+            <mat-option value="2">Ventas</mat-option>
+            <mat-option value="3">Ambas</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l4">
+        <mat-checkbox formControlName="IncorporarIIalCosto">Incorporar al costo</mat-checkbox>
+      </div>
+      <div class="col s6 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Impuesto Interno Fijo</mat-label>
+          <input matInput placeholder="" type="number" formControlName="impuestoInternoFijo">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
     </div>
 
   </mat-expansion-panel>
@@ -234,7 +317,17 @@
     <mat-expansion-panel-header>
       <mat-panel-title>DATOS DE LOTES Y SERIES</mat-panel-title>
     </mat-expansion-panel-header>
-
+    <div class="row" style="margin-top:15px;">
+        <div class="col s6 m4 l3">
+            <mat-checkbox formControlName="gestionDespacho">Gestión Despacho</mat-checkbox>
+        </div>
+      <div class="col s4 m4 l3">
+          <mat-checkbox formControlName="gestionLote">Gestión Lote</mat-checkbox>
+      </div>
+      <div class="col s6 m4 l3">
+          <mat-checkbox formControlName="gestionSerie">Gestión Serie</mat-checkbox>
+      </div>
+    </div>
   </mat-expansion-panel>
 
   <mat-expansion-panel [expanded]=true [disabled]=true>
@@ -243,6 +336,30 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
+      <div class="col s6 m4 l3">
+        <mat-checkbox formControlName="administraStock">Administra Stock</mat-checkbox>
+      </div>
+      <div class="col s6 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Stock Ideal</mat-label>
+          <input matInput placeholder="" type="number" formControlName="stockIdeal">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Stock Máximo</mat-label>
+          <input matInput placeholder="" type="number" formControlName="stockMaximo">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Stock de Reposición</mat-label>
+          <input matInput placeholder="" type="number" formControlName="stockReposicion">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
     </div>
 
   </mat-expansion-panel>
@@ -253,6 +370,74 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
+        <div class="col s6 m6 l3">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Dimensiones</mat-label>
+              <mat-select placeholder="Elija una opción" formControlName="Dimensiones">
+                <mat-option value="0">No definido</mat-option>
+                <mat-option value="1">2 dimensiones</mat-option>
+                <mat-option value="2">3 dimensiones</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col s6 m6 l2">
+            <mat-checkbox formControlName="Pesable">Pesable</mat-checkbox>
+        </div>
+        <div class="col s6 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Pesable Estandar</mat-label>
+              <mat-select placeholder="Elija una opción" formControlName="Pesable_Estandar">
+                <mat-option value="1">EAN13</mat-option>
+                <mat-option value="2">EAN14</mat-option>
+                <mat-option value="3">GS1</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col s4 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Unidad medida base</mat-label>
+              <mat-select placeholder="Elija una opción" formControlName="unidadMedidaBase">
+                <mat-option value="1">-</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </div>
+        
+        <div class="col s4 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Unidad medida LP</mat-label>
+              <mat-select placeholder="Elija una opción" formControlName="unidadMedidaLP">
+                <mat-option value="1">-</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col s4 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Largo</mat-label>
+              <input matInput placeholder="" formControlName="largo">
+              <!--<mat-hint>Hint</mat-hint>-->
+            </mat-form-field>
+        </div>
+        <div class="col s4 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Ancho</mat-label>
+              <input matInput placeholder="" formControlName="ancho">
+              <!--<mat-hint>Hint</mat-hint>-->
+            </mat-form-field>
+        </div>
+        <div class="col s4 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Profundidad</mat-label>
+              <input matInput placeholder="" formControlName="profundidad">
+              <!--<mat-hint>Hint</mat-hint>-->
+            </mat-form-field>
+        </div>
+        <div class="col s4 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>m3</mat-label>
+              <input matInput placeholder="" formControlName="m3">
+              <!--<mat-hint>Hint</mat-hint>-->
+            </mat-form-field>
+        </div>
     </div>
 
   </mat-expansion-panel>

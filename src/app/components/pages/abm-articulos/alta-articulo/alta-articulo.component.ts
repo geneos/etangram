@@ -25,6 +25,9 @@ export class AltaArticuloComponent implements OnInit {
 
   existe:boolean;
 
+  fotos:any[]=[{'nroFoto':0},];
+  proveedores:any[]=[{'nroProveedor':0},];
+
   constructor( private route:ActivatedRoute ) {
     this.forma = new FormGroup({
       'tipo': new FormControl(),
@@ -124,6 +127,12 @@ export class AltaArticuloComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  addFoto(){this.fotos.push('nroFoto:'+(this.fotos.length).toString);}
+  deleteFoto(ind){this.fotos.splice(ind, 1);}
+  
+  addProveedor(){this.proveedores.push('nroProveedor:'+(this.proveedores.length).toString);}
+  deleteProveedor(ind){this.proveedores.splice(ind, 1);}
 
   guardarArticulo(){
     if( this.id == "nuevo" ){

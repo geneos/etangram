@@ -5,9 +5,18 @@
   <span style="flex: 1 1 auto;"></span>
   <span>
     <button mat-button [matMenuTriggerFor]="menu" style="color:#fff; font-family: 'Lato', sans-serif !important; font-size:16px;">
-      Emiliano <i class="material-icons" style="color:#fff; font-size:30px;">person_outline</i>
+      Menú Páginas
     </button>
     <mat-menu #menu="matMenu">
+      <button [routerLink]="['/compra']" mat-menu-item>Compra</button>
+      <button [routerLink]="['/proveedores']" mat-menu-item>Proveedores</button>
+    </mat-menu>
+  </span>
+  <span>
+    <button mat-button [matMenuTriggerFor]="user" style="color:#fff; font-family: 'Lato', sans-serif !important; font-size:16px;">
+      Emiliano <i class="material-icons" style="color:#fff; font-size:30px;">person_outline</i>
+    </button>
+    <mat-menu #user="matMenu">
       <button mat-menu-item>Mi perfil</button>
       <mat-divider></mat-divider>
       <button mat-menu-item>Cerrar sesión</button>

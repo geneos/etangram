@@ -172,6 +172,39 @@
           <mat-checkbox formControlName="categoriaCompra">Categoría Compra</mat-checkbox>
       </div>
 
+      <!-- relacion fotos -->
+      <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+        <span style="display:flex;">
+          <h6>Fotos:</h6>
+          <button (click)="addFoto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+            +
+          </button>
+        </span>
+      </div>
+
+      <div class="row" *ngFor="let item of fotos; let in = index" style="margin:5px !important;">
+        <div class="col s12 m4 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Número de Foto</mat-label>
+            <input matInput placeholder="" type="text">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m4 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>URL de Foto</mat-label>
+            <input matInput placeholder="" type="text">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m4 l3">
+          <button (click)="deleteFoto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+            -
+          </button>
+        </div>
+      </div>
+      <!--fin relacion-->
+
     </div>
 
   </mat-expansion-panel>
@@ -241,6 +274,39 @@
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
       </div>
+
+      <!-- relacion proveedores -->
+      <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+        <span style="display:flex;">
+          <h6>Proveedores:</h6>
+          <button (click)="addProveedor()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+            +
+          </button>
+        </span>
+      </div>
+
+      <div class="row" *ngFor="let item of proveedores; let in = index" style="margin:5px !important;">
+        <div class="col s12 m4 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Id Proveedor</mat-label>
+            <input matInput placeholder="" type="text">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m4 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Código Artículo del Proveedor</mat-label>
+            <input matInput placeholder="" type="text">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m4 l3">
+          <button (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+            -
+          </button>
+        </div>
+      </div>
+      <!--fin relacion-->
     </div>
 
   </mat-expansion-panel>
@@ -401,7 +467,7 @@
               </mat-select>
             </mat-form-field>
         </div>
-        
+
         <div class="col s4 m6 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Unidad medida LP</mat-label>

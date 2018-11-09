@@ -21,28 +21,28 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Número</mat-label>
           <input #nroArt matInput placeholder="" type="number" formControlName="nroArticulo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s8 m8 l4">
+      <div class="col s12 m12 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Descripción</mat-label>
           <input matInput placeholder="" formControlName="descripcion">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código alternativo</mat-label>
           <input matInput placeholder="" type="number" formControlName="codigoAlternativo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código de barra</mat-label>
           <input matInput placeholder="" type="number" formControlName="codigoBarra">
@@ -69,7 +69,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s4 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Procedencia</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="procedencia">
@@ -82,7 +82,7 @@
       <div class="col s4 m4 l4">
           <mat-checkbox formControlName="propio">¿Elaboración propia?</mat-checkbox>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s4 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Marca</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idMarca">
@@ -92,7 +92,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Campo1</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo1">
@@ -102,7 +102,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Campo2</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo2">
@@ -112,7 +112,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Campo3</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo3">
@@ -134,42 +134,50 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Categoría de Bloqueo</mat-label>
           <input matInput placeholder="" type="text" formControlName="categoria_bloqueo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="row">
+      <div class="col s12 m12 l6">
           <mat-checkbox formControlName="obsRegistroAutoVta">¿Ingresa observaciones automáticamente en la venta?</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s12 m12 l6">
           <mat-checkbox formControlName="obsRegistroAutoCpa">¿Ingresa observaciones automáticamente en la compra?</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      </div>
+      <div class="row">
+      <div class="col s12 m6 l4">
           <mat-checkbox formControlName="obsIngresoVta">¿Ingresa observaciones en la venta?</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s12 m6 l4">
           <mat-checkbox formControlName="obsIngresoCpa">¿Ingresa observaciones en la compra?</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s12 m12 l4">
           <mat-checkbox formControlName="obsImprimeVta">¿Imprime observaciones en la factura?</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      </div>
+      <div class="row">
+      <div class="col s12 m6 l6">
           <mat-checkbox formControlName="obsAuditoriaVta">¿Audita observaciones en la venta?</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s12 m6 l6">
           <mat-checkbox formControlName="obsAuditoriaCpa">¿Audita observaciones en la compra?</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      </div>
+      <div class="row">
+      <div class="col s12 m4 l4">
           <mat-checkbox formControlName="categoriaVenta">Categoría Ventas</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s12 m4 l4">
           <mat-checkbox formControlName="categoriaInventario">Categoría Inventario</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s12 m4 l4">
           <mat-checkbox formControlName="categoriaCompra">Categoría Compra</mat-checkbox>
+      </div>
       </div>
 
       <!-- relacion fotos -->
@@ -190,14 +198,14 @@
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
-        <div class="col s12 m4 l3">
+        <div class="col s8 m4 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>URL de Foto</mat-label>
             <input matInput placeholder="" type="text">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
-        <div class="col s12 m4 l3">
+        <div class="col s4 m4 l3">
           <button (click)="deleteFoto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
             -
           </button>
@@ -215,7 +223,7 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
-      <div class="col s6 m3 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Precio última compra</mat-label>
           <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltCompra">
@@ -223,7 +231,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha última compra</mat-label>
           <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fechaUltCompra">
@@ -231,7 +239,7 @@
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l3">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Moneda</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra">
@@ -241,14 +249,14 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cantidad óptima de compra</mat-label>
           <input matInput placeholder="" type="number" formControlName="cantidadOptimaDeCompra">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l2">
+      <div class="col s6 m6 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Precio última Venta</mat-label>
             <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltVenta">
@@ -256,7 +264,7 @@
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
       </div>
-      <div class="col s6 m3 l2">
+      <div class="col s6 m6 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Fecha última venta</mat-label>
             <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechaUltVenta">
@@ -286,21 +294,45 @@
       </div>
 
       <div class="row" *ngFor="let item of proveedores; let in = index" style="margin:5px !important;">
-        <div class="col s12 m4 l3">
+        <div class="col s6 m4 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Id Proveedor</mat-label>
             <input matInput placeholder="" type="text">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
-        <div class="col s12 m4 l3">
+        <div class="col s6 m4 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Código Artículo del Proveedor</mat-label>
+            <mat-label>Código Artículo</mat-label>
             <input matInput placeholder="" type="text">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
-        <div class="col s12 m4 l3">
+        <div class="col s4 m4 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Código de Barra</mat-label>
+            <input matInput placeholder="" type="text">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m4 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Moneda Última Compra</mat-label>
+            <input matInput placeholder="" type="text">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m4 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Precio Última Compra</mat-label>
+            <input matInput placeholder="" type="text">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s6 m2 l1">
+            <mat-checkbox formControlName="categoriaCompra">Categoría Compra</mat-checkbox>
+        </div>
+        <div class="col s6 m2 l1">
           <button (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
             -
           </button>
@@ -326,7 +358,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Alicuota IVA</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idAlicuotaIva">
@@ -334,7 +366,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Alicuota Imp. Internos</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idAlicuotaImpInt">
@@ -343,7 +375,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l2">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Área de aplicación Alicuota II</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionAlicuota">
@@ -354,7 +386,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l2">
+      <div class="col s6 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Área de aplicación de Importe Fijo II</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo">
@@ -365,10 +397,10 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s6 m4 l4">
         <mat-checkbox formControlName="IncorporarIIalCosto">Incorporar al costo</mat-checkbox>
       </div>
-      <div class="col s6 m6 l2">
+      <div class="col s12 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Impuesto Interno Fijo</mat-label>
           <input matInput placeholder="" type="number" formControlName="impuestoInternoFijo">
@@ -384,13 +416,13 @@
       <mat-panel-title>DATOS DE LOTES Y SERIES</mat-panel-title>
     </mat-expansion-panel-header>
     <div class="row" style="margin-top:15px;">
-        <div class="col s6 m4 l3">
+        <div class="col s12 m4 l4">
             <mat-checkbox formControlName="gestionDespacho">Gestión Despacho</mat-checkbox>
         </div>
-      <div class="col s4 m4 l3">
+      <div class="col s12 m4 l4">
           <mat-checkbox formControlName="gestionLote">Gestión Lote</mat-checkbox>
       </div>
-      <div class="col s6 m4 l3">
+      <div class="col s12 m4 l4">
           <mat-checkbox formControlName="gestionSerie">Gestión Serie</mat-checkbox>
       </div>
     </div>
@@ -402,24 +434,24 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
-      <div class="col s6 m4 l3">
+      <div class="col s12 m6 l3">
         <mat-checkbox formControlName="administraStock">Administra Stock</mat-checkbox>
       </div>
-      <div class="col s6 m6 l2">
+      <div class="col s12 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Ideal</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockIdeal">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l2">
+      <div class="col s12 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Máximo</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockMaximo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l2">
+      <div class="col s12 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock de Reposición</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockReposicion">
@@ -427,6 +459,95 @@
         </mat-form-field>
       </div>
     </div>
+
+    <!-- relacion articulo deposito -->
+    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+      <span style="display:flex;">
+        <h6>Depósitos:</h6>
+        <button (click)="addDeposito()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+          +
+        </button>
+      </span>
+    </div>
+
+    <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;">
+      <div class="col s12 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Depósito</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Stock Ideal</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Stock Máximo</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Stock Reposición</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m4 l4">
+        <button (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+          -
+        </button>
+      </div>
+    </div>
+    <!--fin relacion-->
+
+    <!-- relacion articulo sustituto -->
+    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+      <span style="display:flex;">
+        <h6>Productos Sustitutos:</h6>
+        <button (click)="addSustituto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+          +
+        </button>
+      </span>
+    </div>
+
+    <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;">
+      <div class="col s12 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Artículo Sustituto</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Tipo Sustituto</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo">
+            <mat-option value="0">Simple</mat-option>
+            <mat-option value="1">Compuesto</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s12 m6 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Cantidad</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m4 l3">
+        <button (click)="deleteSustituto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+          -
+        </button>
+      </div>
+    </div>
+    <!--fin relacion-->
 
   </mat-expansion-panel>
 
@@ -436,7 +557,7 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
-        <div class="col s6 m6 l3">
+        <div class="col s12 m4 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Dimensiones</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="Dimensiones">
@@ -446,10 +567,10 @@
               </mat-select>
             </mat-form-field>
         </div>
-        <div class="col s6 m6 l2">
+        <div class="col s12 m4 l3" style="margin-bottom:20px;">
             <mat-checkbox formControlName="Pesable">Pesable</mat-checkbox>
         </div>
-        <div class="col s6 m6 l2">
+        <div class="col s12 m4 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Pesable Estandar</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="Pesable_Estandar">
@@ -459,7 +580,7 @@
               </mat-select>
             </mat-form-field>
         </div>
-        <div class="col s4 m6 l2">
+        <div class="col s6 m6 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Unidad medida base</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="unidadMedidaBase">
@@ -468,7 +589,7 @@
             </mat-form-field>
         </div>
 
-        <div class="col s4 m6 l2">
+        <div class="col s6 m6 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Unidad medida LP</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="unidadMedidaLP">
@@ -476,28 +597,28 @@
               </mat-select>
             </mat-form-field>
         </div>
-        <div class="col s4 m4 l2">
+        <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Largo</mat-label>
               <input matInput placeholder="" formControlName="largo">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>
-        <div class="col s4 m4 l2">
+        <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Ancho</mat-label>
               <input matInput placeholder="" formControlName="ancho">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>
-        <div class="col s4 m4 l2">
+        <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Profundidad</mat-label>
               <input matInput placeholder="" formControlName="profundidad">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>
-        <div class="col s4 m4 l2">
+        <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>m3</mat-label>
               <input matInput placeholder="" formControlName="m3">

@@ -27,6 +27,8 @@ export class AltaArticuloComponent implements OnInit {
 
   fotos:any[]=[{'nroFoto':0},];
   proveedores:any[]=[{'nroProveedor':0},];
+  depositos:any[]=[{'nroDeposito':0},];
+  sustitutos:any[]=[{'nroSustituto':0},];
 
   constructor( private route:ActivatedRoute ) {
     this.forma = new FormGroup({
@@ -130,9 +132,15 @@ export class AltaArticuloComponent implements OnInit {
 
   addFoto(){this.fotos.push('nroFoto:'+(this.fotos.length).toString);}
   deleteFoto(ind){this.fotos.splice(ind, 1);}
-  
+
   addProveedor(){this.proveedores.push('nroProveedor:'+(this.proveedores.length).toString);}
   deleteProveedor(ind){this.proveedores.splice(ind, 1);}
+
+  addDeposito(){this.depositos.push('nroDeposito:'+(this.depositos.length).toString);}
+  deleteDeposito(ind){this.depositos.splice(ind, 1);}
+
+  addSustituto(){this.sustitutos.push('nroSustituto:'+(this.sustitutos.length).toString);}
+  deleteSustituto(ind){this.sustitutos.splice(ind, 1);}
 
   guardarArticulo(){
     if( this.id == "nuevo" ){

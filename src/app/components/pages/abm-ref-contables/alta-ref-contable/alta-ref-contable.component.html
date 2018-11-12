@@ -1,0 +1,26 @@
+<h2>REFERENCIAS CONTABLES</h2>
+<button [routerLink]="['/ref-contables']" class="mine-btnbig-grey" mat-flat-button>
+  VOLVER A LISTA
+</button>
+
+<form [formGroup]="forma" (ngSubmit)="guardarRefContables()" novalidate="novalidate">
+
+  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS ---</mat-panel-title>
+    </mat-expansion-panel-header>
+
+  </mat-expansion-panel>
+
+  <div class="row" style="margin-top:15px;">
+    <div class="col s12" style="text-align: right;">
+      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
+        GUARDAR
+      </button>
+      <button type="reset" class="mine-btnbig-grey" mat-flat-button>
+        CANCELAR
+      </button>
+    </div>
+  </div>
+
+</form>

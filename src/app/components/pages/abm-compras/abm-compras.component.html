@@ -44,7 +44,7 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Posición Fiscal</mat-label>
-          <input matInput placeholder=""  formControlName="posicionFiscal" value="{{ compraProveedor?.cond_iva }}">
+          <input matInput placeholder=""  formControlName="posicionFiscal" value="{{ posicionesFiscales[compraProveedor?.cond_iva] }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>

@@ -45,6 +45,12 @@ export class AbmComprasComponent implements OnInit {
   impuestosalicuotas:number = 0;
   totaltotal:number = 0;
 
+  posicionesFiscales: string[] = ["N/D","IVA Responsable Inscripto","IVA Responsable no Inscripto",
+"IVA no Responsable","IVA Sujeto Exento","Consumidor Final","Responsable Monotributo",
+"Sujeto no Categorizado","Proveedor del Exterior","Cliente del Exterior","IVA Liberado - Ley N° 19.640",
+"IVA Responsable Inscripto - Agente de Percepción","Pequeño Contribuyente Eventual",
+"Monotributista Social","Pequeño Contribuyente Eventual Social"];
+
   @ViewChild('tableArticulos') table: MatTable<any>;
 
   constructor(public dialogArt: MatDialog, private _compraService:CompraService) {

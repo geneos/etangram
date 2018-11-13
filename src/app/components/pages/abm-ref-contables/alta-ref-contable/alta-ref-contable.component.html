@@ -7,8 +7,82 @@
 
   <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
     <mat-expansion-panel-header>
-      <mat-panel-title>DATOS ---</mat-panel-title>
+      <mat-panel-title>BÁSICO</mat-panel-title>
     </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Código Referencia Contable</mat-label>
+          <input matInput placeholder="" type="number" formControlName="id_ref_contable">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m8 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nombre</mat-label>
+          <input matInput placeholder="" formControlName="nombre_ref_contable">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s10 m4 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Cuenta Contable</mat-label>
+          <input matInput placeholder="" formControlName="cuenta_contable">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s2 m2 l1" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button>
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s10 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Grupo Financiero</mat-label>
+          <input matInput placeholder="" formControlName="grupo_financiero">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s2 m2 l1" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button>
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s5 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>¿Tiene Centro de Costo?</mat-label>
+          <mat-select formControlName="tiene_centro_costo" #tieneCC placeholder="Elija una opción">
+            <mat-option value="0">No tiene</mat-option>
+            <mat-option value="1">Único</mat-option>
+            <mat-option value="2">Varios</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s5 m6 l3">
+        <mat-form-field *ngIf="tieneCC.value==1" appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Centro de Costo</mat-label>
+          <input matInput placeholder="" formControlName="centro_costo">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s2 m2 l1" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button *ngIf="tieneCC.value==1">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s12 m12 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Estado</mat-label>
+          <mat-select formControlName="estado_ref_contable" placeholder="Elija una opción">
+            <mat-option value="0">Inactivo</mat-option>
+            <mat-option value="1">Activo</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+    </div>
 
   </mat-expansion-panel>
 

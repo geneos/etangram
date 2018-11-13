@@ -23,7 +23,13 @@ export class AltaRefContableComponent implements OnInit {
 
   constructor( private route:ActivatedRoute ) {
     this.forma = new FormGroup({
-      'codigo': new FormControl('',Validators.required),
+      'id_ref_contable': new FormControl('',Validators.required),
+      'nombre_ref_contable': new FormControl('',Validators.required),
+      'cuenta_contable': new FormControl('',Validators.required),
+      'grupo_financiero': new FormControl('',Validators.required),
+      'tiene_centro_costo': new FormControl('',Validators.required),
+      'centro_costo': new FormControl(),
+      'estado_ref_contable': new FormControl('',Validators.required),
     });
 
     this.route.params.subscribe( parametros=>{
@@ -34,12 +40,20 @@ export class AltaRefContableComponent implements OnInit {
         for( let aux in this.constRefContables ){
           if (this.id == aux){
             this.existe=true;
-            //this.forma.controls['numero'].setValue(this.id);
+            this.forma.controls['id_ref_contable'].setValue(this.id);
+            console.log(this.constRefContables[this.id].nombre);
+            this.forma.controls['nombre_ref_contable'].setValue(this.constRefContables[this.id].nombre);
           }
         }
         if (this.existe == false){
           console.log('no existe este id!');
-          //this.forma.controls['numero'].disable();
+          this.forma.controls['id_ref_contable'].disable();
+          this.forma.controls['nombre_ref_contable'].disable();
+          this.forma.controls['cuenta_contable'].disable();
+          this.forma.controls['grupo_financiero'].disable();
+          this.forma.controls['tiene_centro_costo'].disable();
+          this.forma.controls['centro_costo'].disable();
+          this.forma.controls['estado_ref_contable'].disable();
         }
       }
 
@@ -47,6 +61,7 @@ export class AltaRefContableComponent implements OnInit {
    }
 
   ngOnInit() {
+    //console.log();
   }
 
   guardarRefContables(){

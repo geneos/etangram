@@ -29,23 +29,25 @@ export class AltaArticuloComponent implements OnInit {
   proveedores:any[]=[{'nroProveedor':0},];
   depositos:any[]=[{'nroDeposito':0},];
   sustitutos:any[]=[{'nroSustituto':0},];
+  artRelaciones:any[]=[{'nroArtRelacion':0},];
+  umAlt:any[]=[{'nroUMAlt':0},];
 
   constructor( private route:ActivatedRoute ) {
     this.forma = new FormGroup({
-      'tipo': new FormControl(),
+      'tipo': new FormControl(1,Validators.required),
       'nroArticulo': new FormControl('',Validators.required),
-      'descripcion': new FormControl(),
+      'descripcion': new FormControl('',Validators.required),
       'codigoAlternativo': new FormControl(),
       'codigoBarra': new FormControl(),
-      'idGrupo': new FormControl(),
-      'idTipoArticulo': new FormControl(),
-      'procedencia': new FormControl(),
+      'idGrupo': new FormControl('',Validators.required),
+      'idTipoArticulo': new FormControl('',Validators.required),
+      'procedencia': new FormControl('',Validators.required),
       'propio': new FormControl(),
       'idMarca': new FormControl(),
       'idCampo1': new FormControl(),
       'idCampo2': new FormControl(),
       'idCampo3': new FormControl(),
-      'estado': new FormControl(),
+      'estado': new FormControl('',Validators.required),
       'categoria_bloqueo': new FormControl(),
       'obsRegistroAutoVta': new FormControl(),
       'obsRegistroAutoCpa': new FormControl(),
@@ -141,6 +143,12 @@ export class AltaArticuloComponent implements OnInit {
 
   addSustituto(){this.sustitutos.push('nroSustituto:'+(this.sustitutos.length).toString);}
   deleteSustituto(ind){this.sustitutos.splice(ind, 1);}
+
+  addArtRelacion(){this.artRelaciones.push('nroArtRelacion:'+(this.artRelaciones.length).toString);}
+  deleteArtRelacion(ind){this.artRelaciones.splice(ind, 1);}
+
+  addUMAlt(){this.umAlt.push('nroUMAlt:'+(this.umAlt.length).toString);}
+  deleteUMAlt(ind){this.umAlt.splice(ind, 1);}
 
   guardarArticulo(){
     if( this.id == "nuevo" ){

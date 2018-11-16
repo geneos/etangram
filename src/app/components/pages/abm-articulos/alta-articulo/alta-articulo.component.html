@@ -5,7 +5,7 @@
 
 <form [formGroup]="forma" (ngSubmit)="guardarArticulo()" novalidate="novalidate">
 
-  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
+  <mat-expansion-panel [expanded]=true [disabled]=false style="margin-top:10px;">
     <mat-expansion-panel-header>
       <mat-panel-title>DATOS DESCRIPTIVOS</mat-panel-title>
     </mat-expansion-panel-header>
@@ -14,7 +14,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="tipo">
+          <mat-select #tipoArt placeholder="Elija una opción" formControlName="tipo">
             <mat-option value="1">Artículo</mat-option>
             <mat-option value="2">Item</mat-option>
           </mat-select>
@@ -36,14 +36,14 @@
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Código alternativo</mat-label>
           <input matInput placeholder="" type="number" formControlName="codigoAlternativo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Código de barra</mat-label>
           <input matInput placeholder="" type="number" formControlName="codigoBarra">
           <!--<mat-hint>Hint</mat-hint>-->
@@ -60,7 +60,7 @@
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Tipo Artículo</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idTipoArticulo">
             <mat-option value="1">Insumos</mat-option>
@@ -70,7 +70,7 @@
         </mat-form-field>
       </div>
       <div class="col s4 m4 l4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Procedencia</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="procedencia">
             <mat-option value="1">Nacional</mat-option>
@@ -80,10 +80,10 @@
         </mat-form-field>
       </div>
       <div class="col s4 m4 l4">
-          <mat-checkbox formControlName="propio">¿Elaboración propia?</mat-checkbox>
+          <mat-checkbox formControlName="propio" *ngIf="tipoArt.value!=2">¿Elaboración propia?</mat-checkbox>
       </div>
       <div class="col s4 m4 l4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Marca</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idMarca">
             <mat-option value="1">Nacional</mat-option>
@@ -93,7 +93,7 @@
         </mat-form-field>
       </div>
       <div class="col s4 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Campo1</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo1">
             <mat-option value="1">1</mat-option>
@@ -103,7 +103,7 @@
         </mat-form-field>
       </div>
       <div class="col s4 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Campo2</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo2">
             <mat-option value="1">1</mat-option>
@@ -113,7 +113,7 @@
         </mat-form-field>
       </div>
       <div class="col s4 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Campo3</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo3">
             <mat-option value="1">1</mat-option>
@@ -142,46 +142,19 @@
         </mat-form-field>
       </div>
       <div class="row">
-      <div class="col s12 m12 l6">
-          <mat-checkbox formControlName="obsRegistroAutoVta">¿Ingresa observaciones automáticamente en la venta?</mat-checkbox>
-      </div>
-      <div class="col s12 m12 l6">
-          <mat-checkbox formControlName="obsRegistroAutoCpa">¿Ingresa observaciones automáticamente en la compra?</mat-checkbox>
-      </div>
-      </div>
-      <div class="row">
-      <div class="col s12 m6 l4">
-          <mat-checkbox formControlName="obsIngresoVta">¿Ingresa observaciones en la venta?</mat-checkbox>
-      </div>
-      <div class="col s12 m6 l4">
-          <mat-checkbox formControlName="obsIngresoCpa">¿Ingresa observaciones en la compra?</mat-checkbox>
-      </div>
-      <div class="col s12 m12 l4">
-          <mat-checkbox formControlName="obsImprimeVta">¿Imprime observaciones en la factura?</mat-checkbox>
-      </div>
-      </div>
-      <div class="row">
-      <div class="col s12 m6 l6">
-          <mat-checkbox formControlName="obsAuditoriaVta">¿Audita observaciones en la venta?</mat-checkbox>
-      </div>
-      <div class="col s12 m6 l6">
-          <mat-checkbox formControlName="obsAuditoriaCpa">¿Audita observaciones en la compra?</mat-checkbox>
-      </div>
-      </div>
-      <div class="row">
       <div class="col s12 m4 l4">
-          <mat-checkbox formControlName="categoriaVenta">Categoría Ventas</mat-checkbox>
+          <mat-checkbox formControlName="categoriaVenta" *ngIf="tipoArt.value!=2">Categoría Ventas</mat-checkbox>
       </div>
       <div class="col s12 m4 l4">
-          <mat-checkbox formControlName="categoriaInventario">Categoría Inventario</mat-checkbox>
+          <mat-checkbox formControlName="categoriaInventario" *ngIf="tipoArt.value!=2">Categoría Inventario</mat-checkbox>
       </div>
       <div class="col s12 m4 l4">
-          <mat-checkbox formControlName="categoriaCompra">Categoría Compra</mat-checkbox>
+          <mat-checkbox formControlName="categoriaCompra" *ngIf="tipoArt.value!=2">Categoría Compra</mat-checkbox>
       </div>
       </div>
 
       <!-- relacion fotos -->
-      <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+      <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;"  *ngIf="tipoArt.value!=2">
         <span style="display:flex;">
           <h6>Fotos:</h6>
           <button (click)="addFoto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
@@ -191,21 +164,20 @@
       </div>
 
       <div class="row" *ngFor="let item of fotos; let in = index" style="margin:5px !important;">
-        <div class="col s12 m4 l3">
+        <!--<div class="col s12 m4 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Número de Foto</mat-label>
             <input matInput placeholder="" type="text">
-            <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
-        </div>
-        <div class="col s8 m4 l3">
+        </div>-->
+        <div class="col s8 m8 l4"  *ngIf="tipoArt.value!=2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>URL de Foto</mat-label>
             <input matInput placeholder="" type="text">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
-        <div class="col s4 m4 l3">
+        <div class="col s4 m4 l3" *ngIf="tipoArt.value!=2">
           <button (click)="deleteFoto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
             -
           </button>
@@ -217,7 +189,7 @@
 
   </mat-expansion-panel>
 
-  <mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel [expanded]=false [disabled]=false *ngIf="tipoArt.value!=2">
     <mat-expansion-panel-header>
       <mat-panel-title>COMPRAS Y VENTAS</mat-panel-title>
     </mat-expansion-panel-header>
@@ -330,7 +302,7 @@
           </mat-form-field>
         </div>
         <div class="col s6 m2 l1">
-            <mat-checkbox formControlName="categoriaCompra">Categoría Compra</mat-checkbox>
+            <mat-checkbox>Por defecto</mat-checkbox>
         </div>
         <div class="col s6 m2 l1">
           <button (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
@@ -343,13 +315,13 @@
 
   </mat-expansion-panel>
 
-  <mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel [expanded]=false [disabled]=false>
     <mat-expansion-panel-header>
       <mat-panel-title>DATOS IMPOSITIVOS</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
-      <div class="col s6 m6 l3">
+      <div class="col s6 m6 l3" *ngIf="tipoArt.value!=2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo de referencia contable</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idGrupoRefContArticulo">
@@ -398,7 +370,7 @@
         </mat-form-field>
       </div>
       <div class="col s6 m4 l4">
-        <mat-checkbox formControlName="IncorporarIIalCosto">Incorporar al costo</mat-checkbox>
+        <mat-checkbox *ngIf="tipoArt.value!=2" formControlName="IncorporarIIalCosto">Incorporar al costo</mat-checkbox>
       </div>
       <div class="col s12 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -411,7 +383,7 @@
 
   </mat-expansion-panel>
 
-  <mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel [expanded]=false [disabled]=false *ngIf="tipoArt.value!=2">
     <mat-expansion-panel-header>
       <mat-panel-title>DATOS DE LOTES Y SERIES</mat-panel-title>
     </mat-expansion-panel-header>
@@ -428,30 +400,31 @@
     </div>
   </mat-expansion-panel>
 
-  <mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel [expanded]=false [disabled]=false *ngIf="tipoArt.value!=2">
     <mat-expansion-panel-header>
       <mat-panel-title>DATOS DE STOCK</mat-panel-title>
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
       <div class="col s12 m6 l3">
-        <mat-checkbox formControlName="administraStock">Administra Stock</mat-checkbox>
+        <mat-checkbox #adminStock formControlName="administraStock">Administra Stock</mat-checkbox>
       </div>
-      <div class="col s12 m6 l3">
+      <!--  *ngIf="adminStock.checked==true" -->
+      <div class="col s12 m6 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Ideal</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockIdeal">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m6 l3">
+      <div class="col s12 m6 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Máximo</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockMaximo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m6 l3">
+      <div class="col s12 m6 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock de Reposición</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockReposicion">
@@ -461,7 +434,7 @@
     </div>
 
     <!-- relacion articulo deposito -->
-    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;" *ngIf="adminStock.checked">
       <span style="display:flex;">
         <h6>Depósitos:</h6>
         <button (click)="addDeposito()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
@@ -471,35 +444,35 @@
     </div>
 
     <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;">
-      <div class="col s12 m6 l2">
+      <div class="col s12 m6 l2" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Id Depósito</mat-label>
           <input matInput placeholder="" type="text">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m4 l2">
+      <div class="col s12 m4 l2" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Ideal</mat-label>
           <input matInput placeholder="" type="text">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m4 l2">
+      <div class="col s12 m4 l2" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Máximo</mat-label>
           <input matInput placeholder="" type="text">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m4 l2">
+      <div class="col s12 m4 l2" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Reposición</mat-label>
           <input matInput placeholder="" type="text">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m4 l4">
+      <div class="col s12 m4 l4" *ngIf="adminStock.checked">
         <button (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
           -
         </button>
@@ -518,14 +491,32 @@
     </div>
 
     <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;">
-      <div class="col s12 m6 l3">
+      <div class="col s12 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Id Artículo Sustituto</mat-label>
           <input matInput placeholder="" type="text">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m4 l3">
+      <div class="col s12 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>U.M. Artículo</mat-label>
+          <mat-select placeholder="Elija una opción">
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s12 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>U.M. Sustituto</mat-label>
+          <mat-select placeholder="Elija una opción">
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s12 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo Sustituto</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo">
@@ -534,15 +525,55 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col s12 m6 l3">
+      <div class="col s12 m6 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cantidad</mat-label>
           <input matInput placeholder="" type="text">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m4 l3">
+      <div class="col s12 m4 l2">
         <button (click)="deleteSustituto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+          -
+        </button>
+      </div>
+    </div>
+    <!--fin relacion-->
+
+    <!-- relacion articulo relaciones -->
+    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+      <span style="display:flex;">
+        <h6>Productos Relacionados:</h6>
+        <button (click)="addArtRelacion()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+          +
+        </button>
+      </span>
+    </div>
+
+    <div class="row" *ngFor="let item of artRelaciones; let in = index" style="margin:5px !important;">
+      <div class="col s12 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Artículo Hijo</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Artículo Padre</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s8 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Cantidad</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l2">
+        <button (click)="deleteArtRelacion(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
           -
         </button>
       </div>
@@ -551,7 +582,7 @@
 
   </mat-expansion-panel>
 
-  <mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel [expanded]=false [disabled]=false *ngIf="tipoArt.value!=2">
     <mat-expansion-panel-header>
       <mat-panel-title>DATOS DE UNIDAD DE MEDIDA</mat-panel-title>
     </mat-expansion-panel-header>
@@ -625,6 +656,74 @@
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>
+    </div>
+
+    <!-- relacion um alternativas -->
+    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+      <span style="display:flex;">
+        <h6>U.M. Alternativas:</h6>
+        <button (click)="addUMAlt()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+          +
+        </button>
+      </span>
+    </div>
+
+    <div class="row" *ngFor="let item of umAlt; let in = index" style="margin:5px !important;">
+      <div class="col s12 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id U.M. Alternativa</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s8 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Descripción U.M. Alternativa</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s4 m4 l2">
+        <button (click)="deleteUMAlt(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+          -
+        </button>
+      </div>
+    </div>
+    <!--fin relacion-->
+
+  </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=false [disabled]=false>
+    <mat-expansion-panel-header>
+      <mat-panel-title>OBSERVACIONES</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+    <div class="col s12 m12 l4">
+        <mat-checkbox formControlName="obsRegistroAutoVta">¿Ingresa observaciones automáticamente en la venta?</mat-checkbox>
+    </div>
+    <div class="col s12 m12 l4">
+        <mat-checkbox formControlName="obsRegistroAutoCpa">¿Ingresa observaciones automáticamente en la compra?</mat-checkbox>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col s12 m6 l4">
+        <mat-checkbox formControlName="obsIngresoVta">¿Ingresa observaciones en la venta?</mat-checkbox>
+    </div>
+    <div class="col s12 m6 l4">
+        <mat-checkbox formControlName="obsIngresoCpa">¿Ingresa observaciones en la compra?</mat-checkbox>
+    </div>
+    <div class="col s12 m12 l4">
+        <mat-checkbox formControlName="obsImprimeVta">¿Imprime observaciones en la factura?</mat-checkbox>
+    </div>
+    </div>
+    <div class="row">
+    <div class="col s12 m6 l4">
+        <mat-checkbox formControlName="obsAuditoriaVta">¿Audita observaciones en la venta?</mat-checkbox>
+    </div>
+    <div class="col s12 m6 l4">
+        <mat-checkbox formControlName="obsAuditoriaCpa">¿Audita observaciones en la compra?</mat-checkbox>
+    </div>
     </div>
 
   </mat-expansion-panel>

@@ -15,12 +15,16 @@ const PROVEEDORES:any[] = [
   styleUrls: ['./alta-proveedor.component.css']
 })
 export class AltaProveedorComponent implements OnInit {
-  
+
   impuestosData: any[] = [];
   addingImpuesto:boolean = false;
 
   stockData: any[] = [];
   addingStock:boolean = false;
+
+  impuestos:any[]=[{'nroImpuesto':0},];
+  formularios:any[]=[{'nroFormulario':0},];
+  articulosStock:any[]=[{'nroArticulosStock':0},];
 
   constProveedores = PROVEEDORES;
 
@@ -36,7 +40,7 @@ export class AltaProveedorComponent implements OnInit {
 
   constructor( private route:ActivatedRoute ) {
     this.forma = new FormGroup({
-      'tipoReferente': new FormControl('',Validators.required),
+      //'tipoReferente': new FormControl('',Validators.required),
       'numero': new FormControl('',Validators.required),
       'razonSocial': new FormControl('',Validators.required),
       'nombreFantasia': new FormControl('',Validators.required),
@@ -47,16 +51,16 @@ export class AltaProveedorComponent implements OnInit {
       'facProvincia': new FormControl('',Validators.required),
       'facCodigoPostal': new FormControl('',Validators.required),
       'facPais': new FormControl('',Validators.required),
-      'envCalle': new FormControl('',Validators.required),
-      'envCiudad': new FormControl('',Validators.required),
-      'envProvincia': new FormControl('',Validators.required),
-      'envCodigoPostal': new FormControl('',Validators.required),
-      'envPais': new FormControl('',Validators.required),
+      'envCalle': new FormControl(),
+      'envCiudad': new FormControl(),
+      'envProvincia': new FormControl(),
+      'envCodigoPostal': new FormControl(),
+      'envPais': new FormControl(),
       'telefono1': new FormControl('',Validators.required),
-      'telefono2': new FormControl('',Validators.required),
-      'telefono3': new FormControl('',Validators.required),
+      'telefono2': new FormControl(),
+      'telefono3': new FormControl(),
       'email': new FormControl('',Validators.required),
-      'observaciones': new FormControl('',Validators.required)
+      'observaciones': new FormControl(),
     });
 
     this.route.params.subscribe( parametros=>{
@@ -84,29 +88,24 @@ export class AltaProveedorComponent implements OnInit {
 
     });
 
-
-     this.formaStock = new FormGroup({
-      'idArt': new FormControl('',Validators.required),
-      'fecUltCompra': new FormControl(),
-      'preUltCompra': new FormControl(1,Validators.required),
-      'moneda': new FormControl(),
-      'codArtPro': new FormControl(),
-      'codBarPro': new FormControl(0,Validators.required)
-    })
-
-    this.formaImpuesto = new FormGroup({
-      'tipo': new FormControl('',Validators.required),
-      'modelo': new FormControl(),
-      'situacion': new FormControl(1,Validators.required),
-      'codigoInscripcion': new FormControl(),
-      'fechaInscripcion': new FormControl('',Validators.required),
-      'exenciones': new FormControl(0,Validators.required)
-    })
-
   }
 
   ngOnInit() {
   }
+
+  copiarDireccion(){
+    this.forma.controls['envCalle'].setValue(this.forma.controls['facCalle'].value);
+    this.forma.controls['envCodigoPostal'].setValue(this.forma.controls['facCodigoPostal'].value);
+  }
+
+  addImpuesto(){this.impuestos.push('nroImpuesto:'+(this.impuestos.length).toString);}
+  deleteImpuesto(ind){this.impuestos.splice(ind, 1);}
+
+  addFormulario(){this.formularios.push('nroFormulario:'+(this.formularios.length).toString);}
+  deleteFormulario(ind){this.formularios.splice(ind, 1);}
+
+  addArticulosStock(){this.articulosStock.push('nroArticulosStock:'+(this.articulosStock.length).toString);}
+  deleteArticulosStock(ind){this.articulosStock.splice(ind, 1);}
 
   guardarProveedor(){
     if( this.id == "nuevo" ){
@@ -116,42 +115,42 @@ export class AltaProveedorComponent implements OnInit {
     }
   }
 
-  addImpuesto(){
+  /*addImpuesto(){
     this.addingImpuesto = true;
-  }
+  }*/
 
-  addStock(){
+  /*addStock(){
     this.addingStock = true;
-  }
+  }*/
 
-  cancelarImpItem(){
+  /*cancelarImpItem(){
     this.addingImpuesto = false;
-  }
+  }*/
 
-  cancelarStockItem(){
+  /*cancelarStockItem(){
     this.addingStock = false;
-  }
+  }*/
 
-  guardarImpuesto(){
+  /*guardarImpuesto(){
     console.log(this.formaImpuesto.controls);
   this.impuestosData.push(this.formaImpuesto.controls);
   this.table.renderRows();
-  }
+}*/
 
-  guardarStock(){
+  /*guardarStock(){
     console.log(this.formaStock.controls);
   this.stockData.push(this.formaStock.controls);
   this.table2.renderRows();
-  }
+}*/
 
-  eliminarStock(ind:number){
+  /*eliminarStock(ind:number){
     this.stockData.splice(ind, 1);
     this.table2.renderRows();
-  };
+  };*/
 
-  eliminarImpuesto(ind:number){
+  /*eliminarImpuesto(ind:number){
     this.impuestosData.splice(ind, 1);
     this.table.renderRows();
-  };
+  };*/
 
 }

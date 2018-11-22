@@ -2,11 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { RefContablesService } from "../../../services/i2t/ref-contables.service";
-
-const REFCONTABLES:any[] = [
-  {'codigo':0,'nombre':'TEST.REF.CONTABLE'},
-  {'codigo':1,'nombre':'REMUNER.PLANTA.PERMANENTE'}
-];
+import { RefContable } from "../../../interfaces/ref-contable.interface";
 
 @Component({
   selector: 'app-abm-ref-contables',
@@ -14,15 +10,15 @@ const REFCONTABLES:any[] = [
   styleUrls: ['./abm-ref-contables.component.css']
 })
 export class AbmRefContablesComponent implements OnInit {
-  constRefContables2 = new MatTableDataSource(REFCONTABLES);
 
   token: string = "a";
   auxRC:any;
   loginData: any;
   rcData:any;
 
-  refContablesAll:any[];
-  constRefContables = new MatTableDataSource(this.refContablesAll);
+  refContablesAll:RefContable[];
+  loading:boolean;
+  constRefContables = new MatTableDataSource();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -30,13 +26,13 @@ export class AbmRefContablesComponent implements OnInit {
 
   selection = new SelectionModel(true, []);
 
-  constructor(private _refContablesService:RefContablesService) { }
+  constructor(private _refContablesService:RefContablesService) {
+    this.loading = true;
+    this.buscarRefContable();
+  }
 
   ngOnInit() {
-    this.buscarRefContable();
     this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
-    this.constRefContables.sort = this.sort;
-    this.constRefContables.paginator = this.paginator;
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -55,7 +51,6 @@ export class AbmRefContablesComponent implements OnInit {
 
   buscarRefContable(){
     this._refContablesService.getRefContables( this.token )
-    //this._compraService.getProveedores()
       .subscribe( dataRC => {
         //console.log(dataRC);
           this.rcData = dataRC;
@@ -75,13 +70,22 @@ export class AbmRefContablesComponent implements OnInit {
             } else {
               if(this.rcData.dataset.length>0){
                 this.refContablesAll = this.rcData.dataset;
+                console.log(this.refContablesAll);
+                this.loading = false;
+
+                this.constRefContables = new MatTableDataSource(this.refContablesAll);
+
+                this.constRefContables.sort = this.sort;
+                this.constRefContables.paginator = this.paginator;
+
+                //this.table.renderRows();
+                //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
+
               } else {
                 this.refContablesAll = null;
               }
             }
             //console.log(this.refContablesAll);
-            this.constRefContables = new MatTableDataSource(this.refContablesAll);
-            this.table.renderRows();
       });
   }
 

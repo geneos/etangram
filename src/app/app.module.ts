@@ -25,6 +25,7 @@ import { AbmProveedoresComponent } from './components/pages/abm-proveedores/abm-
 import { AltaProveedorComponent } from './components/pages/abm-proveedores/alta-proveedor/alta-proveedor.component';
 import { AbmRefContablesComponent } from './components/pages/abm-ref-contables/abm-ref-contables.component';
 import { AltaRefContableComponent } from './components/pages/abm-ref-contables/alta-ref-contable/alta-ref-contable.component';
+import { LoadingComponent } from './components/shared/loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { AltaRefContableComponent } from './components/pages/abm-ref-contables/a
     AbmProveedoresComponent,
     AltaProveedorComponent,
     AbmRefContablesComponent,
-    AltaRefContableComponent
+    AltaRefContableComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

@@ -9,3 +9,10 @@ export interface CompraArticulo{
   descuento:number;
   alicuota:number;
 }
+
+export interface CompraProveedor{
+  codigo:string;
+  razon_social:string;
+  cuit:string;
+  condicion_iva:string;
+}

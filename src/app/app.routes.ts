@@ -7,8 +7,6 @@ import { AbmProveedoresComponent } from './components/pages/abm-proveedores/abm-
 import { AltaProveedorComponent } from './components/pages/abm-proveedores/alta-proveedor/alta-proveedor.component';
 import { AbmRefContablesComponent } from './components/pages/abm-ref-contables/abm-ref-contables.component';
 import { AltaRefContableComponent } from './components/pages/abm-ref-contables/alta-ref-contable/alta-ref-contable.component';
-//import { SearchComponent } from './components/search/search.component';
-//import { ArtistaComponent } from './components/artista/artista.component';
 
 const APP_ROUTES: Routes = [
   { path: 'compra', component: AbmComprasComponent },
@@ -18,8 +16,6 @@ const APP_ROUTES: Routes = [
   { path: 'proveedores/:id', component: AltaProveedorComponent },
   { path: 'ref-contables', component: AbmRefContablesComponent },
   { path: 'ref-contables/:id', component: AltaRefContableComponent },
-  //{ path: 'buscar', component: SearchComponent },
-  //{ path: 'artista/:id', component: ArtistaComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'compra' }
 ];
 

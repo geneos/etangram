@@ -2,8 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
-import { CompraArticulo } from "../../../interfaces/compraArticulo.interface";
-import { CompraProveedor } from "../../../interfaces/compraProveedor.interface";
+import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.interface";
 
 var auxProvData,auxArtiData:any;
 

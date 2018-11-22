@@ -2,11 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-
-const REFCONTABLES:any[] = [
-  {'codigo':0,'nombre':'TEST.REF.CONTABLE'},
-  {'codigo':1,'nombre':'REMUNER.PLANTA.PERMANENTE'}
-];
+import { RefContablesService } from '../../../../services/i2t/ref-contables.service';
+import { RefContable } from '../../../../interfaces/ref-contable.interface';
 
 @Component({
   selector: 'app-alta-ref-contable',
@@ -15,13 +12,21 @@ const REFCONTABLES:any[] = [
 })
 export class AltaRefContableComponent implements OnInit {
 
-  constRefContables = REFCONTABLES;
+  constRefContables ;
 
   forma:FormGroup;
   id:any;
   existe:boolean;
+  token: string = "a";
+  rcData: any;
+  refContable: RefContable;
+  loginData: any;
 
-  constructor( private route:ActivatedRoute ) {
+  loading:boolean;
+
+  constructor( private route:ActivatedRoute , private _refContablesService:RefContablesService ) {
+    this.loading = true;
+
     this.forma = new FormGroup({
       'id_ref_contable': new FormControl('',Validators.required),
       'nombre_ref_contable': new FormControl('',Validators.required),
@@ -37,24 +42,9 @@ export class AltaRefContableComponent implements OnInit {
       this.existe = false;
 
       if( this.id !== "nuevo" ){
-        for( let aux in this.constRefContables ){
-          if (this.id == aux){
-            this.existe=true;
-            this.forma.controls['id_ref_contable'].setValue(this.id);
-            console.log(this.constRefContables[this.id].nombre);
-            this.forma.controls['nombre_ref_contable'].setValue(this.constRefContables[this.id].nombre);
-          }
-        }
-        if (this.existe == false){
-          console.log('no existe este id!');
-          this.forma.controls['id_ref_contable'].disable();
-          this.forma.controls['nombre_ref_contable'].disable();
-          this.forma.controls['cuenta_contable'].disable();
-          this.forma.controls['grupo_financiero'].disable();
-          this.forma.controls['tiene_centro_costo'].disable();
-          this.forma.controls['centro_costo'].disable();
-          this.forma.controls['estado_ref_contable'].disable();
-        }
+        this.buscarRefContable(this.id);
+      } else {
+        this.loading = false;
       }
 
     });
@@ -62,6 +52,60 @@ export class AltaRefContableComponent implements OnInit {
 
   ngOnInit() {
     //console.log();
+  }
+
+  buscarRefContable(auxid:string){
+    this._refContablesService.getRefContable( auxid, this.token )
+    //this._compraService.getProveedores()
+      .subscribe( dataRC => {
+        console.log(dataRC);
+          this.rcData = dataRC;
+          //auxProvData = this.rcData.dataset.length;
+          if(this.rcData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.refContable = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._refContablesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarRefContable(auxid);
+              });
+            } else {
+              if(this.rcData.dataset.length>0){
+                this.refContable = this.rcData.dataset[0];
+                this.existe = true;
+                if (this.existe == true){
+                  //console.log(this.refContable);
+                  this.loading = false;
+
+                  this.forma.controls['id_ref_contable'].setValue(this.refContable.id);
+                  this.forma.controls['nombre_ref_contable'].setValue(this.refContable.name);
+                  //this.forma.controls['cuenta_contable'].disable();
+                  //this.forma.controls['grupo_financiero'].disable();
+                  this.forma.controls['tiene_centro_costo'].setValue(this.refContable.tienectocosto);
+                  //this.forma.controls['centro_costo'].disable();
+                  this.forma.controls['estado_ref_contable'].setValue(this.refContable.estado);
+                }
+              } else {
+                this.refContable = null;
+                this.existe = false;
+                if (this.existe == false){
+                  console.log('no existe este id!');
+                  this.forma.controls['id_ref_contable'].disable();
+                  this.forma.controls['nombre_ref_contable'].disable();
+                  this.forma.controls['cuenta_contable'].disable();
+                  this.forma.controls['grupo_financiero'].disable();
+                  this.forma.controls['tiene_centro_costo'].disable();
+                  this.forma.controls['centro_costo'].disable();
+                  this.forma.controls['estado_ref_contable'].disable();
+                }
+              }
+            }
+
+      });
   }
 
   guardarRefContables(){

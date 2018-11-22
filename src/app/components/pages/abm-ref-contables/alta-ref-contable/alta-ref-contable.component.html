@@ -3,9 +3,10 @@
   VOLVER A LISTA
 </button>
 
+<app-loading *ngIf="loading"></app-loading>
 <form [formGroup]="forma" (ngSubmit)="guardarRefContables()" novalidate="novalidate">
 
-  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
+  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;" [ngStyle]="{'display':loading ? 'none' : 'block' }">
     <mat-expansion-panel-header>
       <mat-panel-title>BÁSICO</mat-panel-title>
     </mat-expansion-panel-header>

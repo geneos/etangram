@@ -5,7 +5,7 @@ export interface RefContable{
   //date_modified: null
   deleted: number;
   //description: null
-  //estado: null
+  estado: number;
   id: string;
   //idgrupofinanciero: null
   idreferenciacontable: string;

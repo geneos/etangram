@@ -23,6 +23,7 @@ export class AltaRefContableComponent implements OnInit {
   loginData: any;
 
   loading:boolean;
+  auxresp: any;
 
   constructor( private route:ActivatedRoute , private _refContablesService:RefContablesService ) {
     this.loading = true;
@@ -134,7 +135,8 @@ export class AltaRefContableComponent implements OnInit {
       this._refContablesService.postRefContable( jsonbody,this.token )
         .subscribe( resp => {
           //console.log(resp);
-          if(resp.returnset[0].RCode=="-6003"){
+          this.auxresp = resp;
+          if(this.auxresp.returnset[0].RCode=="-6003"){
             //token invalido
             this.refContable = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}

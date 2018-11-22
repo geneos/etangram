@@ -26,6 +26,8 @@ import { AltaProveedorComponent } from './components/pages/abm-proveedores/alta-
 import { AbmRefContablesComponent } from './components/pages/abm-ref-contables/abm-ref-contables.component';
 import { AltaRefContableComponent } from './components/pages/abm-ref-contables/alta-ref-contable/alta-ref-contable.component';
 import { LoadingComponent } from './components/shared/loading/loading.component';
+import { AbmPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuentas/abm-plan-de-cuentas.component';
+import { AltaPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuentas/alta-plan-de-cuentas/alta-plan-de-cuentas.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { LoadingComponent } from './components/shared/loading/loading.component'
     AltaProveedorComponent,
     AbmRefContablesComponent,
     AltaRefContableComponent,
-    LoadingComponent
+    LoadingComponent,
+    AbmPlanDeCuentasComponent,
+    AltaPlanDeCuentasComponent
   ],
   imports: [
     BrowserModule,

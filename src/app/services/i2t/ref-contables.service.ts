@@ -45,5 +45,17 @@ export class RefContablesService {
     return this.http.get( url , { headers });
   }
 
+  postRefContable( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/tg01_referenciascontables`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
 
 }

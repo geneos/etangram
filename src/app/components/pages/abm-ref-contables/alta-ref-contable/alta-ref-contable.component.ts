@@ -30,8 +30,8 @@ export class AltaRefContableComponent implements OnInit {
     this.forma = new FormGroup({
       'id_ref_contable': new FormControl('',Validators.required),
       'nombre_ref_contable': new FormControl('',Validators.required),
-      'cuenta_contable': new FormControl('',Validators.required),
-      'grupo_financiero': new FormControl('',Validators.required),
+      'cuenta_contable': new FormControl(),
+      'grupo_financiero': new FormControl(),
       'tiene_centro_costo': new FormControl('',Validators.required),
       'centro_costo': new FormControl(),
       'estado_ref_contable': new FormControl('',Validators.required),
@@ -111,6 +111,48 @@ export class AltaRefContableComponent implements OnInit {
   guardarRefContables(){
     if( this.id == "nuevo" ){
       // insertando
+      let jsbody = {
+        "id":this.forma.controls['id_ref_contable'].value,
+        "name":this.forma.controls['nombre_ref_contable'].value,
+        "date_entered":"2018-11-22",//hardcoded
+        "date_modified":"2018-11-22",//hardcoded
+        "modified_user_id":1,//hardcoded
+        "created_by":1,//hardcoded
+        "description":null,//hardcoded
+        "deleted":0,//hardcoded
+        "assigned_user_id":1,//hardcoded
+        "tienectocosto ":"0",//this.forma.controls['tiene_centro_costo'].value,
+        "numero":this.forma.controls['id_ref_contable'].value,
+        "idgrupofinanciero":1,//hardcoded POR AHORA
+        "tg01_centrocosto_id_c":null,//hardcoded POR AHORA
+        "idreferenciacontable":this.forma.controls['id_ref_contable'].value,
+        "estado":0,//this.forma.controls['estado_ref_contable'].value,
+        "tg01_grupofinanciero_id_c":null//hardcoded POR AHORA
+      };
+      let jsonbody= JSON.stringify(jsbody);
+      console.log(jsonbody);
+      this._refContablesService.postRefContable( jsonbody,this.token )
+        .subscribe( resp => {
+          //console.log(resp);
+          if(resp.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.refContable = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._refContablesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.guardarRefContables();
+              });
+            } else {
+              console.log(resp);
+              //console.log(resp.returnset[0].RId);
+              //this.respCabecera = resp;
+              //this.cabeceraId = this.respCabecera.returnset[0].RId;
+          }
+        });
     }else{
       //actualizando
     }

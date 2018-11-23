@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatSnackBar,MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { RefContablesService } from '../../../../services/i2t/ref-contables.service';
 import { RefContable } from '../../../../interfaces/ref-contable.interface';
 
@@ -25,7 +25,12 @@ export class AltaRefContableComponent implements OnInit {
   loading:boolean;
   auxresp: any;
 
-  constructor( private route:ActivatedRoute , private _refContablesService:RefContablesService ) {
+  constructor(
+    private route:ActivatedRoute,
+    private _refContablesService:RefContablesService,
+    private router: Router,
+    public snackBar: MatSnackBar
+  ) {
     this.loading = true;
 
     this.forma = new FormGroup({
@@ -83,6 +88,7 @@ export class AltaRefContableComponent implements OnInit {
                   this.loading = false;
 
                   this.forma.controls['id_ref_contable'].setValue(this.refContable.id);
+                  this.forma.controls['id_ref_contable'].disable();
                   this.forma.controls['nombre_ref_contable'].setValue(this.refContable.name);
                   //this.forma.controls['cuenta_contable'].disable();
                   //this.forma.controls['grupo_financiero'].disable();
@@ -109,25 +115,88 @@ export class AltaRefContableComponent implements OnInit {
       });
   }
 
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
+  }
+
+  eliminarRefContables(){
+    var d = new Date();
+    var d2;
+    if( this.refContable.date_entered != null){
+      d2 = (this.refContable.date_entered);
+      d2 = d2.substring(0, 10);
+    }
+    let jsbody = {
+      "id":this.refContable.id,
+      "name":this.refContable.name,
+      "date_entered":d2,
+      "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+      "modified_user_id":1,//hardcoded
+      "created_by":1,//hardcoded
+      "description":null,//hardcoded
+      "deleted":1,//hardcoded
+      "assigned_user_id":1,//hardcoded
+      "tienectocosto ":this.refContable.tienectocosto,
+      "numero":this.refContable.numero,
+      "idgrupofinanciero":1,//hardcoded POR AHORA
+      "tg01_centrocosto_id_c":null,//hardcoded POR AHORA
+      "idreferenciacontable":this.refContable.idreferenciacontable,
+      "estado":this.refContable.estado,
+      "tg01_grupofinanciero_id_c":null//hardcoded POR AHORA
+    };
+    let jsonbody= JSON.stringify(jsbody);
+    console.log(jsonbody);
+    this._refContablesService.putRefContable( this.refContable.id,jsonbody,this.token )
+      .subscribe( resp => {
+        //console.log(resp);
+        this.auxresp = resp;
+        if(this.auxresp.returnset[0].RCode=="-6003"){
+          //token invalido
+          //this.refContable = null;
+          let jsbody = {"usuario":"usuario1","pass":"password1"}
+          let jsonbody = JSON.stringify(jsbody);
+          this._refContablesService.login(jsonbody)
+            .subscribe( dataL => {
+              console.log(dataL);
+              this.loginData = dataL;
+              this.token = this.loginData.dataset[0].jwt;
+              this.guardarRefContables();
+            });
+          } else {
+            if (this.auxresp.returnset[0].RCode=="1"){
+              // baja ok
+              this.openSnackBar("Baja realizada con éxito.");
+              this.router.navigate(['/ref-contables']);
+            } else {
+              //error en la baja
+              this.openSnackBar("Error. Baja no permitida.");
+            }
+        }
+      });
+  }
+
   guardarRefContables(){
     if( this.id == "nuevo" ){
       // insertando
+      var d = new Date();
       let jsbody = {
         "id":this.forma.controls['id_ref_contable'].value,
         "name":this.forma.controls['nombre_ref_contable'].value,
-        "date_entered":"2018-11-22",//hardcoded
-        "date_modified":"2018-11-22",//hardcoded
+        "date_entered":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "modified_user_id":1,//hardcoded
         "created_by":1,//hardcoded
         "description":null,//hardcoded
         "deleted":0,//hardcoded
         "assigned_user_id":1,//hardcoded
-        "tienectocosto ":"0",//this.forma.controls['tiene_centro_costo'].value,
+        "tienectocosto ":this.forma.controls['tiene_centro_costo'].value,
         "numero":this.forma.controls['id_ref_contable'].value,
         "idgrupofinanciero":1,//hardcoded POR AHORA
         "tg01_centrocosto_id_c":null,//hardcoded POR AHORA
         "idreferenciacontable":this.forma.controls['id_ref_contable'].value,
-        "estado":0,//this.forma.controls['estado_ref_contable'].value,
+        "estado":this.forma.controls['estado_ref_contable'].value,
         "tg01_grupofinanciero_id_c":null//hardcoded POR AHORA
       };
       let jsonbody= JSON.stringify(jsbody);
@@ -138,7 +207,7 @@ export class AltaRefContableComponent implements OnInit {
           this.auxresp = resp;
           if(this.auxresp.returnset[0].RCode=="-6003"){
             //token invalido
-            this.refContable = null;
+            //this.refContable = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._refContablesService.login(jsonbody)
@@ -149,14 +218,72 @@ export class AltaRefContableComponent implements OnInit {
                 this.guardarRefContables();
               });
             } else {
-              console.log(resp);
-              //console.log(resp.returnset[0].RId);
-              //this.respCabecera = resp;
-              //this.cabeceraId = this.respCabecera.returnset[0].RId;
+              console.log(this.auxresp);
+              // si viene codigo -2001, es xq id duplicado.
+              if (this.auxresp.returnset[0].RCode=="1"){
+                // carga ok
+                this.openSnackBar("Alta Correcta.");
+                this.router.navigate(['/ref-contables', this.forma.controls['id_ref_contable'].value]);
+              } else {
+                //error al cargar
+                this.openSnackBar("Error. Alta no permitida.");
+              }
           }
         });
     }else{
       //actualizando
+      var d = new Date();
+      var d2;
+      if( this.refContable.date_entered != null){
+        d2 = (this.refContable.date_entered);
+        d2 = d2.substring(0, 10);
+      }
+      let jsbody = {
+        "id":this.forma.controls['id_ref_contable'].value,
+        "name":this.forma.controls['nombre_ref_contable'].value,
+        "date_entered":d2,
+        "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "modified_user_id":1,//hardcoded
+        "created_by":1,//hardcoded
+        "description":null,//hardcoded
+        "deleted":0,//hardcoded
+        "assigned_user_id":1,//hardcoded
+        "tienectocosto ":this.forma.controls['tiene_centro_costo'].value,
+        "numero":this.forma.controls['id_ref_contable'].value,
+        "idgrupofinanciero":1,//hardcoded POR AHORA
+        "tg01_centrocosto_id_c":null,//hardcoded POR AHORA
+        "idreferenciacontable":this.forma.controls['id_ref_contable'].value,
+        "estado":this.forma.controls['estado_ref_contable'].value,
+        "tg01_grupofinanciero_id_c":null//hardcoded POR AHORA
+      };
+      let jsonbody= JSON.stringify(jsbody);
+      console.log(jsonbody);
+      this._refContablesService.putRefContable( this.refContable.id,jsonbody,this.token )
+        .subscribe( resp => {
+          //console.log(resp);
+          this.auxresp = resp;
+          if(this.auxresp.returnset[0].RCode=="-6003"){
+            //token invalido
+            //this.refContable = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._refContablesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.guardarRefContables();
+              });
+            } else {
+              if (this.auxresp.returnset[0].RCode=="1"){
+                // modif ok
+                this.openSnackBar("Modificación realizada con éxito.");
+              } else {
+                //error al cargar
+                this.openSnackBar("Error. Modificación no permitida.");
+              }
+          }
+        });
     }
   }
 

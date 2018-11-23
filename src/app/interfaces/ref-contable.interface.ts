@@ -1,8 +1,8 @@
 export interface RefContable{
   assigned_user_id: number;
   //created_by: null
-  //date_entered: null
-  //date_modified: null
+  date_entered: null
+  date_modified: null
   deleted: number;
   //description: null
   estado: number;

@@ -34,5 +34,40 @@ export class RefContablesService {
     return this.http.get( url , { headers });
   }
 
+  getRefContable( id:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_referenciascontables/${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  postRefContable( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/tg01_referenciascontables`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  putRefContable( id:string, body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/tg01_referenciascontables/${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.put( url, body, { headers });
+  }
+
 
 }

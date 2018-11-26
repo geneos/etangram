@@ -15,7 +15,8 @@ import {MatButtonModule,
   MatDialogModule,
   MatSortModule,
   MatPaginatorModule,
-  MatSelectModule
+  MatSelectModule,
+  MatSnackBarModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -37,7 +38,8 @@ import { NgModule } from '@angular/core';
     MatDialogModule,
     MatSortModule,
     MatPaginatorModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSnackBarModule
   ],
   exports: [MatButtonModule,
     MatCheckboxModule,
@@ -56,7 +58,8 @@ import { NgModule } from '@angular/core';
     MatDialogModule,
     MatSortModule,
     MatPaginatorModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSnackBarModule
   ],
 })
 export class MyMaterialModule { }

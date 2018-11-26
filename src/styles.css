@@ -106,3 +106,8 @@ h6 {
 .mat-column-select {
   overflow: initial;
 }
+
+.mat-button-wrapper {
+  color:#f0f0f0;
+  font-weight: bold;
+}

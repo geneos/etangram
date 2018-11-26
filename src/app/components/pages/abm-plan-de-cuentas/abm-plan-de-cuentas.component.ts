@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
-import { RefContablesService } from "../../../services/i2t/ref-contables.service";/////////
+import { PlanCuentasService } from "../../../services/i2t/plan-cuentas.service";
 import { PlanCuenta } from "../../../interfaces/plan-cuenta.interface";
 
 @Component({
@@ -14,31 +14,36 @@ export class AbmPlanDeCuentasComponent implements OnInit {
   token: string = "a";
   auxRC:any;
   loginData: any;
-  rcData:any;
+  pcData:any;
+  displayedColumns: string[] = ['select', 'opciones', 'nombre', 'cuenta_contable', 'nomenclador', 'nomenclador_padre', 'orden', 'estado']; 
 
   planesDeCuotasAll:PlanCuenta[];
   loading:boolean;
-  constRefContables = new MatTableDataSource();
+  constPlanesCuentas = new MatTableDataSource();
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild('tableRefContables') table: MatTable<any>;
+  @ViewChild('tablePlanesCuentas') table: MatTable<any>;
 
   selection = new SelectionModel(true, []);
 
-  constructor(private _refContablesService:RefContablesService) {
+  constructor(private _planCuentasService:PlanCuentasService) {
     this.loading = true;
-    this.buscarRefContable();
+    this.buscarPlanCuentas();
   }
 
   ngOnInit() {
     this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
   }
+/* 
+  ngAfterViewInit() {
+    this.constPlanesCuentas.paginator = this.paginator;
+  } */
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.constRefContables.data.length;
+    const numRows = this.constPlanesCuentas.data.length;
     return numSelected === numRows;
   }
 
@@ -46,37 +51,38 @@ export class AbmPlanDeCuentasComponent implements OnInit {
   masterToggle() {
     this.isAllSelected() ?
         this.selection.clear() :
-        this.constRefContables.data.forEach(row => this.selection.select(row));
+        this.constPlanesCuentas.data.forEach(row => this.selection.select(row));
   }
 
-  buscarRefContable(){
-    this._refContablesService.getRefContables( this.token )
-      .subscribe( dataRC => {
-        //console.log(dataRC);
-          this.rcData = dataRC;
+  buscarPlanCuentas(){
+    /*
+    this._planCuentasService.getPlanesDeCuentas( this.token )
+      .subscribe( dataPC => {
+        //console.log(dataPC);
+          this.pcData = dataPC;
           //auxProvData = this.proveedorData.dataset.length;
-          if(this.rcData.returnset[0].RCode=="-6003"){
+          if(this.pcData.returnset[0].RCode=="-6003"){
             //token invalido
             this.planesDeCuotasAll = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
-            this._refContablesService.login(jsonbody)
+            this._planCuentasService.login(jsonbody)
               .subscribe( dataL => {
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarRefContable();
+                this.buscarPlanCuentas();
               });
             } else {
-              if(this.rcData.dataset.length>0){
-                this.planesDeCuotasAll = this.rcData.dataset;
+              if(this.pcData.dataset.length>0){
+                this.planesDeCuotasAll = this.pcData.dataset;
                 console.log(this.planesDeCuotasAll);
                 this.loading = false;
 
-                this.constRefContables = new MatTableDataSource(this.planesDeCuotasAll);
+                this.constPlanesCuentas = new MatTableDataSource(this.planesDeCuotasAll);
 
-                this.constRefContables.sort = this.sort;
-                this.constRefContables.paginator = this.paginator;
+                this.constPlanesCuentas.sort = this.sort;
+                this.constPlanesCuentas.paginator = this.paginator;
 
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
@@ -87,7 +93,73 @@ export class AbmPlanDeCuentasComponent implements OnInit {
             }
             //console.log(this.planesDeCuotasAll);
       });
-  }
+      */
+    this.pcData = this._planCuentasService.getPlanesDeCuentas( this.token );
+    /* this.pcData = [{
+      id: '1',
+      nombre: 'Activo Corriente',
+      cuenta_contable: '1.11.0.0.0000',
+      nomenclador:'1.11',
+      nomenclador_padre:'1',
+      orden:'0',
+      estado:1,
+      imputable:1,
+      patrimonial:0
+    }]; */
+
+    //if(this.pcData.length>0){
+      this.planesDeCuotasAll = this.pcData;
+      console.log(this.planesDeCuotasAll);
+      this.loading = false;
+
+      this.constPlanesCuentas = new MatTableDataSource(this.planesDeCuotasAll);
+      console.log(this.constPlanesCuentas);
+      this.constPlanesCuentas.sort = this.sort;
+      this.constPlanesCuentas.paginator = this.paginator;
+
+      
+    //}
+      //this.table.renderRows();
+      //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
+    /*
+      .subscribe( dataPC => {
+        //console.log(dataPC);
+          this.pcData = dataPC;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.pcData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.planesDeCuotasAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._planCuentasService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarPlanCuentas();
+              });
+            } else {
+              if(this.pcData.dataset.length>0){
+                this.planesDeCuotasAll = this.pcData.dataset;
+                console.log(this.planesDeCuotasAll);
+                this.loading = false;
+
+                this.constPlanesCuentas = new MatTableDataSource(this.planesDeCuotasAll);
+
+                this.constPlanesCuentas.sort = this.sort;
+                this.constPlanesCuentas.paginator = this.paginator;
+
+                //this.table.renderRows();
+                //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
+
+              } else {
+                this.planesDeCuotasAll = null;
+              }
+            }
+            //console.log(this.planesDeCuotasAll);
+      });
+*/
+    }
 
   }
 

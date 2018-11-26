@@ -1,4 +1,5 @@
 export interface PlanCuenta{
+  id:string;
   nombre:string;
   cuenta_contable:string;
   nomenclador:string;

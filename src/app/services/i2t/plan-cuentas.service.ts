@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class RefContablesService {
+export class PlanCuentasService {
 
   //compraProveedores:any [] = [];
   preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
@@ -33,7 +33,8 @@ export class RefContablesService {
     let url = this.preUrl + query;
     */
     
-    let PlanHardcodeado = {
+    let PlanHardcodeado = [{
+      id: '1',
       nombre: 'Activo Corriente',
       cuenta_contable: '1.11.0.0.0000',
       nomenclador:'1.11',
@@ -43,6 +44,8 @@ export class RefContablesService {
       imputable:1,
       patrimonial:0
     }
+
+  ];
 
     //return this.http.get( url , { headers });
 

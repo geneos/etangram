@@ -1,3 +1,121 @@
-<p>
-  alta-plan-de-cuentas works!
-</p>
+<h2>PLAN DE CUENTAS</h2>
+<button [routerLink]="['/plan-cuentas']" class="mine-btnbig-grey" mat-flat-button>
+  VOLVER A LISTA
+</button>
+
+<form [formGroup]="forma" (ngSubmit)="guardarPlanCuentas()" novalidate="novalidate">
+      <!-- 
+      id                  if:string;
+      Nombre              nombre:string;
+      Cuenta Contable     cuenta_contable:string;
+      Nomenclador         nomenclador:string;
+      Nomenclador Padre   nomenclador_padre:string;
+      Orden               orden:string;
+      Estado              estado:number;
+
+      Imputable?          imputable:number;
+      Patrimonial?        patrimonial:number;
+      -->
+
+  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
+    <mat-expansion-panel-header>
+      <mat-panel-title>BÁSICO</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <!-- <div class="col s12 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Código Plan de Cuentas</mat-label>
+          <input matInput placeholder="" type="number" formControlName="id">
+          <!-<mat-hint>Hint</mat-hint>->
+        </mat-form-field>
+      </div> -->
+      <div class="col s10 m4 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Cuenta Contable</mat-label>
+          <input matInput placeholder="" formControlName="cuenta_contable">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m8 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nombre</mat-label>
+          <input matInput placeholder="" formControlName="nombre">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m12 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Imputable?</mat-label>
+          <mat-select formControlName="imputable" placeholder="Elija una opción">
+            <mat-option value="0">No</mat-option>
+            <mat-option value="1">Si</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m12 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Patrimonial?</mat-label>
+          <!-- <mat-select [compareWith]="compareObjectsPat" formControlName="patrimonial" placeholder="Elija una opción">
+            <mat-option  *ngFor="let obj of listOfObjs" [value]="obj">
+              {{ obj.texto }}
+            </mat-option>
+          </mat-select> -->
+          <!-- <mat-select [compareWith]="compareObjectsPat" formControlName="patrimonial" placeholder="Elija una opción"></mat-select> -->
+          <mat-select  formControlName="patrimonial" placeholder="Elija una opción">
+            <mat-option value="0">No</mat-option>
+            <mat-option value="1">Si</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s10 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nomenclador</mat-label>
+          <input matInput placeholder="" formControlName="nomenclador">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s10 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nomenclador Padre</mat-label>
+          <input matInput placeholder="" formControlName="nomenclador_padre">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s10 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Orden</mat-label>
+          <input matInput placeholder="" formControlName="orden">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m12 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Estado</mat-label>
+          <mat-select formControlName="estado" placeholder="Elija una opción">
+            <mat-option value="0">Inactivo</mat-option>
+            <mat-option value="1">Activo</mat-option>
+          </mat-select>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+    </div>
+
+  </mat-expansion-panel>
+
+  <!-- panel de referencias contables visible unicamente si es cuenta imputable -->
+
+  <div class="row" style="margin-top:15px;">
+    <div class="col s12" style="text-align: right;">
+      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
+        GUARDAR
+      </button>
+      <button type="reset" class="mine-btnbig-grey" mat-flat-button>
+        CANCELAR
+      </button>
+    </div>
+  </div>
+
+</form>

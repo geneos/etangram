@@ -15,7 +15,6 @@ export class AbmPlanDeCuentasComponent implements OnInit {
   auxRC:any;
   loginData: any;
   pcData:any;
-  displayedColumns: string[] = ['select', 'opciones', 'nombre', 'cuenta_contable', 'nomenclador', 'nomenclador_padre', 'orden', 'estado']; 
 
   planesDeCuotasAll:PlanCuenta[];
   loading:boolean;

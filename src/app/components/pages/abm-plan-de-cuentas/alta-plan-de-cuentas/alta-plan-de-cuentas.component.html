@@ -2,6 +2,9 @@
 <button [routerLink]="['/plan-cuentas']" class="mine-btnbig-grey" mat-flat-button>
   VOLVER A LISTA
 </button>
+<button (click)="eliminarPlanDeCuentas()" class="mine-btnbig" mat-flat-button style="margin-right:10px;">
+  ELIMINAR
+</button>
 
 <form [formGroup]="forma" (ngSubmit)="guardarPlanCuentas()" novalidate="novalidate">
       <!-- 
@@ -106,14 +109,41 @@
   </mat-expansion-panel>
 
   <!-- panel de referencias contables visible unicamente si es cuenta imputable -->
+  <mat-expansion-panel [expanded]=false [disabled]=false style="margin-top:10px;">
+    <mat-expansion-panel-header>
+      <mat-panel-title>REFERENCIAS CONTABLES</mat-panel-title>
+    </mat-expansion-panel-header>
+    
+    <div class="row" style="margin-top:10px; margin-bottom:5px;" [ngStyle]="{'display':loading ? 'none' : 'block' }">
+        <!-- <table #tablePlanesCuentas mat-table [dataSource]="constPlanesCuentas | async" matSort class="mat-elevation-z1" -->
+        <table #tablePlanesCuentas mat-table [dataSource]="constPlanesCuentas" matSort class="mat-elevation-z1"
+          style="font-family: 'Lato', sans-serif !important;">
+          
+          <!-- Columna Nombre -->
+          <ng-container matColumnDef="referencia_contable">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Referencia Contable </th>
+            <td mat-cell *matCellDef="let auxtabla" style="font-weight:bold;"> {{ auxtabla.referencia_contable }} </td>
+          </ng-container>
+          <!-- Columna Cuenta Contable -->
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+            <td mat-cell *matCellDef="let auxtabla" style="font-weight:bold;"> {{ auxtabla.nombre }} </td>
+          </ng-container>
+
+          
+          <tr mat-header-row *matHeaderRowDef="['referencia_contable', 'nombre']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['referencia_contable', 'nombre'];"></tr>
+        </table>
+    </div>
+  </mat-expansion-panel>
 
   <div class="row" style="margin-top:15px;">
     <div class="col s12" style="text-align: right;">
       <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
         GUARDAR
       </button>
-      <button type="reset" class="mine-btnbig-grey" mat-flat-button>
-        CANCELAR
+      <button type="reset" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+        REINICIAR VALORES
       </button>
     </div>
   </div>

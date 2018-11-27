@@ -36,14 +36,14 @@
       <div class="col s10 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cuenta Contable</mat-label>
-          <input matInput placeholder="" formControlName="cuenta_contable">
+          <input matInput placeholder="" formControlName="cuentacontable">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m8 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre</mat-label>
-          <input matInput placeholder="" formControlName="nombre">
+          <input matInput placeholder="" formControlName="name">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -83,7 +83,7 @@
       <div class="col s10 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nomenclador Padre</mat-label>
-          <input matInput placeholder="" formControlName="nomenclador_padre">
+          <input matInput placeholder="" formControlName="nomencladorpadre">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -113,7 +113,9 @@
     <mat-expansion-panel-header>
       <mat-panel-title>REFERENCIAS CONTABLES</mat-panel-title>
     </mat-expansion-panel-header>
-    
+    <button [routerLink]="['/ref-contables','nuevo']" class="mine-btnbig" mat-flat-button>
+      NUEVO
+    </button>
     <div class="row" style="margin-top:10px; margin-bottom:5px;" [ngStyle]="{'display':loading ? 'none' : 'block' }">
         <!-- <table #tablePlanesCuentas mat-table [dataSource]="constPlanesCuentas | async" matSort class="mat-elevation-z1" -->
         <table #tablePlanesCuentas mat-table [dataSource]="constPlanesCuentas" matSort class="mat-elevation-z1"
@@ -134,6 +136,7 @@
           <tr mat-header-row *matHeaderRowDef="['referencia_contable', 'nombre']"></tr>
           <tr mat-row *matRowDef="let row; columns: ['referencia_contable', 'nombre'];"></tr>
         </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="mat-elevation-z1"></mat-paginator>
     </div>
   </mat-expansion-panel>
 

@@ -1,34 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatSnackBar,MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatSnackBar,MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSort, MatPaginator } from '@angular/material';
 import { PlanCuentasService } from "../../../../services/i2t/plan-cuentas.service";
 import { PlanCuenta } from "../../../../interfaces/plan-cuenta.interface";
-
-const PLANCUENTAS: any[] = [
-  {
-    id: '1',
-    nombre: 'Activo Corriente',
-    cuenta_contable: '1.11.0.0.0000',
-    nomenclador:'1.11',
-    nomenclador_padre:'1',
-    orden:'0',
-    estado:1,
-    imputable:1,
-    patrimonial:1
-  },
-  {
-    id: '2',
-    nombre: 'Recaudaciones a depositar',
-    cuenta_contable: '1.11.11.11.1001',
-    nomenclador:'1.11.11.11.1001',
-    nomenclador_padre:'1.11.11.11',
-    orden:'1001',
-    estado:0,
-    imputable:1,
-    patrimonial:0
-  }
-];
+import { RefContable } from 'src/app/interfaces/ref-contable.interface';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-alta-plan-de-cuentas',
@@ -37,7 +14,7 @@ const PLANCUENTAS: any[] = [
 })
 export class AltaPlanDeCuentasComponent implements OnInit {
 
-  constPlanesCuentas = PLANCUENTAS;//todo quitar asignacion
+  constPlanesCuentas :PlanCuenta[];
 
   forma:FormGroup;
   id:any;
@@ -50,6 +27,17 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   loading:boolean;
   auxresp: any;
 
+  //para la lista de referencias contables
+  refContablesAll:RefContable[];
+  constRefContables = new MatTableDataSource();
+
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('tableRefContables') table: MatTable<any>;
+
+  selection = new SelectionModel(true, []);
+  //
+
   constructor(
     private route:ActivatedRoute,
     private _PlanCuentasService:PlanCuentasService,
@@ -60,12 +48,12 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
     this.forma = new FormGroup({
       'id': new FormControl('',Validators.required),
-      'cuenta_contable': new FormControl('',Validators.required),
-      'nombre': new FormControl('',Validators.required),
+      'cuentacontable': new FormControl('',Validators.required),
+      'name': new FormControl('',Validators.required),
       'imputable': new FormControl('',Validators.required),
       'patrimonial': new FormControl('',Validators.required),
       'nomenclador': new FormControl('',Validators.required),
-      'nomenclador_padre': new FormControl(),
+      'nomencladorpadre': new FormControl(),
       'orden': new FormControl('',Validators.required),
       'estado': new FormControl('',Validators.required),
     });
@@ -81,6 +69,20 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       }
 
     });
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.constRefContables.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.constRefContables.data.forEach(row => this.selection.select(row));
   }
 
   buscarPlanDeCuentas(auxid:string){
@@ -113,26 +115,26 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                   
                   //this.forma.controls['id'].setValue(this.id);
                   //console.log(this.constPlanesCuentas[this.id]);
-                  this.forma.controls['cuenta_contable'].setValue(this.constPlanesCuentas[this.id].cuenta_contable);
-                  this.forma.controls['nombre'].setValue(this.constPlanesCuentas[this.id].nombre);                  
-                  this.forma.controls['nomenclador'].setValue(this.constPlanesCuentas[this.id].nomenclador);
-                  this.forma.controls['nomenclador_padre'].setValue(this.constPlanesCuentas[this.id].nomenclador_padre);
-                  this.forma.controls['orden'].setValue(this.constPlanesCuentas[this.id].orden);
-                  this.forma.controls['imputable'].setValue(this.constPlanesCuentas[this.id].imputable.toString());           
-                  this.forma.controls['patrimonial'].setValue(this.constPlanesCuentas[this.id].patrimonial.toString());
-                  this.forma.controls['estado'].setValue(this.constPlanesCuentas[this.id].estado.toString());
+                  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
+                  this.forma.controls['name'].setValue(this.planDeCuentas.name);                  
+                  this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
+                  this.forma.controls['nomencladorpadre'].setValue(this.planDeCuentas.nomencladorpadre);
+                  this.forma.controls['orden'].setValue(this.planDeCuentas.orden);
+                  this.forma.controls['imputable'].setValue(this.planDeCuentas.imputable.toString());           
+                  this.forma.controls['patrimonial'].setValue(this.planDeCuentas.patrimonial.toString());
+                  this.forma.controls['estado'].setValue(this.planDeCuentas.estado.toString());
                 }
               } else {
                 this.planDeCuentas = null;
                 this.existe = false;
                 if (this.existe == false){
                   console.log('no existe este id!');
-                  this.forma.controls['cuenta_contable'].disable();
-                  this.forma.controls['nombre'].disable();
+                  this.forma.controls['cuentacontable'].disable();
+                  this.forma.controls['name'].disable();
                   this.forma.controls['imputable'].disable();
                   this.forma.controls['patrimonial'].disable();
                   this.forma.controls['nomenclador'].disable();
-                  this.forma.controls['nomenclador_padre'].disable();
+                  this.forma.controls['nomencladorpadre'].disable();
                   this.forma.controls['orden'].disable();
                   this.forma.controls['estado'].disable();
                 }

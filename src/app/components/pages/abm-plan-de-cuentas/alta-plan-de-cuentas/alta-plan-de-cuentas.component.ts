@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone} from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar,MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSort, MatPaginator } from '@angular/material';
@@ -6,6 +6,7 @@ import { PlanCuentasService } from "../../../../services/i2t/plan-cuentas.servic
 import { PlanCuenta } from "../../../../interfaces/plan-cuenta.interface";
 import { RefContable } from 'src/app/interfaces/ref-contable.interface';
 import { SelectionModel } from '@angular/cdk/collections';
+import { RefContablesService } from 'src/app/services/i2t/ref-contables.service';
 
 @Component({
   selector: 'app-alta-plan-de-cuentas',
@@ -30,6 +31,9 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   //para la lista de referencias contables
   refContablesAll:RefContable[];
   constRefContables = new MatTableDataSource();
+  mostrarReferencias:boolean;
+  
+  rcData:any;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -42,7 +46,10 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     private route:ActivatedRoute,
     private _PlanCuentasService:PlanCuentasService,
     private router: Router,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    private _refContablesService:RefContablesService,
+    private cdr: ChangeDetectorRef,
+    private zona: NgZone
   ) {
     this.loading = true;
 
@@ -111,16 +118,26 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                 if (this.existe == true){
                   //console.log(this.planDeCuentas);
                   this.loading = false;
-
                   
-                  //this.forma.controls['id'].setValue(this.id);
-                  //console.log(this.constPlanesCuentas[this.id]);
+                  //subscribir al cambio de valores en el valor de "imputable"
+                  //necesario para mostrar u ocultar correctamente al iniciar la pantalla
+                  //todo: investigar una mejor forma
+                  //posibles: ngZone, ChangeDetectorRef.DetectChanges. Requieren incluir en constructor
+                  this.forma.get('imputable').valueChanges.subscribe(
+                    value => {  if (value == 1) {
+                                  this.mostrarReferencias = true;
+                                }
+                                else{
+                                  this.mostrarReferencias = false;
+                                }
+
+                  });
                   this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);                  
                   this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
                   this.forma.controls['nomencladorpadre'].setValue(this.planDeCuentas.nomencladorpadre);
                   this.forma.controls['orden'].setValue(this.planDeCuentas.orden);
-                  this.forma.controls['imputable'].setValue(this.planDeCuentas.imputable.toString());           
+                  this.forma.controls['imputable'].setValue(this.planDeCuentas.imputable.toString()); 
                   this.forma.controls['patrimonial'].setValue(this.planDeCuentas.patrimonial.toString());
                   this.forma.controls['estado'].setValue(this.planDeCuentas.estado.toString());
                 }
@@ -143,51 +160,6 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
       });
   }
-
-/*     this.route.params.subscribe( parametros=>{
-      this.id = parametros['id'];
-      this.existe = false;
-
-      if( this.id !== "nuevo" ){
-        for( let aux in this.constPlanesCuentas ){
-          if (this.id == aux){
-            this.existe=true;
-            //this.forma.controls['id'].setValue(this.id);
-            console.log(this.constPlanesCuentas[this.id]);
-            
-            this.forma.controls['cuenta_contable'].setValue(this.constPlanesCuentas[this.id].cuenta_contable);
-            this.forma.controls['nombre'].setValue(this.constPlanesCuentas[this.id].nombre);
-/*             this.forma.controls['imputable'].setValue(this.constPlanesCuentas[this.id].imputable);           
-            this.forma.controls['patrimonial'].setValue(this.constPlanesCuentas[this.id].patrimonial);
-            this.forma.controls['nomenclador'].setValue(this.constPlanesCuentas[this.id].nomenclador); *
-            
-            this.forma.controls['imputable'].setValue(this.constPlanesCuentas[this.id].imputable.toString());           
-            this.forma.controls['patrimonial'].setValue(this.constPlanesCuentas[this.id].patrimonial.toString());
-            this.forma.controls['nomenclador'].setValue(this.constPlanesCuentas[this.id].nomenclador);
-            
-            this.forma.controls['nomenclador_padre'].setValue(this.constPlanesCuentas[this.id].nomenclador_padre);
-            this.forma.controls['orden'].setValue(this.constPlanesCuentas[this.id].orden);
-            this.forma.controls['estado'].setValue(this.constPlanesCuentas[this.id].estado.toString());
-            // this.constPlanesCuentas[this.id].patrimonial.toString();
-            // this.forma.setValue(this.constPlanesCuentas[this.id]);
-            // this.forma.controls['patrimonial'].setValue("1");
-          }
-        }
-        if (this.existe == false){
-          console.log('no existe este id!');
-          this.forma.controls['cuenta_contable'].disable();
-          this.forma.controls['nombre'].disable();
-          this.forma.controls['imputable'].disable();
-          this.forma.controls['patrimonial'].disable();
-          this.forma.controls['nomenclador'].disable();
-          this.forma.controls['nomenclador_padre'].disable();
-          this.forma.controls['orden'].disable();
-          this.forma.controls['estado'].disable();
-        }
-      }
-
-    });
-   } */
 
    /* <!-- 
    id                  if:string;
@@ -219,7 +191,6 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       d2 = (this.planDeCuentas.date_entered);
       d2 = d2.substring(0, 10);
     }
-    //todo cambiar por lo real de plan de cuentas
     let jsbody = {
       "id":this.planDeCuentas.id,
       "name":this.planDeCuentas.name,
@@ -237,24 +208,6 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       "imputable":??,
       "estado":??, */
     };
-/*
-id: string; //36
-cuentacontable:string;//25
-name:string;//255
-nomenclador:string;//25
-nomencladorpadre:string;//25
-orden:number;
-description:string;
-imputable:string;//100
-patrimonial:string;//100
-estado:string;//100
-deleted:number;
-assigned_user_id:string;//36
-date_entered:datetime;
-//created_by:string;//36
-date_modified:datetime;
-//modified_user_id:string;//36
-*/
 
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
@@ -290,12 +243,18 @@ date_modified:datetime;
   guardarPlanDeCuentas(){
     if( this.id == "nuevo" ){
       // insertando
-    //todo cambiar por lo real de plan de cuentas
       var d = new Date();
-      //todo corregir desde acá
       let jsbody = {
-        "id":this.forma.controls['id_ref_contable'].value,
-        "name":this.forma.controls['nombre_ref_contable'].value,
+        "id":this.forma.controls['id'].value,
+        "cuentacontable":this.forma.controls['cuentacontable'].value,
+        "name":this.forma.controls['name'].value,
+        "nomenclador":this.forma.controls['nomenclador'].value,
+        "nomencladorpadre":this.forma.controls['nomencladorpadre'].value,
+        "orden":this.forma.controls['orden'].value,
+        "imputable":this.forma.controls['imputable'].value,
+        "patrimonial":this.forma.controls['patrimonial'].value,
+        "estado":this.forma.controls['estado'].value,
+        //auditoría
         "date_entered":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "modified_user_id":1,//hardcoded
@@ -303,33 +262,8 @@ date_modified:datetime;
         "description":null,//hardcoded
         "deleted":0,//hardcoded
         "assigned_user_id":1,//hardcoded
-        "tienectocosto ":this.forma.controls['tiene_centro_costo'].value,
-        "numero":this.forma.controls['id_ref_contable'].value,
-        "idgrupofinanciero":1,//hardcoded POR AHORA
-        "tg01_centrocosto_id_c":null,//hardcoded POR AHORA
-        "idreferenciacontable":this.forma.controls['id_ref_contable'].value,
-        "estado":this.forma.controls['estado_ref_contable'].value,
-        "tg01_grupofinanciero_id_c":null//hardcoded POR AHORA
       };
 
-      /*
-      id: string; //36
-      cuentacontable:string;//25
-      name:string;//255
-      nomenclador:string;//25
-      nomencladorpadre:string;//25
-      orden:number;
-      description:string;
-      imputable:string;//100
-      patrimonial:string;//100
-      estado:string;//100
-      deleted:number;
-      assigned_user_id:string;//36
-      date_entered:datetime;
-      //created_by:string;//36
-      date_modified:datetime;
-      //modified_user_id:string;//36
-      */
       let jsonbody= JSON.stringify(jsbody);
       console.log(jsonbody);
       this._PlanCuentasService.postPlanDeCuentas( jsonbody,this.token )
@@ -355,7 +289,7 @@ date_modified:datetime;
                 // carga ok
                 this.openSnackBar("Alta Correcta.");
                 //todo cambiar por lo real de plan de cuentas
-                this.router.navigate(['/plan-cuentas', this.forma.controls['id_ref_contable'].value]);
+                this.router.navigate(['/plan-cuentas', this.forma.controls['name'].value]);
               } else {
                 //error al cargar
                 this.openSnackBar("Error. Alta no permitida.");
@@ -372,22 +306,23 @@ date_modified:datetime;
         d2 = d2.substring(0, 10);
       }
       let jsbody = {
-        "id":this.forma.controls['id_ref_contable'].value,
-        "name":this.forma.controls['nombre_ref_contable'].value,
-        "date_entered":d2,
+        "id":this.forma.controls['id'].value,
+        "cuentacontable":this.forma.controls['cuentacontable'].value,
+        "name":this.forma.controls['name'].value,
+        "nomenclador":this.forma.controls['nomenclador'].value,
+        "nomencladorpadre":this.forma.controls['nomencladorpadre'].value,
+        "orden":this.forma.controls['orden'].value,
+        "imputable":this.forma.controls['imputable'].value,
+        "patrimonial":this.forma.controls['patrimonial'].value,
+        "estado":this.forma.controls['estado'].value,
+        //auditoría
+        "date_entered":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "modified_user_id":1,//hardcoded
         "created_by":1,//hardcoded
         "description":null,//hardcoded
         "deleted":0,//hardcoded
         "assigned_user_id":1,//hardcoded
-        "tienectocosto ":this.forma.controls['tiene_centro_costo'].value,
-        "numero":this.forma.controls['id_ref_contable'].value,
-        "idgrupofinanciero":1,//hardcoded POR AHORA
-        "tg01_centrocosto_id_c":null,//hardcoded POR AHORA
-        "idreferenciacontable":this.forma.controls['id_ref_contable'].value,
-        "estado":this.forma.controls['estado_ref_contable'].value,
-        "tg01_grupofinanciero_id_c":null//hardcoded POR AHORA
       };
       let jsonbody= JSON.stringify(jsbody);
       console.log(jsonbody);
@@ -420,4 +355,50 @@ date_modified:datetime;
     }
   }
 
+  //para la lista de referencias contables
+  //todo: que la lista sólo contenga las no enlazadas
+  buscarRefContable(){
+    this._refContablesService.getRefContables( this.token )
+      .subscribe( dataRC => {
+        //console.log(dataRC);
+          this.rcData = dataRC;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.rcData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.refContablesAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._refContablesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarRefContable();
+              });
+            } else {
+              if(this.rcData.dataset.length>0){
+                this.refContablesAll = this.rcData.dataset;
+                console.log(this.refContablesAll);
+                this.loading = false;
+
+                this.constRefContables = new MatTableDataSource(this.refContablesAll);
+
+                this.constRefContables.sort = this.sort;
+                this.constRefContables.paginator = this.paginator;
+
+                //this.table.renderRows();
+                //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
+
+              } else {
+                this.refContablesAll = null;
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
+
+  openGroup(nombrePanel: string){
+    this.buscarRefContable();
+  }
+  //
 }

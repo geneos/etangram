@@ -1,18 +1,19 @@
 export interface RefContable{
   assigned_user_id: number;
-  //created_by: null
-  date_entered: null
-  date_modified: null
+  created_by: string;
+  date_entered: string;
+  date_modified: string;
   deleted: number;
   //description: null
   estado: number;
   id: string;
-  //idgrupofinanciero: null
+  idgrupofinanciero: number;
   idreferenciacontable: string;
-  //modified_user_id: null
+  modified_user_id: string;
   name: string;
   numero: number;
-  //tg01_centrocosto_id_c: null
-  //tg01_grupofinanciero_id_c: null
+  tg01_centrocosto_id_c: string;
+  tg01_grupofinanciero_id_c: string;
+  tg01_cuentascontables_id_c:string;
   tienectocosto: number;
 }

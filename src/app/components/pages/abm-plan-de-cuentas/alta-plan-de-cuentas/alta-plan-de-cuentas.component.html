@@ -110,11 +110,12 @@
 
   <!-- panel de referencias contables visible unicamente si es cuenta imputable -->
   <!-- <mat-expansion-panel *ngIf="esImputable.value==1" [expanded]=false [disabled]=false (opened)="openGroup('expansionRefs')" style="margin-top:10px;"> -->
-  <mat-expansion-panel *ngIf="mostrarReferencias" [expanded]=false [disabled]=false (opened)="openGroup('expansionRefs')" style="margin-top:10px;">
+  <mat-expansion-panel *ngIf="mostrarReferencias" [expanded]=true [disabled]=true (opened)="openGroup('expansionRefs')" style="margin-top:10px;">
     <mat-expansion-panel-header>
       <mat-panel-title>REFERENCIAS CONTABLES</mat-panel-title>
     </mat-expansion-panel-header>
-    <button [routerLink]="['/ref-contables','nuevo']" class="mine-btnbig" mat-flat-button>
+    <!-- <button [routerLink]="['/ref-contables','nuevo']" class="mine-btnbig" mat-flat-button> -->
+    <button class="mine-btnbig" mat-flat-button>
       NUEVO
     </button>
     <app-loading *ngIf="loading"></app-loading>

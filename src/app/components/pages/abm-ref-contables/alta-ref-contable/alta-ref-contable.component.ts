@@ -21,6 +21,7 @@ export class AltaRefContableComponent implements OnInit {
   rcData: any;
   refContable: RefContable;
   loginData: any;
+  tieneCC: boolean;
 
   loading:boolean;
   auxresp: any;
@@ -58,6 +59,20 @@ export class AltaRefContableComponent implements OnInit {
 
   ngOnInit() {
     //console.log();
+
+    //subscribir al cambio de valores en el valor de "tiene centro de costos"
+    //necesario para mostrar u ocultar correctamente al iniciar la pantalla
+    //todo: investigar una mejor forma
+    //posibles: ngZone, ChangeDetectorRef.DetectChanges. Requieren incluir en constructor
+    this.forma.get('tiene_centro_costo').valueChanges.subscribe(
+      value => {  if (value == 1) {
+                    this.tieneCC = true;
+                  }
+                  else{
+                    this.tieneCC = false;
+                  }
+
+    });
   }
 
   buscarRefContable(auxid:string){

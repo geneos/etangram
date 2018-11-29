@@ -47,9 +47,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     private _PlanCuentasService:PlanCuentasService,
     private router: Router,
     public snackBar: MatSnackBar,
-    private _refContablesService:RefContablesService,
-    private cdr: ChangeDetectorRef,
-    private zona: NgZone
+    private _refContablesService:RefContablesService
   ) {
     this.loading = true;
 
@@ -119,19 +117,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                   //console.log(this.planDeCuentas);
                   this.loading = false;
                   
-                  //subscribir al cambio de valores en el valor de "imputable"
-                  //necesario para mostrar u ocultar correctamente al iniciar la pantalla
-                  //todo: investigar una mejor forma
-                  //posibles: ngZone, ChangeDetectorRef.DetectChanges. Requieren incluir en constructor
-                  this.forma.get('imputable').valueChanges.subscribe(
-                    value => {  if (value == 1) {
-                                  this.mostrarReferencias = true;
-                                }
-                                else{
-                                  this.mostrarReferencias = false;
-                                }
-
-                  });
+                  
                   this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);                  
                   this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
@@ -176,6 +162,20 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
   ngOnInit() {
     //console.log();
+    
+    //subscribir al cambio de valores en el valor de "imputable"
+    //necesario para mostrar u ocultar correctamente al iniciar la pantalla
+    //todo: investigar una mejor forma
+    //posibles: ngZone, ChangeDetectorRef.DetectChanges. Requieren incluir en constructor
+    this.forma.get('imputable').valueChanges.subscribe(
+      value => {  if (value == 1) {
+                    this.mostrarReferencias = true;
+                  }
+                  else{
+                    this.mostrarReferencias = false;
+                  }
+
+    });
   }
 
   openSnackBar(message: string) {

@@ -9,6 +9,8 @@ import { APP_ROUTING } from "./app.routes";
 
 //material
 import { MyMaterialModule } from "./material";
+//modales
+import {MatDialogModule} from '@angular/material';
 
 //animations material
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -52,6 +54,7 @@ import { AltaPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuent
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MyMaterialModule,
+    MatDialogModule,
     APP_ROUTING
   ],
   providers: [

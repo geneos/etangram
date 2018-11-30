@@ -7,6 +7,7 @@ import { PlanCuenta } from "../../../../interfaces/plan-cuenta.interface";
 import { RefContable } from 'src/app/interfaces/ref-contable.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { RefContablesService } from 'src/app/services/i2t/ref-contables.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-alta-plan-de-cuentas',
@@ -27,6 +28,9 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
   loading:boolean;
   auxresp: any;
+
+  today: Date;
+  datetime: string = '';
 
   //para la lista de referencias contables
   refContablesAll:RefContable[];
@@ -74,6 +78,11 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       }
 
     });
+  }
+  
+  getdatetime(){
+    this.today = new Date();
+    return formatDate(this.today, 'yyyy-MM-dd HH:mm:ss', 'en-US', '-0300');
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -191,18 +200,23 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       d2 = (this.planDeCuentas.date_entered);
       d2 = d2.substring(0, 10);
     }
+    
+    // let usuarioActual: any = this.obtenerIDUsuario().id;
+    let usuarioActual: any = 'idDePrueba';
     let jsbody = {
       "id":this.planDeCuentas.id,
       "name":this.planDeCuentas.name,
       "cuentacontable":this.planDeCuentas.cuentacontable,
-      "date_entered":d2,
-      "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
-      "modified_user_id":1,//hardcoded
-      "created_by":1,//hardcoded
+      /* "date_entered":d2,
+      "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(), */
+      "date_entered":this.planDeCuentas.date_entered,
+      "date_modified":this.getdatetime(),
+      "modified_user_id":usuarioActual,//hardcoded
+      "created_by":this.planDeCuentas.created_by,//hardcoded
       "description":null,//hardcoded
       "deleted":1,//hardcoded
       "assigned_user_id":1,//hardcoded
-      "estado":this.planDeCuentas.estado
+      "estado":0 //this.planDeCuentas.estado
       /* ,
       "patrimonial":??,
       "imputable":??,
@@ -244,6 +258,8 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     if( this.id == "nuevo" ){
       // insertando
       var d = new Date();
+      // let usuarioActual: any = this.obtenerIDUsuario().id;
+      let usuarioActual: any = 'idDePrueba';
       let jsbody = {
         "id":this.forma.controls['id'].value,
         "cuentacontable":this.forma.controls['cuentacontable'].value,
@@ -255,10 +271,12 @@ export class AltaPlanDeCuentasComponent implements OnInit {
         "patrimonial":this.forma.controls['patrimonial'].value,
         "estado":this.forma.controls['estado'].value,
         //auditoría
-        "date_entered":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
-        "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
-        "modified_user_id":1,//hardcoded
-        "created_by":1,//hardcoded
+        /* "date_entered":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "date_modified":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(), */
+        "date_entered":this.getdatetime(),
+        "date_modified":this.getdatetime(),
+        "modified_user_id":usuarioActual,//hardcoded
+        "created_by":usuarioActual,//hardcoded
         "description":null,//hardcoded
         "deleted":0,//hardcoded
         "assigned_user_id":1,//hardcoded

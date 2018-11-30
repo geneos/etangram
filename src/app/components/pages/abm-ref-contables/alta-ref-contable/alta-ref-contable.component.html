@@ -2,7 +2,7 @@
 <button [routerLink]="['/ref-contables']" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
   VOLVER A LISTA
 </button>
-<button (click)="eliminarRefContables()" class="mine-btnbig" mat-flat-button style="margin-right:10px;">
+<button (click)="eliminarRefContables()" class="mine-btnbig" mat-flat-button style="margin-right:10px;" *ngIf="esnuevo">
   ELIMINAR
 </button>
 
@@ -76,7 +76,7 @@
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>
-      
+
       <!-- <div class="col s12 m12 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Estado</mat-label>

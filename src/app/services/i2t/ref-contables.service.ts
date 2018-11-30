@@ -28,7 +28,29 @@ export class RefContablesService {
       'x-access-token': token
     });
 
-    let query = `api/tg01_referenciascontables`;
+    let query = `api/tg01_referenciascontables/?deleted=eq[0]`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getRefContablesSinCuenta( token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_referenciascontables/?deleted=eq[0]&tg01_cuentascontables_id_c=eq[isnull]`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getRefContablesPorCuenta( token:string , idCuenta:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_referenciascontables/?deleted=eq[0]&tg01_cuentascontables_id_c=lk[${ idCuenta }]`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });

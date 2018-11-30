@@ -22,6 +22,7 @@ export class AltaRefContableComponent implements OnInit {
   refContable: RefContable;
   loginData: any;
   tieneCC: boolean;
+  esnuevo:boolean;
 
   loading:boolean;
   auxresp: any;
@@ -49,8 +50,10 @@ export class AltaRefContableComponent implements OnInit {
       this.existe = false;
 
       if( this.id !== "nuevo" ){
+        this.esnuevo = true;
         this.buscarRefContable(this.id);
       } else {
+        this.esnuevo = false;
         this.loading = false;
       }
 

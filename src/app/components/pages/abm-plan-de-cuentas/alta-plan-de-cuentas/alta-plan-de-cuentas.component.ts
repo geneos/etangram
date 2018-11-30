@@ -31,13 +31,16 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   //para la lista de referencias contables
   refContablesAll:RefContable[];
   constRefContables = new MatTableDataSource();
+  constRefContablesNull = new MatTableDataSource();
+  refContableElegida:any;
   mostrarReferencias:boolean;
-  
+
   rcData:any;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  //@ViewChild(MatSort) sort: MatSort;
+//  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableRefContables') table: MatTable<any>;
+  @ViewChild('tableRefContablesNull') tableNull: MatTable<any>;
 
   selection = new SelectionModel(true, []);
   //
@@ -52,7 +55,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     this.loading = true;
 
     this.forma = new FormGroup({
-      'id': new FormControl('',Validators.required),
+      //'id': new FormControl('',Validators.required),
       'cuentacontable': new FormControl('',Validators.required),
       'name': new FormControl('',Validators.required),
       'imputable': new FormControl('',Validators.required),
@@ -73,22 +76,24 @@ export class AltaPlanDeCuentasComponent implements OnInit {
         this.loading = false;
       }
 
+      //this.forma.controls['nomenclador'].disable();
+
     });
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
-  isAllSelected() {
+/*  isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.constRefContables.data.length;
     return numSelected === numRows;
-  }
+  }*/
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
-  masterToggle() {
+/*  masterToggle() {
     this.isAllSelected() ?
         this.selection.clear() :
         this.constRefContables.data.forEach(row => this.selection.select(row));
-  }
+  }*/
 
   buscarPlanDeCuentas(auxid:string){
     this._PlanCuentasService.getPlanDeCuentas( auxid, this.token )
@@ -116,14 +121,13 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                 if (this.existe == true){
                   //console.log(this.planDeCuentas);
                   this.loading = false;
-                  
-                  
+
                   this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
-                  this.forma.controls['name'].setValue(this.planDeCuentas.name);                  
+                  this.forma.controls['name'].setValue(this.planDeCuentas.name);
                   this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
                   this.forma.controls['nomencladorpadre'].setValue(this.planDeCuentas.nomencladorpadre);
                   this.forma.controls['orden'].setValue(this.planDeCuentas.orden);
-                  this.forma.controls['imputable'].setValue(this.planDeCuentas.imputable.toString()); 
+                  this.forma.controls['imputable'].setValue(this.planDeCuentas.imputable.toString());
                   this.forma.controls['patrimonial'].setValue(this.planDeCuentas.patrimonial.toString());
                   this.forma.controls['estado'].setValue(this.planDeCuentas.estado.toString());
                 }
@@ -147,7 +151,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       });
   }
 
-   /* <!-- 
+   /* <!--
    id                  if:string;
    Nombre              nombre:string;
    Cuenta Contable     cuenta_contable:string;
@@ -162,7 +166,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
   ngOnInit() {
     //console.log();
-    
+
     //subscribir al cambio de valores en el valor de "imputable"
     //necesario para mostrar u ocultar correctamente al iniciar la pantalla
     //todo: investigar una mejor forma
@@ -245,7 +249,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       // insertando
       var d = new Date();
       let jsbody = {
-        "id":this.forma.controls['id'].value,
+        "id":this.forma.controls['cuentacontable'].value, //revisar si id = cuentacontable
         "cuentacontable":this.forma.controls['cuentacontable'].value,
         "name":this.forma.controls['name'].value,
         "nomenclador":this.forma.controls['nomenclador'].value,
@@ -306,7 +310,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
         d2 = d2.substring(0, 10);
       }
       let jsbody = {
-        "id":this.forma.controls['id'].value,
+        "id":this.forma.controls['cuentacontable'].value, // revisar si id = cuenta contable
         "cuentacontable":this.forma.controls['cuentacontable'].value,
         "name":this.forma.controls['name'].value,
         "nomenclador":this.forma.controls['nomenclador'].value,
@@ -328,7 +332,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       console.log(jsonbody);
       this._PlanCuentasService.putPlanDeCuentas( this.planDeCuentas.id,jsonbody,this.token )
         .subscribe( resp => {
-          //console.log(resp);
+          console.log(resp);
           this.auxresp = resp;
           if(this.auxresp.returnset[0].RCode=="-6003"){
             //token invalido
@@ -355,10 +359,9 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     }
   }
 
-  //para la lista de referencias contables
-  //todo: que la lista sólo contenga las no enlazadas
+  //para la lista de referencias contables asignadas
   buscarRefContable(){
-    this._refContablesService.getRefContables( this.token )
+    this._refContablesService.getRefContablesPorCuenta( this.token, this.planDeCuentas.nomenclador)
       .subscribe( dataRC => {
         //console.log(dataRC);
           this.rcData = dataRC;
@@ -383,8 +386,8 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
                 this.constRefContables = new MatTableDataSource(this.refContablesAll);
 
-                this.constRefContables.sort = this.sort;
-                this.constRefContables.paginator = this.paginator;
+                //this.constRefContables.sort = this.sort;
+                //this.constRefContables.paginator = this.paginator;
 
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
@@ -397,8 +400,116 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       });
   }
 
+  //para la lista de referencias contables sin asginar
+  buscarRefContableNull(){
+    this._refContablesService.getRefContablesSinCuenta( this.token )
+      .subscribe( dataRC => {
+        //console.log(dataRC);
+          this.rcData = dataRC;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.rcData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.refContablesAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._refContablesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarRefContableNull();
+              });
+            } else {
+              console.log(this.rcData.dataset);
+              if(this.rcData.dataset.length>0){
+                this.refContablesAll = this.rcData.dataset;
+                console.log(this.refContablesAll);
+                this.loading = false;
+
+                this.constRefContablesNull = new MatTableDataSource(this.refContablesAll);
+
+                //this.constRefContables.sort = this.sort;
+                //this.constRefContables.paginator = this.paginator;
+
+                //this.table.renderRows();
+                //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
+
+              } else {
+                this.refContablesAll = null;
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
+
+  asignarRefContable(indice:number,asignando:boolean){
+    //actualizando
+    this.refContableElegida = this.constRefContables.data[indice];
+    if(asignando){
+      console.log('agregando referencia: ');
+      var auxAsignando:any = this.planDeCuentas.nomenclador;
+    } else {
+      console.log('eliminando referencia: ');
+      var auxAsignando:any = null;
+    }
+    /*var d = new Date();
+    var d2;
+    if( this.refContable.date_entered != null){
+      d2 = (this.refContable.date_entered);
+      d2 = d2.substring(0, 10);
+    }*/
+    let jsbody = {
+      "id":this.refContableElegida.id,
+      "name":this.refContableElegida.name,
+      "date_entered":this.refContableElegida.date_entered,
+      "date_modified":this.refContableElegida.date_modified,
+      "modified_user_id":this.refContableElegida.modified_user_id,
+      "created_by":this.refContableElegida.created_by,
+      "description":null,
+      "deleted":this.refContableElegida.deleted,
+      "assigned_user_id":this.refContableElegida.assigned_user_id,
+      "tienectocosto ":this.refContableElegida.tienectocosto,
+      "numero":this.refContableElegida.numero,
+      "idgrupofinanciero":this.refContableElegida.idgrupofinanciero,
+      "tg01_centrocosto_id_c":this.refContableElegida.tg01_centrocosto_id_c,
+      "idreferenciacontable":this.refContableElegida.idreferenciacontable,
+      "estado":this.refContableElegida.estado,
+      "tg01_grupofinanciero_id_c":this.refContableElegida.tg01_grupofinanciero_id_c,
+      "tg01_cuentascontables_id_c":auxAsignando,
+    };
+    let jsonbody= JSON.stringify(jsbody);
+    console.log(jsonbody);
+    this._refContablesService.putRefContable( this.refContableElegida.id,jsonbody,this.token )
+      .subscribe( resp => {
+        console.log(resp);
+        this.auxresp = resp;
+        if(this.auxresp.returnset[0].RCode=="-6003"){
+          //token invalido
+          //this.refContable = null;
+          let jsbody = {"usuario":"usuario1","pass":"password1"}
+          let jsonbody = JSON.stringify(jsbody);
+          this._refContablesService.login(jsonbody)
+            .subscribe( dataL => {
+              console.log(dataL);
+              this.loginData = dataL;
+              this.token = this.loginData.dataset[0].jwt;
+              this.asignarRefContable(indice,asignando);
+            });
+          } else {
+            if (this.auxresp.returnset[0].RCode=="1"){
+              // modif ok
+              this.openSnackBar("Modificación realizada con éxito.");
+            } else {
+              //error al cargar
+              this.openSnackBar("Error. Modificación no permitida.");
+            }
+        }
+      });
+  }
+
   openGroup(nombrePanel: string){
     this.buscarRefContable();
+    this.buscarRefContableNull();
   }
   //
 }

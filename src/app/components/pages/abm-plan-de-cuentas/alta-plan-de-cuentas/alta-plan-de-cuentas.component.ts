@@ -462,13 +462,16 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
   asignarRefContable(indice:number,asignando:boolean){
     //actualizando
-    this.refContableElegida = this.constRefContables.data[indice];
     if(asignando){
       console.log('agregando referencia: ');
+      console.log(this.constRefContablesNull.data[indice]||', indice: '||indice);
+      this.refContableElegida = this.constRefContablesNull.data[indice];
       var auxAsignando:any = this.planDeCuentas.nomenclador;
     } else {
+
       console.log('eliminando referencia: ');
-      var auxAsignando:any = null;
+      this.refContableElegida = this.constRefContables.data[indice];
+      var auxAsignando:any = 'null';
     }
     /*var d = new Date();
     var d2;
@@ -516,6 +519,8 @@ export class AltaPlanDeCuentasComponent implements OnInit {
           } else {
             if (this.auxresp.returnset[0].RCode=="1"){
               // modif ok
+              this.buscarRefContable();
+              this.buscarRefContableNull();
               this.openSnackBar("Modificación realizada con éxito.");
             } else {
               //error al cargar

@@ -39,7 +39,7 @@ export class RefContablesService {
       'x-access-token': token
     });
 
-    let query = `api/tg01_referenciascontables/?deleted=eq[0]&tg01_cuentascontables_id_c=eq[isnull]`;
+    let query = `api/ReferenciasContablesSinAsignar`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });

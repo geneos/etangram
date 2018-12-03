@@ -26,19 +26,14 @@ export class AltaRefContableComponent implements OnInit {
   refContable: RefContable;
   loginData: any;
   tieneCC: boolean;
-<<<<<<< HEAD
-<<<<<<< HEAD
+
   esnuevo:boolean;
-=======
+
   usuario: Usuario;
->>>>>>> 98c6ebaf24a2c3694ce384f613875e5f4d0b461d
-=======
-  usuario: Usuario;
->>>>>>> 98c6ebaf24a2c3694ce384f613875e5f4d0b461d
 
   loading:boolean;
   auxresp: any;
-  
+
   today:Date;
   datetime = '';
 
@@ -80,7 +75,7 @@ export class AltaRefContableComponent implements OnInit {
     this.today = new Date();
     return formatDate(this.today, 'yyyy-MM-dd HH:mm:ss', 'en-US', '-0300');
   }
-  
+
   obtenerIDUsuario(){
     //todo: traer usuario de login, ahora no tienen relación en la base
     this._usuariosService.getUsuarioPorUsername('morecchia', this.token)
@@ -112,7 +107,7 @@ export class AltaRefContableComponent implements OnInit {
           }
       }
     });
-    
+
     return this.usuario;
   }
 
@@ -265,7 +260,7 @@ export class AltaRefContableComponent implements OnInit {
     if( this.id == "nuevo" ){
       // insertando
       var d = new Date();
-      
+
       let usuarioActual: any = this.obtenerIDUsuario().id;
       let jsbody = {
         "id":this.forma.controls['id_ref_contable'].value,

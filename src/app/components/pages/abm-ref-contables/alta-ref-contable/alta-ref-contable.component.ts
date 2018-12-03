@@ -27,7 +27,11 @@ export class AltaRefContableComponent implements OnInit {
   loginData: any;
   tieneCC: boolean;
 <<<<<<< HEAD
+<<<<<<< HEAD
   esnuevo:boolean;
+=======
+  usuario: Usuario;
+>>>>>>> 98c6ebaf24a2c3694ce384f613875e5f4d0b461d
 =======
   usuario: Usuario;
 >>>>>>> 98c6ebaf24a2c3694ce384f613875e5f4d0b461d

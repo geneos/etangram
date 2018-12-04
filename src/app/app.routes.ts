@@ -9,6 +9,8 @@ import { AbmRefContablesComponent } from './components/pages/abm-ref-contables/a
 import { AltaRefContableComponent } from './components/pages/abm-ref-contables/alta-ref-contable/alta-ref-contable.component';
 import { AbmPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuentas/abm-plan-de-cuentas.component';
 import { AltaPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuentas/alta-plan-de-cuentas/alta-plan-de-cuentas.component';
+import { AbmMinContablesComponent } from './components/pages/abm-min-contables/abm-min-contables.component';
+import { AltaMinContableComponent } from './components/pages/abm-min-contables/alta-min-contable/alta-min-contable.component';
 
 const APP_ROUTES: Routes = [
   { path: 'compra', component: AbmComprasComponent },
@@ -20,6 +22,8 @@ const APP_ROUTES: Routes = [
   { path: 'ref-contables/:id', component: AltaRefContableComponent },
   { path: 'plan-cuentas', component: AbmPlanDeCuentasComponent },
   { path: 'plan-cuentas/:id', component: AltaPlanDeCuentasComponent },
+  { path: 'min-contables', component: AbmMinContablesComponent },
+  { path: 'min-contables/:id', component: AltaMinContableComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'compra' }
 ];
 

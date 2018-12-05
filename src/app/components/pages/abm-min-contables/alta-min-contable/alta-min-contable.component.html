@@ -1,0 +1,213 @@
+<h2 *ngIf="!existe">NUEVA MINUTA CONTABLE</h2>
+<h2 *ngIf="existe">EDITANDO MINUTA CONTABLE</h2>
+<button [routerLink]="['/min-contables']" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+  VOLVER A LISTA
+</button>
+<button (click)="eliminarMinutaContable()" class="mine-btnbig" mat-flat-button style="margin-right:10px;" *ngIf="existe">
+  ELIMINAR
+</button>
+
+<form [formGroup]="forma" (ngSubmit)="guardarCabecera()" novalidate="novalidate">
+
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        DATOS DE MINUTA CONTABLE
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+
+      <div class="col s12 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Fecha</mat-label>
+          <input matInput [matDatepicker]="picker" placeholder="" formControlName="fecha">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="col s12 m8 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Tipo Comprobante</mat-label>
+          <input matInput placeholder="" formControlName="tipo">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+
+      <div class="col s12 m6 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Número</mat-label>
+          <input matInput placeholder="" formControlName="numero">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+
+      <div class="col s12 m6 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Organización</mat-label>
+          <input matInput placeholder="" formControlName="organizacion">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+
+      <div class="col s6 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Moneda</mat-label>
+          <input matInput placeholder="" formControlName="moneda" >
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+
+      <div class="col s6 m6 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Caja</mat-label>
+          <input matInput placeholder="" formControlName="caja" >
+        </mat-form-field>
+      </div>
+
+      <div class="col s12 m12 l8">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Observaciones</mat-label>
+          <input matInput placeholder="" formControlName="observaciones" >
+        </mat-form-field>
+      </div>
+      
+    </div>
+    <!-- todo descomentar -->
+    <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="!editingCabecera">
+    <!-- <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="editingCabecera"> -->
+      <table #tableReferencias mat-table [dataSource]="referenciasData" class="mat-elevation-z1"
+        style="font-family: 'Lato', sans-serif !important;">
+
+        <!-- Columna Opciones -->
+        <ng-container matColumnDef="opciones">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let element; let in = index" style="width:70px;">
+            <a (click)="eliminarReferencia(in)" style="color:#000;"><i class="material-icons" style="color:red;">close</i></a>
+            <a (click)="editarReferencia(in)" style="color:#000;"><i class="material-icons">edit</i></a>
+          </td>
+        </ng-container>
+        <!-- Columna Referencia Contable -->
+        <ng-container matColumnDef="refContable">
+          <th mat-header-cell *matHeaderCellDef> Referencia Contable </th>
+          <td mat-cell *matCellDef="let auxreferencia" style="font-weight:bold;"> {{ auxreferencia.refcontable }} </td>
+        </ng-container>
+        <!-- Columna Centro de Costo -->
+        <ng-container matColumnDef="centroDeCosto">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Centro de Costo </th>
+          <td mat-cell *matCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.centrodecosto }} </td>
+        </ng-container>
+        <!-- Columna Debe -->
+        <ng-container matColumnDef="debe">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Debe </th>
+          <td mat-cell *matCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.debe }} </td>
+        </ng-container>
+        <!-- Columna Haber -->
+        <ng-container matColumnDef="haber">
+          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Haber </th>
+          <td mat-cell *matCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.haber | number:'1.2-2'}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
+      </table>
+      <div class="col s12" style="margin-top:5px;" *ngIf="referenciasData.length < 1">
+        <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>Todavía no se ha cargado ninguna Referencia</i></mat-card>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && !addingItem && !addingReferencia && !editingAI">
+
+      <div class="col s12">
+        <button (click)="addReferencia()" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+          AGREGAR REFERENCIA
+        </button>
+      </div>
+    </div>
+
+    <!-- todo descomentar -->
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingReferencia || editingAI)">
+    <!-- <div class="row" style="margin-top:25px; margin-bottom:5px;" > -->
+      <form [formGroup]="formaReferencias" (ngSubmit)="guardarReferencia()" novalidate="novalidate">
+        <div class="col s8 m3 l1">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Referencia Contable</mat-label>
+            <input (keyup)="buscarRefContable()" #codRef matInput placeholder="" formControlName="refContable">
+            <mat-hint *ngIf="formaReferencias.status=='PENDING'">
+              Buscando...
+            </mat-hint>
+            <!-- todo descomentar -->
+            <!-- <mat-hint *ngIf="formaReferencias.controls['codigo'].errors?.noExiste">
+              No existe
+            </mat-hint> -->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m2 l1" style="margin-top:10px;">
+          <button class="mine-btnforms" mat-flat-button>
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
+        </div>
+        <div class="col s12 m7 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Centro de Costo</mat-label>
+            <!-- todo: obtener de la referencia contable-->
+            <!-- <input matInput placeholder="" formControlName="centroDeCosto" value="{{ compraArticulo?.descripcion }}"> -->
+            <input matInput placeholder="" formControlName="centroDeCosto" >
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s4 m2 l1">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Debe</mat-label>
+            <input matInput placeholder="" type="number" formControlName="debe" style="text-align: right;">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s8 m2 l1">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Haber</mat-label>
+            <input matInput placeholder="" formControlName="haber" style="text-align: right;">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+
+        <div class="col s12" style="text-align: right;">
+          <button *ngIf="!editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
+            AGREGAR
+          </button>
+          <button *ngIf="editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
+            ACTUALIZAR
+          </button>
+          <button type="reset" (click)="cancelarArtItem()" class="mine-btnbig-grey" mat-flat-button>
+            CANCELAR
+          </button>
+        </div>
+      </form>
+    </div>
+    <!--panel totales-->
+    <div class="row" *ngIf="!editingCabecera">
+      <div class="col s12" style="text-align: right;">
+        <h5>Debe: $ {{ totaldebe | number:'1.2-2' }}</h5>
+        <h5>Haber: $ {{ totalhaber | number:'1.2-2' }}</h5>
+      </div>
+    </div>
+
+</mat-expansion-panel>
+
+ 
+
+<div class="row" style="height:0px;"></div>
+
+<div class="row" style="text-align: right;" *ngIf="editingCabecera">
+  <button type="submit" class="mine-btnbig" mat-flat-button [disabled]="!forma.valid">
+    GUARDAR
+  </button>
+</div>
+</form>
+
+<div class="row" style="text-align: right;" *ngIf="!editingCabecera">
+  <button class="mine-btnbig" mat-flat-button [disabled]="false">
+    CONFIRMAR
+  </button>
+</div>

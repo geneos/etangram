@@ -3,9 +3,6 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { PlanCuentasService } from "../../../services/i2t/plan-cuentas.service";
 import { PlanCuenta } from "../../../interfaces/plan-cuenta.interface";
-import {FlatTreeControl} from '@angular/cdk/tree';
-import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
-import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 
 @Component({
   selector: 'app-abm-plan-de-cuentas',
@@ -27,12 +24,11 @@ export class AbmPlanDeCuentasComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tablePlanesCuentas') table: MatTable<any>;
 
-  selection = new SelectionModel(true, []);
+  selection = new SelectionModel(false, []);
 
   constructor(private _planCuentasService:PlanCuentasService) {
     this.loading = true;
     this.buscarPlanCuentas();
-
   }
 
   ngOnInit() {
@@ -55,6 +51,10 @@ export class AbmPlanDeCuentasComponent implements OnInit {
     this.isAllSelected() ?
         this.selection.clear() :
         this.constPlanesCuentas.data.forEach(row => this.selection.select(row));
+  }
+
+  verSelect(){
+    console.log(this.selection.selected);
   }
 
   buscarPlanCuentas(){

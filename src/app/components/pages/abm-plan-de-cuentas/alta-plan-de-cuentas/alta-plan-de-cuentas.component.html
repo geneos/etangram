@@ -45,13 +45,13 @@
         </mat-form-field>
       </div>
 
-      <div class="col s10 m4 l3">
+      <!--<div class="col s10 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cuenta Contable</mat-label>
           <input matInput placeholder="" formControlName="cuentacontable">
         </mat-form-field>
-      </div>
-      <div class="col s12 m8 l4">
+      </div>-->
+      <div class="col s12 m8 l7">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de la Cuenta</mat-label>
           <input matInput placeholder="" formControlName="name">
@@ -92,7 +92,7 @@
       <div class="col s10 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nomenclador</mat-label>
-          <input matInput placeholder="" formControlName="nomenclador" >
+          <input matInput placeholder="" formControlName="nomenclador" [value]="auxPadre.value+'.'+auxOrden.value">
           <!--<mat-hint>Hint</mat-hint>  [value]="auxPadre.value+'.'+auxOrden.value"-->
         </mat-form-field>
       </div>

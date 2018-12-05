@@ -20,6 +20,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
   forma:FormGroup;
   id:any;
+  padre:any;
   existe:boolean;
   token: string = "a";
   pcData: any;
@@ -60,11 +61,11 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
     this.forma = new FormGroup({
       //'id': new FormControl('',Validators.required),
-      'cuentacontable': new FormControl('',Validators.required),
+      'cuentacontable': new FormControl(),
       'name': new FormControl('',Validators.required),
       'imputable': new FormControl('',Validators.required),
       'patrimonial': new FormControl('',Validators.required),
-      'nomenclador': new FormControl('',Validators.required),
+      'nomenclador': new FormControl(),
       'nomencladorpadre': new FormControl(),
       'orden': new FormControl('',Validators.required),
       'estado': new FormControl('',Validators.required),
@@ -72,6 +73,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
+      this.padre = parametros['padre'];
       this.existe = false;
 
       if( this.id !== "nuevo" ){
@@ -80,11 +82,12 @@ export class AltaPlanDeCuentasComponent implements OnInit {
         this.loading = false;
       }
 
-      //this.forma.controls['nomenclador'].disable();
+      this.forma.controls['nomencladorpadre'].disable();
+      this.forma.controls['nomenclador'].disable();
 
     });
   }
-  
+
   getdatetime(){
     this.today = new Date();
     return formatDate(this.today, 'yyyy-MM-dd HH:mm:ss', 'en-US', '-0300');
@@ -189,6 +192,10 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                   }
 
     });
+
+    if(this.padre != null){
+      this.forma.controls['nomencladorpadre'].setValue(this.padre);
+    }
   }
 
   openSnackBar(message: string) {
@@ -204,7 +211,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       d2 = (this.planDeCuentas.date_entered);
       d2 = d2.substring(0, 10);
     }
-    
+
     // let usuarioActual: any = this.obtenerIDUsuario().id;
     let usuarioActual: any = 'idDePrueba';
     let jsbody = {
@@ -262,13 +269,14 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     if( this.id == "nuevo" ){
       // insertando
       var d = new Date();
+      var auxnomenclador = this.forma.controls['nomencladorpadre'].value+'.'+this.forma.controls['orden'].value;
       // let usuarioActual: any = this.obtenerIDUsuario().id;
       let usuarioActual: any = 'idDePrueba';
       let jsbody = {
-        "id":this.forma.controls['cuentacontable'].value, //revisar si id = cuentacontable
-        "cuentacontable":this.forma.controls['cuentacontable'].value,
+        "id":auxnomenclador, //revisar si id = nomenclador
+        "cuentacontable":auxnomenclador,
         "name":this.forma.controls['name'].value,
-        "nomenclador":this.forma.controls['nomenclador'].value,
+        "nomenclador":auxnomenclador,
         "nomencladorpadre":this.forma.controls['nomencladorpadre'].value,
         "orden":this.forma.controls['orden'].value,
         "imputable":this.forma.controls['imputable'].value,
@@ -311,7 +319,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                 // carga ok
                 this.openSnackBar("Alta Correcta.");
                 //todo cambiar por lo real de plan de cuentas
-                this.router.navigate(['/plan-cuentas', this.forma.controls['name'].value]);
+                this.router.navigate(['/plan-cuentas', auxnomenclador]);
               } else {
                 //error al cargar
                 this.openSnackBar("Error. Alta no permitida.");

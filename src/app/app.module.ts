@@ -30,6 +30,7 @@ import { AltaRefContableComponent } from './components/pages/abm-ref-contables/a
 import { LoadingComponent } from './components/shared/loading/loading.component';
 import { AbmPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuentas/abm-plan-de-cuentas.component';
 import { AltaPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuentas/alta-plan-de-cuentas/alta-plan-de-cuentas.component';
+import { TreeComponent } from './components/pages/prueba/tree/tree.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { AltaPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuent
     AltaRefContableComponent,
     LoadingComponent,
     AbmPlanDeCuentasComponent,
-    AltaPlanDeCuentasComponent
+    AltaPlanDeCuentasComponent,
+    TreeComponent
   ],
   imports: [
     BrowserModule,

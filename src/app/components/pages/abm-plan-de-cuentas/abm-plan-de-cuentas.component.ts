@@ -3,6 +3,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { PlanCuentasService } from "../../../services/i2t/plan-cuentas.service";
 import { PlanCuenta } from "../../../interfaces/plan-cuenta.interface";
+import {FlatTreeControl} from '@angular/cdk/tree';
+import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
+import {BehaviorSubject, Observable, of as observableOf} from 'rxjs';
 
 @Component({
   selector: 'app-abm-plan-de-cuentas',
@@ -29,12 +32,13 @@ export class AbmPlanDeCuentasComponent implements OnInit {
   constructor(private _planCuentasService:PlanCuentasService) {
     this.loading = true;
     this.buscarPlanCuentas();
+
   }
 
   ngOnInit() {
     this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
   }
-/* 
+/*
   ngAfterViewInit() {
     this.constPlanesCuentas.paginator = this.paginator;
   } */
@@ -54,7 +58,7 @@ export class AbmPlanDeCuentasComponent implements OnInit {
   }
 
   buscarPlanCuentas(){
-    
+
     this._planCuentasService.getPlanesDeCuentas( this.token )
       .subscribe( dataPC => {
         //console.log(dataPC);
@@ -92,8 +96,7 @@ export class AbmPlanDeCuentasComponent implements OnInit {
             }
             //console.log(this.planesDeCuotasAll);
       });
-      
+
     }
 
   }
-

@@ -12,6 +12,8 @@ import { TipoComprobante } from 'src/app/interfaces/tipo-comprobante.interface';
 import { Moneda } from 'src/app/interfaces/moneda.interface';
 import { OrganizacionesService } from 'src/app/services/i2t/organizaciones.service';
 import { Organizacion } from 'src/app/interfaces/organizacion.interfac';
+import { MinContable } from 'src/app/interfaces/min-contable.interface';
+import { CajasService } from 'src/app/services/i2t/cajas.service';
 
 
 var auxProvData,auxArtiData:any;
@@ -23,6 +25,68 @@ var auxProvData,auxArtiData:any;
 })
 
 export class AltaMinContableComponent implements OnInit {
+
+//todo borrar, cambiar por lo real
+datos =
+  {
+    returnset: [
+        {
+            RCode: 1,
+            RTxt: 'OK',
+            RId: null,
+            RSQLErrNo: 0,
+            RSQLErrtxt: 'OK'
+        }
+    ],
+    dataset: [
+        {
+            id: '1',
+            name: 'Test 1',
+            estado: 0,
+            assigned_user_id: 1,
+            created_by: 'lsole',
+            date_entered: '01/12/2018',
+            date_modified: '01/12/2018',
+            deleted: 0,
+            tg01_monedas_id2_c: '1',
+            account_id1_c: 'b2a2ad2c-e955-00e5-fc7d-5bf87c0ec6b1',
+            tg01_tipocomprobante_id_c: '43966f4a-4fc8-11e8-b1a0-d050990fe081',
+            fecha: '01/12/2018',
+            tg01_cajas_id_c: 'd336b046-ee63-11e8-ab85-d050990fe081'
+        }, 
+        {
+          id: '2',
+          name: 'Test 2',
+          estado: 0,
+          assigned_user_id: 1,
+          created_by: 'lsole',
+          date_entered: '01/12/2018',
+          date_modified: '01/12/2018',
+          deleted: 0,
+          tg01_monedas_id2_c: '1',
+          account_id1_c: 'b2a2ad2c-e955-00e5-fc7d-5bf87c0ec6b1',
+          tg01_tipocomprobante_id_c: '43966f4a-4fc8-11e8-b1a0-d050990fe081',
+          fecha: '02/12/2018',
+          tg01_cajas_id_c: 'd50a0d5c-c723-88d6-85df-5bf882d33847'
+      }, 
+      {
+        id: '3',
+        name: 'Test 3',
+        estado: 0,
+        assigned_user_id: 1,
+        created_by: 'lsole',
+        date_entered: '01/12/2018',
+        date_modified: '01/12/2018',
+        deleted: 0,
+        tg01_monedas_id2_c: '1',
+        account_id1_c: 'b2a2ad2c-e955-00e5-fc7d-5bf87c0ec6b1',
+        tg01_tipocomprobante_id_c: '43966f4a-4fc8-11e8-b1a0-d050990fe081',
+        fecha: '03/12/2018',
+        tg01_cajas_id_c: 'd336b046-ee63-11e8-ab85-d050990fe081'
+      }
+    ]
+  }
+  /////
 
   editingRenglones:boolean = false;
   agregarReng:boolean = true;
@@ -54,7 +118,13 @@ export class AltaMinContableComponent implements OnInit {
   oData: any;
   organizacion: Organizacion;
   //
+  //listas|combobox
+  cData: any;
+  cajasAll: any[]= [{ id: 0, name: 'Cargando'}]
+  //
 
+  minutaContable: MinContable;
+  //todo revisar
   cabeceraId: string;
   renglonId: string;
   articuloData: any;
@@ -78,7 +148,7 @@ export class AltaMinContableComponent implements OnInit {
 "IVA Responsable Inscripto - Agente de Percepción","Pequeño Contribuyente Eventual",
 "Monotributista Social","Pequeño Contribuyente Eventual Social"]; */
 
-  @ViewChild('tableArticulos') table: MatTable<any>;
+  @ViewChild('tableArticulos') table: MatTable<any>;//
 
   //todo cambiar
   constructor(public dialogArt: MatDialog, private _compraService:CompraService,
@@ -86,6 +156,7 @@ export class AltaMinContableComponent implements OnInit {
               private _tipoComprobanteService: TiposComprobanteService,
               private _organizacionService: OrganizacionesService,
               private _parametrosService: ParametrosService,
+              private _cajasService: CajasService,
               private route:ActivatedRoute,
               private router: Router,
               public snackBar: MatSnackBar) {
@@ -117,13 +188,20 @@ export class AltaMinContableComponent implements OnInit {
     this.formaReferencias.controls['debe'].disable();
     this.formaReferencias.controls['haber'].disable();
 
-    
+    //cargar listas para combobox
+    this.buscarCajas();
+
     this.route.params.subscribe( parametros=>{
       this.cabeceraId = parametros['id'];
       this.existe = false;
 
       if( this.cabeceraId !== "nuevo" ){
         this.buscarMinutasContables(this.cabeceraId);
+        //habilitar campos de detalles/renglones
+        this.formaReferencias.controls['refContable'].enable();
+        this.formaReferencias.controls['centroDeCosto'].enable();
+        this.formaReferencias.controls['debe'].enable();
+        this.formaReferencias.controls['haber'].enable();
       } else {
         this.loading = false;
         //todo borrar console
@@ -270,7 +348,69 @@ export class AltaMinContableComponent implements OnInit {
       });
   }
 
+  buscarCajas(){
+    this._cajasService.getCajas( this.token )
+      .subscribe( dataC => {
+        //console.log(dataC);
+        this.cData = dataC;
+        //auxProvData = this.proveedorData.dataset.length;
+        if(this.cData.returnset[0].RCode=="-6003"){
+          //token invalido
+          this.cajasAll = null;
+          let jsbody = {"usuario":"usuario1","pass":"password1"}
+          let jsonbody = JSON.stringify(jsbody);
+          this._cajasService.login(jsonbody)
+            .subscribe( dataL => {
+              console.log(dataL);
+              this.loginData = dataL;
+              this.token = this.loginData.dataset[0].jwt;
+              this.buscarCajas();
+            });
+          } else {
+            if(this.cData.dataset.length>0){
+              this.cajasAll = this.cData.dataset;
+              console.log(this.cajasAll);
+              this.loading = false;
+              /*
+              this.constMinContables = new MatTableDataSource(this.minContablesAll);
+
+              this.constMinContables.sort = this.sort;
+              this.constMinContables.paginator = this.paginator;
+*/
+              //this.table.renderRows();
+              //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
+
+            } else {
+              this.cajasAll = null;
+            }
+          }
+          //console.log(this.minContablesAll);
+    });
+    
+    
+  }
+
   buscarMinutasContables(auxid:string){
+    //obtener datos
+    this.minutaContable = this.datos.dataset[auxid];
+    console.log('minuta traida: ');
+    console.log(this.minutaContable);
+    //obtener descripciones
+    this.buscarTipoComprobante(this.minutaContable.tg01_tipocomprobante_id_c);
+    this.buscarOrganizacion(this.minutaContable.account_id1_c);
+    this.buscarMoneda(this.minutaContable.tg01_monedas_id2_c);
+    
+    //mostrar datos
+    console.log('Mostrar datos: ');
+    //this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
+    this.forma.controls['fecha'].setValue(new Date(this.minutaContable.fecha));
+    console.log(this.minutaContable.fecha);
+    this.forma.controls['caja'].setValue(this.minutaContable.tg01_cajas_id_c);
+    console.log(this.minutaContable.tg01_cajas_id_c);
+    //habilitar edición de renglones
+    this.editingCabecera = false;
+
+
     /*
     this._PlanCuentasService.getPlanDeCuentas( auxid, this.token )
     //this._compraService.getProveedores()

@@ -12,6 +12,7 @@ import { AltaPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuent
 import { TreeComponent } from './components/pages/prueba/tree/tree.component';
 import { AbmMinContablesComponent } from './components/pages/abm-min-contables/abm-min-contables.component';
 import { AltaMinContableComponent } from './components/pages/abm-min-contables/alta-min-contable/alta-min-contable.component';
+import { ConsultaDinamicaComponent } from './components/pages/consulta-dinamica/consulta-dinamica.component';
 
 const APP_ROUTES: Routes = [
   { path: 'compra', component: AbmComprasComponent },
@@ -27,6 +28,7 @@ const APP_ROUTES: Routes = [
   { path: 'prueba', component: TreeComponent },
   { path: 'min-contables', component: AbmMinContablesComponent },
   { path: 'min-contables/:id', component: AltaMinContableComponent },
+  { path: 'consulta', component: ConsultaDinamicaComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'compra' }
 ];
 

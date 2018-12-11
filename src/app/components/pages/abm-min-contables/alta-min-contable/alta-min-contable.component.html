@@ -62,7 +62,11 @@
       <div class="col s6 m6 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Caja</mat-label>
-          <input matInput placeholder="" formControlName="caja" >
+          <mat-select placeholder="" formControlName="caja" >
+            <mat-option *ngFor="let caja of cajasAll" [value]="caja.id">
+              {{ caja.name }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
 

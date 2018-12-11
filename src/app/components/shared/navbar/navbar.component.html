@@ -13,13 +13,13 @@
       <button [routerLink]="['/articulos']" mat-menu-item>Artículos</button>
       <button [routerLink]="['/ref-contables']" mat-menu-item>Ref. Contables</button>
       <button [routerLink]="['/plan-cuentas']" mat-menu-item>Plan de Cuentas</button>
-      <!-- prueba interna. borrar -->
-      <button [routerLink]="['/prueba']" mat-menu-item>Prueba</button>
+      <!-- prueba interna. borrar
+      <button [routerLink]="['/prueba']" mat-menu-item>Prueba</button>-->
     </mat-menu>
   </span>
   <span>
     <button mat-button [matMenuTriggerFor]="user" style="color:#fff; font-family: 'Lato', sans-serif !important; font-size:16px;">
-      Emiliano <i class="material-icons" style="color:#fff; font-size:30px;">person_outline</i>
+      Username <i class="material-icons" style="color:#fff; font-size:30px;">person_outline</i>
     </button>
     <mat-menu #user="matMenu">
       <button mat-menu-item>Mi perfil</button>

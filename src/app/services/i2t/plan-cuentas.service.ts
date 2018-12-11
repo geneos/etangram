@@ -24,16 +24,15 @@ export class PlanCuentasService {
   }
 
   getPlanesDeCuentas( token:string ){
-    
+
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
     let query = `api/tg01_cuentascontables`;
     let url = this.preUrl + query;
-    
-    
-/*  
+
+/*
     todo borrar
     let PlanHardcodeado = [{
       id: '1',
@@ -47,7 +46,26 @@ export class PlanCuentasService {
       patrimonial:0
     } ];*/
 
-  
+    return this.http.get( url , { headers });
+
+    // return PlanHardcodeado;
+  }
+
+  getPlanesDeCuentasPadre( token:string, padre:string ){
+
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    var query;
+
+    if(padre==""){
+      query = `api/tg01_cuentascontables/?_orderby=nomencladorpadre&_limit=9`;
+    } else {
+      query = `api/tg01_cuentascontables/?nomencladorpadre=lk[${ padre }]`;
+    }
+
+    let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
 

@@ -34,7 +34,7 @@
           <!-<mat-hint>Hint</mat-hint>->
         </mat-form-field>
       </div> -->
-      <div class="col s12 m12 l2">
+      <div class="col s12 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo de Cuenta Contable</mat-label>
           <mat-select formControlName="imputable" #esImputable placeholder="Elija una opción">
@@ -51,7 +51,7 @@
           <input matInput placeholder="" formControlName="cuentacontable">
         </mat-form-field>
       </div>-->
-      <div class="col s12 m8 l7">
+      <div class="col s12 m6 l9">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de la Cuenta</mat-label>
           <input matInput placeholder="" formControlName="name">
@@ -59,7 +59,62 @@
         </mat-form-field>
       </div>
 
-      <div class="col s12 m12 l3">
+      <!--<div class="col s10 m4 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nomenclador Padre</mat-label>
+          <input matInput placeholder="" formControlName="nomencladorpadre" #auxPadre>
+        </mat-form-field>
+      </div>
+      <div class="col s10 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nro. Orden</mat-label>
+          <input matInput placeholder="" formControlName="orden" #auxOrden>
+        </mat-form-field>
+      </div>
+      <div class="col s10 m4 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nomenclador</mat-label>
+          <input matInput placeholder="" formControlName="nomenclador" [value]="auxPadre.value+'.'+auxOrden.value">
+        </mat-form-field>
+      </div>-->
+      <div class="col s2 m1 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <!--<mat-label>Cuenta Contable</mat-label>-->
+          <input matInput placeholder="" formControlName="n1" #auxOrden>
+        </mat-form-field>
+      </div>
+      <div class="col s2 m1 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <!--<mat-label>Cuenta Contable</mat-label>-->
+          <input matInput placeholder="" formControlName="n2" #auxOrden>
+        </mat-form-field>
+      </div>
+      <div class="col s2 m1 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <!--<mat-label>Cuenta Contable</mat-label>-->
+          <input matInput placeholder="" formControlName="n3" #auxOrden>
+        </mat-form-field>
+      </div>
+      <div class="col s2 m1 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <!--<mat-label>Cuenta Contable</mat-label>-->
+          <input matInput placeholder="" formControlName="n4" #auxOrden>
+        </mat-form-field>
+      </div>
+      <div class="col s2 m1 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <!--<mat-label>Cuenta Contable</mat-label>-->
+          <input matInput placeholder="" formControlName="n5" #auxOrden>
+        </mat-form-field>
+      </div>
+      <div class="col s2 m1 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <!--<mat-label>Cuenta Contable</mat-label>-->
+          <input matInput placeholder="" formControlName="n6" #auxOrden>
+        </mat-form-field>
+      </div>
+
+      <div class="col s12 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Patrimonial?</mat-label>
           <!-- <mat-select [compareWith]="compareObjectsPat" formControlName="patrimonial" placeholder="Elija una opción">
@@ -75,27 +130,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s10 m4 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Nomenclador Padre</mat-label>
-          <input matInput placeholder="" formControlName="nomencladorpadre" #auxPadre>
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s10 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Nro. Orden</mat-label>
-          <input matInput placeholder="" formControlName="orden" #auxOrden>
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s10 m4 l4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Nomenclador</mat-label>
-          <input matInput placeholder="" formControlName="nomenclador" [value]="auxPadre.value+'.'+auxOrden.value">
-          <!--<mat-hint>Hint</mat-hint>  [value]="auxPadre.value+'.'+auxOrden.value"-->
-        </mat-form-field>
-      </div>
+
       <div class="col s12 m12 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Estado</mat-label>
@@ -169,7 +204,7 @@
           <th mat-header-cell *matHeaderCellDef>
 
           </th>
-          <td mat-cell *matCellDef="let row;let i = index" style="width:60px;">
+          <td mat-cell *matCellDef="let row;let i = index" style="width:60px; padding-left:10px !important;">
               <a class="mine-btnforms" mat-flat-button (click)="asignarRefContable(i,true)">
                 <i class="material-icons" style="font-size:20px;">arrow_back</i>
               </a>

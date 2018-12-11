@@ -53,7 +53,7 @@ export class AltaRefContableComponent implements OnInit {
       'grupo_financiero': new FormControl(),
       'tiene_centro_costo': new FormControl('',Validators.required),
       'centro_costo': new FormControl(),
-      'estado_ref_contable': new FormControl('',Validators.required),
+      //'estado_ref_contable': new FormControl('',Validators.required),
     });
 
     this.route.params.subscribe( parametros=>{
@@ -168,7 +168,7 @@ export class AltaRefContableComponent implements OnInit {
                   this.forma.controls['tiene_centro_costo'].setValue(this.refContable.tienectocosto);
                   this.forma.controls['centro_costo'].setValue(this.refContable.tg01_centrocosto_id_c);
                   //this.forma.controls['centro_costo'].disable();
-                  this.forma.controls['estado_ref_contable'].setValue(this.refContable.estado);
+                  //this.forma.controls['estado_ref_contable'].setValue(this.refContable.estado);
                 }
               } else {
                 this.refContable = null;
@@ -181,7 +181,7 @@ export class AltaRefContableComponent implements OnInit {
                   this.forma.controls['grupo_financiero'].disable();
                   this.forma.controls['tiene_centro_costo'].disable();
                   this.forma.controls['centro_costo'].disable();
-                  this.forma.controls['estado_ref_contable'].disable();
+                  //this.forma.controls['estado_ref_contable'].disable();
                 }
               }
             }
@@ -344,7 +344,7 @@ export class AltaRefContableComponent implements OnInit {
         "idgrupofinanciero":this.forma.controls['grupo_financiero'].value,//hardcoded POR AHORA
         "tg01_centrocosto_id_c":this.forma.controls['centro_costo'].value,//hardcoded POR AHORA
         "idreferenciacontable":this.forma.controls['id_ref_contable'].value,
-        "estado":this.forma.controls['estado_ref_contable'].value,
+        "estado":1,//hardcoded REVISAR
         "tg01_grupofinanciero_id_c":this.forma.controls['grupo_financiero'].value,//hardcoded POR AHORA
         "tg01_cuentascontables_id_c":this.forma.controls['cuenta_contable'].value
       };

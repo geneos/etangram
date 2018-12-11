@@ -48,6 +48,8 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   @ViewChild('tableRefContablesNull') tableNull: MatTable<any>;
 
   selection = new SelectionModel(true, []);
+  cdadniveles: number;
+  cdadnivelespadre: any;
   //
 
   constructor(
@@ -65,9 +67,15 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       'name': new FormControl('',Validators.required),
       'imputable': new FormControl('',Validators.required),
       'patrimonial': new FormControl('',Validators.required),
-      'nomenclador': new FormControl(),
-      'nomencladorpadre': new FormControl(),
-      'orden': new FormControl('',Validators.required),
+      //'nomenclador': new FormControl(),
+      //'nomencladorpadre': new FormControl(),
+      //'orden': new FormControl('',Validators.required),
+      'n1': new FormControl('',Validators.required),
+      'n2': new FormControl('',Validators.required),
+      'n3': new FormControl('',Validators.required),
+      'n4': new FormControl('',Validators.required),
+      'n5': new FormControl('',Validators.required),
+      'n6': new FormControl('',Validators.required),
       'estado': new FormControl('',Validators.required),
     });
 
@@ -82,8 +90,8 @@ export class AltaPlanDeCuentasComponent implements OnInit {
         this.loading = false;
       }
 
-      this.forma.controls['nomencladorpadre'].disable();
-      this.forma.controls['nomenclador'].disable();
+      //this.forma.controls['nomencladorpadre'].disable();
+      //this.forma.controls['nomenclador'].disable();
 
     });
   }
@@ -134,14 +142,35 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                   //console.log(this.planDeCuentas);
                   this.loading = false;
 
+                  var strnivel = this.planDeCuentas.id;
+                  var niveles = strnivel.split(".");
+
+                  var strpadre = this.planDeCuentas.nomenclador;
+                  var nivelespadre = strpadre.split(".");
+                  this.cdadniveles = nivelespadre.length;
+                  console.log(this.cdadniveles);
+
                   this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);
-                  this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
-                  this.forma.controls['nomencladorpadre'].setValue(this.planDeCuentas.nomencladorpadre);
-                  this.forma.controls['orden'].setValue(this.planDeCuentas.orden);
+                  //this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
+                  //this.forma.controls['nomencladorpadre'].setValue(this.planDeCuentas.nomencladorpadre);
+                  //this.forma.controls['orden'].setValue(this.planDeCuentas.orden);
+                  this.forma.controls['n1'].setValue(niveles[0]);
+                  this.forma.controls['n2'].setValue(niveles[1]);
+                  this.forma.controls['n3'].setValue(niveles[2]);
+                  this.forma.controls['n4'].setValue(niveles[3]);
+                  this.forma.controls['n5'].setValue(niveles[4]);
+                  this.forma.controls['n6'].setValue(niveles[5]);
                   this.forma.controls['imputable'].setValue(this.planDeCuentas.imputable.toString());
                   this.forma.controls['patrimonial'].setValue(this.planDeCuentas.patrimonial.toString());
                   this.forma.controls['estado'].setValue(this.planDeCuentas.estado.toString());
+
+                  if(this.cdadniveles!=1){this.forma.controls['n1'].disable();}
+                  if(this.cdadniveles!=2){this.forma.controls['n2'].disable();}
+                  if(this.cdadniveles!=3){this.forma.controls['n3'].disable();}
+                  if(this.cdadniveles!=4){this.forma.controls['n4'].disable();}
+                  if(this.cdadniveles!=5){this.forma.controls['n5'].disable();}
+                  if(this.cdadniveles!=6){this.forma.controls['n6'].disable();}
                 }
               } else {
                 this.planDeCuentas = null;
@@ -152,9 +181,15 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                   this.forma.controls['name'].disable();
                   this.forma.controls['imputable'].disable();
                   this.forma.controls['patrimonial'].disable();
-                  this.forma.controls['nomenclador'].disable();
-                  this.forma.controls['nomencladorpadre'].disable();
-                  this.forma.controls['orden'].disable();
+                  //this.forma.controls['nomenclador'].disable();
+                  //this.forma.controls['nomencladorpadre'].disable();
+                  //this.forma.controls['orden'].disable();
+                  this.forma.controls['n1'].disable();
+                  this.forma.controls['n2'].disable();
+                  this.forma.controls['n3'].disable();
+                  this.forma.controls['n4'].disable();
+                  this.forma.controls['n5'].disable();
+                  this.forma.controls['n6'].disable();
                   this.forma.controls['estado'].disable();
                 }
               }
@@ -193,8 +228,30 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
     });
 
-    if(this.padre != null){
-      this.forma.controls['nomencladorpadre'].setValue(this.padre);
+    if(this.padre == null && this.id == "nuevo"){
+      //this.forma.controls['nomencladorpadre'].setValue(this.padre);
+      this.forma.controls['n2'].disable();
+      this.forma.controls['n3'].disable();
+      this.forma.controls['n4'].disable();
+      this.forma.controls['n5'].disable();
+      this.forma.controls['n6'].disable();
+    }
+    if(this.padre != null && this.id == "nuevo"){
+      var nivelespadre2 = this.padre.split(".");
+      this.cdadnivelespadre = nivelespadre2.length;
+
+      this.forma.controls['n1'].setValue(nivelespadre2[0]);
+      this.forma.controls['n2'].setValue(nivelespadre2[1]);
+      this.forma.controls['n3'].setValue(nivelespadre2[2]);
+      this.forma.controls['n4'].setValue(nivelespadre2[3]);
+      this.forma.controls['n5'].setValue(nivelespadre2[4]);
+      this.forma.controls['n6'].setValue(nivelespadre2[5]);
+      if(this.cdadnivelespadre+1!=1){this.forma.controls['n1'].disable();}
+      if(this.cdadnivelespadre+1!=2){this.forma.controls['n2'].disable();}
+      if(this.cdadnivelespadre+1!=3){this.forma.controls['n3'].disable();}
+      if(this.cdadnivelespadre+1!=4){this.forma.controls['n4'].disable();}
+      if(this.cdadnivelespadre+1!=5){this.forma.controls['n5'].disable();}
+      if(this.cdadnivelespadre+1!=6){this.forma.controls['n6'].disable();}
     }
   }
 
@@ -266,19 +323,45 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   }
 
   guardarPlanDeCuentas(){
+    var auxnomenclador = this.forma.controls['n1'].value;
+    if(this.cdadniveles>1){auxnomenclador += '.'+this.forma.controls['n2'].value;}
+    if(this.cdadniveles>2){auxnomenclador += '.'+this.forma.controls['n3'].value;}
+    if(this.cdadniveles>3){auxnomenclador += '.'+this.forma.controls['n4'].value;}
+    if(this.cdadniveles>4){auxnomenclador += '.'+this.forma.controls['n5'].value;}
+    if(this.cdadniveles>5){auxnomenclador += '.'+this.forma.controls['n6'].value;}
+
+    var auxnomencladorpadre ='';
+    if(this.cdadniveles>1){auxnomencladorpadre += this.forma.controls['n1'].value;}
+    if(this.cdadniveles>2){auxnomencladorpadre += '.'+this.forma.controls['n2'].value;}
+    if(this.cdadniveles>3){auxnomencladorpadre += '.'+this.forma.controls['n3'].value;}
+    if(this.cdadniveles>4){auxnomencladorpadre += '.'+this.forma.controls['n4'].value;}
+    if(this.cdadniveles>5){auxnomencladorpadre += '.'+this.forma.controls['n5'].value;}
+    if(this.cdadniveles>6){auxnomencladorpadre += '.'+this.forma.controls['n6'].value;}
+
+    var auxid = this.forma.controls['n1'].value;
+    if(this.cdadniveles>1){auxid += '.'+this.forma.controls['n2'].value;}else{auxid += '.0'}
+    if(this.cdadniveles>2){auxid += '.'+this.forma.controls['n3'].value;}else{auxid += '.0'}
+    if(this.cdadniveles>3){auxid += '.'+this.forma.controls['n4'].value;}else{auxid += '.0'}
+    if(this.cdadniveles>4){auxid += '.'+this.forma.controls['n5'].value;}else{auxid += '.0'}
+    if(this.cdadniveles>5){auxid += '.'+this.forma.controls['n6'].value;}else{auxid += '.0'}
+
+    var auxorden;
+    if(this.forma.controls['imputable'].value==0){auxorden=0}
+    else{auxorden=this.forma.controls['n'+this.cdadniveles].value;}
+
     if( this.id == "nuevo" ){
       // insertando
       var d = new Date();
-      var auxnomenclador = this.forma.controls['nomencladorpadre'].value+'.'+this.forma.controls['orden'].value;
+
       // let usuarioActual: any = this.obtenerIDUsuario().id;
       let usuarioActual: any = 'idDePrueba';
       let jsbody = {
-        "id":auxnomenclador, //revisar si id = nomenclador
-        "cuentacontable":auxnomenclador,
+        "id":auxid,
+        "cuentacontable":auxid,
         "name":this.forma.controls['name'].value,
         "nomenclador":auxnomenclador,
-        "nomencladorpadre":this.forma.controls['nomencladorpadre'].value,
-        "orden":this.forma.controls['orden'].value,
+        "nomencladorpadre":auxnomencladorpadre,
+        "orden":auxorden,
         "imputable":this.forma.controls['imputable'].value,
         "patrimonial":this.forma.controls['patrimonial'].value,
         "estado":this.forma.controls['estado'].value,
@@ -319,7 +402,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                 // carga ok
                 this.openSnackBar("Alta Correcta.");
                 //todo cambiar por lo real de plan de cuentas
-                this.router.navigate(['/plan-cuentas', auxnomenclador]);
+                this.router.navigate(['/plan-cuentas', 0]);
               } else {
                 //error al cargar
                 this.openSnackBar("Error. Alta no permitida.");
@@ -336,12 +419,12 @@ export class AltaPlanDeCuentasComponent implements OnInit {
         d2 = d2.substring(0, 10);
       }
       let jsbody = {
-        "id":this.forma.controls['cuentacontable'].value, // revisar si id = cuenta contable
-        "cuentacontable":this.forma.controls['cuentacontable'].value,
+        "id":this.planDeCuentas.id,
+        "cuentacontable":this.planDeCuentas.id,
         "name":this.forma.controls['name'].value,
-        "nomenclador":this.forma.controls['nomenclador'].value,
-        "nomencladorpadre":this.forma.controls['nomencladorpadre'].value,
-        "orden":this.forma.controls['orden'].value,
+        "nomenclador":auxnomenclador,
+        "nomencladorpadre":auxnomencladorpadre,
+        "orden":auxorden,
         "imputable":this.forma.controls['imputable'].value,
         "patrimonial":this.forma.controls['patrimonial'].value,
         "estado":this.forma.controls['estado'].value,
@@ -529,10 +612,10 @@ export class AltaPlanDeCuentasComponent implements OnInit {
               // modif ok
               this.buscarRefContable();
               this.buscarRefContableNull();
-              this.openSnackBar("Modificación realizada con éxito.");
+              this.openSnackBar("Asignación realizada con éxito.");
             } else {
               //error al cargar
-              this.openSnackBar("Error. Modificación no permitida.");
+              this.openSnackBar("Error. Asignación no permitida.");
             }
         }
       });

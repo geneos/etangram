@@ -33,6 +33,7 @@ import { AltaPlanDeCuentasComponent } from './components/pages/abm-plan-de-cuent
 import { TreeComponent } from './components/pages/prueba/tree/tree.component';
 import { AbmMinContablesComponent } from './components/pages/abm-min-contables/abm-min-contables.component';
 import { AltaMinContableComponent } from './components/pages/abm-min-contables/alta-min-contable/alta-min-contable.component';
+import { TablapcComponent } from './components/shared/tablapc/tablapc.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { AltaMinContableComponent } from './components/pages/abm-min-contables/a
     AltaPlanDeCuentasComponent,
     TreeComponent,
     AbmMinContablesComponent,
-    AltaMinContableComponent
+    AltaMinContableComponent,
+    TablapcComponent
   ],
   imports: [
     BrowserModule,

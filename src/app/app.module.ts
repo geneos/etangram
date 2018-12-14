@@ -18,6 +18,11 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 //manejo de fechas
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 
+//tabla dinamica
+import { CdkTableModule } from '@angular/cdk/table';
+
+//
+
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
 import { AbmComprasComponent } from './components/pages/abm-compras/abm-compras.component';
@@ -67,7 +72,8 @@ import { BotonEditarComponent } from './components/shared/boton-editar/boton-edi
     BrowserAnimationsModule,
     MyMaterialModule,
     MatDialogModule,
-    APP_ROUTING
+    APP_ROUTING,
+    CdkTableModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},

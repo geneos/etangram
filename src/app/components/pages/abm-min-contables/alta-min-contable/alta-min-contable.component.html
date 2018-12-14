@@ -130,9 +130,7 @@
       </div>
     </div>
 
-    <!-- todo descomentar -->
     <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingReferencia || editingAI)">
-    <!-- <div class="row" style="margin-top:25px; margin-bottom:5px;" > -->
       <form [formGroup]="formaReferencias" (ngSubmit)="guardarReferencia()" novalidate="novalidate">
         <div class="col s8 m3 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -142,9 +140,9 @@
               Buscando...
             </mat-hint>
             <!-- todo descomentar -->
-            <!-- <mat-hint *ngIf="formaReferencias.controls['codigo'].errors?.noExiste">
+            <mat-hint *ngIf="formaReferencias.controls['refContable'].errors?.noExiste">
               No existe
-            </mat-hint> -->
+            </mat-hint>
           </mat-form-field>
         </div>
         <div class="col s4 m2 l1" style="margin-top:10px;">
@@ -164,14 +162,14 @@
         <div class="col s4 m2 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Debe</mat-label>
-            <input matInput placeholder="" type="number" formControlName="debe" style="text-align: right;">
+            <input type="number" (keyup)="esDebeHaberValido()" matInput placeholder=""  formControlName="debe" style="text-align: right;">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s8 m2 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Haber</mat-label>
-            <input matInput placeholder="" formControlName="haber" style="text-align: right;">
+            <input type="number" (keyup)="esDebeHaberValido()" matInput placeholder="" formControlName="haber" style="text-align: right;">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>

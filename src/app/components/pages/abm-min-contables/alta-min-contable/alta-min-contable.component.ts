@@ -14,9 +14,13 @@ import { OrganizacionesService } from 'src/app/services/i2t/organizaciones.servi
 import { Organizacion } from 'src/app/interfaces/organizacion.interfac';
 import { MinContable } from 'src/app/interfaces/min-contable.interface';
 import { CajasService } from 'src/app/services/i2t/cajas.service';
+import { RefContablesService } from 'src/app/services/i2t/ref-contables.service';
+import { RefContable } from 'src/app/interfaces/ref-contable.interface';
+import { CentroCosto } from 'src/app/interfaces/cen-costo.interface';
+import { CentrosCostosService } from 'src/app/services/i2t/cen-costos.service';
 
 
-var auxProvData,auxArtiData:any;
+var auxRefConData,auxCCostoData:any;
 
 @Component({
   selector: 'app-alta-min-contable',
@@ -127,13 +131,13 @@ datos =
   //todo revisar
   cabeceraId: string;
   renglonId: string;
-  articuloData: any;
-  proveedorData: any;
+  refContableData: any;
+  centroCostoData: any;
   respCabecera: any;
   respRenglon: any;
-  //todo cambiar
-  compraArticulo: CompraArticulo;
-  compraProveedor: CompraProveedor;
+  
+  centroCosto: CentroCosto;
+  refContable: RefContable;
 
   forma:FormGroup;
   formaReferencias:FormGroup;
@@ -151,7 +155,9 @@ datos =
   @ViewChild('tableArticulos') table: MatTable<any>;//
 
   //todo cambiar
-  constructor(public dialogArt: MatDialog, private _compraService:CompraService,
+  constructor(public dialogArt: MatDialog, 
+              private _refContableService: RefContablesService,
+              private _centroCostoService: CentrosCostosService,
               private _monedaService: MonedasService,
               private _tipoComprobanteService: TiposComprobanteService,
               private _organizacionService: OrganizacionesService,
@@ -177,10 +183,10 @@ datos =
     this.forma.controls['moneda'].disable();
 
     this.formaReferencias = new FormGroup({
-      'refContable': new FormControl('',Validators.required,this.existeArticulo),
-      'centroDeCosto': new FormControl(Validators.required),
-      'debe': new FormControl(),
-      'haber': new FormControl()
+      'refContable': new FormControl('',Validators.required,this.existeRefContable),
+      'centroDeCosto': new FormControl('',Validators.required,this.existeCentroCosto),
+      'debe': new FormControl(this.esDebeHaberValido),
+      'haber': new FormControl(this.esDebeHaberValido)
     })
 
     this.formaReferencias.controls['refContable'].disable();
@@ -233,11 +239,11 @@ datos =
 
   buscarParametros(){
     this._parametrosService.getParametros( this.token )
-    //this._compraService.getProveedores()
+    //this._refContableService.getProveedores()
       .subscribe( dataP => {
         console.log(dataP);
           this.pData = dataP;
-          //auxProvData = this.pcData.dataset.length;
+          //auxRefConData = this.pcData.dataset.length;
           if(this.pData.returnset[0].RCode=="-6003"){
             //token invalido
             this.parametrosSistema = null;
@@ -263,11 +269,11 @@ datos =
   
   buscarTipoComprobante(auxid:string){
     this._tipoComprobanteService.getTipoComprobante( auxid, this.token )
-    //this._compraService.getProveedores()
+    //this._refContableService.getProveedores()
       .subscribe( dataTC => {
         console.log(dataTC);
           this.tcData = dataTC;
-          //auxProvData = this.pcData.dataset.length;
+          //auxRefConData = this.pcData.dataset.length;
           if(this.tcData.returnset[0].RCode=="-6003"){
             //token invalido
             this.tipoComprobante = null;
@@ -292,11 +298,11 @@ datos =
 
   buscarMoneda(auxid:string){
     this._monedaService.getMoneda( auxid, this.token )
-    //this._compraService.getProveedores()
+    //this._refContableService.getProveedores()
       .subscribe( dataM => {
         console.log(dataM);
           this.mData = dataM;
-          //auxProvData = this.pcData.dataset.length;
+          //auxRefConData = this.pcData.dataset.length;
           if(this.mData.returnset[0].RCode=="-6003"){
             //token invalido
             this.moneda = null;
@@ -321,11 +327,11 @@ datos =
 
   buscarOrganizacion(auxid:string){
     this._organizacionService.getOrganizacion( auxid, this.token )
-    //this._compraService.getProveedores()
+    //this._refContableService.getProveedores()
       .subscribe( dataO => {
         console.log(dataO);
           this.oData = dataO;
-          //auxProvData = this.pcData.dataset.length;
+          //auxRefConData = this.pcData.dataset.length;
           if(this.oData.returnset[0].RCode=="-6003"){
             //token invalido
             this.organizacion = null;
@@ -353,7 +359,7 @@ datos =
       .subscribe( dataC => {
         //console.log(dataC);
         this.cData = dataC;
-        //auxProvData = this.proveedorData.dataset.length;
+        //auxRefConData = this.refContableData.dataset.length;
         if(this.cData.returnset[0].RCode=="-6003"){
           //token invalido
           this.cajasAll = null;
@@ -413,11 +419,11 @@ datos =
 
     /*
     this._PlanCuentasService.getPlanDeCuentas( auxid, this.token )
-    //this._compraService.getProveedores()
+    //this._refContableService.getProveedores()
       .subscribe( dataPC => {
         console.log(dataPC);
           this.pcData = dataPC;
-          //auxProvData = this.pcData.dataset.length;
+          //auxRefConData = this.pcData.dataset.length;
           if(this.pcData.returnset[0].RCode=="-6003"){
             //token invalido
             this.planDeCuentas = null;
@@ -468,12 +474,11 @@ datos =
       */
   }
 
-  //todo adaptar
-  existeProveedor( control: FormControl ): Promise<any>{
+  existeRefContable( control: FormControl ): Promise<any>{
     let promesa = new Promise(
       ( resolve, reject )=>{
         setTimeout( ()=>{
-          if( auxProvData==0 ){
+          if( auxRefConData==0 ){
             resolve( {noExiste:true} )
           }else{resolve( null )}
         },2000 )
@@ -482,33 +487,97 @@ datos =
     return promesa;
   }
 
-  //todo adaptar a referencia
-  existeArticulo( control: FormControl ): Promise<any>{
+  existeCentroCosto( control: FormControl ): Promise<any>{
     let promesa = new Promise(
       ( resolve, reject )=>{
         setTimeout( ()=>{
-          if( auxArtiData==0 ){
+          if( auxCCostoData==0 ){
             resolve( {noExiste:true} )
           }else{resolve( null )}
         },2000 )
       }
     )
     return promesa;
+  }
+  
+  esDebeHaberValido(){
+    //si los dos tienen valor, o ninguno de los dos tiene valor, o los dos son 0
+    /*
+    if((this.formaReferencias.controls['debe'].value == null 
+        && this.formaReferencias.controls['haber'].value ==null) ||
+       (!(this.formaReferencias.controls['debe'].value == null) 
+        && !(this.formaReferencias.controls['haber'].value == null)) ||
+        (this.formaReferencias.controls['debe'].value === 0 
+        && this.formaReferencias.controls['haber'].value ===0) ){
+          console.log('debehaber INvalido');
+          console.log(this.formaReferencias.controls['debe'].value);
+          console.log(this.formaReferencias.controls['haber'].value);
+          return false;
+    }
+    else{
+      console.log('debehaber valido');
+      console.log(this.formaReferencias.controls['debe'].value);
+      console.log(this.formaReferencias.controls['haber'].value);
+      return true;
+    }
+    */
+   /*
+    if ((((this.formaReferencias.controls['debe'].value === null)&&(this.formaReferencias.controls['haber'].value > 0))
+      ||((this.formaReferencias.controls['debe'].value > 0)||(this.formaReferencias.controls['haber'].value === null)))
+      &&!((this.formaReferencias.controls['debe'].value > 0)&&(this.formaReferencias.controls['haber'].value > 0)))
+      {
+        console.log('debehaber valido');
+        console.log(this.formaReferencias.controls['debe'].value);
+        console.log(this.formaReferencias.controls['haber'].value);
+      }
+    else{
+      console.log('debehaber INvalido');
+      console.log(this.formaReferencias.controls['debe'].value);
+      console.log(this.formaReferencias.controls['haber'].value);
+      return false;
+    }
+    
+    return true;
+    */
+    let debe = this.formaReferencias.controls['debe'].value;
+    let haber = this.formaReferencias.controls['haber'].value;
+    
+    if ((debe === null || debe === 0) && (haber === null || haber === 0)){
+      //Debe ingresar un Debe o un Haber
+      return false;
+    }
+
+    if ((debe > 0) && (haber > 0)){
+      //No puede ingresar un Debe y un Haber al mismo tiempo
+      return false;
+    }
+
+    if (!(debe === null)&&(debe < 0)){
+      //Debe ingresar un Debe positivo
+      return false;
+    }
+
+    if (!(haber === null)&&(haber < 0)){
+      //Debe ingresar un Haber positivo
+      return false;
+    }
+
+    return true;
   }
 
   buscarRefContable(){
-    this._compraService.getProveedor( this.forma.controls['proveedor'].value, this.token )
-    //this._compraService.getProveedores()
-      .subscribe( dataP => {
-        console.log(dataP);
-          this.proveedorData = dataP;
-          auxProvData = this.proveedorData.dataset.length;
-          if(this.proveedorData.returnset[0].RCode=="-6003"){
+    this._refContableService.getRefContable( this.formaReferencias.controls['refContable'].value, this.token )
+    //this._refContableService.getProveedores()
+      .subscribe( dataRC => {
+        console.log(dataRC);
+          this.refContableData = dataRC;
+          auxRefConData = this.refContableData.dataset.length;
+          if(this.refContableData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.compraProveedor = null;
+            this.refContable = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
-            this._compraService.login(jsonbody)
+            this._refContableService.login(jsonbody)
               .subscribe( dataL => {
                 console.log(dataL);
                 this.loginData = dataL;
@@ -516,43 +585,71 @@ datos =
                 this.buscarRefContable();
               });
             } else {
-              if(this.proveedorData.dataset.length>0){
-                this.compraProveedor = this.proveedorData.dataset[0];
+              if(this.refContableData.dataset.length>0){
+                this.refContable = this.refContableData.dataset[0];
+                console.log('auto referencia: ');
+                console.log(this.refContable);
+
+
+                //centro de costo
+                /*
+                La referencia contable determina el uso de este atributo
+                  - si no tiene centro de costo, se omite
+                  - si ya tiene uno definido, se impone ese centro de costo y no se permite modificar
+                  - si es variable, puede ingresar el valor y validar con el metodo tg01_centrocosto o bien seleccionarlo con el componente “consulta dinamica” “c_tg01_centrocosto”
+                */
+                if (this.refContable.tg01_centrocosto_id_c === null){
+                  this.formaReferencias.controls['centroDeCosto'].disable();
+                  this.formaReferencias.controls['centroDeCosto'].setValue('');
+                }
+                else{
+                  if (this.refContable.tg01_centrocosto_id_c.indexOf(',') != 0){
+                    this.formaReferencias.controls['centroDeCosto'].setValue(this.refContable.tg01_centrocosto_id_c);
+                    this.formaReferencias.controls['centroDeCosto'].disable();
+                  }
+                  else{
+                    this.formaReferencias.controls['centroDeCosto'].setValue('');
+                    this.formaReferencias.controls['centroDeCosto'].enable();
+                  }
+                }
               } else {
-                this.compraProveedor = null;
+                this.refContable = null;
+                this.formaReferencias.controls['centroDeCosto'].disable();
               }
             }
       });
   }
 
-  buscarArticulo(){
+  buscarCentroCostos(){
     if(this.addingReferencia){
-      this._compraService.getArticulo( this.formaReferencias.controls['codigo'].value, this.token )
-        .subscribe( dataA => {
-          this.articuloData = dataA;
-          auxArtiData = this.articuloData.dataset.length;
-          if(this.articuloData.dataset.length>0){
-            this.compraArticulo = this.articuloData.dataset[0];
+      this._centroCostoService.getCentro( this.formaReferencias.controls['centroDeCosto'].value, this.token )
+        .subscribe( dataCC => {
+          this.centroCostoData = dataCC;
+          auxCCostoData = this.centroCostoData.dataset.length;
+          if(this.centroCostoData.dataset.length>0){
+            this.centroCosto = this.centroCostoData.dataset[0];
           } else {
-            this.compraArticulo = null;
+            this.centroCosto = null;
           }
         });
     }
     if(this.addingItem){
-      this._compraService.getItem( this.formaReferencias.controls['codigo'].value, this.token )
-        .subscribe( dataA => {
-          this.articuloData = dataA;
-          auxArtiData = this.articuloData.dataset.length;
-          if(this.articuloData.dataset.length>0){
-            this.compraArticulo = this.articuloData.dataset[0];
+      this._centroCostoService.getCentro( this.formaReferencias.controls['centroDeCosto'].value, this.token )
+        .subscribe( dataCC => {
+          this.centroCostoData = dataCC;
+          auxCCostoData = this.centroCostoData.dataset.length;
+          if(this.centroCostoData.dataset.length>0){
+            this.centroCosto = this.centroCostoData.dataset[0];
           } else {
-            this.compraArticulo = null;
+            this.centroCosto = null;
           }
         });
     }
   }
 
   addReferencia(){
+    this.formaReferencias.controls['haber'].setValue('');
+    this.formaReferencias.controls['debe'].setValue('');
     this.addingReferencia = true;
   }
 
@@ -590,13 +687,15 @@ datos =
     };
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
-    this._compraService.postCabecera( jsonbody,this.token )
+    //todo modificar servicio
+    /*
+    this._refContableService.postCabecera( jsonbody,this.token )
       .subscribe( resp => {
         //console.log(resp.returnset[0].RId);
         this.respCabecera = resp;
         this.cabeceraId = this.respCabecera.returnset[0].RId;
       });
-
+*/
     this.forma.controls['fecha'].disable();
     this.forma.controls['tipo'].disable();
     this.forma.controls['numero'].disable();
@@ -606,6 +705,7 @@ datos =
   }
 
   guardarArticulo(){
+    /*
     this.compraArticulo.cantidad = this.formaReferencias.controls['cantidad'].value;
     this.compraArticulo.descuento = this.formaReferencias.controls['descuento'].value;
 
@@ -617,7 +717,7 @@ datos =
         "descArticulo":this.compraArticulo.descripcion,
         "cantidad":this.compraArticulo.cantidad,
         "precioUnitario":this.compraArticulo.precio_unitario,
-        "alicuotaIVA":21/*this.compraArticulo.alicuota*/,
+        "alicuotaIVA":21/*this.compraArticulo.alicuota/,
         "Descuentolinea":this.compraArticulo.descuento,
         "idUM":1,//this.compraArticulo.unidad_medida,
         "TipoRenglon":this.compraArticulo.tipoRenglon,
@@ -625,13 +725,15 @@ datos =
       };
       let jsonbody= JSON.stringify(jsbody);
       console.log(jsonbody);
-      this._compraService.editArticulo( jsonbody, this.token )
+      //todo modificar servicio
+      /*
+      this._refContableService.editArticulo( jsonbody, this.token )
         .subscribe( resp => {
           console.log(resp);
           this.respRenglon = resp;
           //this.renglonId = this.respRenglon.returnset[0].RId;
         });
-
+/
       this.referenciasData[this.auxEditingArt] = this.compraArticulo;
       this.table.renderRows();
 
@@ -651,7 +753,7 @@ datos =
         "descArticulo":this.compraArticulo.descripcion,
         "cantidad":this.compraArticulo.cantidad,
         "precioUnitario":this.compraArticulo.precio_unitario,
-        "alicuotaIVA":21/*this.compraArticulo.alicuota*/,
+        "alicuotaIVA":21/*this.compraArticulo.alicuota/,
         "Descuentolinea":this.compraArticulo.descuento,
         "idUM":1,//this.compraArticulo.unidad_medida,
         "TipoRenglon":this.compraArticulo.tipoRenglon,
@@ -659,7 +761,9 @@ datos =
       };
       let jsonbody= JSON.stringify(jsbody);
       console.log(jsonbody);
-      this._compraService.postArticulo( jsonbody, this.token )
+      //todo modificar servicio
+      /*
+      this._refContableService.postArticulo( jsonbody, this.token )
         .subscribe( resp => {
           console.log(resp);
           this.respRenglon = resp;
@@ -669,7 +773,7 @@ datos =
           this.referenciasData[(this.referenciasData.length-1)].renglonId = this.renglonId;
           //console.log(this.referenciasData[(this.referenciasData.length-1)]);
         });
-
+/
       this.compraArticulo.renglonId="temp";
       this.referenciasData.push(this.compraArticulo);
       this.table.renderRows();
@@ -680,21 +784,22 @@ datos =
 
     let auxtotal=(this.compraArticulo.precio_unitario*this.compraArticulo.cantidad)*((100-this.compraArticulo.descuento)/100);
     //todo revisar
-    /* this.totalneto=this.totalneto+auxtotal;
+    / this.totalneto=this.totalneto+auxtotal;
     this.impuestosalicuotas=this.impuestosalicuotas+(auxtotal*(this.compraArticulo.alicuota/100));
-    this.totaltotal=this.totalneto+this.impuestosalicuotas; */
+    this.totaltotal=this.totalneto+this.impuestosalicuotas; /
 
     this.formaReferencias.controls['codigo'].setValue("");
     this.formaReferencias.controls['cantidad'].setValue(1);
     this.formaReferencias.controls['descuento'].setValue(0);
     this.compraArticulo = null;
+    */
   }
 
   cancelarArtItem(){
     this.addingItem = false;
     this.addingReferencia = false;
     this.editingAI = false;
-    this.compraArticulo = null;
+    //this.compraArticulo = null;
     this.formaReferencias.controls['codigo'].setValue("");
     this.formaReferencias.controls['cantidad'].setValue(1);
     this.formaReferencias.controls['descuento'].setValue(0);
@@ -707,13 +812,15 @@ datos =
     };
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
-    this._compraService.deleteArticulo( jsonbody, this.token )
+    //todo modificar servicio
+    /*
+    this._refContableService.deleteArticulo( jsonbody, this.token )
       .subscribe( resp => {
         console.log(resp);
         this.respRenglon = resp;
         //this.renglonId = this.respRenglon.returnset[0].RId;
       });
-
+*/
     let auxtotal=(this.referenciasData[ind].precio_unitario*this.referenciasData[ind].cantidad)*((100-this.referenciasData[ind].descuento)/100);
     //todo revisar
     /* this.totalneto=this.totalneto-auxtotal;
@@ -726,7 +833,7 @@ datos =
 
   editarArticulo(ind:number){
     this.editingAI = true;
-    this.compraArticulo = this.referenciasData[ind];
+    //this.compraArticulo = this.referenciasData[ind];
     this.formaReferencias.controls['codigo'].setValue(this.referenciasData[ind].codigo);
     this.formaReferencias.controls['cantidad'].setValue(this.referenciasData[ind].cantidad);
     this.formaReferencias.controls['descuento'].setValue(this.referenciasData[ind].descuento);

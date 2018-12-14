@@ -3,6 +3,9 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort, MatPaginator, MatTable, MatTableDataSource } from '@angular/material';
 import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
+import { CdkTableModule } from '@angular/cdk/table';
+
+
 @Component({
   selector: 'app-consulta-dinamica',
   templateUrl: './consulta-dinamica.component.html',
@@ -25,7 +28,10 @@ export class ConsultaDinamicaComponent implements OnInit {
   attData: any;
   consData: any;
   displayedColumns: string[] = [];
+  columns: any[];
+  columnasSeleccionadas: string;
   constDatos = new MatTableDataSource();
+  irADetalle: boolean;
   
   constructor(private _consultaDinamicaService: ConsultaDinamicaService) { 
     this.loading = true;
@@ -42,16 +48,16 @@ export class ConsultaDinamicaComponent implements OnInit {
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
-    //const numSelected = this.selection.selected.length;
-    // const numRows = this.constRefContables.data.length;
-    // return numSelected === numRows;
+    const numSelected = this.selection.selected.length;
+    const numRows = this.constDatos.data.length;
+    return numSelected === numRows;
   }
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
-    /* this.isAllSelected() ?
+    this.isAllSelected() ?
         this.selection.clear() :
-        this.constRefContables.data.forEach(row => this.selection.select(row)); */
+        this.constDatos.data.forEach(row => this.selection.select(row));
   }
 
   buscarReportes(){
@@ -153,7 +159,7 @@ export class ConsultaDinamicaComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.consData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.reportesAll = null;
+            this.datosAll = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._consultaDinamicaService.login(jsonbody)
@@ -168,7 +174,16 @@ export class ConsultaDinamicaComponent implements OnInit {
                 this.datosAll = this.consData.dataset;
                 console.log('Lista de datos: ');
                 console.log(this.datosAll);
+                //todo borrar, probando dinamico
+                let objdin: Reporte;
+                objdin = this.datosAll[0];
+                console.log('estructura de Obj. dinamico: ');
+                console.log(Object.keys(objdin));
+                //
                 this.loading = false;
+                
+                //establecer columnas
+                this.establecerColumnas();
 
                 this.constDatos = new MatTableDataSource(this.datosAll);
 
@@ -189,14 +204,37 @@ export class ConsultaDinamicaComponent implements OnInit {
 
   irDetalle(id:any){
     console.log('se intentó ir a: '||id);
+    this.irADetalle = true;
   }
 
   establecerColumnas(){
     //asignar las seleccionadas, como "['select', 'opciones', 'codigo', 'nombre']"
     this.displayedColumns = [];
-    this.displayedColumns.push('select', 'opciones');
-    let listaColumnas : string[] = this.reportesAll[0].columnas.split(',');
-    let primerVuelta = true;
+    //this.displayedColumns.push('select', 'opciones');
+    let columnasAMostrar: string;
+    columnasAMostrar = '';
+    if (this.columnasSeleccionadas == null){
+      console.log('lista traida del reporte: ');
+      console.log(this.reportesAll[0].columnas);
+      let listaColumnas : string[] = (this.reportesAll[0].columnas.split(','));
+      let itemActual: string;
+      console.log(listaColumnas.length)
+      for (let index = 0; index < listaColumnas.length; index++) {
+        itemActual = listaColumnas[index].trim();
+        console.log(itemActual);
+        console.log(index);
+        columnasAMostrar = columnasAMostrar.concat(itemActual, ',');
+      }
+      columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);
+      console.log('Lista rearmada: ');
+      console.log(columnasAMostrar);
+    }
+    else{
+      columnasAMostrar = this.columnasSeleccionadas;
+      console.log('el usuario seleccionó las columnas: ');
+      console.log(columnasAMostrar);
+    }
+    //todo agregar las columnas que coincidan con las que ha que mostrar, comparando con (Object.keys(objeto))
     /*
     if (listaColumnas.length > 0) {
       
@@ -240,11 +278,69 @@ export class ConsultaDinamicaComponent implements OnInit {
         this.displayedColumns.push(columna.trim());
       }
     );*/
-      this.displayedColumns = ['opciones', 'select', 'codigo'];
-    this.buscarDatos();
+      //this.displayedColumns = ['opciones', 'select', 'codigo'];
+      
+      
+      // this.displayedColumns = ['select', 'opciones'];
+
+/*
+      let columns = [
+        { columnDef: 'select',    header: 'Select',   cell: (row: any) => ``      },
+        { columnDef: 'opciones',    header: 'Opciones',   cell: (row: any) => ``      }
+        //,{ columnDef: 'column.',    header: 'Codigo',   cell: (row: any) => `${row.codigo}`      }
+      ];
+    */    
+   /*this.columns = [
+      { columnDef: 'position', header: 'No.',    cell: (item: any) => `${item.id}` },
+      { columnDef: 'name',     header: 'Name',   cell: (item: any) => `${item.codigo}`     }
+      /* ,
+      { columnDef: 'weight',   header: 'Weight', cell: (item: any) => `${item.weight}`   },
+      { columnDef: 'symbol',   header: 'Symbol', cell: (item: any) => `${item.symbol}`   }, *
+    ];
+    */
+    this.columns = [
+      { columnDef: 'id', header: 'No.',    cell: (item: any) => `${item.id}` },
+      { columnDef: 'codigo',     header: 'Name',   cell: (item: any) => `${item.codigo}`     }
+      /* ,
+      { columnDef: 'weight',   header: 'Weight', cell: (item: any) => `${item.weight}`   },
+      { columnDef: 'symbol',   header: 'Symbol', cell: (item: any) => `${item.symbol}`   }, */
+    ];
+      /** Column definitions in order */
+      //this.displayedColumns = this.columns.map(c => c.columnDef);
+      //this.displayedColumns = this.displayedColumns.push([{columnDef: 'select', header: '', cell: (item: any) => ''}, ]);
+
+      /* let columnasfijas = [
+        { columnDef: 'select',    header: 'Select',   cell: (item: any) => ``      },
+        { columnDef: 'opciones',    header: 'Opciones',   cell: (item: any) => ``      }]; */
+      /** Static columns */
+      let columnasfijas = ['select', 'opciones'];
+
+      // this.displayedColumns = this.displayedColumns.concat(this.columns.map(c => c.columnDef), columnasfijas.map(c => c.columnDef));
+      //this.displayedColumns = this.displayedColumns.concat(columnasfijas, this.columns.map(c => c.columnDef));
+      this.displayedColumns = [...columnasfijas, ...this.columns.map(c => c.columnDef)];
+    //this.buscarDatos(); todo borrar
 
     console.log('lista de columnas: ');
     console.log(this.displayedColumns);
     
+    //
+    let repo: Reporte;
+    repo = this.reportesAll[0];
+    console.log('estructura de Reporte: ');
+    console.log(Object.keys(repo));
+
+
+    //
+  }
+
+  handleRowClick(row: any){
+    console.log('se clickeo: ');
+    console.log(row);
+    if (this.irADetalle === true){
+      this.irADetalle = false;
+      //todo agregar enrutamiento al objeto correspondiente
+      console.log('Se intentará ir al objeto correspondiente de id: ');
+      console.log(row['id']);
+    }
   }
 }

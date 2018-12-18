@@ -32,9 +32,12 @@ export class ConsultaDinamicaComponent implements OnInit {
   columnasSeleccionadas: string;
   constDatos = new MatTableDataSource();
   irADetalle: boolean;
+
+  reporteSeleccionado : number;
   
   constructor(private _consultaDinamicaService: ConsultaDinamicaService) { 
     this.loading = true;
+    this.reporteSeleccionado=4;//todo elegir reporte inicial
     this.buscarReportes();
   }
 
@@ -58,6 +61,10 @@ export class ConsultaDinamicaComponent implements OnInit {
     this.isAllSelected() ?
         this.selection.clear() :
         this.constDatos.data.forEach(row => this.selection.select(row));
+  }
+
+  menuClickHandler(texto: string){
+    console.log(texto);
   }
 
   buscarReportes(){
@@ -104,9 +111,9 @@ export class ConsultaDinamicaComponent implements OnInit {
   
   buscarAtributos(){
     console.log('Buscando atributos con:');
-    console.log(this.reportesAll[0].name);
+    console.log(this.reportesAll[4].name);
     //todo obtener el correcto/seleccionado
-    this._consultaDinamicaService.getAtributos(this.reportesAll[0].name ,this.token) 
+    this._consultaDinamicaService.getAtributos(this.reportesAll[this.reporteSeleccionado].name ,this.token) 
       .subscribe( dataAtt => {
         console.log(dataAtt);
           this.attData = dataAtt;
@@ -150,9 +157,9 @@ export class ConsultaDinamicaComponent implements OnInit {
 
   buscarDatos(){
     console.log('Buscando datos con:');
-    console.log(this.reportesAll[0].name);
+    console.log(this.reportesAll[this.reporteSeleccionado].name);
     //todo obtener el correcto/seleccionado
-    this._consultaDinamicaService.getDatos(this.reportesAll[0].name ,this.token) 
+    this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name ,this.token) 
       .subscribe( dataCons => {
         console.log(dataCons);
           this.consData = dataCons;
@@ -183,7 +190,7 @@ export class ConsultaDinamicaComponent implements OnInit {
                 this.loading = false;
                 
                 //establecer columnas
-                this.establecerColumnas();
+                //this.establecerColumnas(); todo comprobar si borrar o descomentar
 
                 this.constDatos = new MatTableDataSource(this.datosAll);
 
@@ -215,8 +222,8 @@ export class ConsultaDinamicaComponent implements OnInit {
     columnasAMostrar = '';
     if (this.columnasSeleccionadas == null){
       console.log('lista traida del reporte: ');
-      console.log(this.reportesAll[0].columnas);
-      let listaColumnas : string[] = (this.reportesAll[0].columnas.split(','));
+      console.log(this.reportesAll[this.reporteSeleccionado].columnas);
+      let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
       let itemActual: string;
       console.log(listaColumnas.length)
       for (let index = 0; index < listaColumnas.length; index++) {
@@ -235,6 +242,12 @@ export class ConsultaDinamicaComponent implements OnInit {
       console.log(columnasAMostrar);
     }
     //todo agregar las columnas que coincidan con las que ha que mostrar, comparando con (Object.keys(objeto))
+    let listaColumnas : string[] = (columnasAMostrar.split(','));
+    this.columns = [];
+    listaColumnas.forEach(columna => {
+      this.columns.push({ columnDef: columna, header: columna,    cell: (item: any) => `${item[columna]}` });
+    }); //item[columna] sirve para buscar el dato con el nombre de atributo
+
     /*
     if (listaColumnas.length > 0) {
       
@@ -298,13 +311,14 @@ export class ConsultaDinamicaComponent implements OnInit {
       { columnDef: 'symbol',   header: 'Symbol', cell: (item: any) => `${item.symbol}`   }, *
     ];
     */
+   /* todo limpiar
     this.columns = [
       { columnDef: 'id', header: 'No.',    cell: (item: any) => `${item.id}` },
       { columnDef: 'codigo',     header: 'Name',   cell: (item: any) => `${item.codigo}`     }
       /* ,
       { columnDef: 'weight',   header: 'Weight', cell: (item: any) => `${item.weight}`   },
-      { columnDef: 'symbol',   header: 'Symbol', cell: (item: any) => `${item.symbol}`   }, */
-    ];
+      { columnDef: 'symbol',   header: 'Symbol', cell: (item: any) => `${item.symbol}`   }, *
+    ]; */
       /** Column definitions in order */
       //this.displayedColumns = this.columns.map(c => c.columnDef);
       //this.displayedColumns = this.displayedColumns.push([{columnDef: 'select', header: '', cell: (item: any) => ''}, ]);
@@ -318,14 +332,15 @@ export class ConsultaDinamicaComponent implements OnInit {
       // this.displayedColumns = this.displayedColumns.concat(this.columns.map(c => c.columnDef), columnasfijas.map(c => c.columnDef));
       //this.displayedColumns = this.displayedColumns.concat(columnasfijas, this.columns.map(c => c.columnDef));
       this.displayedColumns = [...columnasfijas, ...this.columns.map(c => c.columnDef)];
-    //this.buscarDatos(); todo borrar
+      // todo borrar
+    this.buscarDatos();
 
     console.log('lista de columnas: ');
     console.log(this.displayedColumns);
     
     //
     let repo: Reporte;
-    repo = this.reportesAll[0];
+    repo = this.reportesAll[this.reporteSeleccionado];
     console.log('estructura de Reporte: ');
     console.log(Object.keys(repo));
 

@@ -3,9 +3,14 @@
   <mat-expansion-panel-header>
     <mat-panel-title>ACCIONES</mat-panel-title>
   </mat-expansion-panel-header>
-  <button class="mine-btnbig" mat-flat-button>
+  <button class="mine-btnbig" mat-flat-button [matMenuTriggerFor]="menu">
     NUEVO
   </button>
+    <mat-menu #menu="matMenu">
+      <ng-template  matMenuContent>
+        <button *ngFor="let x of reportesAll; let i = index" mat-menu-item (click)="menuClickHandler(i)">{{x.name}}</button>
+      </ng-template>
+    </mat-menu>
   <button class="mine-btnbig" mat-flat-button>
     EDITAR
   </button>
@@ -115,6 +120,6 @@
 
     <!-- <div class="col s12" style="margin-top:5px;" *ngIf="constRefContables.length < 1"> -->
     <div class="col s12" style="margin-top:5px;">
-      <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No hay referencias contables cargadas.</i></mat-card>
+      <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No hay coincidencias.</i></mat-card>
     </div>
   </div>

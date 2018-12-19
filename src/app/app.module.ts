@@ -41,6 +41,7 @@ import { AltaMinContableComponent } from './components/pages/abm-min-contables/a
 import { TablapcComponent } from './components/shared/tablapc/tablapc.component';
 import { ConsultaDinamicaComponent } from './components/pages/consulta-dinamica/consulta-dinamica.component';
 import { BotonEditarComponent } from './components/shared/boton-editar/boton-editar.component';
+import { ConsultaCrdComponent } from './components/pages/consulta-crd/consulta-crd.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { BotonEditarComponent } from './components/shared/boton-editar/boton-edi
     AltaMinContableComponent,
     ConsultaDinamicaComponent,
     BotonEditarComponent,
-    TablapcComponent
+    TablapcComponent,
+    ConsultaCrdComponent
   ],
   imports: [
     BrowserModule,

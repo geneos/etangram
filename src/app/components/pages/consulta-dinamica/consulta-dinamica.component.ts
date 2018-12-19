@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatSort, MatPaginator, MatTable, MatTableDataSource } from '@angular/material';
+import { MatSort, MatPaginator, MatTable, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
 import { CdkTableModule } from '@angular/cdk/table';
@@ -35,18 +35,17 @@ export class ConsultaDinamicaComponent implements OnInit {
 
   reporteSeleccionado : number;
   
-  constructor(private _consultaDinamicaService: ConsultaDinamicaService) { 
+  constructor(private _consultaDinamicaService: ConsultaDinamicaService,
+              public snackBar: MatSnackBar) { 
     this.loading = true;
     this.reporteSeleccionado=4;//todo elegir reporte inicial
+    //todo: dialogo|modal: mostrar sólo el botón del reporte|objeto que corresponda
     this.buscarReportes();
   }
 
   ngOnInit() {
     //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
 
-    //
-
-    //
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -63,8 +62,21 @@ export class ConsultaDinamicaComponent implements OnInit {
         this.constDatos.data.forEach(row => this.selection.select(row));
   }
 
-  menuClickHandler(texto: string){
-    console.log(texto);
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
+  }
+
+  menuClickHandler(nroReporte: number){
+    if (this.reporteSeleccionado!==nroReporte){
+      this.loading = true;
+      this.reporteSeleccionado=nroReporte;
+      this.establecerColumnas();
+    }
+    else{
+      this.openSnackBar('Ya se está mostrando la lista seleccionada.');
+    }
   }
 
   buscarReportes(){
@@ -90,14 +102,9 @@ export class ConsultaDinamicaComponent implements OnInit {
                 this.reportesAll = this.rData.dataset;
                 console.log(this.reportesAll);
                 this.loading = false;
-                //
+                
                 this.buscarAtributos();
-/*
-                this.constRefContables = new MatTableDataSource(this.reportesAll);
 
-                this.constRefContables.sort = this.sort;
-                this.constRefContables.paginator = this.paginator;
-*/
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
 
@@ -105,19 +112,19 @@ export class ConsultaDinamicaComponent implements OnInit {
                 this.reportesAll = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   
   buscarAtributos(){
+    //
     console.log('Buscando atributos con:');
-    console.log(this.reportesAll[4].name);
+    console.log(this.reportesAll[this.reporteSeleccionado].name);
+    //
     //todo obtener el correcto/seleccionado
     this._consultaDinamicaService.getAtributos(this.reportesAll[this.reporteSeleccionado].name ,this.token) 
       .subscribe( dataAtt => {
         console.log(dataAtt);
           this.attData = dataAtt;
-          //auxProvData = this.proveedorData.dataset.length;
           if(this.attData.returnset[0].RCode=="-6003"){
             //token invalido
             this.reportesAll = null;
@@ -137,33 +144,27 @@ export class ConsultaDinamicaComponent implements OnInit {
                 console.log(this.atributosAll);
                 this.establecerColumnas();
                 this.loading = false;
-/*
-                this.constRefContables = new MatTableDataSource(this.reportesAll);
 
-                this.constRefContables.sort = this.sort;
-                this.constRefContables.paginator = this.paginator;
-*/
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
 
               } else {
                 this.atributosAll = null;
-                console.log('Lista de vacía');
+                console.log('Lista de atributos vacía');
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
   buscarDatos(){
+    //
     console.log('Buscando datos con:');
     console.log(this.reportesAll[this.reporteSeleccionado].name);
-    //todo obtener el correcto/seleccionado
+    //
     this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name ,this.token) 
       .subscribe( dataCons => {
         console.log(dataCons);
           this.consData = dataCons;
-          //auxProvData = this.proveedorData.dataset.length;
           if(this.consData.returnset[0].RCode=="-6003"){
             //token invalido
             this.datosAll = null;
@@ -188,17 +189,11 @@ export class ConsultaDinamicaComponent implements OnInit {
                 console.log(Object.keys(objdin));
                 //
                 this.loading = false;
-                
-                //establecer columnas
-                //this.establecerColumnas(); todo comprobar si borrar o descomentar
 
                 this.constDatos = new MatTableDataSource(this.datosAll);
 
                 this.constDatos.sort = this.sort;
                 this.constDatos.paginator = this.paginator;
-
-                //this.table.renderRows();
-                //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
 
               } else {
                 this.datosAll = null;
@@ -217,7 +212,6 @@ export class ConsultaDinamicaComponent implements OnInit {
   establecerColumnas(){
     //asignar las seleccionadas, como "['select', 'opciones', 'codigo', 'nombre']"
     this.displayedColumns = [];
-    //this.displayedColumns.push('select', 'opciones');
     let columnasAMostrar: string;
     columnasAMostrar = '';
     if (this.columnasSeleccionadas == null){
@@ -242,60 +236,13 @@ export class ConsultaDinamicaComponent implements OnInit {
       console.log(columnasAMostrar);
     }
     //todo agregar las columnas que coincidan con las que ha que mostrar, comparando con (Object.keys(objeto))
+    //todo agregar busqueda del texto del header en tg06_tg_atributos cuando se agreguen
     let listaColumnas : string[] = (columnasAMostrar.split(','));
     this.columns = [];
     listaColumnas.forEach(columna => {
       this.columns.push({ columnDef: columna, header: columna,    cell: (item: any) => `${item[columna]}` });
     }); //item[columna] sirve para buscar el dato con el nombre de atributo
-
-    /*
-    if (listaColumnas.length > 0) {
-      
-      console.log('lista obtenida del reporte: ');
-      console.log(listaColumnas);
-      
-      listaColumnas.forEach(
-        columna => {
-          console.log('agregando la columna: ');
-          console.log(columna);
-          if (primerVuelta == true){
-            console.log('transformando')
-            console.log("'"||columna.trim()||"'");
-            console.log(columna.trim());
-            this.displayedColumns = "'"||columna.trim()||"'";
-            primerVuelta = false;
-            console.log('primera vuelta');
-            console.log(this.displayedColumns);
-          }
-          else{
-            this.displayedColumns = this.displayedColumns||','||"'"||columna.trim()||"'";
-            
-            console.log('vuelta');
-            console.log(this.displayedColumns);
-          }
-        }
-      );
-
-
-      this.displayedColumns = "["||this.displayedColumns||"]";
-    }
-    else{
-      this.displayedColumns = '[]';
-    }
-    */
-
-    //todo  descomentar
-    //todo probar poniendo codigo como columna
-    /*listaColumnas.forEach(
-      columna => {
-        this.displayedColumns.push(columna.trim());
-      }
-    );*/
-      //this.displayedColumns = ['opciones', 'select', 'codigo'];
-      
-      
-      // this.displayedColumns = ['select', 'opciones'];
-
+    
 /*
       let columns = [
         { columnDef: 'select',    header: 'Select',   cell: (row: any) => ``      },
@@ -303,48 +250,33 @@ export class ConsultaDinamicaComponent implements OnInit {
         //,{ columnDef: 'column.',    header: 'Codigo',   cell: (row: any) => `${row.codigo}`      }
       ];
     */    
-   /*this.columns = [
-      { columnDef: 'position', header: 'No.',    cell: (item: any) => `${item.id}` },
-      { columnDef: 'name',     header: 'Name',   cell: (item: any) => `${item.codigo}`     }
-      /* ,
-      { columnDef: 'weight',   header: 'Weight', cell: (item: any) => `${item.weight}`   },
-      { columnDef: 'symbol',   header: 'Symbol', cell: (item: any) => `${item.symbol}`   }, *
-    ];
-    */
-   /* todo limpiar
-    this.columns = [
-      { columnDef: 'id', header: 'No.',    cell: (item: any) => `${item.id}` },
-      { columnDef: 'codigo',     header: 'Name',   cell: (item: any) => `${item.codigo}`     }
-      /* ,
-      { columnDef: 'weight',   header: 'Weight', cell: (item: any) => `${item.weight}`   },
-      { columnDef: 'symbol',   header: 'Symbol', cell: (item: any) => `${item.symbol}`   }, *
-    ]; */
-      /** Column definitions in order */
-      //this.displayedColumns = this.columns.map(c => c.columnDef);
-      //this.displayedColumns = this.displayedColumns.push([{columnDef: 'select', header: '', cell: (item: any) => ''}, ]);
+   
+    /** Column definitions in order */
+    //this.displayedColumns = this.columns.map(c => c.columnDef);
+    //this.displayedColumns = this.displayedColumns.push([{columnDef: 'select', header: '', cell: (item: any) => ''}, ]);
 
-      /* let columnasfijas = [
-        { columnDef: 'select',    header: 'Select',   cell: (item: any) => ``      },
-        { columnDef: 'opciones',    header: 'Opciones',   cell: (item: any) => ``      }]; */
-      /** Static columns */
-      let columnasfijas = ['select', 'opciones'];
+    /** columnas fijas */
+    //todo: dialogo|modal: mostrar dependiendo de lo que se debería poder hacer en cada modal
 
-      // this.displayedColumns = this.displayedColumns.concat(this.columns.map(c => c.columnDef), columnasfijas.map(c => c.columnDef));
-      //this.displayedColumns = this.displayedColumns.concat(columnasfijas, this.columns.map(c => c.columnDef));
-      this.displayedColumns = [...columnasfijas, ...this.columns.map(c => c.columnDef)];
-      // todo borrar
+    /* let columnasfijas = [
+      { columnDef: 'select',    header: 'Select',   cell: (item: any) => ``      },
+      { columnDef: 'opciones',    header: 'Opciones',   cell: (item: any) => ``      }]; */
+    let columnasfijas = ['select', 'opciones'];
+
+    
+    //this.displayedColumns = this.displayedColumns.concat(columnasfijas, this.columns.map(c => c.columnDef));
+    this.displayedColumns = [...columnasfijas, ...this.columns.map(c => c.columnDef)];
+      
     this.buscarDatos();
-
+    //
     console.log('lista de columnas: ');
     console.log(this.displayedColumns);
-    
+    //
     //
     let repo: Reporte;
     repo = this.reportesAll[this.reporteSeleccionado];
     console.log('estructura de Reporte: ');
     console.log(Object.keys(repo));
-
-
     //
   }
 

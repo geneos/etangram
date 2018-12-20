@@ -8,7 +8,10 @@ import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 })
 export class TextoComponent implements CompGen {
   @Input() data: any;
-  constructor() { }
+  constructor() {
+    console.log('datos recibidos por componente de texto: ');
+    console.log(this.data);
+   }
 
   /* 
   ngOnInit() {

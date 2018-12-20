@@ -1,9 +1,13 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort, MatPaginator, MatTable, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
 import { CdkTableModule } from '@angular/cdk/table';
+import { ComponentWrapper } from 'src/app/classes/component-wrapper';
+import { AnclaParaCompsDirective } from 'src/app/directives/ancla-para-comps.directive';
+import { CompGenService } from 'src/app/services/i2t/comp-gen.service';
+import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 
 
 @Component({
@@ -35,12 +39,28 @@ export class ConsultaDinamicaComponent implements OnInit {
 
   reporteSeleccionado : number;
   
+  //para controles dinamicos
+  estadoBasico = false;
+  estadoAvanzado = false;
+  estadoColumnas = false;
+
+  @Input() componentes: ComponentWrapper[];
+  @ViewChild(AnclaParaCompsDirective) contenedorComponentes: AnclaParaCompsDirective;
+
+  //
   constructor(private _consultaDinamicaService: ConsultaDinamicaService,
-              public snackBar: MatSnackBar) { 
+              public snackBar: MatSnackBar,
+              private componentFactoryResolver: ComponentFactoryResolver,
+              private generadorDeComponentes: CompGenService) { 
     this.loading = true;
-    this.reporteSeleccionado=4;//todo elegir reporte inicial
+    this.reporteSeleccionado=0;//todo elegir reporte inicial
     //todo: dialogo|modal: mostrar sólo el botón del reporte|objeto que corresponda
     this.buscarReportes();
+
+    //todo dialogos|modals
+    //mientras tanto en paneles
+
+    //
   }
 
   ngOnInit() {
@@ -143,8 +163,14 @@ export class ConsultaDinamicaComponent implements OnInit {
                 console.log('Lista de atributos');
                 console.log(this.atributosAll);
                 this.establecerColumnas();
+                
+                //generar componentes para sección de filtros
+                this.generarFiltros();
+                //todo
+                  //generar componentes para sección de filtros avanzados
+                  //generar tabla de columnas
+                
                 this.loading = false;
-
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
 
@@ -217,7 +243,16 @@ export class ConsultaDinamicaComponent implements OnInit {
     if (this.columnasSeleccionadas == null){
       console.log('lista traida del reporte: ');
       console.log(this.reportesAll[this.reporteSeleccionado].columnas);
-      let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
+      //todo quitar if y descomentar cuando arreglen los datos
+      //let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
+        let listaColumnas : string[] = [];
+
+      if (this.reportesAll[this.reporteSeleccionado].name === 'c_proveedores'){
+        listaColumnas = ['c_texto', 'c_numero', 'c_cuit'];
+      }
+      else{
+        listaColumnas.push('name');
+      }
       let itemActual: string;
       console.log(listaColumnas.length)
       for (let index = 0; index < listaColumnas.length; index++) {
@@ -239,8 +274,21 @@ export class ConsultaDinamicaComponent implements OnInit {
     //todo agregar busqueda del texto del header en tg06_tg_atributos cuando se agreguen
     let listaColumnas : string[] = (columnasAMostrar.split(','));
     this.columns = [];
+    //
+    console.log('buscando metadatos de columnas: ');
+    //
     listaColumnas.forEach(columna => {
-      this.columns.push({ columnDef: columna, header: columna,    cell: (item: any) => `${item[columna]}` });
+      console.log('columna: ' + columna);
+      let atributoActual = this.atributosAll.find(atributo => atributo.atributo === columna );
+      console.log(atributoActual);
+      //todo revisar cuando corrijan las correspondencias entre apis
+      if (atributoActual != null) {
+      this.columns.push({ columnDef: columna, 
+                          header: atributoActual.desc_atributo,    
+                          cell: (item: any) => `${item[atributoActual.atributo_bd]}` 
+      }
+                        );}
+      // this.columns.push({ columnDef: columna, header: columna,    cell: (item: any) => `${item[columna]}` });
     }); //item[columna] sirve para buscar el dato con el nombre de atributo
     
 /*
@@ -289,5 +337,26 @@ export class ConsultaDinamicaComponent implements OnInit {
       console.log('Se intentará ir al objeto correspondiente de id: ');
       console.log(row['id']);
     }
+  }
+
+  generarFiltros(){
+    let viewContainerRef = this.contenedorComponentes.viewContainerRef;
+    viewContainerRef.clear();
+    
+    //recorrer lista de atributos para filtros
+    //
+    console.log('generando controles de filtrado para la lista: ');
+    console.log(this.atributosAll);
+    //
+    this.atributosAll.forEach(atributoActual => {
+      let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, 
+                                                             atributoActual.atributo, 'Esta es una prueba');
+      let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
+      let componentRef = viewContainerRef.createComponent(componentFactory);
+      (<CompGen>componentRef.instance).data = control.data;
+    });
+    
+    
+
   }
 }

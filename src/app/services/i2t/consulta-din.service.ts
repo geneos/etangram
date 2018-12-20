@@ -75,7 +75,7 @@ export class ConsultaDinamicaService {
       'x-access-token': token
     });
 
-    let query = `api/tg06_tg_atributos?name=eq[${name}]`;
+    let query = `api/tg06_tg_atributos?tabla=eq[${name}]`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });

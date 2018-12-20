@@ -14,9 +14,11 @@ export interface Reporte{
   }
 
 export interface Atributo{
-  name: string;
+  tabla: string;
   atributo: string;
-  orden: number,
+  desc_atributo: string;
+  atributo_bd: string;
+  orden: number;
   grupo: string;
   obligatorio: string; //1=si, 0= no
   tipo_dato: string;
@@ -24,4 +26,3 @@ export interface Atributo{
   valores: string;//null
   consulta: string; //null
 }
-

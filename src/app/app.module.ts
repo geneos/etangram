@@ -42,6 +42,8 @@ import { TablapcComponent } from './components/shared/tablapc/tablapc.component'
 import { ConsultaDinamicaComponent } from './components/pages/consulta-dinamica/consulta-dinamica.component';
 import { BotonEditarComponent } from './components/shared/boton-editar/boton-editar.component';
 import { ConsultaCrdComponent } from './components/pages/consulta-crd/consulta-crd.component';
+import { AnclaParaCompsDirective } from './directives/ancla-para-comps.directive';
+import { TextoComponent } from './components/shared/generics/texto/texto.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,9 @@ import { ConsultaCrdComponent } from './components/pages/consulta-crd/consulta-c
     ConsultaDinamicaComponent,
     BotonEditarComponent,
     TablapcComponent,
-    ConsultaCrdComponent
+    ConsultaCrdComponent,
+    AnclaParaCompsDirective,
+    TextoComponent
   ],
   imports: [
     BrowserModule,
@@ -77,6 +81,7 @@ import { ConsultaCrdComponent } from './components/pages/consulta-crd/consulta-c
     APP_ROUTING,
     CdkTableModule
   ],
+  entryComponents: [ TextoComponent ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
   ],

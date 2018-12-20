@@ -27,18 +27,40 @@
 
 <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:0px;">
   <mat-expansion-panel-header>
-    <mat-panel-title>ACCIONES</mat-panel-title>
+    <mat-panel-title>FILTROS</mat-panel-title>
   </mat-expansion-panel-header>
-  <button class="mine-btnbig" mat-flat-button>
+  <button class="mine-btnbig" mat-flat-button (click)='estadoBasico=estadoBasico?false:true'>
     BASICO
   </button>
-  <button class="mine-btnbig" mat-flat-button>
+  <button class="mine-btnbig" mat-flat-button (click)='estadoAvanzado=estadoAvanzado?false:true'>
     AVANZADO
   </button>
-  <button class="mine-btnbig" mat-flat-button>
+  <button class="mine-btnbig" mat-flat-button (click)='estadoColumnas=estadoColumnas?false:true'>
     COLUMNAS
   </button>
 </mat-expansion-panel>
+
+<!-- <mat-accordion *ngShow='estadoBasico || estadoAvanzado || estadoColumnas'> -->
+<mat-accordion>
+  <!-- mostra controles adecuados para filtrar las columnas 'basico' -->
+  <mat-expansion-panel [disabled]=true [(expanded)]="estadoBasico" AnclaParaComps>
+    <mat-expansion-panel-header>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+
+  <!-- mostra controles adecuados para filtrar las columnas 'avanzado' -->
+  <!-- <mat-expansion-panel [hidden]="!estadoAvanzado" [disabled]=true [(expanded)]="estadoAvanzado"> -->
+  <mat-expansion-panel [disabled]=true [(expanded)]="estadoAvanzado">
+    <mat-expansion-panel-header>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+
+  <!-- mostrar una tabla dinamica con checkbox y las columnas disponibles, con sus nombres -->
+  <mat-expansion-panel [disabled]=true [(expanded)]="estadoColumnas">
+    <mat-expansion-panel-header>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+</mat-accordion>
 
   <app-loading *ngIf="loading"></app-loading>
 

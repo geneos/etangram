@@ -6,14 +6,20 @@
       <div class="col s6 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Proveedor</mat-label>
-          <input (keyup)="buscarProveedor()" #codProv matInput placeholder="" type="number">
+          <input (keyup)="buscarProveedor()" #codProv matInput placeholder="" FormControlName="proveedor">
           <!--<mat-hint>Hint</mat-hint>-->
+          <mat-hint *ngIf="forma.status=='PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['proveedor'].errors?.noExiste">
+            El proveedor no existe
+          </mat-hint>
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Razón Social</mat-label>
-          <input matInput placeholder="" formControlName="razonSocial">
+          <input matInput placeholder="" formControlName="razonSocial" value="{{ compraProveedor?.razon_social }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>

@@ -244,15 +244,15 @@ export class ConsultaDinamicaComponent implements OnInit {
       console.log('lista traida del reporte: ');
       console.log(this.reportesAll[this.reporteSeleccionado].columnas);
       //todo quitar if y descomentar cuando arreglen los datos
-      //let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
-        let listaColumnas : string[] = [];
-
+      let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
+      
+      /* let listaColumnas : string[] = [];
       if (this.reportesAll[this.reporteSeleccionado].name === 'c_proveedores'){
         listaColumnas = ['c_texto', 'c_numero', 'c_cuit'];
       }
       else{
         listaColumnas.push('name');
-      }
+      } */
       let itemActual: string;
       console.log(listaColumnas.length)
       for (let index = 0; index < listaColumnas.length; index++) {
@@ -279,7 +279,7 @@ export class ConsultaDinamicaComponent implements OnInit {
     //
     listaColumnas.forEach(columna => {
       console.log('columna: ' + columna);
-      let atributoActual = this.atributosAll.find(atributo => atributo.atributo === columna );
+      let atributoActual = this.atributosAll.find(atributo => atributo.atributo_bd === columna );
       console.log(atributoActual);
       //todo revisar cuando corrijan las correspondencias entre apis
       if (atributoActual != null) {
@@ -348,9 +348,11 @@ export class ConsultaDinamicaComponent implements OnInit {
     console.log('generando controles de filtrado para la lista: ');
     console.log(this.atributosAll);
     //
-    this.atributosAll.forEach(atributoActual => {
+    let atributosFiltro = this.atributosAll.filter(atributoActual => atributoActual.grupo === 'Filtros');
+    atributosFiltro.forEach(atributoActual => {
+      
       let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, 
-                                                             atributoActual.atributo, 'Esta es una prueba');
+                                                             atributoActual.desc_atributo, 'Esta es una prueba');
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
       let componentRef = viewContainerRef.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;

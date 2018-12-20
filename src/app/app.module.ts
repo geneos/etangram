@@ -44,6 +44,9 @@ import { BotonEditarComponent } from './components/shared/boton-editar/boton-edi
 import { ConsultaCrdComponent } from './components/pages/consulta-crd/consulta-crd.component';
 import { AnclaParaCompsDirective } from './directives/ancla-para-comps.directive';
 import { TextoComponent } from './components/shared/generics/texto/texto.component';
+import { ListaComponent } from './components/shared/generics/lista/lista.component';
+import { FechaComponent } from './components/shared/generics/fecha/fecha.component';
+import { ConsultaComponent } from './components/shared/generics/consulta/consulta.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +70,10 @@ import { TextoComponent } from './components/shared/generics/texto/texto.compone
     TablapcComponent,
     ConsultaCrdComponent,
     AnclaParaCompsDirective,
-    TextoComponent
+    TextoComponent,
+    ListaComponent,
+    FechaComponent,
+    ConsultaComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +87,12 @@ import { TextoComponent } from './components/shared/generics/texto/texto.compone
     APP_ROUTING,
     CdkTableModule
   ],
-  entryComponents: [ TextoComponent ],
+  entryComponents: [  
+    TextoComponent, 
+    FechaComponent,  
+    ListaComponent, 
+    ConsultaComponent 
+  ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
   ],

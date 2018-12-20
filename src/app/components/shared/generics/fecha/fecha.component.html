@@ -1,0 +1,10 @@
+<!-- <div class="col s12 m4 l2"> -->
+<!-- todo revisar boton|icono -->
+<div>
+  <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+    <mat-label>{{data.title}}</mat-label>
+    <input matInput [matDatepicker]="picker" placeholder="data.placeholder" formControlName="fecha">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</div>

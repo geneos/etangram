@@ -1,0 +1,10 @@
+<!-- <div class="col s6 m3 l3"> -->
+<div>
+  <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+    <mat-label>{{data.title}}</mat-label>
+    <mat-select placeholder="Elija una opción">
+      <mat-option *ngFor="let option of data.options" value="{{option.key}}">{{option.value}}</mat-option>
+    </mat-select>
+    <!--<mat-hint>Hint</mat-hint>-->
+  </mat-form-field>
+</div>

@@ -42,11 +42,14 @@ import { TablapcComponent } from './components/shared/tablapc/tablapc.component'
 import { ConsultaDinamicaComponent } from './components/pages/consulta-dinamica/consulta-dinamica.component';
 import { BotonEditarComponent } from './components/shared/boton-editar/boton-editar.component';
 import { ConsultaCrdComponent } from './components/pages/consulta-crd/consulta-crd.component';
-import { AnclaParaCompsDirective } from './directives/ancla-para-comps.directive';
+import { AnclaParaFiltrosDirective } from './directives/ancla-para-filtros.directive';
+import { AnclaParaAvanzadosDirective } from './directives/ancla-para-avanzados.directive';
+import { AnclaParaColumnasDirective } from './directives/ancla-para-columnas.directive';
 import { TextoComponent } from './components/shared/generics/texto/texto.component';
 import { ListaComponent } from './components/shared/generics/lista/lista.component';
 import { FechaComponent } from './components/shared/generics/fecha/fecha.component';
 import { ConsultaComponent } from './components/shared/generics/consulta/consulta.component';
+import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 
 @NgModule({
   declarations: [
@@ -69,11 +72,14 @@ import { ConsultaComponent } from './components/shared/generics/consulta/consult
     BotonEditarComponent,
     TablapcComponent,
     ConsultaCrdComponent,
-    AnclaParaCompsDirective,
+    AnclaParaFiltrosDirective,
+    AnclaParaAvanzadosDirective,
+    AnclaParaColumnasDirective,
     TextoComponent,
     ListaComponent,
     FechaComponent,
-    ConsultaComponent
+    ConsultaComponent,
+    NumeroComponent
   ],
   imports: [
     BrowserModule,
@@ -88,7 +94,8 @@ import { ConsultaComponent } from './components/shared/generics/consulta/consult
     CdkTableModule
   ],
   entryComponents: [  
-    TextoComponent, 
+    TextoComponent,
+    NumeroComponent, 
     FechaComponent,  
     ListaComponent, 
     ConsultaComponent 

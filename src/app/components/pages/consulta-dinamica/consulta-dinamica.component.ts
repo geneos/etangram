@@ -5,9 +5,11 @@ import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ComponentWrapper } from 'src/app/classes/component-wrapper';
-import { AnclaParaCompsDirective } from 'src/app/directives/ancla-para-comps.directive';
+import { AnclaParaFiltrosDirective } from 'src/app/directives/ancla-para-filtros.directive';
 import { CompGenService } from 'src/app/services/i2t/comp-gen.service';
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
+import { AnclaParaAvanzadosDirective } from 'src/app/directives/ancla-para-avanzados.directive';
+import { AnclaParaColumnasDirective } from 'src/app/directives/ancla-para-columnas.directive';
 
 
 @Component({
@@ -45,7 +47,9 @@ export class ConsultaDinamicaComponent implements OnInit {
   estadoColumnas = false;
 
   @Input() componentes: ComponentWrapper[];
-  @ViewChild(AnclaParaCompsDirective) contenedorComponentes: AnclaParaCompsDirective;
+  @ViewChild(AnclaParaFiltrosDirective) contenedorFiltros: AnclaParaFiltrosDirective;
+  @ViewChild(AnclaParaAvanzadosDirective) contenedorAvanzados: AnclaParaAvanzadosDirective;
+  @ViewChild(AnclaParaColumnasDirective) contenedorColumnas: AnclaParaColumnasDirective;
 
   //
   constructor(private _consultaDinamicaService: ConsultaDinamicaService,
@@ -340,11 +344,11 @@ export class ConsultaDinamicaComponent implements OnInit {
   }
 
   generarFiltros(){
-    let viewContainerRef = this.contenedorComponentes.viewContainerRef;
+    //Crear filtros
+    let viewContainerRef = this.contenedorFiltros.viewContainerRef;
     viewContainerRef.clear();
     
     //recorrer lista de atributos para filtros
-    //
     console.log('generando controles de filtrado para la lista: ');
     console.log(this.atributosAll);
     //
@@ -352,13 +356,34 @@ export class ConsultaDinamicaComponent implements OnInit {
     atributosFiltro.forEach(atributoActual => {
       
       let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, 
-                                                             atributoActual.desc_atributo, 'Esta es una prueba');
+                                                             atributoActual.desc_atributo, 
+                                                             'Esta es una prueba',
+                                                             {valores: atributoActual.valores});
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
       let componentRef = viewContainerRef.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
     });
     
+    //Crear Avanzados
+    viewContainerRef = this.contenedorAvanzados.viewContainerRef;
+    viewContainerRef.clear();
     
+    //recorrer lista de atributos para filtros
+    console.log('generando controles avanzados para la lista: ');
+    console.log(this.atributosAll);
+    //
+    let atributosAvanzados = this.atributosAll.filter(atributoActual => atributoActual.grupo === 'Avanzado');
+    atributosAvanzados.forEach(atributoActual => {
+      
+      let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, 
+                                                             atributoActual.desc_atributo, 
+                                                             'Esta es una prueba',                                                             
+                                                             {valores: atributoActual.valores});
+      let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
+      let componentRef = viewContainerRef.createComponent(componentFactory);
+      (<CompGen>componentRef.instance).data = control.data;
+    });
 
+    //Crear tabla con checkboxes de columnas
   }
 }

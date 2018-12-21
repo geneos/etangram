@@ -8,7 +8,7 @@ import { ConsultaComponent } from 'src/app/components/shared/generics/consulta/c
   providedIn: 'root'
 })
 export class CompGenService {
-  getComponent(componentType: string, title: string, placeholder: string){
+  getComponent(componentType: string, title: string, placeholder: string, datos: any){
     let nuevoComponent : any;
     //todo: quitar hardcodeo de placeholder
     let place: string;
@@ -38,6 +38,6 @@ export class CompGenService {
     placeholder = place;
     //todo usar placeholder correcto
     // return new ComponentWrapper(nuevoComponent, {title, placeholder});
-    return new ComponentWrapper(nuevoComponent, {title, placeholder});
+    return new ComponentWrapper(nuevoComponent, {title, placeholder, datos});
   }
 }

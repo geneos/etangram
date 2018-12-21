@@ -43,22 +43,25 @@
 <!-- <mat-accordion *ngShow='estadoBasico || estadoAvanzado || estadoColumnas'> -->
 <mat-accordion>
   <!-- mostra controles adecuados para filtrar las columnas 'basico' -->
-  <mat-expansion-panel [disabled]=true [(expanded)]="estadoBasico" AnclaParaComps>
+  <mat-expansion-panel [disabled]=false [(expanded)]="estadoBasico" >
     <mat-expansion-panel-header>
     </mat-expansion-panel-header>
+    <ng-container AnclaParaFiltros></ng-container>
   </mat-expansion-panel>
 
   <!-- mostra controles adecuados para filtrar las columnas 'avanzado' -->
   <!-- <mat-expansion-panel [hidden]="!estadoAvanzado" [disabled]=true [(expanded)]="estadoAvanzado"> -->
-  <mat-expansion-panel [disabled]=true [(expanded)]="estadoAvanzado">
+  <mat-expansion-panel [disabled]=false [(expanded)]="estadoAvanzado" >
     <mat-expansion-panel-header>
     </mat-expansion-panel-header>
+    <ng-container AnclaParaAvanzados></ng-container>
   </mat-expansion-panel>
 
   <!-- mostrar una tabla dinamica con checkbox y las columnas disponibles, con sus nombres -->
-  <mat-expansion-panel [disabled]=true [(expanded)]="estadoColumnas">
+  <mat-expansion-panel [disabled]=false [(expanded)]="estadoColumnas" >
     <mat-expansion-panel-header>
     </mat-expansion-panel-header>
+    <ng-container AnclaParaColumnas></ng-container>
   </mat-expansion-panel>
 </mat-accordion>
 

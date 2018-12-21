@@ -1,9 +1,9 @@
 import { Directive, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  selector: '[AnclaParaComps]'
+  selector: '[AnclaParaFiltros]'
 })
-export class AnclaParaCompsDirective {
+export class AnclaParaFiltrosDirective {
 
   constructor(public viewContainerRef: ViewContainerRef) { }
 

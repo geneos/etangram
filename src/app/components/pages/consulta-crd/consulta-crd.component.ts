@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { CompraService } from "../../../services/i2t/compra.service";
-import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.interface";
+import { ConsultaCrdService } from "../../../services/i2t/consulta-crd.service";
+import { ConsultaCrd } from "../../../interfaces/consulta-crd.interface";
+import { CompraProveedor } from 'src/app/interfaces/compra.interface';
 
 export interface Certificados {
   certificado: number;
@@ -32,8 +33,7 @@ export class ConsultaCrdComponent implements OnInit {
   proveedorData:any
   loginData: any;
   token: string = "a";
-  compraArticulo: CompraArticulo;
-  compraProveedor: CompraProveedor;
+  Certificado: ConsultaCrd;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -56,11 +56,11 @@ export class ConsultaCrdComponent implements OnInit {
         this.dataSource.data.forEach(row => this.selection.select(row));
   }
   */
-  forma:FormGroup;
+  Controles:FormGroup;
 
-  constructor(public dialogArt: MatDialog, private _compraService:CompraService) { 
-    this.forma = new FormGroup({
-        'proveedor': new FormControl('',Validators.required,this.existeProveedor),
+  constructor(public dialogArt: MatDialog, private _ConsultaCrdService:ConsultaCrdService) { 
+    this.Controles = new FormGroup({
+        'prov': new FormControl ('',Validators.required,this.existeProveedor),
         'razonSocial': new FormControl('',Validators.required),
     })
     
@@ -86,8 +86,8 @@ export class ConsultaCrdComponent implements OnInit {
     return promesa;
   }
 
-  buscarProveedor(){
-    this._compraService.getProveedor( this.forma.controls['proveedor'].value, this.token )
+  buscarProveedorCrd(){
+    this._ConsultaCrdService.getProveedor( this.Controles.controls['prov'].value, this.token )
     //this._compraService.getProveedores()
       .subscribe( dataP => {
         console.log(dataP);
@@ -95,21 +95,21 @@ export class ConsultaCrdComponent implements OnInit {
           auxProvData = this.proveedorData.dataset.length;
           if(this.proveedorData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.compraProveedor = null;
+            this.Certificado = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
-            this._compraService.login(jsonbody)
+            this._ConsultaCrdService.login(jsonbody)
               .subscribe( dataL => {
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarProveedor();
+                this.buscarProveedorCrd();
               });
             } else {
               if(this.proveedorData.dataset.length>0){
-                this.compraProveedor = this.proveedorData.dataset[0];
+                this.Certificado = this.proveedorData.dataset[0];
               } else {
-                this.compraProveedor = null;
+                this.Certificado = null;
               }
             }
       });

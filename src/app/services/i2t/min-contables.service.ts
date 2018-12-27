@@ -73,19 +73,20 @@ export class MinContablesService {
     return this.http.post( url, body, { headers } );
   }
 
-  getMinContables( token:string ){
-    /*
+  getMinContables( body:string, token:string ){
+    
     const headers = new HttpHeaders({
-      'x-access-token': token
+      'x-access-token': token,
+      'Content-Type': 'application/json'
     });
 
-    let query = `api/tg01_minutascontables/?deleted=eq[0]`;
+    let query = `api/proc/InternoCabGet`;
     let url = this.preUrl + query;
 
-    return this.http.get( url , { headers });
-    */
-    return this.datos;
+    return this.http.post( url, body, { headers });
+   
   }
+
   /*
   getRefContablesSinCuenta( token:string ){
     const headers = new HttpHeaders({

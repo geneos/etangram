@@ -3,6 +3,7 @@ import { TextoComponent } from 'src/app/components/shared/generics/texto/texto.c
 import { ComponentWrapper } from 'src/app/classes/component-wrapper';
 import { ListaComponent } from 'src/app/components/shared/generics/lista/lista.component';
 import { ConsultaComponent } from 'src/app/components/shared/generics/consulta/consulta.component';
+import { TablaComponent } from 'src/app/components/shared/generics/tabla/tabla.component';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,10 @@ export class CompGenService {
         nuevoComponent = ConsultaComponent;
         place = 'Ingrese una colsulta';
         break;
-    
+      case 'Tabla':
+        nuevoComponent = TablaComponent;
+        place = 'Selecciones Columnas';
+        break;
       default:
         nuevoComponent = TextoComponent;
         break;

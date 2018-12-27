@@ -50,6 +50,7 @@ import { ListaComponent } from './components/shared/generics/lista/lista.compone
 import { FechaComponent } from './components/shared/generics/fecha/fecha.component';
 import { ConsultaComponent } from './components/shared/generics/consulta/consulta.component';
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
+import { TablaComponent } from './components/shared/generics/tabla/tabla.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { NumeroComponent } from './components/shared/generics/numero/numero.comp
     ListaComponent,
     FechaComponent,
     ConsultaComponent,
-    NumeroComponent
+    NumeroComponent,
+    TablaComponent
   ],
   imports: [
     BrowserModule,
@@ -98,7 +100,8 @@ import { NumeroComponent } from './components/shared/generics/numero/numero.comp
     NumeroComponent, 
     FechaComponent,  
     ListaComponent, 
-    ConsultaComponent 
+    ConsultaComponent,
+    TablaComponent
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},

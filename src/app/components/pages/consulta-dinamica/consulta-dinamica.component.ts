@@ -36,6 +36,7 @@ export class ConsultaDinamicaComponent implements OnInit {
   displayedColumns: string[] = [];
   columns: any[];
   columnasSeleccionadas: string;
+  columnasSelectas: any;
   constDatos = new MatTableDataSource();
   irADetalle: boolean;
 
@@ -362,6 +363,14 @@ export class ConsultaDinamicaComponent implements OnInit {
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
       let componentRef = viewContainerRef.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
+      console.log('probando ver los valores de los filtros: ');
+      console.log((<CompGen>componentRef.instance).data);
+      
+      console.log('probando ver los valores de los filtros v2: ');
+      console.log(viewContainerRef);
+      
+      console.log('probando ver los valores de los filtros v3: ');
+      console.log(componentRef.instance);
     });
     
     //Crear Avanzados
@@ -385,5 +394,26 @@ export class ConsultaDinamicaComponent implements OnInit {
     });
 
     //Crear tabla con checkboxes de columnas
+    this.columnasSelectas = new SelectionModel(true, []);
+    
+    viewContainerRef = this.contenedorColumnas.viewContainerRef;
+    viewContainerRef.clear();
+
+    let control = this.generadorDeComponentes.getComponent('Tabla', 
+                  'Datos de la tabla', 
+                  'Seleccione columnas a visualizar',                                                             
+                   {datos: this.atributosAll, selection: this.columnasSelectas});
+                  // {datos: {datos: this.atributosAll, selection: this.columnasSelectas}});
+      let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
+      let componentRef = viewContainerRef.createComponent(componentFactory);
+      (<CompGen>componentRef.instance).data = control.data;
+
+    console.log('probando leer la lista de selección de las columnas:');
+    console.log((<CompGen>componentRef.instance).data);
   }
+/* 
+  verSeleccionados(){
+    console.log(this.selection);
+    console.log(this.selection.selected); //any[]
+  } */
 }

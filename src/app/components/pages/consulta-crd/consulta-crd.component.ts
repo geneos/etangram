@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { SelectionModel } from '@angular/cdk/collections';
-import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatCellDef } from '@angular/material';
+import { SelectionModel, DataSource } from '@angular/cdk/collections';
+import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint} from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { CdkTableModule } from '@angular/cdk/table';
 import { ConsultaCrdService } from "../../../services/i2t/consulta-crd.service";
-import { ConsultaCrdItem } from "../../../interfaces/consulta-crd.interface";
+import { CompraService } from "../../../services/i2t/compra.service";
+import { CompraProveedor } from "../../../interfaces/compra.interface";
 
 
 var auxArtiData:any;
@@ -16,42 +18,84 @@ var auxProvData:any;
   styleUrls: ['./consulta-crd.component.css']
 })
 export class ConsultaCrdComponent implements OnInit {
-
-  ELEMENT_DATA: any; //ConsultaCrd[] = [];
-  displayedColumns: string[] = ['ncrd', 'fecha', 'npro', 'name', 'cuit_c', 'pexp', 'nexp', 'opub', 'tcom', 'ncomr', 'total'];
+  ProveedorData: any;
+  CompraProveedor: CompraProveedor;
+  ELEMENT_DATA: ConsultaCrd[] = [];
+  RazonSocial:string;
+  displayedColumns: string[] = ['ncrd', 'fech', 'pexp', 'opub', 'tcom', 'ncomr', 'total'];
   dataSource = new MatTableDataSource<ConsultaCrd>(this.ELEMENT_DATA);
-
+// ['ncrd', 'fech', 'npro', 'name', 'cuit_c', 'pexp', 'nexp', 'opub', 'tcom', 'ncomr', 'total']
+  Controles: FormGroup;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  constructor(private _ConsultaCrdService:ConsultaCrdService) { }
+  @ViewChild(MatSort) sort: MatSort;
 
+  
+  selection = new SelectionModel(true, []);
+
+  constructor(private _ConsultaCrdService:ConsultaCrdService) {
+    this.Controles = new FormGroup({
+      'proveedor': new FormControl(),
+      'razonSocial': new FormControl(),
+      'cuit': new FormControl(),
+   })
+  }
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
   }
   loginData: any;
   token: string = "a";
-  buscarProveedorCrd(){
-    this._ConsultaCrdService.getProveedor( 23/* this.Controles.controls['prov'].value*/, this.token )
+
+
+
+
+
+  existeProveedor( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxProvData==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+  
+
+
+  consultar(){
+ //   console.log(this.Controles.controls['proveedor'].value)
+    this._ConsultaCrdService.getProveedorCrd( this.Controles.controls['proveedor'].value, this.token )
       .subscribe( dataP => {
-        console.log(dataP);
-          this.ELEMENT_DATA = dataP;
-          auxProvData = this.ELEMENT_DATA.dataset.length;
-          if(this.ELEMENT_DATA.returnset[0].RCode=="-6003"){
+  //      console.log(dataP);
+          this.ProveedorData = dataP;
+          auxProvData = this.ProveedorData.dataset.length;
+          if(this.ProveedorData.returnset[0].RCode=="-6003"){
             //token invalido
             this.dataSource = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._ConsultaCrdService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
+ //               console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarProveedorCrd();
+                this.consultar();
               });
             } else {
-              if(this.ELEMENT_DATA.dataset.length>0){
-                this.ELEMENT_DATA = this.ELEMENT_DATA.dataset[0];
+              if(this.ProveedorData.dataset.length>0){
+                this.ELEMENT_DATA = this.ProveedorData.dataset;
+ //               console.log(this.ELEMENT_DATA[1].name);
+                this.RazonSocial = this.ELEMENT_DATA[0].name;
+                this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+
               } else {
                 this.ELEMENT_DATA = null;
+                this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+                this.RazonSocial = null
               }
             }
       });
@@ -59,7 +103,7 @@ export class ConsultaCrdComponent implements OnInit {
 
 }
 export interface ConsultaCrd {
-   ncrd: number;
+    ncrd: number;
     fech: string;
     npro: number;
     name: string;

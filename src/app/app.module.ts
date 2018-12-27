@@ -51,7 +51,6 @@ import { FechaComponent } from './components/shared/generics/fecha/fecha.compone
 import { ConsultaComponent } from './components/shared/generics/consulta/consulta.component';
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 import { KeysPipe } from './pipes/keys.pipe';
-import { TablePaginationExampleComponent } from './table-pagination-example/table-pagination-example.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +83,6 @@ import { TablePaginationExampleComponent } from './table-pagination-example/tabl
     NumeroComponent,
     ConsultaCrdComponent,
     KeysPipe,
-    TablePaginationExampleComponent,
   ],
   imports: [
     BrowserModule,

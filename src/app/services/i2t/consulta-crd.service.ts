@@ -8,6 +8,7 @@ export class ConsultaCrdService {
   Proveedor:any [] = [];
 
   urlProveedor:string = "http://tstvar.i2tsa.com.ar:3000/";
+  
   constructor(private http:HttpClient) { }
   login( body:string ){
     const headers = new HttpHeaders({
@@ -20,7 +21,18 @@ export class ConsultaCrdService {
     return this.http.post( url, body, { headers } );
   }
 
-  getProveedor( id:number, token:string ){
+  getProveedor( id:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/proveedor?codigo=${ id }`;
+    let url = this.urlProveedor + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getProveedorCrd( id:number, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });

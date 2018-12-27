@@ -50,6 +50,8 @@ import { ListaComponent } from './components/shared/generics/lista/lista.compone
 import { FechaComponent } from './components/shared/generics/fecha/fecha.component';
 import { ConsultaComponent } from './components/shared/generics/consulta/consulta.component';
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
+import { KeysPipe } from './pipes/keys.pipe';
+import { TablePaginationExampleComponent } from './table-pagination-example/table-pagination-example.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +81,10 @@ import { NumeroComponent } from './components/shared/generics/numero/numero.comp
     ListaComponent,
     FechaComponent,
     ConsultaComponent,
-    NumeroComponent
+    NumeroComponent,
+    ConsultaCrdComponent,
+    KeysPipe,
+    TablePaginationExampleComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,7 +96,7 @@ import { NumeroComponent } from './components/shared/generics/numero/numero.comp
     MyMaterialModule,
     MatDialogModule,
     APP_ROUTING,
-    CdkTableModule
+    CdkTableModule,
   ],
   entryComponents: [  
     TextoComponent,

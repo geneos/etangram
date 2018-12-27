@@ -20,12 +20,13 @@ export class ConsultaCrdService {
     return this.http.post( url, body, { headers } );
   }
 
-  getProveedor( id:string, token:string ){
+  getProveedor( id:number, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/crd_cabecera?npro=${ id }`;
+    let query = `api/crd_cabecera?npro=[${ id }]`;
+    console.log(query)
     let url = this.urlProveedor + query;
 
     return this.http.get( url , { headers });

@@ -39,15 +39,15 @@
       </button>
     </div>-->
     <div class="col s6 m4 l1">
-      <button class="mine-btnbig" mat-flat-button disabled>
+      <button (click)="print()" class="mine-btnbig" mat-flat-button>
         IMPRIMIR
       </button>
     </div> 
   </div>
   
-  <div class="mat-elevation-z8">
+  <div id="tableCrd" class="mat-elevation-z8">
     
-    <table #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
       
       <!-- Position Column -->
       <ng-container matColumnDef="ncrd">

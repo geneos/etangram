@@ -64,7 +64,23 @@ export class ConsultaCrdComponent implements OnInit {
     return promesa;
   }
   
+  print() {
+   const content = document.getElementById('tableCrd').innerHTML;
+   const content2 = this.RazonSocial;
+   const printWindow = window.open('', 'Print', 'height=600,width=800');
 
+   //printWindow.document.write('<html><head><title>Print</title>');
+   //   printWindow.document.write('</head><body>');
+   //   printWindow.document.write('<h1>QuotesWorld</h1>');
+      printWindow.document.write(content2);
+      printWindow.document.write(content);
+     // printWindow.document.write('</body></html>');
+
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
 
   consultar(){
  //   console.log(this.Controles.controls['proveedor'].value)
@@ -101,6 +117,7 @@ export class ConsultaCrdComponent implements OnInit {
       });
   }
 
+  
 }
 export interface ConsultaCrd {
     ncrd: number;

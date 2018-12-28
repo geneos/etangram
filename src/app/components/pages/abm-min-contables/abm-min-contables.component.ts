@@ -27,7 +27,7 @@ export class AbmMinContablesComponent implements OnInit {
   selection = new SelectionModel(true, []);
 
 //todo borrar, cambiar por lo real
-datos =
+/* datos =
   {
     returnset: [
         {
@@ -87,7 +87,8 @@ datos =
         tg01_cajas_id_c: 'd336b046-ee63-11e8-ab85-d050990fe081'
       }
     ]
-  }
+  } */ 
+  // todo borrar
 
 
   constructor(private _minContablesService:MinContablesService) {
@@ -114,17 +115,36 @@ datos =
   }
 
   buscarMinContable(){
-    this.minContablesAll = this.datos.dataset;
+    /* this.minContablesAll = this.datos.dataset;
     console.log(this.minContablesAll);
     this.loading = false;
 
     this.constMinContables = new MatTableDataSource(this.minContablesAll);
 
     this.constMinContables.sort = this.sort;
-    this.constMinContables.paginator = this.paginator;
+    this.constMinContables.paginator = this.paginator; */
+
+
     /////
-    /*
-    this._minContablesService.getMinContables( this.token )
+    
+    let jsbody = {
+
+        "ID_Comprobante":"",
+        
+        "Id_Cliente":"",
+        
+        "Fecha_desde":"",
+        
+        "Fecha_hasta":"",
+        
+        "param_limite":"10000",
+        
+        "param_offset":"0"
+        
+    };
+    let jsonbody= JSON.stringify(jsbody);
+
+    this._minContablesService.getMinContables(jsonbody, this.token )
       .subscribe( dataMC => {
         //console.log(dataMC);
           this.mcData = dataMC;
@@ -161,7 +181,7 @@ datos =
             }
             //console.log(this.minContablesAll);
       });
-    */
+   
   }
 
   }

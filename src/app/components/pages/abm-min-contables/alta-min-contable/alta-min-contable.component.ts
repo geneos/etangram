@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
-import { CompraArticulo, CompraProveedor } from 'src/app/interfaces/compra.interface';
-import { CompraService } from 'src/app/services/i2t/compra.service';
 import { MonedasService } from 'src/app/services/i2t/monedas.service';
 import { TiposComprobanteService } from 'src/app/services/i2t/tipos-comprobante.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +16,7 @@ import { RefContablesService } from 'src/app/services/i2t/ref-contables.service'
 import { RefContable } from 'src/app/interfaces/ref-contable.interface';
 import { CentroCosto } from 'src/app/interfaces/cen-costo.interface';
 import { CentrosCostosService } from 'src/app/services/i2t/cen-costos.service';
+import { MinContablesService } from 'src/app/services/i2t/min-contables.service';
 
 
 var auxRefConData,auxCCostoData:any;
@@ -29,7 +28,7 @@ var auxRefConData,auxCCostoData:any;
 })
 
 export class AltaMinContableComponent implements OnInit {
-
+/*
 //todo borrar, cambiar por lo real
 datos =
   {
@@ -91,7 +90,7 @@ datos =
     ]
   }
   /////
-
+*/
   editingRenglones:boolean = false;
   agregarReng:boolean = true;
 
@@ -128,6 +127,7 @@ datos =
   //
 
   minutaContable: MinContable;
+  mcData: any;
   //todo revisar
   cabeceraId: string;
   renglonId: string;
@@ -156,6 +156,7 @@ datos =
 
   //todo cambiar
   constructor(public dialogArt: MatDialog, 
+              private  _minContableService: MinContablesService,
               private _refContableService: RefContablesService,
               private _centroCostoService: CentrosCostosService,
               private _monedaService: MonedasService,
@@ -243,7 +244,7 @@ datos =
       .subscribe( dataP => {
         console.log(dataP);
           this.pData = dataP;
-          //auxRefConData = this.pcData.dataset.length;
+          //auxRefConData = this.mcData.dataset.length;
           if(this.pData.returnset[0].RCode=="-6003"){
             //token invalido
             this.parametrosSistema = null;
@@ -273,7 +274,7 @@ datos =
       .subscribe( dataTC => {
         console.log(dataTC);
           this.tcData = dataTC;
-          //auxRefConData = this.pcData.dataset.length;
+          //auxRefConData = this.mcData.dataset.length;
           if(this.tcData.returnset[0].RCode=="-6003"){
             //token invalido
             this.tipoComprobante = null;
@@ -302,7 +303,7 @@ datos =
       .subscribe( dataM => {
         console.log(dataM);
           this.mData = dataM;
-          //auxRefConData = this.pcData.dataset.length;
+          //auxRefConData = this.mcData.dataset.length;
           if(this.mData.returnset[0].RCode=="-6003"){
             //token invalido
             this.moneda = null;
@@ -331,7 +332,7 @@ datos =
       .subscribe( dataO => {
         console.log(dataO);
           this.oData = dataO;
-          //auxRefConData = this.pcData.dataset.length;
+          //auxRefConData = this.mcData.dataset.length;
           if(this.oData.returnset[0].RCode=="-6003"){
             //token invalido
             this.organizacion = null;
@@ -397,12 +398,26 @@ datos =
   }
 
   buscarMinutasContables(auxid:string){
+
+    let jsbody = {
+
+      "ID_Comprobante":auxid,
+      
+      "Id_Cliente":"",
+      
+      "Fecha_desde":"",
+      
+      "Fecha_hasta":"",
+      
+      "param_limite":"10",
+      
+      "param_offset":"0"
+      
+  };
+  let jsonbody= JSON.stringify(jsbody);
     //obtener datos
-    this.minutaContable = this.datos.dataset[auxid];
-    console.log('minuta traida: ');
-    console.log(this.minutaContable);
     //obtener descripciones
-    this.buscarTipoComprobante(this.minutaContable.tg01_tipocomprobante_id_c);
+   /*  this.buscarTipoComprobante(this.minutaContable.tg01_tipocomprobante_id_c);
     this.buscarOrganizacion(this.minutaContable.account_id1_c);
     this.buscarMoneda(this.minutaContable.tg01_monedas_id2_c);
     
@@ -414,64 +429,74 @@ datos =
     this.forma.controls['caja'].setValue(this.minutaContable.tg01_cajas_id_c);
     console.log(this.minutaContable.tg01_cajas_id_c);
     //habilitar edición de renglones
-    this.editingCabecera = false;
-
-
-    /*
-    this._PlanCuentasService.getPlanDeCuentas( auxid, this.token )
+    this.editingCabecera = false; */
+console.log('json armado: ');
+    console.log(jsonbody);
+    
+    this._minContableService.getMinContables( jsonbody, this.token )
     //this._refContableService.getProveedores()
-      .subscribe( dataPC => {
-        console.log(dataPC);
-          this.pcData = dataPC;
-          //auxRefConData = this.pcData.dataset.length;
-          if(this.pcData.returnset[0].RCode=="-6003"){
+      .subscribe( dataMC => {
+        console.log(dataMC);
+          this.mcData = dataMC;
+          //auxRefConData = this.mcData.dataset.length;
+          if(this.mcData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.planDeCuentas = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._PlanCuentasService.login(jsonbody)
+            this.minutaContable = null;
+            let jsbodyl = {"usuario":"usuario1","pass":"password1"}
+            let jsonbodyl = JSON.stringify(jsbodyl);
+            this._minContableService.login(  jsonbodyl )
               .subscribe( dataL => {
+                console.log('resultado login');
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarMinutasContables(auxid);
               });
             } else {
-              if(this.pcData.dataset.length>0){
-                this.planDeCuentas = this.pcData.dataset[0];
+              if(this.mcData.dataset.length>0){
+                this.minutaContable = this.mcData.dataset[0];
                 this.existe = true;
                 if (this.existe == true){
                   //console.log(this.planDeCuentas);
                   this.loading = false;
+                  
+                  this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
+                  this.forma.controls['observaciones'].setValue(this.minutaContable.description);
 
-                  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
+
+                  
+                  this.buscarOrganizacion(this.minutaContable.account_id_c);
+
+                 /*  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);
                   this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
                   this.forma.controls['nomencladorpadre'].setValue(this.planDeCuentas.nomencladorpadre);
                   this.forma.controls['orden'].setValue(this.planDeCuentas.orden);
                   this.forma.controls['imputable'].setValue(this.planDeCuentas.imputable.toString());
                   this.forma.controls['patrimonial'].setValue(this.planDeCuentas.patrimonial.toString());
-                  this.forma.controls['estado'].setValue(this.planDeCuentas.estado.toString());
+                  this.forma.controls['estado'].setValue(this.planDeCuentas.estado.toString()); */
                 }
               } else {
-                this.planDeCuentas = null;
+                this.minutaContable = null;
                 this.existe = false;
                 if (this.existe == false){
                   console.log('no existe este id!');
-                  this.forma.controls['cuentacontable'].disable();
+                  this.forma.controls['fecha'].disable();
+                  this.forma.controls['observaciones'].disable();
+                  /* this.forma.controls['cuentacontable'].disable();
                   this.forma.controls['name'].disable();
                   this.forma.controls['imputable'].disable();
                   this.forma.controls['patrimonial'].disable();
                   this.forma.controls['nomenclador'].disable();
                   this.forma.controls['nomencladorpadre'].disable();
                   this.forma.controls['orden'].disable();
-                  this.forma.controls['estado'].disable();
+                  this.forma.controls['estado'].disable(); */
                 }
               }
             }
 
       });
-      */
+     
   }
 
   existeRefContable( control: FormControl ): Promise<any>{

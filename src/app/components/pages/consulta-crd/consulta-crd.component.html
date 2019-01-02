@@ -98,16 +98,16 @@
       </ng-container>
 
       <!-- Symbol Column -->
-      <ng-container matColumnDef="tcom">
-        <th mat-header-cell *matHeaderCellDef> Tipo Comprobante</th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.tcom }} </td>
+      <ng-container matColumnDef="ncomr">
+        <th mat-header-cell *matHeaderCellDef> Comprobante</th>
+        <td mat-cell *cdkCellDef="let element"> {{ element.tcom + "-" + element.ncomr}} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- Symbol Column 
       <ng-container matColumnDef="ncomr">
         <th mat-header-cell *matHeaderCellDef> Nro. Comprobante </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.ncomr }} </td>
-      </ng-container>
+      </ng-container>-->
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="total">
@@ -118,5 +118,6 @@
       <tr mat-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   
-    <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+    
   </div>
+  <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>

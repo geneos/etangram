@@ -22,7 +22,8 @@ export class ConsultaCrdComponent implements OnInit {
   CompraProveedor: CompraProveedor;
   ELEMENT_DATA: ConsultaCrd[] = [];
   RazonSocial:string;
-  displayedColumns: string[] = ['ncrd', 'fech', 'pexp', 'opub', 'tcom', 'ncomr', 'total'];
+  nroProveedor:number;
+  displayedColumns: string[] = ['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];
   dataSource = new MatTableDataSource<ConsultaCrd>(this.ELEMENT_DATA);
 // ['ncrd', 'fech', 'npro', 'name', 'cuit_c', 'pexp', 'nexp', 'opub', 'tcom', 'ncomr', 'total']
   Controles: FormGroup;
@@ -47,10 +48,6 @@ export class ConsultaCrdComponent implements OnInit {
   loginData: any;
   token: string = "a";
 
-
-
-
-
   existeProveedor( control: FormControl ): Promise<any>{
     let promesa = new Promise(
       ( resolve, reject )=>{
@@ -66,8 +63,8 @@ export class ConsultaCrdComponent implements OnInit {
   
   print() {
    const content = document.getElementById('tableCrd').innerHTML;
-   const content2 = this.RazonSocial;
-   const printWindow = window.open('', 'Print', 'height=600,width=800');
+   const content2 = 'Proovedor: ' + this.nroProveedor + ' - ' + this.RazonSocial;
+   const printWindow = window.open('', 'Print', 'height=745,width=1024');
 
    //printWindow.document.write('<html><head><title>Print</title>');
    //   printWindow.document.write('</head><body>');
@@ -106,12 +103,14 @@ export class ConsultaCrdComponent implements OnInit {
                 this.ELEMENT_DATA = this.ProveedorData.dataset;
  //               console.log(this.ELEMENT_DATA[1].name);
                 this.RazonSocial = this.ELEMENT_DATA[0].name;
+                this.nroProveedor = this.ELEMENT_DATA[0].npro;
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
 
               } else {
                 this.ELEMENT_DATA = null;
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
-                this.RazonSocial = null
+                this.RazonSocial = null;
+                this.nroProveedor = null;
               }
             }
       });

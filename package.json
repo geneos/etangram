@@ -24,7 +24,9 @@
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
     "core-js": "^2.5.4",
+    "html2canvas": "^1.0.0-alpha.12",
     "ngx-smart-modal": "^7.1.0",
+    "pdfmake": "^0.1.40",
     "rxjs": "~6.2.0",
     "zone.js": "~0.8.26"
   },

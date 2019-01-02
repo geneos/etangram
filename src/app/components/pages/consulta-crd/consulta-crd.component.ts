@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint} from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import {MatSnackBarModule, MatSnackBar} from '@angular/material/snack-bar';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ConsultaCrdService } from "../../../services/i2t/consulta-crd.service";
 import { CompraService } from "../../../services/i2t/compra.service";
@@ -23,6 +24,7 @@ export class ConsultaCrdComponent implements OnInit {
   ELEMENT_DATA: ConsultaCrd[] = [];
   RazonSocial:string;
   nroProveedor:number;
+
   displayedColumns: string[] = ['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];
   dataSource = new MatTableDataSource<ConsultaCrd>(this.ELEMENT_DATA);
 // ['ncrd', 'fech', 'npro', 'name', 'cuit_c', 'pexp', 'nexp', 'opub', 'tcom', 'ncomr', 'total']
@@ -33,9 +35,9 @@ export class ConsultaCrdComponent implements OnInit {
   
   selection = new SelectionModel(true, []);
 
-  constructor(private _ConsultaCrdService:ConsultaCrdService) {
+  constructor(private _ConsultaCrdService:ConsultaCrdService, public snackBar: MatSnackBar) {
     this.Controles = new FormGroup({
-      'proveedor': new FormControl(),
+      'proveedor': new FormControl('',Validators.required,this.existeProveedor),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
    })
@@ -65,15 +67,10 @@ export class ConsultaCrdComponent implements OnInit {
    const content = document.getElementById('tableCrd').innerHTML;
    const content2 = 'Proovedor: ' + this.nroProveedor + ' - ' + this.RazonSocial;
    const printWindow = window.open('', 'Print', 'height=745,width=1024');
+    printWindow.document.write(content2);
+    printWindow.document.write(content);
 
-   //printWindow.document.write('<html><head><title>Print</title>');
-   //   printWindow.document.write('</head><body>');
-   //   printWindow.document.write('<h1>QuotesWorld</h1>');
-      printWindow.document.write(content2);
-      printWindow.document.write(content);
-     // printWindow.document.write('</body></html>');
-
-      printWindow.document.close();
+    printWindow.document.close();
       printWindow.focus();
       printWindow.print();
       printWindow.close();
@@ -111,12 +108,17 @@ export class ConsultaCrdComponent implements OnInit {
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
                 this.RazonSocial = null;
                 this.nroProveedor = null;
+                
               }
             }
       });
   }
 
-  
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
+  }
 }
 export interface ConsultaCrd {
     ncrd: number;

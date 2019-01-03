@@ -51,6 +51,7 @@ import { FechaComponent } from './components/shared/generics/fecha/fecha.compone
 import { ConsultaComponent } from './components/shared/generics/consulta/consulta.component';
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 import { KeysPipe } from './pipes/keys.pipe';
+import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +84,7 @@ import { KeysPipe } from './pipes/keys.pipe';
     NumeroComponent,
     ConsultaCrdComponent,
     KeysPipe,
+    ConsultaComprobantesComponent,
   ],
   imports: [
     BrowserModule,

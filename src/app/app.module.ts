@@ -11,6 +11,7 @@ import { APP_ROUTING } from "./app.routes";
 import { MyMaterialModule } from "./material";
 //modales
 import {MatDialogModule} from '@angular/material';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
 
 //animations material
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -97,6 +98,7 @@ import { ConsultaComprobantesComponent } from './components/pages/consulta-compr
     MatDialogModule,
     APP_ROUTING,
     CdkTableModule,
+    NgxSmartModalModule.forRoot()
   ],
   entryComponents: [  
     TextoComponent,

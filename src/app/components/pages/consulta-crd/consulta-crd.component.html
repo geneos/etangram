@@ -11,22 +11,22 @@
                 Buscando código...
               </mat-hint>
               <mat-hint *ngIf="Controles.controls['proveedor'].errors?.noExiste">
-                El proveedor no existe
+                No existen certificados para este proveedor
               </mat-hint>
             </mat-form-field>
             
           </div>
-          <div class="col s4 m2 l2">
+          <div class="col s4 m4 l4">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Razón Social</mat-label>
-              <input matInput placeholder="" formControlName="razonSocial" value="{{ RazonSocial }}">
+              <input matInput placeholder="" formControlName="razonSocial" readonly value="{{ RazonSocial }}">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
-          <div class="col s12 m6 l4">
+          <div class="col s12 m2 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>CUIT</mat-label>
-              <input matInput placeholder="" formControlName="cuit" value="{{ CompraProveedor?.cuit }}">
+              <input matInput placeholder="" formControlName="cuit" readonly value="{{ CompraProveedor?.cuit }}">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>

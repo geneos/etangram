@@ -87,6 +87,18 @@ export class MinContablesService {
    
   }
 
+  postCabecera( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/InternoCabIns";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
   /*
   getRefContablesSinCuenta( token:string ){
     const headers = new HttpHeaders({

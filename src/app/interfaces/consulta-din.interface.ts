@@ -1,5 +1,6 @@
 export interface Reporte{
   name: string;
+  titulo: string;
   columnas: string;
   accion_crear: string;
   accion_editar: string;

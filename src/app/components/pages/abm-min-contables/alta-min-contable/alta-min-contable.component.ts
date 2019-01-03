@@ -270,7 +270,6 @@ datos =
   
   buscarTipoComprobante(auxid:string){
     this._tipoComprobanteService.getTipoComprobante( auxid, this.token )
-    //this._refContableService.getProveedores()
       .subscribe( dataTC => {
         console.log(dataTC);
           this.tcData = dataTC;
@@ -292,6 +291,9 @@ datos =
                 this.tipoComprobante = this.tcData.dataset[0];
                 this.forma.controls['tipo'].setValue(this.tipoComprobante.name);
               }
+              
+              console.log('buscando tipo de comprobante con ' + auxid);
+              console.log(this.tipoComprobante);
             }
 
       });
@@ -347,9 +349,13 @@ datos =
               });
             } else {
               if(this.oData.dataset.length>0){
+                console.log('organizacion con '+auxid+': ');
+                console.log(this.organizacion);
                 this.organizacion = this.oData.dataset[0];
                 this.forma.controls['organizacion'].setValue(this.organizacion.NAME);
               }
+              console.log('organizacion con '+auxid+': ');
+              console.log(this.organizacion);
             }
 
       });
@@ -409,7 +415,7 @@ datos =
       
       "Fecha_hasta":"",
       
-      "param_limite":"10",
+      "param_limite":"1",
       
       "param_offset":"0"
       
@@ -462,10 +468,16 @@ console.log('json armado: ');
                   
                   this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
                   this.forma.controls['observaciones'].setValue(this.minutaContable.description);
-
-
                   
+                  console.log('pidiendo tipo op con: ');
+                  console.log(this.minutaContable);
+                  //todo cambiar por lo del objeto cargado cuando se pueda traer solo minutas
+                  this.forma.controls['organizacion'].setValue(this.minutaContable.nombre_fantasia_c);
+                  this.buscarTipoComprobante(this.minutaContable.tipooperacion);
+                  // this.buscarTipoComprobante('43966f4a-4fc8-11e8-b1a0-d050990fe081');
+                  console.log('buscando organizacion con '+this.minutaContable.account_id_c);
                   this.buscarOrganizacion(this.minutaContable.account_id_c);
+                  
 
                  /*  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);
@@ -680,7 +692,7 @@ console.log('json armado: ');
 
   guardarCabecera(){
     this.editingCabecera = false;
-
+    console.log('armando fecha');
     let ano = this.forma.controls['fecha'].value.getFullYear().toString();
     let mes = (this.forma.controls['fecha'].value.getMonth()+1).toString();
     if(mes.length==1){mes="0"+mes};
@@ -688,39 +700,60 @@ console.log('json armado: ');
     if(dia.length==1){dia="0"+dia};
 
     let auxfecha = ano+"-"+mes+"-"+dia;
+    console.log('armando json');
+
+    console.log(auxfecha);
+    // console.log(this.forma.controls['tipo'].value);
+    console.log(this.tipoComprobante.id);
+    console.log(this.forma.controls['caja'].value);
+    console.log(this.forma.controls['moneda'].value);
+    console.log(this.forma.controls['observaciones'].value);
 
     let jsbody = {
-      "Tipocbte":this.forma.controls['tipoComprobante'].value,
-      "Modelocbte":"cpa",//hardcoded
-      "NroCbte":this.forma.controls['nroComprobante'].value,
-      "ImporteTotalcbte":this.forma.controls['totalCabecera'].value,
-      "Fechacbte":auxfecha,
-      "codigoReferente":this.forma.controls['proveedor'].value,
-      "CAE":this.forma.controls['caicae'].value,
-      "FormaPago":"F",//hardcoded
-      "idcondComercializacion":"1",//hardcoded
-      "IdSucursal":"1",//hardcoded
-      "IdDeposito":"1",//hardcoded
-      "IdLista":"1",//hardcoded
-      "IdMoneda":"1",//hardcoded
-      "Cotizacion":"1",//hardcoded
-      "FechaBase":auxfecha,
-      "FechaContable":auxfecha,
-      "idcaja":"1",//hardcoded
-      "idUsuario":"99",//hardcoded
-      "Observaciones":this.forma.controls['observaciones'].value
+      // "ID_TipoComp":this.forma.controls['tipo'].value,
+      "ID_TipoComp":this.tipoComprobante.id,
+      "ID_Cliente":1,//hardcoded, todo cambiar
+      "ID_Caja":this.forma.controls['caja'].value,
+      "ID_Moneda":this.forma.controls['moneda'].value,
+      "ID_Usuario":1,//hardcoded, todo cambiar
+      "P_Fecha":auxfecha,
+      "P_Total":0,//todo cambiar
+      "P_Obs":this.forma.controls['observaciones'].value,
+      "P_Estado":1//hardcoded, todo cambiar
     };
+/*
+     {
+            "servicio": "InternoCabIns",          
+                {
+                    "name": "P_Estado",
+                    "required": "Y"
+                }
+        },
+            "id": "03jmeYePLuMU8qfJqiOtwDFIgWRaYEW3EUp4",
+            "name": "PUB 170",
+            "description": "Factura B Número 170",
+            "fecha": "2017-12-28",
+            "tipooperacion": "225170a7-747b-679b-9550-5adfa5718844",
+            "impmxdtotal": 8324.8,
+            "account_id_c": "880",
+            "nombre_fantasia_c": "TELEVISION FEDERAL S.A.TELEFE "
+*/
+    console.log('stringifeando');
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
     //todo modificar servicio
-    /*
-    this._refContableService.postCabecera( jsonbody,this.token )
+    
+    this._minContableService.postCabecera( jsonbody,this.token )
       .subscribe( resp => {
         //console.log(resp.returnset[0].RId);
         this.respCabecera = resp;
         this.cabeceraId = this.respCabecera.returnset[0].RId;
+        console.log('respuesta del post >>');
+        console.log(resp);
+        console.log(resp[0].returnset[0].RTxt);
+        console.log('<< respuesta del post');
       });
-*/
+
     this.forma.controls['fecha'].disable();
     this.forma.controls['tipo'].disable();
     this.forma.controls['numero'].disable();

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver} from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver, ViewChildren, ViewContainerRef, QueryList} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort, MatPaginator, MatTable, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
@@ -10,6 +10,7 @@ import { CompGenService } from 'src/app/services/i2t/comp-gen.service';
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 import { AnclaParaAvanzadosDirective } from 'src/app/directives/ancla-para-avanzados.directive';
 import { AnclaParaColumnasDirective } from 'src/app/directives/ancla-para-columnas.directive';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 
 
 @Component({
@@ -47,16 +48,28 @@ export class ConsultaDinamicaComponent implements OnInit {
   estadoAvanzado = false;
   estadoColumnas = false;
 
+  viewContainerRefFiltros: ViewContainerRef;
+  viewContainerRefAvanzados: ViewContainerRef;
+  viewContainerRefColumnas: ViewContainerRef;
+  /* viewContainerRefFiltros: QueryList<ViewContainerRef>;
+  viewContainerRefAvanzados: ViewContainerRef;
+  viewContainerRefColumnas: ViewContainerRef; */
+
   @Input() componentes: ComponentWrapper[];
+  
   @ViewChild(AnclaParaFiltrosDirective) contenedorFiltros: AnclaParaFiltrosDirective;
   @ViewChild(AnclaParaAvanzadosDirective) contenedorAvanzados: AnclaParaAvanzadosDirective;
   @ViewChild(AnclaParaColumnasDirective) contenedorColumnas: AnclaParaColumnasDirective;
 
+  /* @ViewChildren(AnclaParaFiltrosDirective) contenedorFiltros: QueryList<AnclaParaFiltrosDirective>;
+  @ViewChildren(AnclaParaAvanzadosDirective) contenedorAvanzados: QueryList<AnclaParaAvanzadosDirective>;
+  @ViewChildren(AnclaParaColumnasDirective) contenedorColumnas: QueryList<AnclaParaColumnasDirective>; */
   //
   constructor(private _consultaDinamicaService: ConsultaDinamicaService,
               public snackBar: MatSnackBar,
               private componentFactoryResolver: ComponentFactoryResolver,
-              private generadorDeComponentes: CompGenService) { 
+              private generadorDeComponentes: CompGenService,
+              public ngxSmartModalService: NgxSmartModalService) { 
     this.loading = true;
     this.reporteSeleccionado=0;//todo elegir reporte inicial
     //todo: dialogo|modal: mostrar sólo el botón del reporte|objeto que corresponda
@@ -97,11 +110,19 @@ export class ConsultaDinamicaComponent implements OnInit {
     if (this.reporteSeleccionado!==nroReporte){
       this.loading = true;
       this.reporteSeleccionado=nroReporte;
-      this.establecerColumnas();
+      this.buscarReportes();
     }
     else{
       this.openSnackBar('Ya se está mostrando la lista seleccionada.');
     }
+  }
+
+  abrirModal(nombreModal: string){
+    /* this.ngxSmartModalService.open('cdFiltrosModal');
+    this.ngxSmartModalService.open('cdAvanzadoModal');
+    this.ngxSmartModalService.open('cdTablaModal'); */
+
+    this.ngxSmartModalService.open(nombreModal);
   }
 
   buscarReportes(){
@@ -346,8 +367,16 @@ export class ConsultaDinamicaComponent implements OnInit {
 
   generarFiltros(){
     //Crear filtros
-    let viewContainerRef = this.contenedorFiltros.viewContainerRef;
-    viewContainerRef.clear();
+    if (this.viewContainerRefFiltros == null){
+      console.log(this.viewContainerRefFiltros);
+console.log(this.contenedorFiltros);
+      // console.log(this.contenedorFiltros.viewContainerRef);
+      // console.log(this.contenedorFiltros.first)
+      this.viewContainerRefFiltros = this.contenedorFiltros.viewContainerRef;
+      // this.viewContainerRefFiltros = this.contenedorFiltros.first;
+      console.log('guardada referencia de filtros');
+    }
+    this.viewContainerRefFiltros.clear();
     
     //recorrer lista de atributos para filtros
     console.log('generando controles de filtrado para la lista: ');
@@ -361,21 +390,24 @@ export class ConsultaDinamicaComponent implements OnInit {
                                                              'Esta es una prueba',
                                                              {valores: atributoActual.valores});
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
-      let componentRef = viewContainerRef.createComponent(componentFactory);
+      let componentRef = this.viewContainerRefFiltros.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
       console.log('probando ver los valores de los filtros: ');
       console.log((<CompGen>componentRef.instance).data);
       
       console.log('probando ver los valores de los filtros v2: ');
-      console.log(viewContainerRef);
+      console.log(this.viewContainerRefFiltros);
       
       console.log('probando ver los valores de los filtros v3: ');
       console.log(componentRef.instance);
     });
     
     //Crear Avanzados
-    viewContainerRef = this.contenedorAvanzados.viewContainerRef;
-    viewContainerRef.clear();
+    if (this.viewContainerRefAvanzados == null){
+      this.viewContainerRefAvanzados = this.contenedorAvanzados.viewContainerRef;
+      console.log('guardada referencia de avanzadas');
+    }
+    this.viewContainerRefAvanzados.clear();
     
     //recorrer lista de atributos para filtros
     console.log('generando controles avanzados para la lista: ');
@@ -389,15 +421,18 @@ export class ConsultaDinamicaComponent implements OnInit {
                                                              'Esta es una prueba',                                                             
                                                              {valores: atributoActual.valores});
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
-      let componentRef = viewContainerRef.createComponent(componentFactory);
+      let componentRef = this.viewContainerRefAvanzados.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
     });
 
     //Crear tabla con checkboxes de columnas
     this.columnasSelectas = new SelectionModel(true, []);
     
-    viewContainerRef = this.contenedorColumnas.viewContainerRef;
-    viewContainerRef.clear();
+    if (this.viewContainerRefColumnas == null){
+      this.viewContainerRefColumnas = this.contenedorColumnas.viewContainerRef;
+      console.log('guardada referencia de columnas');
+    }
+    this.viewContainerRefColumnas.clear();
 
     let control = this.generadorDeComponentes.getComponent('Tabla', 
                   'Datos de la tabla', 
@@ -405,7 +440,7 @@ export class ConsultaDinamicaComponent implements OnInit {
                    {datos: this.atributosAll, selection: this.columnasSelectas});
                   // {datos: {datos: this.atributosAll, selection: this.columnasSelectas}});
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
-      let componentRef = viewContainerRef.createComponent(componentFactory);
+      let componentRef = this.viewContainerRefColumnas.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
 
     console.log('probando leer la lista de selección de las columnas:');
@@ -416,4 +451,12 @@ export class ConsultaDinamicaComponent implements OnInit {
     console.log(this.selection);
     console.log(this.selection.selected); //any[]
   } */
+
+  testReadChildren(){
+    console.clear();
+    console.log('viendo el objeto base de columnas');
+    console.log(this.viewContainerRefColumnas);
+    console.log('primera vista');
+    console.log(this.viewContainerRefColumnas.get(0));
+  }
 }

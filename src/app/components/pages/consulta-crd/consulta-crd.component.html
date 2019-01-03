@@ -11,22 +11,22 @@
                 Buscando código...
               </mat-hint>
               <mat-hint *ngIf="Controles.controls['proveedor'].errors?.noExiste">
-                El proveedor no existe
+                No existen certificados para este proveedor
               </mat-hint>
             </mat-form-field>
             
           </div>
-          <div class="col s4 m2 l2">
+          <div class="col s4 m4 l4">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Razón Social</mat-label>
-              <input matInput placeholder="" formControlName="razonSocial" value="{{ RazonSocial }}">
+              <input matInput placeholder="" formControlName="razonSocial" readonly value="{{ RazonSocial }}">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
-          <div class="col s12 m6 l4">
+          <div class="col s12 m2 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>CUIT</mat-label>
-              <input matInput placeholder="" formControlName="cuit" value="{{ CompraProveedor?.cuit }}">
+              <input matInput placeholder="" formControlName="cuit" readonly value="{{ CompraProveedor?.cuit }}">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
@@ -39,15 +39,15 @@
       </button>
     </div>-->
     <div class="col s6 m4 l1">
-      <button class="mine-btnbig" mat-flat-button disabled>
+      <button (click)="print()" class="mine-btnbig" mat-flat-button>
         IMPRIMIR
       </button>
     </div> 
   </div>
   
-  <div class="mat-elevation-z8">
+  <div id="tableCrd" class="mat-elevation-z8">
     
-    <table #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
       
       <!-- Position Column -->
       <ng-container matColumnDef="ncrd">
@@ -98,16 +98,16 @@
       </ng-container>
 
       <!-- Symbol Column -->
-      <ng-container matColumnDef="tcom">
-        <th mat-header-cell *matHeaderCellDef> Tipo Comprobante</th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.tcom }} </td>
+      <ng-container matColumnDef="ncomr">
+        <th mat-header-cell *matHeaderCellDef> Comprobante</th>
+        <td mat-cell *cdkCellDef="let element"> {{ element.tcom + "-" + element.ncomr}} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- Symbol Column 
       <ng-container matColumnDef="ncomr">
         <th mat-header-cell *matHeaderCellDef> Nro. Comprobante </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.ncomr }} </td>
-      </ng-container>
+      </ng-container>-->
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="total">
@@ -118,5 +118,6 @@
       <tr mat-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
     </table>
   
-    <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+    
   </div>
+  <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>

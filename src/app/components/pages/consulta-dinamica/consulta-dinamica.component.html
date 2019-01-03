@@ -1,44 +1,59 @@
-<h2>CONSULTA DINAMICA</h2>
-<mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:0px;">
-  <mat-expansion-panel-header>
-    <mat-panel-title>ACCIONES</mat-panel-title>
-  </mat-expansion-panel-header>
-  <button class="mine-btnbig" mat-flat-button [matMenuTriggerFor]="menu">
+<h2>{{reportesAll[this.reporteSeleccionado].titulo}}</h2>
+<button class="mine-btnbig" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu">
+  ACCIONES
+</button>
+<mat-menu #rootMenu="matMenu">
+  <button mat-menu-item (click)="$event.stopPropagation();" [matMenuTriggerFor]="subMenu">
     NUEVO
   </button>
-    <mat-menu #menu="matMenu">
-      <ng-template  matMenuContent>
-        <button *ngFor="let x of reportesAll; let i = index" mat-menu-item (click)="menuClickHandler(i)">{{x.name}}</button>
-      </ng-template>
-    </mat-menu>
-  <button class="mine-btnbig" mat-flat-button>
+  <button mat-menu-item>
     EDITAR
   </button>
-  <button class="mine-btnbig" mat-flat-button>
+  <button mat-menu-item (click)="testReadChildren()">
     VISUALIZAR
   </button>
-  <button class="mine-btnbig" mat-flat-button>
+  <button mat-menu-item>
     ELIMINAR
   </button>
-  <button class="mine-btnbig" mat-flat-button > 
+  <button mat-menu-item> 
     EXPORTAR
   </button>
-</mat-expansion-panel>
+</mat-menu>
 
-<mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:0px;">
-  <mat-expansion-panel-header>
-    <mat-panel-title>FILTROS</mat-panel-title>
-  </mat-expansion-panel-header>
-  <button class="mine-btnbig" mat-flat-button (click)='estadoBasico=estadoBasico?false:true'>
+<mat-menu #subMenu="matMenu" (click)="$event.stopPropagation();">
+  <ng-template  matMenuContent>
+    <button *ngFor="let x of reportesAll; let i = index" mat-menu-item (click)="menuClickHandler(i)">{{x.titulo}}</button>
+  </ng-template>
+</mat-menu>
+<!-- 
+<button mat-icon-button [matMenuTriggerFor]="rootMenu">
+  <mat-icon>more_vert</mat-icon>
+</button>
+ -->
+
+<button class="mine-btnbig" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu2">
+  FILTROS
+</button>
+<mat-menu #rootMenu2="matMenu">
+  <!-- <button mat-menu-item (click)="ngxSmartModalService.open('cdFiltrosModal')">
     BASICO
   </button>
-  <button class="mine-btnbig" mat-flat-button (click)='estadoAvanzado=estadoAvanzado?false:true'>
+  <button mat-menu-item (click)="ngxSmartModalService.open('cdAvanzadoModal')">
     AVANZADO
   </button>
-  <button class="mine-btnbig" mat-flat-button (click)='estadoColumnas=estadoColumnas?false:true'>
+  <button mat-menu-item (click)="ngxSmartModalService.open('cdTablaModal')">
+    COLUMNAS
+  </button> -->
+  <button mat-menu-item (click)="abrirModal('cdFiltrosModal')">
+    BASICO
+  </button>
+  <button mat-menu-item (click)="abrirModal('cdAvanzadoModal')">
+    AVANZADO
+  </button>
+  <button mat-menu-item (click)="abrirModal('cdTablaModal')">
     COLUMNAS
   </button>
-</mat-expansion-panel>
+</mat-menu>
 
 <!-- <mat-accordion *ngShow='estadoBasico || estadoAvanzado || estadoColumnas'> -->
 <mat-accordion>
@@ -148,3 +163,7 @@
       <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No hay coincidencias.</i></mat-card>
     </div>
   </div>
+
+  <app-cd-filtros></app-cd-filtros>
+  <app-cd-avanzado></app-cd-avanzado>
+  <app-cd-tabla></app-cd-tabla>

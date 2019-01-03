@@ -11,6 +11,7 @@ import { APP_ROUTING } from "./app.routes";
 import { MyMaterialModule } from "./material";
 //modales
 import {MatDialogModule} from '@angular/material';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
 
 //animations material
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -51,6 +52,11 @@ import { FechaComponent } from './components/shared/generics/fecha/fecha.compone
 import { ConsultaComponent } from './components/shared/generics/consulta/consulta.component';
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 import { KeysPipe } from './pipes/keys.pipe';
+import { TablaComponent } from './components/shared/generics/tabla/tabla.component';
+import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.component';
+import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
+import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
+import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
 
 @NgModule({
   declarations: [
@@ -81,8 +87,13 @@ import { KeysPipe } from './pipes/keys.pipe';
     FechaComponent,
     ConsultaComponent,
     NumeroComponent,
+    TablaComponent,
     ConsultaCrdComponent,
     KeysPipe,
+    ConsDinComponent,
+    CdFiltrosComponent,
+    CdAvanzadoComponent,
+    CdTablaComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,12 +106,14 @@ import { KeysPipe } from './pipes/keys.pipe';
     MatDialogModule,
     APP_ROUTING,
     CdkTableModule,
+    NgxSmartModalModule.forRoot()
   ],
   entryComponents: [  
     TextoComponent,
     NumeroComponent, 
     FechaComponent,  
     ListaComponent, 
+    TablaComponent,
     ConsultaComponent 
   ],
   providers: [

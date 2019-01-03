@@ -1,0 +1,34 @@
+<ngx-smart-modal #cdFiltrosModal [identifier]="'cdFiltrosModal'">
+  <div class="modal-header">
+      <h4 class="modal-title pull-left">Filtros</h4>
+  </div>
+  <!-- <div class="modal-body">
+    <!-- <mat-tab-group > - ->
+    <mat-tab-group [(selectedIndex)]="selectedTab">
+      <mat-tab label="Tab 1">Básico
+
+      </mat-tab>
+      <mat-tab label="Tab 2">Avanzado</mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="modal-footer">
+      <button class="btn btn-default" (click)="cdFiltrosModal.close()">Cancelar</button>
+  </div> -->
+  <mat-card>
+    <mat-tab-group [(selectedIndex)]="selectedTab">
+        <mat-tab label="Básico">
+          <!-- <mat-card> -->
+            Espacio para controles
+          <!-- </mat-card> -->
+
+        </mat-tab>
+        <mat-tab label="Avanzado">Avanzado</mat-tab>
+    </mat-tab-group>
+    <!-- <mat-card-actions>
+      <button class="btn btn-default" (click)="cdFiltrosModal.close()">Cancelar</button>
+    </mat-card-actions> -->
+  </mat-card>
+  <div class="modal-footer">
+      <button class="btn btn-default" (click)="cdFiltrosModal.close()">Cancelar</button>
+  </div>
+</ngx-smart-modal>

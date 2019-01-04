@@ -12,6 +12,7 @@ export class TablaComponent implements CompGen {
   // @Input() data: any;
   //private _data: string;
 
+  displayedColumns: string[] = [];
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -34,11 +35,34 @@ export class TablaComponent implements CompGen {
       console.log(this._data.datos.datos)
       // this.constDatos = this._data.datos;
       console.log('fin datos recibidos');
+
+      //
+      /* var transpose = this._data.datos.datos.reduce(function(arr, obj) {
+        for (let key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            arr[key] = arr[key] || []
+            arr[key].push(obj[key])
+          }
+        }
+        return arr
+      }, {})
+      console.log('Datos transpuestos: ');
+      console.log(transpose)
+      console.log('fin datos transpuestos')
+      let constDatos2 = new MatTableDataSource(transpose);
+      console.log(transpose.atributo);
+      console.log(constDatos2); */
+      //
+      // this.displayedColumns= ['select', 'columna', 'tipo', 'longitud'];
+      let displayed= ['select', 'columna'];
+      // this.displayedColumns = [...displayed, ...transpose.atributo];
+      this.displayedColumns = [...displayed];
+
       this.constDatos = new MatTableDataSource(this._data.datos.datos);
+      console.log(this.constDatos);
       
       this.constDatos.sort = this.sort;
       this.constDatos.paginator = this.paginator;
-
 
       this.selection  = this._data.datos.selection;
 

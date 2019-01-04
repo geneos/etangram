@@ -3,11 +3,15 @@
       <h4 class="modal-title pull-left">Columnas visibles</h4>
   </div>
   <div class="modal-body">
-    <mat-card>
-
-    </mat-card>
+      <mat-card>
+        <app-loading *ngIf="loading"></app-loading>
+        <ng-container AnclaParaColumnas></ng-container>
+          <!-- <mat-card-actions>
+          <button class="btn btn-default" (click)="cdFiltrosModal.close()">Cancelar</button>
+          </mat-card-actions> -->
+      </mat-card>
   </div>
   <div class="modal-footer">
-      <button class="btn btn-default" (click)="cdTablaModal.close()">Cancel</button>
+    <button class="btn btn-default" (click)="cdTablaModal.close()">Cancelar</button>
   </div>
 </ngx-smart-modal>

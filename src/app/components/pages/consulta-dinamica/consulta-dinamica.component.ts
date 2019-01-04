@@ -44,22 +44,19 @@ export class ConsultaDinamicaComponent implements OnInit {
   reporteSeleccionado : number;
   
   //para controles dinamicos
-  estadoBasico = false;
-  estadoAvanzado = false;
-  estadoColumnas = false;
-
-  viewContainerRefFiltros: ViewContainerRef;
-  viewContainerRefAvanzados: ViewContainerRef;
-  viewContainerRefColumnas: ViewContainerRef;
+  /* viewContainerRefFiltros: ViewContainerRef;
+  viewContainerRefAvanzados: ViewContainerRef; */
+  // viewContainerRefColumnas: ViewContainerRef;
   /* viewContainerRefFiltros: QueryList<ViewContainerRef>;
   viewContainerRefAvanzados: ViewContainerRef;
   viewContainerRefColumnas: ViewContainerRef; */
+  columnSelection = new SelectionModel(true, []);
 
   @Input() componentes: ComponentWrapper[];
-  
+  /* 
   @ViewChild(AnclaParaFiltrosDirective) contenedorFiltros: AnclaParaFiltrosDirective;
-  @ViewChild(AnclaParaAvanzadosDirective) contenedorAvanzados: AnclaParaAvanzadosDirective;
-  @ViewChild(AnclaParaColumnasDirective) contenedorColumnas: AnclaParaColumnasDirective;
+  @ViewChild(AnclaParaAvanzadosDirective) contenedorAvanzados: AnclaParaAvanzadosDirective; */
+  // @ViewChild(AnclaParaColumnasDirective) contenedorColumnas: AnclaParaColumnasDirective;
 
   /* @ViewChildren(AnclaParaFiltrosDirective) contenedorFiltros: QueryList<AnclaParaFiltrosDirective>;
   @ViewChildren(AnclaParaAvanzadosDirective) contenedorAvanzados: QueryList<AnclaParaAvanzadosDirective>;
@@ -121,8 +118,34 @@ export class ConsultaDinamicaComponent implements OnInit {
     /* this.ngxSmartModalService.open('cdFiltrosModal');
     this.ngxSmartModalService.open('cdAvanzadoModal');
     this.ngxSmartModalService.open('cdTablaModal'); */
+    console.clear();
+    let datosModal : {
+      modal: string;
+      datos: any;
+      columnSelection: any
+    }
+    datosModal = {
+      modal: nombreModal,
+      datos: this.atributosAll,
+      columnSelection: null,
+    }
 
-    this.ngxSmartModalService.open(nombreModal);
+    // this.ngxSmartModalService.setModalData(datosModal, nombreModal);
+    
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    if (nombreModal != 'cdTablaModal'){
+      this.ngxSmartModalService.resetModalData('cdFiltrosModal');
+      this.ngxSmartModalService.setModalData(datosModal, 'cdFiltrosModal');
+      this.ngxSmartModalService.open('cdFiltrosModal');
+    }
+    else{
+      datosModal.columnSelection = this.columnSelection;
+      this.ngxSmartModalService.resetModalData(nombreModal);
+      this.ngxSmartModalService.setModalData(datosModal, nombreModal);
+      this.ngxSmartModalService.open(nombreModal);
+    }
+    console.log('nombre modal usado: '+ nombreModal + ' ')
   }
 
   buscarReportes(){
@@ -366,7 +389,7 @@ export class ConsultaDinamicaComponent implements OnInit {
   }
 
   generarFiltros(){
-    //Crear filtros
+    /* //Crear filtros
     if (this.viewContainerRefFiltros == null){
       console.log(this.viewContainerRefFiltros);
 console.log(this.contenedorFiltros);
@@ -423,10 +446,10 @@ console.log(this.contenedorFiltros);
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
       let componentRef = this.viewContainerRefAvanzados.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
-    });
+    }); */
 
     //Crear tabla con checkboxes de columnas
-    this.columnasSelectas = new SelectionModel(true, []);
+    /* this.columnasSelectas = new SelectionModel(true, []);
     
     if (this.viewContainerRefColumnas == null){
       this.viewContainerRefColumnas = this.contenedorColumnas.viewContainerRef;
@@ -445,18 +468,19 @@ console.log(this.contenedorFiltros);
 
     console.log('probando leer la lista de selección de las columnas:');
     console.log((<CompGen>componentRef.instance).data);
-  }
+  } */
 /* 
   verSeleccionados(){
     console.log(this.selection);
     console.log(this.selection.selected); //any[]
-  } */
+    */
+  } 
 
   testReadChildren(){
-    console.clear();
+    /* console.clear();
     console.log('viendo el objeto base de columnas');
     console.log(this.viewContainerRefColumnas);
     console.log('primera vista');
-    console.log(this.viewContainerRefColumnas.get(0));
+    console.log(this.viewContainerRefColumnas.get(0)); */
   }
 }

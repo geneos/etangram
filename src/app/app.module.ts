@@ -52,11 +52,7 @@ import { FechaComponent } from './components/shared/generics/fecha/fecha.compone
 import { ConsultaComponent } from './components/shared/generics/consulta/consulta.component';
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 import { KeysPipe } from './pipes/keys.pipe';
-import { TablaComponent } from './components/shared/generics/tabla/tabla.component';
-import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.component';
-import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
-import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
-import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
+import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
 
 @NgModule({
   declarations: [
@@ -87,13 +83,9 @@ import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.c
     FechaComponent,
     ConsultaComponent,
     NumeroComponent,
-    TablaComponent,
     ConsultaCrdComponent,
     KeysPipe,
-    ConsDinComponent,
-    CdFiltrosComponent,
-    CdAvanzadoComponent,
-    CdTablaComponent,
+    ConsultaComprobantesComponent,
   ],
   imports: [
     BrowserModule,
@@ -113,7 +105,6 @@ import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.c
     NumeroComponent, 
     FechaComponent,  
     ListaComponent, 
-    TablaComponent,
     ConsultaComponent 
   ],
   providers: [

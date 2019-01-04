@@ -1,0 +1,141 @@
+<h2>Ordenes de pago</h2>
+
+<form [formGroup]="forma" novalidate="novalidate">
+
+<mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Proveedor
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px;">
+      <div class="col s8 m4 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Proveedor</mat-label>
+          <input (keyup)="buscarProveedor()"  #codProv matInput placeholder="" formControlName="proveedor">
+          <mat-hint *ngIf="forma.status=='PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['proveedor'].errors?.noExiste">
+            El proveedor no existe
+          </mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col s4 m2 l2" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s12 m6 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Razón Social</mat-label>
+          <input matInput placeholder="" formControlName="razonSocial" value="{{ compraProveedor?.razon_social }}">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>CUIT</mat-label>
+          <input matInput placeholder="" formControlName="cuit" value="{{ compraProveedor?.cuit }}">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Tipo Comprobante</mat-label>
+          <input matInput placeholder="" formControlName="tipcomp">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Fecha desde</mat-label>
+          <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fecdesde">
+          <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Fecha Hasta</mat-label>
+          <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechasta">
+          <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row" style="margin-top:0px; margin-bottom:10px !important;">
+      <!-- <div class="col s6 m3 l1" style="padding-left:2px;">
+         <button (click)="consultar()" class="mine-btnbig" mat-flat-button>
+           CONSULTAR
+         </button>
+       </div>-->
+       <div class="col s6 m4 l1">
+         <button (click)="print()" class="mine-btnbig" mat-flat-button>
+           IMPRIMIR
+         </button>
+       </div> 
+     </div>
+     
+     <div id="tableCompr" class="mat-elevation-z8">
+       
+       <table  #tableConsultaComprob mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+         
+         <!-- Position Column -->
+         <ng-container matColumnDef="Fecha">
+           <th mat-header-cell *matHeaderCellDef> Fecha </th>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Fecha }} </td>
+         </ng-container>
+     
+         <!-- Name Column -->
+         <ng-container matColumnDef="Tipo_Comprobante">
+           <th mat-header-cell *matHeaderCellDef> Comprobante </th>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + element.Numero_Comprobante }} </td>
+         </ng-container> 
+     
+         <!-- Weight Column -->
+         <ng-container matColumnDef="Expediente">
+           <th mat-header-cell *matHeaderCellDef> Expediente </th>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Expediente }} </td>
+         </ng-container> 
+     
+         <!-- Symbol Column -->
+         <ng-container matColumnDef="Certificado">
+           <th mat-header-cell *matHeaderCellDef> Certificado </th>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Certificado }} </td>
+         </ng-container>
+         
+         <!-- Symbol Column -->
+         <ng-container matColumnDef="Importe_Total">
+           <th mat-header-cell *matHeaderCellDef> Importe_Total </th>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Importe_Total }} </td>
+         </ng-container> -->
+   
+         <!-- Symbol Column -->
+         <ng-container matColumnDef="Saldo">
+           <th mat-header-cell *matHeaderCellDef> Saldo</th>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Saldo}} </td>
+         </ng-container>
+   
+         <!-- Symbol Column -->
+         <ng-container matColumnDef="Estado">
+           <th mat-header-cell *matHeaderCellDef> Estado </th>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Estado }} </td>
+         </ng-container>
+   
+         <!-- Symbol Column -->
+         <ng-container matColumnDef="Observaciones_Comprobante">
+           <th mat-header-cell *matHeaderCellDef> Observaciones </th>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Observaciones_Comprobante }} </td>
+         </ng-container>
+  
+         <tr mat-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+         <tr mat-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
+       </table>
+     
+       
+     </div>
+     <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>

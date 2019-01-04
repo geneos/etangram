@@ -1,19 +1,27 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort} from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatIcon} from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
 import { CdkTableModule } from '@angular/cdk/table';
-
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {MatIconModule} from '@angular/material/icon';
 
 var auxProvData: any;
 
 @Component({
   selector: 'app-consulta-comprobantes',
   templateUrl: './consulta-comprobantes.component.html',
-  styleUrls: ['./consulta-comprobantes.component.css']
+  styleUrls: ['./consulta-comprobantes.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class ConsultaComprobantesComponent implements OnInit {
   
@@ -30,9 +38,10 @@ export class ConsultaComprobantesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  displayedColumns: string[] = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado', 'Observaciones_Comprobante'];
+  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
-
+  expandedElement: consultaComprobantes | null;
+  
   selection = new SelectionModel(true, []);
 
   constructor(public dialogArt: MatDialog, private _compraService:CompraService, private _consultaComprobantesServices:ConsultaComprobantesService) {
@@ -84,9 +93,15 @@ export class ConsultaComprobantesComponent implements OnInit {
               });
             } else {
               if(this.forma.controls['proveedor'].value == 0){
-                 this.dataSource = null}
+                 this.dataSource = null
+                 this.compraProveedor = this.proveedorData.dataset[0];}
               else{
-              this.getComprobantes();
+                 this.getComprobantes();
+            }
+            if(this.proveedorData.dataset.length>0){
+              this.compraProveedor = this.proveedorData.dataset[0];
+            } else {
+              this.compraProveedor = null; 
             }
           }
       });

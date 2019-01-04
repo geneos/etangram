@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
@@ -53,6 +53,8 @@ import { ConsultaComponent } from './components/shared/generics/consulta/consult
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 import { KeysPipe } from './pipes/keys.pipe';
 import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
+import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
+
 
 @NgModule({
   declarations: [
@@ -86,6 +88,8 @@ import { ConsultaComprobantesComponent } from './components/pages/consulta-compr
     ConsultaCrdComponent,
     KeysPipe,
     ConsultaComprobantesComponent,
+    CdAvanzadoComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -110,6 +114,11 @@ import { ConsultaComprobantesComponent } from './components/pages/consulta-compr
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+],
 })
+
 export class AppModule { }

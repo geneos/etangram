@@ -53,6 +53,10 @@ import { ConsultaComponent } from './components/shared/generics/consulta/consult
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 import { KeysPipe } from './pipes/keys.pipe';
 import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
+import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
+import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
+import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
+import { TablaComponent } from './components/shared/generics/tabla/tabla.component';
 
 @NgModule({
   declarations: [
@@ -84,8 +88,12 @@ import { ConsultaComprobantesComponent } from './components/pages/consulta-compr
     ConsultaComponent,
     NumeroComponent,
     ConsultaCrdComponent,
+    TablaComponent,
     KeysPipe,
     ConsultaComprobantesComponent,
+    CdFiltrosComponent,
+    CdTablaComponent,
+    CdAvanzadoComponent
   ],
   imports: [
     BrowserModule,
@@ -105,7 +113,8 @@ import { ConsultaComprobantesComponent } from './components/pages/consulta-compr
     NumeroComponent, 
     FechaComponent,  
     ListaComponent, 
-    ConsultaComponent 
+    ConsultaComponent,
+    TablaComponent
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},

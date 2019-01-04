@@ -111,4 +111,8 @@ export class CdFiltrosComponent implements AfterViewInit {
 
   }
 
+  aplicar(){
+    
+  }
+
 }

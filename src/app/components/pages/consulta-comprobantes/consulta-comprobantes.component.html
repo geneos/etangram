@@ -95,11 +95,11 @@
            CONSULTAR
          </button>
        </div>
-       <div class="col s6 m4 l1">
+     <!--  <div class="col s6 m4 l1">
          <button (click)="downloadPdf()" class="mine-btnbig" mat-flat-button>
            IMPRIMIR
          </button>
-       </div> 
+       </div> -->
      </div>
      
      <div id="tablaDatos" class="mat-elevation-z8">
@@ -173,5 +173,5 @@
          <tr mat-row *cdkRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 
        </table>
+       <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
      </div>
-     <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>

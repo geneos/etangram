@@ -27,14 +27,14 @@
       <div class="col s12 m6 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Razón Social</mat-label>
-          <input matInput placeholder="" formControlName="razonSocial" value="{{ compraProveedor?.razon_social }}">
+          <input matInput placeholder="" formControlName="razonSocial" readonly value="{{ compraProveedor?.razon_social }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>CUIT</mat-label>
-          <input matInput placeholder="" formControlName="cuit" value="{{ compraProveedor?.cuit }}">
+          <input matInput placeholder="" formControlName="cuit" readonly value="{{ compraProveedor?.cuit }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -55,7 +55,7 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha desde</mat-label>
-          <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fecdesde">
+          <input matInput [matDatepicker]="picker1" placeholder="" min="2019-01-01" formControlName="fecdesde" [value]="fechaDesde">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
           <!--<mat-hint>Hint</mat-hint>-->
@@ -64,7 +64,7 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha Hasta</mat-label>
-          <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechasta">
+          <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechasta" [value]="fechaActual">
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2></mat-datepicker>
           <!--<mat-hint>Hint</mat-hint>-->
@@ -72,11 +72,11 @@
       </div>
     </div>
     <div class="row" style="margin-top:0px; margin-bottom:10px !important;">
-      <!-- <div class="col s6 m3 l1" style="padding-left:2px;">
-         <button (click)="consultar()" class="mine-btnbig" mat-flat-button>
+       <div class="col s6 m3 l1" style="padding-left:2px;">
+         <button (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>
            CONSULTAR
          </button>
-       </div>-->
+       </div>
        <div class="col s6 m4 l1">
          <button (click)="print()" class="mine-btnbig" mat-flat-button>
            IMPRIMIR
@@ -99,7 +99,7 @@
          <!-- Name Column -->
          <ng-container matColumnDef="Tipo_Comprobante">
            <th mat-header-cell *matHeaderCellDef> Comprobante </th>
-           <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + element.Numero_Comprobante }} </td>
+           <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + ' - ' + element.Numero_Comprobante }} </td>
          </ng-container> 
      
          <!-- Weight Column -->

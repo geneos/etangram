@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar} from '@angular/material';
@@ -7,6 +7,7 @@ import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
 import { CdkTableModule } from '@angular/cdk/table';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+
 
 var auxProvData: any;
 
@@ -40,7 +41,9 @@ export class ConsultaComprobantesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  @ViewChild('tablaDatos') tablaDatos: ElementRef;
   
+
   columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;

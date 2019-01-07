@@ -54,6 +54,7 @@ import { NumeroComponent } from './components/shared/generics/numero/numero.comp
 import { KeysPipe } from './pipes/keys.pipe';
 import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
 import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
+import { ConsultaRetencionesComponent } from './components/pages/consulta-retenciones/consulta-retenciones.component';
 
 
 @NgModule({
@@ -88,7 +89,8 @@ import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-a
     ConsultaCrdComponent,
     KeysPipe,
     ConsultaComprobantesComponent,
-    CdAvanzadoComponent
+    CdAvanzadoComponent,
+    ConsultaRetencionesComponent
     
   ],
   imports: [

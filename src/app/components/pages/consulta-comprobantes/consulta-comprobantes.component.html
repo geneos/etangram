@@ -22,11 +22,8 @@
           </mat-hint>
         </mat-form-field>
       </div>
-      <div class="col s4 m2 l2" style="margin-top:10px;">
-        <button class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones">
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </button>
-      </div>
+
+      
       <div class="col s12 m6 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Razón Social</mat-label>
@@ -41,10 +38,17 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l2">
+    </div>
+    <div class="row" style="margin-top:15px;">  
+      <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo Comprobante</mat-label>
-          <input matInput placeholder="" formControlName="tipcomp">
+          <mat-select placeholder="Elija una opción">
+            <mat-option value="1">Todos</mat-option>
+            <mat-option value="FCCR">Factura / Debito a Credito</mat-option>
+            <mat-option value="3">Factura / Debito Contado </mat-option>
+            <mat-option value="4">Nota de Credito</mat-option>
+          </mat-select>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -82,10 +86,12 @@
      
      <div id="tableCompr" class="mat-elevation-z8">
        
-       <table  #tableConsultaComprob mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
-         
+       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+          <mat-action-row>
+              <button mat-button>Click me</button>
+            </mat-action-row>
          <!-- Position Column -->
-         <ng-container matColumnDef="Fecha">
+         <ng-container matColumnDef= "Fecha">
            <th mat-header-cell *matHeaderCellDef> Fecha </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Fecha }} </td>
          </ng-container>
@@ -112,7 +118,7 @@
          <ng-container matColumnDef="Importe_Total">
            <th mat-header-cell *matHeaderCellDef> Importe_Total </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Importe_Total }} </td>
-         </ng-container> -->
+         </ng-container> 
    
          <!-- Symbol Column -->
          <ng-container matColumnDef="Saldo">
@@ -125,17 +131,29 @@
            <th mat-header-cell *matHeaderCellDef> Estado </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Estado }} </td>
          </ng-container>
-   
-         <!-- Symbol Column -->
-         <ng-container matColumnDef="Observaciones_Comprobante">
-           <th mat-header-cell *matHeaderCellDef> Observaciones </th>
-           <td mat-cell *cdkCellDef="let element"> {{ element.Observaciones_Comprobante }} </td>
-         </ng-container>
-  
-         <tr mat-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-         <tr mat-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
+         
+
+         <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *cdkCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="example-element-detail"
+                 [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <div class="example-element-diagram">
+                <h6>Observaciones</h6>
+                <div class="example-element-position"> {{element.Observaciones_Comprobante}} </div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        
+         <tr mat-header-row *matHeaderRowDef="columnsToDisplay "></tr>
+         <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;" 
+         class="example-element-row"
+         [class.example-expanded-row]="expandedElement === element"
+         (click)="expandedElement = expandedElement === element ? null : element"></tr>
+
+         <tr mat-row *cdkRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
        </table>
-     
-       
      </div>
      <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>

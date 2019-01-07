@@ -143,7 +143,7 @@ export class AbmComprasComponent implements OnInit {
               if(this.proveedorData.dataset.length>0){
                 this.compraProveedor = this.proveedorData.dataset[0];
               } else {
-                this.compraProveedor = null;
+                this.compraProveedor = null; 
               }
             }
       });

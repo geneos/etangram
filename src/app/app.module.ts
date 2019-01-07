@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
@@ -53,10 +53,15 @@ import { ConsultaComponent } from './components/shared/generics/consulta/consult
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 import { KeysPipe } from './pipes/keys.pipe';
 import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
+<<<<<<< HEAD
 import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
 import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
 import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
 import { TablaComponent } from './components/shared/generics/tabla/tabla.component';
+=======
+import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
+
+>>>>>>> 1859bb54eb88815b198f13bd1f88397262a76037
 
 @NgModule({
   declarations: [
@@ -91,9 +96,14 @@ import { TablaComponent } from './components/shared/generics/tabla/tabla.compone
     TablaComponent,
     KeysPipe,
     ConsultaComprobantesComponent,
+<<<<<<< HEAD
     CdFiltrosComponent,
     CdTablaComponent,
     CdAvanzadoComponent
+=======
+    CdAvanzadoComponent
+    
+>>>>>>> 1859bb54eb88815b198f13bd1f88397262a76037
   ],
   imports: [
     BrowserModule,
@@ -119,6 +129,11 @@ import { TablaComponent } from './components/shared/generics/tabla/tabla.compone
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+],
 })
+
 export class AppModule { }

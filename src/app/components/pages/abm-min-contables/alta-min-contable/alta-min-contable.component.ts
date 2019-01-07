@@ -290,10 +290,12 @@ datos =
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset[0];
                 this.forma.controls['tipo'].setValue(this.tipoComprobante.name);
+                
+                console.log('buscando tipo de comprobante con ' + auxid);
+                console.log(this.tipoComprobante);
+
               }
-              
-              console.log('buscando tipo de comprobante con ' + auxid);
-              console.log(this.tipoComprobante);
+              console.log('buscando tipo de comprobante con ' + auxid + ': NO ENCONTRADO');
             }
 
       });
@@ -350,12 +352,11 @@ datos =
             } else {
               if(this.oData.dataset.length>0){
                 console.log('organizacion con '+auxid+': ');
-                console.log(this.organizacion);
                 this.organizacion = this.oData.dataset[0];
                 this.forma.controls['organizacion'].setValue(this.organizacion.NAME);
+                console.log(this.organizacion);
               }
-              console.log('organizacion con '+auxid+': ');
-              console.log(this.organizacion);
+              console.log('organizacion con '+auxid+': no encontrada');
             }
 
       });
@@ -465,15 +466,21 @@ console.log('json armado: ');
                 if (this.existe == true){
                   //console.log(this.planDeCuentas);
                   this.loading = false;
+                  this.editingCabecera = false;
                   
-                  this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
+                  //todo corregir fecha
+                  // this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
+                  let fecha = new Date(this.minutaContable.fecha);
+                  fecha.setMinutes(fecha.getMinutes() + -180);
+                  this.forma.controls['fecha'].setValue(fecha);
+                  
                   this.forma.controls['observaciones'].setValue(this.minutaContable.description);
                   
                   console.log('pidiendo tipo op con: ');
                   console.log(this.minutaContable);
+                  this.buscarTipoComprobante(this.minutaContable.id);
                   //todo cambiar por lo del objeto cargado cuando se pueda traer solo minutas
                   this.forma.controls['organizacion'].setValue(this.minutaContable.nombre_fantasia_c);
-                  this.buscarTipoComprobante(this.minutaContable.tipooperacion);
                   // this.buscarTipoComprobante('43966f4a-4fc8-11e8-b1a0-d050990fe081');
                   console.log('buscando organizacion con '+this.minutaContable.account_id_c);
                   this.buscarOrganizacion(this.minutaContable.account_id_c);
@@ -714,7 +721,7 @@ console.log('json armado: ');
       "ID_TipoComp":this.tipoComprobante.id,
       "ID_Cliente":1,//hardcoded, todo cambiar
       "ID_Caja":this.forma.controls['caja'].value,
-      "ID_Moneda":this.forma.controls['moneda'].value,
+      "ID_Moneda":this.moneda.idmoneda,//this.forma.controls['moneda'].value,
       "ID_Usuario":1,//hardcoded, todo cambiar
       "P_Fecha":auxfecha,
       "P_Total":0,//todo cambiar
@@ -747,11 +754,13 @@ console.log('json armado: ');
       .subscribe( resp => {
         //console.log(resp.returnset[0].RId);
         this.respCabecera = resp;
-        this.cabeceraId = this.respCabecera.returnset[0].RId;
+        this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
         console.log('respuesta del post >>');
         console.log(resp);
         console.log(resp[0].returnset[0].RTxt);
         console.log('<< respuesta del post');
+
+
       });
 
     this.forma.controls['fecha'].disable();

@@ -76,6 +76,10 @@ export class CdFiltrosComponent implements AfterViewInit {
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
       let componentRef = this.viewContainerRefFiltros.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
+      console.log('compa agregaaaaaaaaaaaaaaado: ');
+      // console.log(componentRef.instance.datosSalida.subscribe(event => console.log('registrado evento en comp agregado: ', event));
+      console.log(componentRef.instance.datosSalida);
+      // .subscribe(event => console.log('registrado evento en comp agregado: ', event));
       console.log('probando ver los valores de los filtros: ');
       console.log((<CompGen>componentRef.instance).data);
       
@@ -109,6 +113,10 @@ export class CdFiltrosComponent implements AfterViewInit {
       (<CompGen>componentRef.instance).data = control.data;
     });
 
+  }
+
+  aplicar(){
+    console.log(this.viewContainerRefFiltros.get(0))//todo
   }
 
 }

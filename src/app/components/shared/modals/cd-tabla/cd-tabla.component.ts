@@ -13,7 +13,22 @@ import { CompGenService } from 'src/app/services/i2t/comp-gen.service';
   styleUrls: ['./cd-tabla.component.css']
 })
 export class CdTablaComponent implements AfterViewInit {
-  inputParam: any;
+  inputParam:  {
+    modal: string;
+    datos: any;
+    columnSelection: any
+  }
+  _inputParam: {
+    modal: string;
+    datos: any;
+    columnSelection: any
+  }
+  modal: string;
+  datos: any;
+  columnSelection : any;
+  
+  listaSeleccionada: any;
+
   @Input() componentes: ComponentWrapper[];
   viewContainerRefColumnas: ViewContainerRef; 
   @ViewChild(AnclaParaColumnasDirective) contenedorColumnas: AnclaParaColumnasDirective;
@@ -28,7 +43,34 @@ export class CdTablaComponent implements AfterViewInit {
     // here, please receive a param that was sent by the caller.
    this.ngxSmartModalService.getModal('cdTablaModal').onOpen.subscribe(() => {
      this.inputParam = this.ngxSmartModalService.getModalData('cdTablaModal');
-     
+    //  this._inputParam = angular.copy(this.inputParam);
+    console.log('asignando a var privada')
+    /* this._inputParam = {
+      modal: '',
+      datos: null,
+      columnSelection : null
+    }; */
+    this._inputParam = {modal: '', datos: {}, columnSelection: []};
+    // this._inputParam.modal = '';
+    // this._inputParam.columnSelection = [];
+    // this._inputParam.datos = {};
+
+    //  Object.assign(this._inputParam, this.inputParam);
+    // this._inputParam = Object.assign({}, this.inputParam);
+    
+    // this._inputParam = JSON.parse(JSON.stringify(this.inputParam));
+    console.log('asignando: ',this.inputParam);
+    // this.modal = this.inputParam.modal;
+    // this.datos = [...this.inputParam.datos];
+    // this.columnSelection = [this.inputParam.columnSelection];
+    this.modal = JSON.parse(JSON.stringify(this.inputParam.modal));
+    this.datos = JSON.parse(JSON.stringify(this.inputParam.datos));
+    this.columnSelection = JSON.parse(JSON.stringify(this.inputParam.columnSelection));
+
+
+     this.listaSeleccionada = this.inputParam.columnSelection;
+    //  Object.freeze(this._inputParam);
+
      this.loading = true;
      this.generarTabla();
      
@@ -59,6 +101,36 @@ export class CdTablaComponent implements AfterViewInit {
 
     console.log('probando leer la lista de selección de las columnas:');
     console.log((<CompGen>componentRef.instance).data);
+ }
+ 
+ aplicar(){
+    this.ngxSmartModalService.close('cdTablaModal');
+ }
+
+ cancelar(){
+    //reiniciar valores
+    console.log('cancelado')
+    console.log('era ', this.inputParam)
+    // this.inputParam = this._inputParam; 
+    // Object.assign(this.inputParam, this._inputParam);
+    // this.inputParam = Object.assign({}, this._inputParam);
+    
+    // this.inputParam = JSON.parse(JSON.stringify(this._inputParam));
+
+    // this.inputParam.modal = this.modal;
+    // this.inputParam.datos = [...this.datos];
+    // this.inputParam.columnSelection = [...this.columnSelection];
+    this.inputParam.modal = JSON.parse(JSON.stringify(this.modal));
+    this.inputParam.datos = JSON.parse(JSON.stringify(this.modal));
+    this.inputParam.columnSelection = JSON.parse(JSON.stringify(this.modal));
+
+    
+
+    console.log('es ahora ', this.modal, this.datos, this.columnSelection)
+    // console.log('es ahora: ', this.listaSeleccionada);
+    // this.inputParam.columnSelection = this.listaSeleccionada;
+
+    this.ngxSmartModalService.close('cdTablaModal');
  }
   
 }

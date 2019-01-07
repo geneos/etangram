@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver, ViewChildren, ViewContainerRef, QueryList} from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver, ViewChildren, ViewContainerRef, QueryList, AfterViewInit} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort, MatPaginator, MatTable, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
@@ -10,7 +10,7 @@ import { CompGenService } from 'src/app/services/i2t/comp-gen.service';
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 import { AnclaParaAvanzadosDirective } from 'src/app/directives/ancla-para-avanzados.directive';
 import { AnclaParaColumnasDirective } from 'src/app/directives/ancla-para-columnas.directive';
-import { NgxSmartModalService } from 'ngx-smart-modal';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 
 @Component({
@@ -18,7 +18,7 @@ import { NgxSmartModalService } from 'ngx-smart-modal';
   templateUrl: './consulta-dinamica.component.html',
   styleUrls: ['./consulta-dinamica.component.css']
 })
-export class ConsultaDinamicaComponent implements OnInit {
+export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -50,7 +50,7 @@ export class ConsultaDinamicaComponent implements OnInit {
   /* viewContainerRefFiltros: QueryList<ViewContainerRef>;
   viewContainerRefAvanzados: ViewContainerRef;
   viewContainerRefColumnas: ViewContainerRef; */
-  columnSelection = new SelectionModel(true, []);
+  columnSelection: any;
 
   @Input() componentes: ComponentWrapper[];
   /* 
@@ -69,6 +69,8 @@ export class ConsultaDinamicaComponent implements OnInit {
               public ngxSmartModalService: NgxSmartModalService) { 
     this.loading = true;
     this.reporteSeleccionado=0;//todo elegir reporte inicial
+    
+
     //todo: dialogo|modal: mostrar sólo el botón del reporte|objeto que corresponda
     this.buscarReportes();
 
@@ -83,6 +85,14 @@ export class ConsultaDinamicaComponent implements OnInit {
 
   }
 
+  ngAfterViewInit(){
+    //suscribir a los cambios en los otros modales
+    this.ngxSmartModalService.getModal('cdTablaModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal: ', modal.getData());
+      this.establecerColumnas();
+      // this.ngxSmartModalService.getModal(nombreModal).onClose.unsubscribe();
+    });
+  }
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -143,6 +153,11 @@ export class ConsultaDinamicaComponent implements OnInit {
       datosModal.columnSelection = this.columnSelection;
       this.ngxSmartModalService.resetModalData(nombreModal);
       this.ngxSmartModalService.setModalData(datosModal, nombreModal);
+      // this.ngxSmartModalService.getModal(nombreModal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      //   console.log('Cerrado el modal: ', modal.getData());
+      //   this.establecerColumnas();
+      //   // this.ngxSmartModalService.getModal(nombreModal).onClose.unsubscribe();
+      // });
       this.ngxSmartModalService.open(nombreModal);
     }
     console.log('nombre modal usado: '+ nombreModal + ' ')
@@ -289,36 +304,52 @@ export class ConsultaDinamicaComponent implements OnInit {
     this.displayedColumns = [];
     let columnasAMostrar: string;
     columnasAMostrar = '';
-    if (this.columnasSeleccionadas == null){
-      console.log('lista traida del reporte: ');
-      console.log(this.reportesAll[this.reporteSeleccionado].columnas);
-      //todo quitar if y descomentar cuando arreglen los datos
-      let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
+
+    if (this.columnSelection == null){
+      this.columnSelection = new SelectionModel(true, []);
+      console.log('generada lista de columnas seleccionadas');
+
+      // if (this.columnasSeleccionadas == null){
+        console.log('lista traida del reporte: ');
+        console.log(this.reportesAll[this.reporteSeleccionado].columnas);
+        //todo quitar if y descomentar cuando arreglen los datos
+        let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
+        
+        /* let listaColumnas : string[] = [];
+        if (this.reportesAll[this.reporteSeleccionado].name === 'c_proveedores'){
+          listaColumnas = ['c_texto', 'c_numero', 'c_cuit'];
+        }
+        else{
+          listaColumnas.push('name');
+        } */
+        let itemActual: string;
+        console.log(listaColumnas.length)
+        for (let index = 0; index < listaColumnas.length; index++) {
+          itemActual = listaColumnas[index].trim();
+          console.log(itemActual);
+          console.log(index);
+          columnasAMostrar = columnasAMostrar.concat(itemActual, ',');
+        }
+        columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);
+        console.log('Lista rearmada: ');
+        console.log(columnasAMostrar);
+      // }
       
-      /* let listaColumnas : string[] = [];
-      if (this.reportesAll[this.reporteSeleccionado].name === 'c_proveedores'){
-        listaColumnas = ['c_texto', 'c_numero', 'c_cuit'];
-      }
-      else{
-        listaColumnas.push('name');
-      } */
-      let itemActual: string;
-      console.log(listaColumnas.length)
-      for (let index = 0; index < listaColumnas.length; index++) {
-        itemActual = listaColumnas[index].trim();
-        console.log(itemActual);
-        console.log(index);
-        columnasAMostrar = columnasAMostrar.concat(itemActual, ',');
-      }
-      columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);
-      console.log('Lista rearmada: ');
-      console.log(columnasAMostrar);
+      //agregar las columnas por defecto a la lista de selección
+      this.columnSelection = new SelectionModel(true, this.atributosAll.filter(tipo => tipo.grupo == 'Filtros')); 
+    
     }
     else{
-      columnasAMostrar = this.columnasSeleccionadas;
+      console.log(this.columnSelection.selected);
+      this.columnSelection.selected.forEach(atributo => {
+        columnasAMostrar = columnasAMostrar.concat(atributo.atributo_bd, ',');
+      });
+      // columnasAMostrar = this.columnSelection
+      columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);
       console.log('el usuario seleccionó las columnas: ');
       console.log(columnasAMostrar);
     }
+    
     //todo agregar las columnas que coincidan con las que ha que mostrar, comparando con (Object.keys(objeto))
     //todo agregar busqueda del texto del header en tg06_tg_atributos cuando se agreguen
     let listaColumnas : string[] = (columnasAMostrar.split(','));
@@ -363,7 +394,15 @@ export class ConsultaDinamicaComponent implements OnInit {
     
     //this.displayedColumns = this.displayedColumns.concat(columnasfijas, this.columns.map(c => c.columnDef));
     this.displayedColumns = [...columnasfijas, ...this.columns.map(c => c.columnDef)];
-      
+    
+
+    console.log('columnas por defecto: ');
+    console.log(this.columnSelection);
+    console.log('todos:');
+    console.log(this.atributosAll);
+    console.log('filtrado: ');
+    console.log(this.atributosAll.filter(tipo => tipo.grupo == 'Filtros'));
+
     this.buscarDatos();
     //
     console.log('lista de columnas: ');
@@ -374,6 +413,8 @@ export class ConsultaDinamicaComponent implements OnInit {
     repo = this.reportesAll[this.reporteSeleccionado];
     console.log('estructura de Reporte: ');
     console.log(Object.keys(repo));
+
+
     //
   }
 

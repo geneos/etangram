@@ -55,6 +55,9 @@ import { KeysPipe } from './pipes/keys.pipe';
 import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
 import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
 import { ConsultaRetencionesComponent } from './components/pages/consulta-retenciones/consulta-retenciones.component';
+import { TablaComponent } from './components/shared/generics/tabla/tabla.component';
+import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
+import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
 
 
 @NgModule({
@@ -87,11 +90,14 @@ import { ConsultaRetencionesComponent } from './components/pages/consulta-retenc
     ConsultaComponent,
     NumeroComponent,
     ConsultaCrdComponent,
+    TablaComponent,
     KeysPipe,
     ConsultaComprobantesComponent,
     CdAvanzadoComponent,
+    CdFiltrosComponent,
+    CdTablaComponent,
+    CdAvanzadoComponent,
     ConsultaRetencionesComponent
-    
   ],
   imports: [
     BrowserModule,
@@ -111,7 +117,8 @@ import { ConsultaRetencionesComponent } from './components/pages/consulta-retenc
     NumeroComponent, 
     FechaComponent,  
     ListaComponent, 
-    ConsultaComponent 
+    ConsultaComponent,
+    TablaComponent
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},

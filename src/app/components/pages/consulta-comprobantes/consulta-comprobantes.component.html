@@ -31,15 +31,13 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l2">
+      <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>CUIT</mat-label>
           <input matInput placeholder="" formControlName="cuit" readonly value="{{ compraProveedor?.cuit }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-    </div>
-    <div class="row" style="margin-top:15px;">  
       <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo Comprobante</mat-label>
@@ -51,26 +49,46 @@
           </mat-select>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
-      </div>
-      <div class="col s6 m3 l2">
+       </div>
+    </div>
+
+    <div class="row" style="margin-top:15px;">  
+      
+      <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha desde</mat-label>
-          <input matInput [matDatepicker]="picker1" placeholder="" min="2019-01-01" formControlName="fecdesde" [value]="fechaDesde">
+          <input matInput [matDatepicker]="picker1" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fecdesde.value" [value]="fechaDesde">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l2">
+      <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha Hasta</mat-label>
-          <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechasta" [value]="fechaActual">
+          <input matInput [matDatepicker]="picker2" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fechasta" [value]="fechaActual">
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2></mat-datepicker>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
+      <div class="col s12 m3 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Expediente</mat-label>
+          <input matInput placeholder="" formControlName="expediente">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s12 m3 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Certificado</mat-label>
+          <input matInput placeholder="" formControlName="certificado">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+
     </div>
+    
     <div class="row" style="margin-top:0px; margin-bottom:10px !important;">
        <div class="col s6 m3 l1" style="padding-left:2px;">
          <button (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>

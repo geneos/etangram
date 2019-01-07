@@ -40,6 +40,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  
   columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;
@@ -59,7 +60,9 @@ export class ConsultaComprobantesComponent implements OnInit {
       'cuit': new FormControl(),
       'tipcomp': new FormControl(),
       'fecdesde': new FormControl(),
-      'fechasta': new FormControl(new Date())
+      'fechasta': new FormControl(new Date()),
+      'expediente': new FormControl(),
+      'certificado': new FormControl()
     })
    }
 
@@ -68,7 +71,6 @@ export class ConsultaComprobantesComponent implements OnInit {
     this.dataSource.sort = this.sort;
     this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
     this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toString
-    console.log(this.fechaActual);
     
   }
 

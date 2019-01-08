@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
+import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
 
 @Component({
   selector: 'app-lista',
@@ -9,15 +10,22 @@ import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 export class ListaComponent implements CompGen {
   // @Input() data: any;
   private _data: string;
+  datosInternos: number;
+  datosInternosMap: Map<string, string> ;
 
     @Input() set data(value: any) {
 
-       this._data = value;
-       if (this._data != null) {
-         console.log(this._data);
+      this._data = value;
+      console.log('datos recibidos por componente numerico: ', this._data);
+      
+      if (this._data != null) {
+        console.log(this._data);
         console.log('llamado a armado de liosta desp con setter');
         this.construirLista();
-       }
+      }
+
+       
+      this.datosInternosMap=  new Map<string, string>();
 
     }
 
@@ -27,7 +35,7 @@ export class ListaComponent implements CompGen {
 
     }
   options : any[];
-  constructor() { 
+  constructor( private  consultaDinService: ConsultaDinamicaService) { 
     
   }
   //ngOnChanges no funcionó como esperado.
@@ -54,5 +62,29 @@ export class ListaComponent implements CompGen {
   ngOnInit() {
   } */
 
-}
+  selected(value: number){
+    console.log('seleccionado: '+value);
+    this.datosInternos = value;
 
+    
+    this.datosInternosMap.set(this.data.datos.columna,this.datosInternos.toString());
+    // this.consultaDinService.actualizarDatos(this.datosInternos);
+    this.consultaDinService.actualizarDatos(this.datosInternosMap);
+    // this.consultaDinService.actualizarDatos(this.datosInternos);
+    console.log('ejecutado cambio(click|enter)', this.data);
+    
+    console.log('mapeado: ', this.datosInternosMap);
+    console.log('guardado: ', this.datosInternos);
+  }
+
+}
+/* 
+    console.log(this.datosUsuario);
+    console.log(this.datosUsuario.nativeElement.value);
+    this.datosInternos = this.datosUsuario.nativeElement.value;
+    console.log('ejecutando cambio(keyup) numero', this.data);
+    this.datosInternosMap.set(this.data.datos.columna,this.datosInternos.toString());
+    // this.consultaDinService.actualizarDatos(this.datosInternos);
+    this.consultaDinService.actualizarDatos(this.datosInternosMap);
+    console.log('mapeado: ', this.datosInternosMap);
+    console.log('guardado: ', this.datosInternos); */

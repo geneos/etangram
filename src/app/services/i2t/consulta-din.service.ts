@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Http } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 const operadores = [
   { equal : 'eq'},  //igual que
@@ -35,7 +36,33 @@ export class ConsultaDinamicaService {
   //compraProveedores:any [] = [];
   preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
 
-  constructor( private http:HttpClient ) { }
+  //datos de filtros
+  // private datosFiltros = new BehaviorSubject('default message');
+  // private datosFiltros: BehaviorSubject<any>;
+  private datosFiltros: BehaviorSubject<Map<string, string>>;
+  // datosFiltrosAct = this.datosFiltros.asObservable();
+  datosFiltrosAct: Observable<Map<string, string>>;
+
+  constructor( private http:HttpClient ) {
+    let mapa = new Map<string, string>();
+    this.datosFiltros = new BehaviorSubject<Map<string, string>>(mapa);
+    this.datosFiltrosAct = this.datosFiltros.asObservable();
+  }
+
+  actualizarDatos(datosNuevos: Map<string, string>) {
+    console.log('actualizando datos en servicio');
+    let mapaTemp = this.datosFiltros.value;
+    datosNuevos.forEach(element => {
+      console.log(element);
+    });
+
+    console.log('prueba de mergeado: ');
+    let mergedMap:Map<string, string> = new Map([...Array.from(mapaTemp.entries()), ...Array.from(datosNuevos.entries())]);
+    console.log(mergedMap);
+    // mapaTemp.set(datosNuevos.);
+    // this.datosFiltros.next(datosNuevos)
+    this.datosFiltros.next(mergedMap);
+  }
 
   login( body:string ){
     const headers = new HttpHeaders({
@@ -88,7 +115,9 @@ export class ConsultaDinamicaService {
 
     let query = `api/${name}`;
     //armado de consulta
-
+    // this.datosFiltros.value.forEach(element => {
+    //   element
+    // });
     //
     
     let url = this.preUrl + query;

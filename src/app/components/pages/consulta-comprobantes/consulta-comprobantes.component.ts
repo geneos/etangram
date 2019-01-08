@@ -9,11 +9,13 @@ import { CdkTableModule } from '@angular/cdk/table';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import * as jsPDF from 'jspdf-autotable'
 
-var jsPDF = require('jspdf');
-require('jspdf-autotable');
+/*var jsPDF = require('jspdf');
+require('jspdf-autotable');*/
+declare var jsPDF: any;
 
 var auxProvData: any;
 let itemActual:any;
+
 
 @Component({
   selector: 'app-consulta-comprobantes',

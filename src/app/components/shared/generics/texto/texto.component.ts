@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, AfterViewInit, ViewChild, ElementRef,
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 import { EventEmitter } from '@angular/core';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
+
 @Component({
   selector: 'app-texto',
   templateUrl: './texto.component.html',
@@ -31,7 +32,7 @@ export class TextoComponent implements CompGen, AfterViewInit, OnChanges {
 
   cambio(){
     
-    console.log('ejecutando cambio(keyup)', this.data);
+    console.log('ejecutando cambio(keyup) texto', this.data);
     this.datosInternosMap.set(this.data.datos.columna,this.datosInternos);
     // this.consultaDinService.actualizarDatos(this.datosInternos);
     this.consultaDinService.actualizarDatos(this.datosInternosMap);

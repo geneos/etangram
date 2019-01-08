@@ -115,7 +115,9 @@ export class ConsultaDinamicaService {
 
     let query = `api/${name}`;
     //armado de consulta
-
+    // this.datosFiltros.value.forEach(element => {
+    //   element
+    // });
     //
     
     let url = this.preUrl + query;

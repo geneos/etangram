@@ -14,21 +14,29 @@ export class NumeroComponent implements CompGen, AfterViewInit, OnChanges {
   // @Output() datosSalida=  new EventEmitter<string>();
 
   @ViewChild('datosUsuario') datosUsuario: ElementRef;
-  datosInternos: string = '';
+  datosInternos: number = null;
+  // datosInternos: string = '';
+  datosInternosMap: Map<string, string> ;
 
   constructor(private  consultaDinService: ConsultaDinamicaService) {
-    console.log('datos recibidos por componente numerico: ');
-    console.log(this.data);
+    console.log('datos recibidos por componente numerico: ', this.data);
+    this.datosInternosMap=  new Map<string, string>();
    }
 
   ngAfterViewInit() {
     this.datosUsuario.nativeElement.value = '999';
+    console.log('constructor de numero afterviewinit: ', this.data);
   }
 
   cambio(){
-    
-    this.consultaDinService.actualizarDatos(this.datosInternos);
-    console.log('ejecutado cambio(keyup)', this.data);
+    console.log(this.datosUsuario);
+    console.log(this.datosUsuario.nativeElement.value);
+    this.datosInternos = this.datosUsuario.nativeElement.value;
+    console.log('ejecutando cambio(keyup) numero', this.data);
+    this.datosInternosMap.set(this.data.datos.columna,this.datosInternos.toString());
+    // this.consultaDinService.actualizarDatos(this.datosInternos);
+    this.consultaDinService.actualizarDatos(this.datosInternosMap);
+    console.log('mapeado: ', this.datosInternosMap);
     console.log('guardado: ', this.datosInternos);
   }
 

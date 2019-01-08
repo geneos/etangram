@@ -3,7 +3,8 @@
     <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
       <mat-label>{{data.title}}</mat-label>
       <!-- <input matInput placeholder="" formControlName="largo"> -->
-      <input matInput type="number" placeholder="{{data.placeholder}}" >
+      <input matInput #datosUsuario (keyup)="cambio()"
+        type="number" placeholder="{{data.placeholder}}" >
       <!--<mat-hint>Hint</mat-hint>-->
     </mat-form-field>
   </div>

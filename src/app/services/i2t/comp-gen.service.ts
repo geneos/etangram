@@ -4,6 +4,7 @@ import { ComponentWrapper } from 'src/app/classes/component-wrapper';
 import { ListaComponent } from 'src/app/components/shared/generics/lista/lista.component';
 import { ConsultaComponent } from 'src/app/components/shared/generics/consulta/consulta.component';
 import { TablaComponent } from 'src/app/components/shared/generics/tabla/tabla.component';
+import { NumeroComponent } from 'src/app/components/shared/generics/numero/numero.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class CompGenService {
     switch (componentType) {
       case 'Entero':
           // todo agregar tipo numero
-          nuevoComponent = TextoComponent;
+          nuevoComponent = NumeroComponent;
           place = 'Ingrese un número entero';
         break;
       case 'Texto':
@@ -29,7 +30,7 @@ export class CompGenService {
         break;
       case 'Consulta':
         nuevoComponent = ConsultaComponent;
-        place = 'Ingrese una colsulta';
+        place = 'Ingrese una consulta';
         break;
       case 'Tabla':
         nuevoComponent = TablaComponent;

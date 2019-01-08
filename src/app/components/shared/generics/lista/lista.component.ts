@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
+import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
 
 @Component({
   selector: 'app-lista',
@@ -9,6 +10,7 @@ import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 export class ListaComponent implements CompGen {
   // @Input() data: any;
   private _data: string;
+  datosInternos: number;
 
     @Input() set data(value: any) {
 
@@ -27,7 +29,7 @@ export class ListaComponent implements CompGen {
 
     }
   options : any[];
-  constructor() { 
+  constructor( private  consultaDinService: ConsultaDinamicaService) { 
     
   }
   //ngOnChanges no funcionó como esperado.
@@ -53,6 +55,16 @@ export class ListaComponent implements CompGen {
   /* 
   ngOnInit() {
   } */
+
+  selected(value: number){
+    console.log('seleccionado: '+value);
+    this.datosInternos = value;
+
+    
+    this.consultaDinService.actualizarDatos(this.datosInternos);
+    console.log('ejecutado cambio(click|enter)', this.data);
+    console.log('guardado: ', this.datosInternos);
+  }
 
 }
 

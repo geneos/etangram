@@ -53,15 +53,10 @@ import { ConsultaComponent } from './components/shared/generics/consulta/consult
 import { NumeroComponent } from './components/shared/generics/numero/numero.component';
 import { KeysPipe } from './pipes/keys.pipe';
 import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
-<<<<<<< HEAD
 import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
 import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
 import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
 import { TablaComponent } from './components/shared/generics/tabla/tabla.component';
-=======
-import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-avanzado.component';
-
->>>>>>> 1859bb54eb88815b198f13bd1f88397262a76037
 
 @NgModule({
   declarations: [
@@ -96,14 +91,9 @@ import { CdAvanzadoComponent } from './components/shared/modals/cd-avanzado/cd-a
     TablaComponent,
     KeysPipe,
     ConsultaComprobantesComponent,
-<<<<<<< HEAD
     CdFiltrosComponent,
     CdTablaComponent,
     CdAvanzadoComponent
-=======
-    CdAvanzadoComponent
-    
->>>>>>> 1859bb54eb88815b198f13bd1f88397262a76037
   ],
   imports: [
     BrowserModule,

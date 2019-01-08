@@ -1,11 +1,11 @@
-<h2>Comprobantes de compra</h2>
+<h2>Consulta Retenciones</h2>
 
 <form [formGroup]="forma" novalidate="novalidate">
 
 <mat-expansion-panel [expanded]=true [disabled]=true>
   <mat-expansion-panel-header>
     <mat-panel-title>
-      Proveedor
+      Retenciones
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -38,18 +38,6 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Tipo Comprobante</mat-label>
-          <mat-select placeholder="Elija una opción">
-            <mat-option value="1">Todos</mat-option>
-            <mat-option value="FCCR">Factura / Debito a Credito</mat-option>
-            <mat-option value="3">Factura / Debito Contado </mat-option>
-            <mat-option value="4">Nota de Credito</mat-option>
-          </mat-select>
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-       </div>
     </div>
 
     <div class="row" style="margin-top:15px;">  
@@ -79,14 +67,6 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m3 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Certificado</mat-label>
-          <input matInput placeholder="" formControlName="certificado">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-
     </div>
     
     <div class="row" style="margin-top:0px; margin-bottom:10px !important;">
@@ -95,11 +75,11 @@
            CONSULTAR
          </button>
        </div>
-     <!--  <div class="col s6 m4 l1">
+       <div class="col s6 m4 l1">
          <button (click)="downloadPdf()" class="mine-btnbig" mat-flat-button>
            IMPRIMIR
          </button>
-       </div> -->
+       </div> 
      </div>
      
      <div id="tablaDatos" class="mat-elevation-z8">
@@ -173,5 +153,5 @@
          <tr mat-row *cdkRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 
        </table>
-       <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
      </div>
+     <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>

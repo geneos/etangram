@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatIcon} from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar} from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
 import { CdkTableModule } from '@angular/cdk/table';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {MatIconModule} from '@angular/material/icon';
+
 
 var auxProvData: any;
 
@@ -25,7 +25,7 @@ var auxProvData: any;
 })
 export class ConsultaComprobantesComponent implements OnInit {
   
-
+  
   forma: FormGroup;
   compraProveedor: CompraProveedor;
   loginData: any;
@@ -34,9 +34,15 @@ export class ConsultaComprobantesComponent implements OnInit {
   consultaComprobantes: consultaComprobantes[] = [];
   respCabecera: any;
   cabeceraId: string;
+  loading:boolean; 
+  public fechaActual: Date = new Date();
+  public fechaDesde: Date = new Date();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+
+  @ViewChild('tablaDatos') tablaDatos: ElementRef;
+  
 
   columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
@@ -44,18 +50,37 @@ export class ConsultaComprobantesComponent implements OnInit {
   
   selection = new SelectionModel(true, []);
 
-  constructor(public dialogArt: MatDialog, private _compraService:CompraService, private _consultaComprobantesServices:ConsultaComprobantesService) {
+  constructor(public snackBar: MatSnackBar, 
+              public dialogArt: MatDialog, 
+              private _compraService:CompraService, 
+              private _consultaComprobantesServices:ConsultaComprobantesService) {
+    this.loading = true;
+    
+  
     this.forma = new FormGroup({
       'proveedor': new FormControl('',Validators.required,this.existeProveedor),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
       'tipcomp': new FormControl(),
       'fecdesde': new FormControl(),
-      'fechasta': new FormControl()
+      'fechasta': new FormControl(new Date()),
+      'expediente': new FormControl(),
+      'certificado': new FormControl()
     })
    }
 
   ngOnInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toString
+    
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
   }
 
   existeProveedor( control: FormControl ): Promise<any>{
@@ -92,12 +117,6 @@ export class ConsultaComprobantesComponent implements OnInit {
                 this.buscarProveedor();
               });
             } else {
-              if(this.forma.controls['proveedor'].value == 0){
-                 this.dataSource = null
-                 this.compraProveedor = this.proveedorData.dataset[0];}
-              else{
-                 this.getComprobantes();
-            }
             if(this.proveedorData.dataset.length>0){
               this.compraProveedor = this.proveedorData.dataset[0];
             } else {
@@ -108,15 +127,14 @@ export class ConsultaComprobantesComponent implements OnInit {
   }
 
   getComprobantes(){
-    console.log('hola')
 
     let jsbody = {
       "IdCliente":this.forma.controls['proveedor'].value,
       "FechaDesde":"2018-06-01",//hardcoded
-      "FechaHasta":"2018-07-03",
-      "TipoReferente":"OP",
-      "TipoOperacion": "INT",
-      "TipoComprobante":"Contable",
+      "FechaHasta":"2018-07-03",//hardcoded
+      "TipoReferente":"OP",//hardcoded
+      "TipoOperacion": "INT",//hardcoded
+      "TipoComprobante":"Contable",//hardcoded
       "Expendiente":"",//hardcoded
       "ReservaPresup":"",//hardcoded
       "Certificado":"",//hardcoded
@@ -138,6 +156,7 @@ export class ConsultaComprobantesComponent implements OnInit {
         } else {
           this.consultaComprobantes = null;
           this.dataSource = null
+          this.openSnackBar('No hay datos para mostrar');
         }
       });
   }

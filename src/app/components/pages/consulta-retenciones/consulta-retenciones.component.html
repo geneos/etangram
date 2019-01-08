@@ -95,7 +95,7 @@
          </ng-container>
      
          <!-- Name Column -->
-         <ng-container matColumnDef="Tipo_Comprobante">
+         <ng-container matColumnDef="Comprobante">
            <th mat-header-cell *matHeaderCellDef> Comprobante </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + ' - ' + element.Numero_Comprobante }} </td>
          </ng-container> 
@@ -107,27 +107,21 @@
          </ng-container> 
      
          <!-- Symbol Column -->
-         <ng-container matColumnDef="Certificado">
-           <th mat-header-cell *matHeaderCellDef> Certificado </th>
+         <ng-container matColumnDef="Impuesto">
+           <th mat-header-cell *matHeaderCellDef> Impuesto </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Certificado }} </td>
          </ng-container>
          
          <!-- Symbol Column -->
-         <ng-container matColumnDef="Importe_Total">
-           <th mat-header-cell *matHeaderCellDef> Importe_Total </th>
+         <ng-container matColumnDef="Concepto">
+           <th mat-header-cell *matHeaderCellDef> Concepto </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Importe_Total }} </td>
          </ng-container> 
    
          <!-- Symbol Column -->
-         <ng-container matColumnDef="Saldo">
-           <th mat-header-cell *matHeaderCellDef> Saldo</th>
+         <ng-container matColumnDef="Importe">
+           <th mat-header-cell *matHeaderCellDef> Importe</th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Saldo}} </td>
-         </ng-container>
-   
-         <!-- Symbol Column -->
-         <ng-container matColumnDef="Estado">
-           <th mat-header-cell *matHeaderCellDef> Estado </th>
-           <td mat-cell *cdkCellDef="let element"> {{ element.Estado }} </td>
          </ng-container>
          
 

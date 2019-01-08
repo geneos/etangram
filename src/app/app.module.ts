@@ -60,6 +60,7 @@ import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-fil
 import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -110,7 +111,8 @@ import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.c
     MatDialogModule,
     APP_ROUTING,
     CdkTableModule,
-    NgxSmartModalModule.forRoot()
+    NgxSmartModalModule.forRoot(),
+    
   ],
   entryComponents: [  
     TextoComponent,

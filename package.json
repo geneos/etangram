@@ -23,7 +23,7 @@
     "@angular/platform-browser": "^6.1.0",
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
-    "@types/jspdf": "^1.2.2",
+    "@types/jspdf": "^1.1.30",
     "core-js": "^2.5.4",
     "html2canvas": "^1.0.0-alpha.12",
     "jspdf": "^1.5.3",

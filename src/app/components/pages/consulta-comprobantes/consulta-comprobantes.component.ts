@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject  } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar} from '@angular/material';
@@ -9,7 +9,11 @@ import { CdkTableModule } from '@angular/cdk/table';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 
 
+var jsPDF = require('jspdf');
+require('jspdf-autotable');
+
 var auxProvData: any;
+let itemActual:any;
 
 @Component({
   selector: 'app-consulta-comprobantes',
@@ -22,9 +26,13 @@ var auxProvData: any;
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ],
+  providers: [
+    { provide: 'Window',  useValue: window }
+  ]
 })
+
+
 export class ConsultaComprobantesComponent implements OnInit {
-  
   
   forma: FormGroup;
   compraProveedor: CompraProveedor;
@@ -37,20 +45,46 @@ export class ConsultaComprobantesComponent implements OnInit {
   loading:boolean; 
   public fechaActual: Date = new Date();
   public fechaDesde: Date = new Date();
-
+  tabla: any = [];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   @ViewChild('tablaDatos') tablaDatos: ElementRef;
+
+
+
+print = () => {
+  let doc = new jsPDF(); 
   
 
+  var res = doc.autoTableHtmlToJson(document.getElementById("tablaDatos"));
+  doc.autoTable({
+    head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
+    
+  })
+  for (let index = 0; index < this.dataSource.data.length; index++) {
+    // itemActual[index] = dataSource.trim();
+    // console.log(itemActual[index].toString);
+    doc.autoTable({
+      body: [[this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
+      this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
+      this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]] 
+   
+    });
+    console.log(this.dataSource.data[index])
+    console.log(index);
+  }
+  
+  doc.save('table.pdf')
+}
   columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;
   
   selection = new SelectionModel(true, []);
 
-  constructor(public snackBar: MatSnackBar, 
+  constructor( @Inject('Window') private window: Window,
+  public snackBar: MatSnackBar, 
               public dialogArt: MatDialog, 
               private _compraService:CompraService, 
               private _consultaComprobantesServices:ConsultaComprobantesService) {
@@ -153,6 +187,7 @@ export class ConsultaComprobantesComponent implements OnInit {
         if(this.respCabecera.dataset.length>0){
           this.consultaComprobantes = this.respCabecera.dataset;
           this.dataSource = new MatTableDataSource(this.consultaComprobantes)
+          
         } else {
           this.consultaComprobantes = null;
           this.dataSource = null
@@ -160,7 +195,14 @@ export class ConsultaComprobantesComponent implements OnInit {
         }
       });
   }
-
+  mostrar(){
+    for (let index = 0; index < this.dataSource.data.length; index++) {
+      // itemActual[index] = dataSource.trim();
+      // console.log(itemActual[index].toString);
+      console.log(this.dataSource.data[index])
+      console.log(index);
+    }
+  }
 }
 export interface consultaComprobantes {
   

@@ -7,7 +7,7 @@ import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
 import { CdkTableModule } from '@angular/cdk/table';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-
+import * as jsPDF from 'jspdf-autotable'
 
 var jsPDF = require('jspdf');
 require('jspdf-autotable');

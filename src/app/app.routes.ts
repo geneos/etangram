@@ -15,6 +15,7 @@ import { AltaMinContableComponent } from './components/pages/abm-min-contables/a
 import { ConsultaDinamicaComponent } from './components/pages/consulta-dinamica/consulta-dinamica.component';
 import { ConsultaCrdComponent } from './components/pages/consulta-crd/consulta-crd.component';
 import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
+import { ConsultaRetencionesComponent } from './components/pages/consulta-retenciones/consulta-retenciones.component';
 
 const APP_ROUTES: Routes = [
   //{ path: 'compra', component: AbmComprasComponent },
@@ -34,6 +35,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta', component: ConsultaDinamicaComponent },
   { path: 'consulta-crd', component: ConsultaCrdComponent },
   { path: 'consulta-comprobantes', component: ConsultaComprobantesComponent },
+  { path: 'consulta-retenciones', component: ConsultaRetencionesComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'compra' }
 ];
 

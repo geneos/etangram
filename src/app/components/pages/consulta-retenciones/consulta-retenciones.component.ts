@@ -1,47 +1,29 @@
-import { Component, OnInit, ViewChild, ElementRef, Inject  } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar} from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
-import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
-import { CdkTableModule } from '@angular/cdk/table';
-import {animate, state, style, transition, trigger} from '@angular/animations';
+import { ConsultaRetencionesService } from 'src/app/services/i2t/consulta-retenciones.service';
 
-
-/*var jsPDF = require('jspdf');
-require('jspdf-autotable');*/
-declare var jsPDF: any;
 
 var auxProvData: any;
-let itemActual:any;
-
-
 @Component({
-  selector: 'app-consulta-comprobantes',
-  templateUrl: './consulta-comprobantes.component.html',
-  styleUrls: ['./consulta-comprobantes.component.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+  selector: 'app-consulta-retenciones',
+  templateUrl: './consulta-retenciones.component.html',
+  styleUrls: ['./consulta-retenciones.component.css'],
   providers: [
     { provide: 'Window',  useValue: window }
   ]
 })
+export class ConsultaRetencionesComponent implements OnInit {
 
-
-export class ConsultaComprobantesComponent implements OnInit {
-  
   forma: FormGroup;
   compraProveedor: CompraProveedor;
   loginData: any;
   token: string = "a";
   proveedorData: any;
-  consultaComprobantes: consultaComprobantes[] = [];
+  consultaRetenciones: consultaRetenciones[] = [];
   respCabecera: any;
   cabeceraId: string;
   loading:boolean; 
@@ -51,45 +33,15 @@ export class ConsultaComprobantesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  @ViewChild('tablaDatos') tablaDatos: ElementRef;
+  columnsToDisplay  = ['Fecha', 'Comprobante', 'Expediente', 'Impuesto', 'Concepto', 'Importe'];
+  dataSource = new MatTableDataSource<consultaRetenciones>(this.consultaRetenciones);
 
-
-
-print = () => {
-  let doc = new jsPDF(); 
-  
-
-  var res = doc.autoTableHtmlToJson(document.getElementById("tablaDatos"));
-  doc.autoTable({
-    head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
-    
-  })
-  for (let index = 0; index < this.dataSource.data.length; index++) {
-    // itemActual[index] = dataSource.trim();
-    // console.log(itemActual[index].toString);
-    doc.autoTable({
-      body: [[this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
-      this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
-      this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]] 
-   
-    });
-    console.log(this.dataSource.data[index])
-    console.log(index);
-  }
-  
-  doc.save('table.pdf')
-}
-  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado'];
-  dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
-  expandedElement: consultaComprobantes | null;
   
   selection = new SelectionModel(true, []);
-
   constructor( @Inject('Window') private window: Window,
-  public snackBar: MatSnackBar, 
-              public dialogArt: MatDialog, 
-              private _compraService:CompraService, 
-              private _consultaComprobantesServices:ConsultaComprobantesService) {
+               public snackBar: MatSnackBar, 
+              public dialogArt: MatDialog, private _compraService:CompraService,
+              private _consultaRetenciones:ConsultaRetencionesService ) {
     this.loading = true;
     
   
@@ -97,20 +49,17 @@ print = () => {
       'proveedor': new FormControl('',Validators.required,this.existeProveedor),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
-      'tipcomp': new FormControl(),
       'fecdesde': new FormControl(),
       'fechasta': new FormControl(new Date()),
       'expediente': new FormControl(),
-      'certificado': new FormControl()
     })
    }
 
+   
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
     this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
-    this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toString
-    
   }
 
   openSnackBar(message: string) {
@@ -180,33 +129,26 @@ print = () => {
     };
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
-    this._consultaComprobantesServices.getComprobante( jsonbody,this.token )
+    this._consultaRetenciones.getComprobante( jsonbody,this.token )
       .subscribe( resp => {
         console.log(resp);
         this.respCabecera = resp;
         this.cabeceraId = this.respCabecera.returnset[0].RId;
         console.log(this.respCabecera.dataset[0])
         if(this.respCabecera.dataset.length>0){
-          this.consultaComprobantes = this.respCabecera.dataset;
-          this.dataSource = new MatTableDataSource(this.consultaComprobantes)
-          
+          this.consultaRetenciones = this.respCabecera.dataset;
+          this.dataSource = new MatTableDataSource(this.consultaRetenciones)
+
         } else {
-          this.consultaComprobantes = null;
+          this.consultaRetenciones = null;
           this.dataSource = null
           this.openSnackBar('No hay datos para mostrar');
         }
       });
   }
-  mostrar(){
-    for (let index = 0; index < this.dataSource.data.length; index++) {
-      // itemActual[index] = dataSource.trim();
-      // console.log(itemActual[index].toString);
-      console.log(this.dataSource.data[index])
-      console.log(index);
-    }
-  }
-}
-export interface consultaComprobantes {
+
+} 
+export interface consultaRetenciones {
   
   Numero_Referente: string,
   Numero_Comprobante: string,

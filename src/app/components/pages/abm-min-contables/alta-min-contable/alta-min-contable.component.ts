@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MatPaginator, MatSort } from '@angular/material';
 import { MonedasService } from 'src/app/services/i2t/monedas.service';
 import { TiposComprobanteService } from 'src/app/services/i2t/tipos-comprobante.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,13 +10,14 @@ import { TipoComprobante } from 'src/app/interfaces/tipo-comprobante.interface';
 import { Moneda } from 'src/app/interfaces/moneda.interface';
 import { OrganizacionesService } from 'src/app/services/i2t/organizaciones.service';
 import { Organizacion } from 'src/app/interfaces/organizacion.interfac';
-import { MinContable } from 'src/app/interfaces/min-contable.interface';
+import { MinContable, MinContableDet } from 'src/app/interfaces/min-contable.interface';
 import { CajasService } from 'src/app/services/i2t/cajas.service';
 import { RefContablesService } from 'src/app/services/i2t/ref-contables.service';
 import { RefContable } from 'src/app/interfaces/ref-contable.interface';
 import { CentroCosto } from 'src/app/interfaces/cen-costo.interface';
 import { CentrosCostosService } from 'src/app/services/i2t/cen-costos.service';
 import { MinContablesService } from 'src/app/services/i2t/min-contables.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 
 var auxRefConData,auxCCostoData:any;
@@ -100,7 +101,14 @@ datos =
   editingAI:boolean = false;
   auxEditingArt:number = null;
 
-  referenciasData: any[] = [];
+  // referenciasData: any[] = [];
+  referenciasData = new MatTableDataSource();
+  
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('tableReferencias') table: MatTable<any>;
+
+  selection = new SelectionModel(true, []);
   //referenciasDataSource = new MatTableDataSource(this.referenciasData);
 
   loginData: any;
@@ -127,7 +135,9 @@ datos =
   //
 
   minutaContable: MinContable;
+  detallesAll: MinContableDet[];
   mcData: any;
+  mcdData:any;
   //todo revisar
   cabeceraId: string;
   renglonId: string;
@@ -152,7 +162,7 @@ datos =
 "IVA Responsable Inscripto - Agente de Percepción","Pequeño Contribuyente Eventual",
 "Monotributista Social","Pequeño Contribuyente Eventual Social"]; */
 
-  @ViewChild('tableArticulos') table: MatTable<any>;//
+  // @ViewChild('tableArticulos') table: MatTable<any>;//
 
   //todo cambiar
   constructor(public dialogArt: MatDialog, 
@@ -204,11 +214,15 @@ datos =
 
       if( this.cabeceraId !== "nuevo" ){
         this.buscarMinutasContables(this.cabeceraId);
-        //habilitar campos de detalles/renglones
-        this.formaReferencias.controls['refContable'].enable();
-        this.formaReferencias.controls['centroDeCosto'].enable();
-        this.formaReferencias.controls['debe'].enable();
-        this.formaReferencias.controls['haber'].enable();
+        //cargar lista de referencias contables
+        if (this.minutaContable != null){
+          this.buscarMinutasContablesDet(this.minutaContable.id);
+          //habilitar campos de detalles/renglones
+          this.formaReferencias.controls['refContable'].enable();
+          this.formaReferencias.controls['centroDeCosto'].enable();
+          this.formaReferencias.controls['debe'].enable();
+          this.formaReferencias.controls['haber'].enable();
+        }
       } else {
         this.loading = false;
         //todo borrar console
@@ -485,7 +499,7 @@ console.log('json armado: ');
                   console.log('buscando organizacion con '+this.minutaContable.account_id_c);
                   this.buscarOrganizacion(this.minutaContable.account_id_c);
                   
-
+                  this.buscarMinutasContablesDet(this.minutaContable.id);
                  /*  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);
                   this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
@@ -502,6 +516,126 @@ console.log('json armado: ');
                   console.log('no existe este id!');
                   this.forma.controls['fecha'].disable();
                   this.forma.controls['observaciones'].disable();
+                  /* this.forma.controls['cuentacontable'].disable();
+                  this.forma.controls['name'].disable();
+                  this.forma.controls['imputable'].disable();
+                  this.forma.controls['patrimonial'].disable();
+                  this.forma.controls['nomenclador'].disable();
+                  this.forma.controls['nomencladorpadre'].disable();
+                  this.forma.controls['orden'].disable();
+                  this.forma.controls['estado'].disable(); */
+                }
+              }
+            }
+
+      });
+     
+  }
+
+  buscarMinutasContablesDet(auxid:string){
+    this.existe = false;//
+    let jsbody = {
+
+      "ID_ComprobanteCab":auxid,
+      
+      // "ID_ComprobanteDet": "",
+
+      "Fecha_desde":"",
+      
+      "Fecha_hasta":"",
+      
+      "param_limite":"1",
+      
+      "param_offset":"0"
+      
+  };
+  let jsonbody= JSON.stringify(jsbody);
+    //obtener datos
+    //obtener descripciones
+   /*  this.buscarTipoComprobante(this.minutaContable.tg01_tipocomprobante_id_c);
+    this.buscarOrganizacion(this.minutaContable.account_id1_c);
+    this.buscarMoneda(this.minutaContable.tg01_monedas_id2_c);
+    
+    //mostrar datos
+    console.log('Mostrar datos: ');
+    //this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
+    this.forma.controls['fecha'].setValue(new Date(this.minutaContable.fecha));
+    console.log(this.minutaContable.fecha);
+    this.forma.controls['caja'].setValue(this.minutaContable.tg01_cajas_id_c);
+    console.log(this.minutaContable.tg01_cajas_id_c);
+    //habilitar edición de renglones
+    this.editingCabecera = false; */
+    console.log('json armado para detalles: ');
+    console.log(jsonbody);
+    
+    this._minContableService.getMinContablesDet( jsonbody, this.token )
+    //this._refContableService.getProveedores()
+      .subscribe( dataMCD => {
+        console.log(dataMCD);
+          this.mcdData = dataMCD;
+          //auxRefConData = this.mcData.dataset.length;
+          if(this.mcdData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.detallesAll = null;
+            let jsbodyl = {"usuario":"usuario1","pass":"password1"}
+            let jsonbodyl = JSON.stringify(jsbodyl);
+            this._minContableService.login(  jsonbodyl )
+              .subscribe( dataL => {
+                console.log('resultado login');
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarMinutasContablesDet(auxid);
+              });
+            } else {
+              if(this.mcdData.dataset.length>0){
+                this.detallesAll = this.mcdData.dataset[0];
+                this.existe = true;
+                if (this.existe == true){
+                  console.log('lista de detalles obtenida: ', this.detallesAll);
+            
+                  this.loading = false;
+                  
+                  this.referenciasData = new MatTableDataSource(this.detallesAll);
+
+                  this.referenciasData.sort = this.sort;
+                  this.referenciasData.paginator = this.paginator;
+                  // this.editingCabecera = false;
+                  
+                  //todo corregir fecha
+                  // // this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
+                  // let fecha = new Date(this.minutaContable.fecha);
+                  // fecha.setMinutes(fecha.getMinutes() + -180);
+                  // this.forma.controls['fecha'].setValue(fecha);
+                  
+                  // this.forma.controls['observaciones'].setValue(this.minutaContable.description);
+                  
+                  // console.log('pidiendo tipo op con: ');
+                  // console.log(this.minutaContable);
+                  // this.buscarTipoComprobante(this.minutaContable.id);
+                  // //todo cambiar por lo del objeto cargado cuando se pueda traer solo minutas
+                  // this.forma.controls['organizacion'].setValue(this.minutaContable.nombre_fantasia_c);
+                  // // this.buscarTipoComprobante('43966f4a-4fc8-11e8-b1a0-d050990fe081');
+                  // console.log('buscando organizacion con '+this.minutaContable.account_id_c);
+                  // this.buscarOrganizacion(this.minutaContable.account_id_c);
+                  
+
+                 /*  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
+                  this.forma.controls['name'].setValue(this.planDeCuentas.name);
+                  this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
+                  this.forma.controls['nomencladorpadre'].setValue(this.planDeCuentas.nomencladorpadre);
+                  this.forma.controls['orden'].setValue(this.planDeCuentas.orden);
+                  this.forma.controls['imputable'].setValue(this.planDeCuentas.imputable.toString());
+                  this.forma.controls['patrimonial'].setValue(this.planDeCuentas.patrimonial.toString());
+                  this.forma.controls['estado'].setValue(this.planDeCuentas.estado.toString()); */
+                }
+              } else {
+                this.detallesAll = null;
+                this.existe = false;
+                if (this.existe == false){
+                  console.log('no existe este id de detalle!');
+                  // this.forma.controls['fecha'].disable();
+                  // this.forma.controls['observaciones'].disable();
                   /* this.forma.controls['cuentacontable'].disable();
                   this.forma.controls['name'].disable();
                   this.forma.controls['imputable'].disable();
@@ -903,7 +1037,8 @@ console.log('json armado: ');
     this.impuestosalicuotas=this.impuestosalicuotas-(auxtotal*(this.referenciasData[ind].alicuota/100));
     this.totaltotal=this.totalneto+this.impuestosalicuotas; */
 
-    this.referenciasData.splice(ind, 1);
+    // this.referenciasData.splice(ind, 1);todo revisar
+    this.referenciasData.data.push();//todo agregar nueva referencia
     this.table.renderRows();
   };
 

@@ -108,13 +108,21 @@ export class ConsultaDinamicaService {
     return this.http.get( url , { headers });
   }
 
-  getDatos( name:string, token:string ){
+  getDatos( name:string, filtros: any, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
     let query = `api/${name}`;
     //armado de consulta
+    if (filtros != null)
+    {
+      console.log('armado de consulta aquí =====>>>>');
+    }
+    //
+    else{
+      console.log('sin armado de consulta aquí (es nulo) =====>>>>');
+    }
     // this.datosFiltros.value.forEach(element => {
     //   element
     // });

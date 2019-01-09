@@ -51,6 +51,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   viewContainerRefAvanzados: ViewContainerRef;
   viewContainerRefColumnas: ViewContainerRef; */
   columnSelection: any;
+  filtros: any;
 
   @Input() componentes: ComponentWrapper[];
   /* 
@@ -89,9 +90,31 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     //suscribir a los cambios en los otros modales
     this.ngxSmartModalService.getModal('cdTablaModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal: ', modal.getData());
+      //todo agregar if en caso de que se cancele
       this.establecerColumnas();
       // this.ngxSmartModalService.getModal(nombreModal).onClose.unsubscribe();
     });
+
+    //suscribir a los botones de los modales
+    this.ngxSmartModalService.getModal('cdFiltrosModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal: ', modal.getData());
+
+      //si cambiaron los datos:
+      console.log(this.ngxSmartModalService.modalStack);
+      // this.filtros = this.ngxSmartModalService.getModalData('consDinModal');
+      this.filtros = this.ngxSmartModalService.getModalData('cdFiltrosModal');
+      // if(nuevo != anterior)
+      {
+        this.buscarDatos();
+      }
+    });
+
+    //suscribir a los valores de los filtros
+    // this.ngxSmartModalService.getModal('consDinModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
+    //   console.log('Cerrado el modal: ', modal.getData());
+    // });
+    
+
   }
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -132,11 +155,13 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     let datosModal : {
       modal: string;
       datos: any;
+      valores: any;
       columnSelection: any
     }
     datosModal = {
       modal: nombreModal,
       datos: this.atributosAll,
+      valores: this.filtros,
       columnSelection: null,
     }
 
@@ -250,8 +275,10 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     //
     console.log('Buscando datos con:');
     console.log(this.reportesAll[this.reporteSeleccionado].name);
+    
+    console.log('filtros a aplicar: ', this.filtros);
     //
-    this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name ,this.token) 
+    this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name, this.filtros, this.token) 
       .subscribe( dataCons => {
         console.log(dataCons);
           this.consData = dataCons;

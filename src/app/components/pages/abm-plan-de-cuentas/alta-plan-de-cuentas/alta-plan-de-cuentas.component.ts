@@ -88,6 +88,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
         this.buscarPlanDeCuentas(this.id);
       } else {
         this.loading = false;
+        this.forma.controls['estado'].setValue('0');
       }
 
       //this.forma.controls['nomencladorpadre'].disable();
@@ -171,6 +172,9 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                   if(this.cdadniveles!=4){this.forma.controls['n4'].disable();}
                   if(this.cdadniveles!=5){this.forma.controls['n5'].disable();}
                   if(this.cdadniveles!=6){this.forma.controls['n6'].disable();}
+
+                  this.cdadnivelespadre = this.cdadniveles - 1
+
                 }
               } else {
                 this.planDeCuentas = null;
@@ -323,27 +327,29 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   }
 
   guardarPlanDeCuentas(){
+    console.log(this.cdadnivelespadre);
+
     var auxnomenclador = this.forma.controls['n1'].value;
-    if(this.cdadniveles>1){auxnomenclador += '.'+this.forma.controls['n2'].value;}
-    if(this.cdadniveles>2){auxnomenclador += '.'+this.forma.controls['n3'].value;}
-    if(this.cdadniveles>3){auxnomenclador += '.'+this.forma.controls['n4'].value;}
-    if(this.cdadniveles>4){auxnomenclador += '.'+this.forma.controls['n5'].value;}
-    if(this.cdadniveles>5){auxnomenclador += '.'+this.forma.controls['n6'].value;}
+    if(this.cdadnivelespadre>=1){auxnomenclador += '.'+this.forma.controls['n2'].value;}
+    if(this.cdadnivelespadre>=2){auxnomenclador += '.'+this.forma.controls['n3'].value;}
+    if(this.cdadnivelespadre>=3){auxnomenclador += '.'+this.forma.controls['n4'].value;}
+    if(this.cdadnivelespadre>=4){auxnomenclador += '.'+this.forma.controls['n5'].value;}
+    if(this.cdadnivelespadre>=5){auxnomenclador += '.'+this.forma.controls['n6'].value;}
 
     var auxnomencladorpadre ='';
-    if(this.cdadniveles>1){auxnomencladorpadre += this.forma.controls['n1'].value;}
-    if(this.cdadniveles>2){auxnomencladorpadre += '.'+this.forma.controls['n2'].value;}
-    if(this.cdadniveles>3){auxnomencladorpadre += '.'+this.forma.controls['n3'].value;}
-    if(this.cdadniveles>4){auxnomencladorpadre += '.'+this.forma.controls['n4'].value;}
-    if(this.cdadniveles>5){auxnomencladorpadre += '.'+this.forma.controls['n5'].value;}
-    if(this.cdadniveles>6){auxnomencladorpadre += '.'+this.forma.controls['n6'].value;}
+    if(this.cdadnivelespadre>=1){auxnomencladorpadre += this.forma.controls['n1'].value;}
+    if(this.cdadnivelespadre>=2){auxnomencladorpadre += '.'+this.forma.controls['n2'].value;}
+    if(this.cdadnivelespadre>=3){auxnomencladorpadre += '.'+this.forma.controls['n3'].value;}
+    if(this.cdadnivelespadre>=4){auxnomencladorpadre += '.'+this.forma.controls['n4'].value;}
+    if(this.cdadnivelespadre>=5){auxnomencladorpadre += '.'+this.forma.controls['n5'].value;}
+    if(this.cdadnivelespadre>=6){auxnomencladorpadre += '.'+this.forma.controls['n6'].value;}
 
     var auxid = this.forma.controls['n1'].value;
-    if(this.cdadniveles>1){auxid += '.'+this.forma.controls['n2'].value;}else{auxid += '.0'}
-    if(this.cdadniveles>2){auxid += '.'+this.forma.controls['n3'].value;}else{auxid += '.0'}
-    if(this.cdadniveles>3){auxid += '.'+this.forma.controls['n4'].value;}else{auxid += '.0'}
-    if(this.cdadniveles>4){auxid += '.'+this.forma.controls['n5'].value;}else{auxid += '.0'}
-    if(this.cdadniveles>5){auxid += '.'+this.forma.controls['n6'].value;}else{auxid += '.0'}
+    if(this.cdadnivelespadre>=1){auxid += '.'+this.forma.controls['n2'].value;}else{auxid += '.0'}
+    if(this.cdadnivelespadre>=2){auxid += '.'+this.forma.controls['n3'].value;}else{auxid += '.0'}
+    if(this.cdadnivelespadre>=3){auxid += '.'+this.forma.controls['n4'].value;}else{auxid += '.0'}
+    if(this.cdadnivelespadre>=4){auxid += '.'+this.forma.controls['n5'].value;}else{auxid += '.0'}
+    if(this.cdadnivelespadre>=5){auxid += '.'+this.forma.controls['n6'].value;}else{auxid += '.0'}
 
     var auxorden;
     if(this.forma.controls['imputable'].value==0){auxorden=0}

@@ -34,8 +34,13 @@
       <div class="col s4 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo Documento</mat-label>
-          <input matInput placeholder="" formControlName="tipoDocumento">
-          <!--<mat-hint>Hint</mat-hint>-->
+          <!--<input matInput placeholder="" formControlName="tipoDocumento">
+          <mat-hint>Hint</mat-hint>-->
+          <mat-select placeholder="Elija una opción..." formControlName="tipoDocumento">
+            <mat-option *ngFor="let aux of tiposDocumentoAll" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
       <div class="col s8 m8 l6">
@@ -72,14 +77,19 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m12 l4">
+      <div class="col s10 m10 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código Postal</mat-label>
           <input matInput placeholder="" formControlName="facCodigoPostal">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m12 l8">
+      <div class="col s2 m2 l1" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button>
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s12 m12 l7">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Ciudad</mat-label>
           <input matInput placeholder="" formControlName="facCiudad">
@@ -106,9 +116,9 @@
     <div class="row" style="margin-top:5px; ">
       <div class="col s12 m12 l12" style="display:flex">
         <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Dirección de Envío:</h6>
-        <button (click)="copiarDireccion()" class="mine-btnbig-grey" mat-flat-button style="height:25px;line-height:0px;margin-left:15px;min-width:40px !important;padding:0 !important">
-          <i class="material-icons" style="font-size:16px;">file_copy</i>
-        </button>
+        <a (click)="copiarDireccion()" class="mine-btnbig-grey" mat-flat-button style="height:25px;line-height:0px;margin-left:15px;min-width:40px !important;padding:0 !important">
+          <i class="material-icons" style="font-size:16px;margin-top: 4px;">file_copy</i>
+        </a>
       </div>
       <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -117,14 +127,19 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m12 l4">
+      <div class="col s10 m10 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código Postal</mat-label>
           <input matInput placeholder="" formControlName="envCodigoPostal">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m12 l8">
+      <div class="col s2 m2 l1" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button>
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s12 m12 l7">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Ciudad</mat-label>
           <input matInput placeholder="" formControlName="envCiudad">
@@ -227,44 +242,59 @@
     -->
     </div>
 
+<!-- relacion cuentas bancarias -->
 
-    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-      <div class="col s12 m12 l12">
-        <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Información Bancaria:</h6>
-      </div>
-      <div class="col s12 m12 l12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>CBU</mat-label>
-          <input  matInput placeholder="" type="number">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Tipo de cuenta</mat-label>
-          <mat-select placeholder="Elija una opción">
-            <mat-option value="1">Cuenta corriente</mat-option>
-            <mat-option value="2">Caja de ahorro</mat-option>
-          </mat-select>
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s8 m4 l4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Cuenta bancaria</mat-label>
-          <input  matInput placeholder="" type="number">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s4 m4 l4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Código de sucursal</mat-label>
-          <input  matInput placeholder="" type="number">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
+    <div class="row" style="margin-top:0px; margin-bottom:0px !important;">
+      <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+        <span style="display:flex;">
+          <h6>Lista de Cuentas Bancarias:</h6>
+          <button (click)="addCuentaBanc()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+            +
+          </button>
+        </span>
       </div>
     </div>
-    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="row" *ngFor="let item of cuentasBanc; let in = index" style="margin:5px !important;">
+        <div class="col s12 m12 l5">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>CBU</mat-label>
+            <input matInput placeholder="" type="number" formControlName="rcCbu">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m3 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Tipo de cuenta</mat-label>
+            <mat-select placeholder="Elija una opción">
+              <mat-option value="1">Cuenta corriente</mat-option>
+              <mat-option value="2">Caja de ahorro</mat-option>
+            </mat-select>
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s6 m4 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Cuenta bancaria</mat-label>
+            <input matInput placeholder="" type="number" formControlName="rcCuentaBancaria">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s3 m3 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Código de sucursal</mat-label>
+            <input matInput placeholder="" type="number" formControlName="rcCodigoSucursal">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s3 m2 l1">
+          <button (click)="deleteCuentasBanc(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+            -
+          </button>
+        </div>
+      </div>
+    <!-- fin relacion -->
+
+    <div class="row" style="margin-top:25px; margin-bottom:0px !important;">
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Estado</mat-label>
@@ -293,17 +323,22 @@
    </mat-expansion-panel-header>
 
    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-     <div class="col s12 m6 l4">
+     <div class="col s10 m5 l3">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>Situación IVA</mat-label>
          <input matInput placeholder="">
          <!--<mat-hint>Hint</mat-hint>-->
        </mat-form-field>
      </div>
+     <div class="col s2 m1 l1" style="margin-top:10px;">
+       <button class="mine-btnforms" mat-flat-button>
+         <i class="material-icons" style="font-size:20px;">more_horiz</i>
+       </button>
+     </div>
      <div class="col s12 m6 l4">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>CUIT</mat-label>
-         <input matInput placeholder="">
+         <input matInput placeholder="" formControlName="cuit">
          <!--<mat-hint>Hint</mat-hint>-->
        </mat-form-field>
      </div>
@@ -317,13 +352,13 @@
      <div class="col s12 m6 l6">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>CAI</mat-label>
-         <input matInput placeholder="">
+         <input matInput placeholder="" formControlName="cai">
        </mat-form-field>
      </div>
      <div class="col s12 m6 l6">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>Fecha Vencimiento CAI</mat-label>
-         <input matInput placeholder="">
+         <input matInput placeholder="" formControlName="fechaVtoCai">
        </mat-form-field>
      </div>
      <!--
@@ -351,20 +386,30 @@
     </div>
 
     <div class="row" *ngFor="let item of impuestos; let in = index" style="margin:5px !important;">
-      <div class="col s12 m3 l3">
+      <div class="col s10 m2 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo</mat-label>
-          <input matInput placeholder="">
+          <input matInput placeholder="" disabled>
         </mat-form-field>
       </div>
-      <div class="col s12 m5 l4">
+      <div class="col s2 m1 l1" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button>
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s10 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Modelo</mat-label>
-          <input matInput placeholder="" value="">
+          <input matInput placeholder="" value="" disabled>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m4 l5">
+      <div class="col s2 m1 l1" style="margin-top:10px;">
+        <button class="mine-btnforms" mat-flat-button>
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s12 m4 l4">
       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
         <mat-label>Situación</mat-label>
         <mat-select placeholder="Elija una opción">
@@ -391,13 +436,59 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
       </div>
-      <div class="col s6 m4 l4">
-          <mat-checkbox>¿Posee exenciones?</mat-checkbox>
+      <div class="col s6 m4 l4" style="margin-top:12px;">
+          <mat-checkbox #poseeExenc>¿Posee exenciones?</mat-checkbox>
       </div>
       <div class="col s6 m3 l3">
         <button (click)="deleteImpuesto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
           -
         </button>
+      </div>
+      <!-- relacion impuestos exenciones -->
+      <div class="col s12 m12 l12" style="margin-top:0px !important; margin-bottom: 15px !important; margin-left: 30px !important;" *ngIf="poseeExenc.checked">
+        <span style="display:flex;">
+          <h6>Exenciones:</h6>
+          <button (click)="addExencion(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+            +
+          </button>
+        </span>
+      </div>
+      <div *ngIf="poseeExenc.checked">
+        <div class="row" *ngFor="let item of impuestos[in].exenciones; let in2 = index" style="margin:5px !important; margin-left: 30px !important;">
+          <div class="col s12 m2 l1">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Número </mat-label>
+              <input matInput placeholder="">
+            </mat-form-field>
+          </div>
+          <div class="col s6 m3 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Fecha Desde</mat-label>
+            <input matInput [matDatepicker]="picker1" placeholder="">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+          </div>
+          <div class="col s6 m3 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Fecha Hasta</mat-label>
+            <input matInput [matDatepicker]="picker2" placeholder="">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+          </mat-form-field>
+          </div>
+          <div class="col s9 m3 l4">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Observaciones </mat-label>
+              <input matInput placeholder="">
+            </mat-form-field>
+          </div>
+          <div class="col s3 m1 l1">
+            <button (click)="deleteExencion(in,in2)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+              -
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <!--fin relacion-->
@@ -462,19 +553,26 @@
     </div>
 
     <div class="row" *ngFor="let item of articulosStock; let in = index" style="margin:5px !important;">
-      <div class="col s4 m2 l1">
+      <div class="col s3 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>ID Artículo</mat-label>
           <input matInput placeholder="" type="number">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m2 l1" style="margin-top:10px;">
+      <div class="col s2 m2 l1" style="margin-top:10px;">
         <button class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>
-      <div class="col s8 m3 l2">
+      <div class="col s5 m6 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Descripción Artículo</mat-label>
+          <input matInput placeholder="" value="" disabled>
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
+      <div class="col s5 m3 l3">
       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
         <mat-label>Fecha última compra</mat-label>
         <input matInput [matDatepicker]="picker" placeholder="">
@@ -482,14 +580,14 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
       </div>
-      <div class="col s6 m3 l2">
+      <div class="col s5 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Precio última compra</mat-label>
           <input matInput placeholder="" type="number" value="">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m4 l2">
+      <div class="col s5 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Moneda</mat-label>
           <mat-select placeholder="Elija una opción">
@@ -499,7 +597,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m4 l1">
+      <div class="col s5 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código artículo proveedor</mat-label>
           <input matInput placeholder="" type="number" style="text-align: right;"
@@ -507,7 +605,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s8 m6 l2">
+      <div class="col s10 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código barra proveedor</mat-label>
           <input matInput placeholder="" style="text-align: right;"
@@ -515,7 +613,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m2 l1">
+      <div class="col s2 m2 l1">
         <button (click)="deleteArticulosStock(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
           -
         </button>

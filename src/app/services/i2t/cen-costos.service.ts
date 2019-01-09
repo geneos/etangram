@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Http } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PreUrl } from './url';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +9,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class CentrosCostosService {
 
   //compraProveedores:any [] = [];
-  preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
-
+  preUrl:string = PreUrl;
+  
   constructor( private http:HttpClient ) { }
 
   login( body:string ){

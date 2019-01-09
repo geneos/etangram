@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PreUrl } from './url';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +9,8 @@ export class ConsultaRetencionesService {
 
   Proveedor:any [] = [];
 
-  urlProveedor:string = "http://tstvar.i2tsa.com.ar:3000/";
-  
+  urlProveedor:string = PreUrl;
+
   constructor(private http:HttpClient) { }
   login( body:string ){
     const headers = new HttpHeaders({
@@ -29,7 +30,7 @@ export class ConsultaRetencionesService {
 
       let query = "api/proc/CabeceraGet";
       let url = this.urlProveedor + query;
-  
+
       return this.http.post( url, body, { headers });
   }
 }

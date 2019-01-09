@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 //import { Http } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { PreUrl } from './url';
 
 const operadores = [
   { equal : 'eq'},  //igual que
@@ -34,7 +35,7 @@ const otros = [
 export class ConsultaDinamicaService {
 
   //compraProveedores:any [] = [];
-  preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
+  preUrl:string = PreUrl;
 
   //datos de filtros
   // private datosFiltros = new BehaviorSubject('default message');
@@ -127,7 +128,7 @@ export class ConsultaDinamicaService {
     //   element
     // });
     //
-    
+
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });

@@ -95,16 +95,15 @@
            CONSULTAR
          </button>
        </div>
-     <!--  <div class="col s6 m4 l1">
-         <button (click)="downloadPdf()" class="mine-btnbig" mat-flat-button>
-           IMPRIMIR
+     <!-- --> <div class="col s6 m4 l1" style="padding-left:15px; margin-left: 5px;">
+         <button (click)="print()" class="mine-btnbig" mat-flat-button>
+           Generar PDF
          </button>
-       </div> -->
-     </div>
+       </div> 
      
-     <div id="tablaDatos" class="mat-elevation-z8">
+     <div  class="mat-elevation-z8">
        
-       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+       <table id="tablaDatos" mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
           <mat-action-row>
               <button mat-button>Click me</button>
             </mat-action-row>

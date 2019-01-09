@@ -326,8 +326,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         console.log(listaColumnas.length)
         for (let index = 0; index < listaColumnas.length; index++) {
           itemActual = listaColumnas[index].trim();
-          console.log(itemActual);
-          console.log(index);
+ 
           columnasAMostrar = columnasAMostrar.concat(itemActual, ',');
         }
         columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);

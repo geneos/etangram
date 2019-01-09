@@ -692,6 +692,10 @@ console.log('json armado: ');
   }
 
   addReferencia(){
+    this.formaReferencias.controls['refContable'].enable();
+    this.formaReferencias.controls['debe'].enable();
+    this.formaReferencias.controls['haber'].enable();
+
     this.formaReferencias.controls['haber'].setValue('');
     this.formaReferencias.controls['debe'].setValue('');
     this.addingReferencia = true;
@@ -715,7 +719,10 @@ console.log('json armado: ');
     console.log(this.forma.controls['caja'].value);
     console.log(this.forma.controls['moneda'].value);
     console.log(this.forma.controls['observaciones'].value);
-
+    let auxObs = this.forma.controls['observaciones'].value;
+    
+    if (this.forma.controls['observaciones'].value == null){auxObs = "''"};
+      console.log(auxObs)
     let jsbody = {
       // "ID_TipoComp":this.forma.controls['tipo'].value,
       "ID_TipoComp":this.tipoComprobante.id,
@@ -725,9 +732,11 @@ console.log('json armado: ');
       "ID_Usuario":1,//hardcoded, todo cambiar
       "P_Fecha":auxfecha,
       "P_Total":0,//todo cambiar
-      "P_Obs":this.forma.controls['observaciones'].value,
+      
+      "P_Obs":auxObs,//this.forma.controls['observaciones'].value,
       "P_Estado":1//hardcoded, todo cambiar
     };
+    
 /*
      {
             "servicio": "InternoCabIns",          

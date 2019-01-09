@@ -7,14 +7,16 @@ import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
 import { CdkTableModule } from '@angular/cdk/table';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import * as jsPDF from 'jspdf-autotable'
+//import jsPDF from 'jspdf';
+//import jspdf from 'jspdf-autotable';
 
-/*var jsPDF = require('jspdf');
-require('jspdf-autotable');*/
-declare var jsPDF: any;
+declare var require: any
+var jsPDF = require('jspdf');
+require('jspdf-autotable');
+//declare var jsPDF: any;
 
 var auxProvData: any;
-let itemActual:any;
+let itemActual:any; 
 
 
 @Component({
@@ -56,10 +58,8 @@ export class ConsultaComprobantesComponent implements OnInit {
 
 
 print = () => {
-  let doc = new jsPDF(); 
-  
-
-  var res = doc.autoTableHtmlToJson(document.getElementById("tablaDatos"));
+   
+  let doc = new jsPDF();
   doc.autoTable({
     head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
     
@@ -68,7 +68,7 @@ print = () => {
     // itemActual[index] = dataSource.trim();
     // console.log(itemActual[index].toString);
     doc.autoTable({
-      body: [[this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
+      body: [[,this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
       this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
       this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]] 
    
@@ -91,7 +91,6 @@ print = () => {
               private _compraService:CompraService, 
               private _consultaComprobantesServices:ConsultaComprobantesService) {
     this.loading = true;
-    
   
     this.forma = new FormGroup({
       'proveedor': new FormControl('',Validators.required,this.existeProveedor),

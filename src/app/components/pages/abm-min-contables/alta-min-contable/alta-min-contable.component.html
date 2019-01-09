@@ -1,8 +1,9 @@
 <h2 *ngIf="!existe">NUEVA MINUTA CONTABLE</h2>
 <h2 *ngIf="existe">EDITANDO MINUTA CONTABLE</h2>
-<button [routerLink]="['/min-contables']" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+
+<!-- <button [routerLink]="['/min-contables']" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
   VOLVER A LISTA
-</button>
+</button> -->
 <button (click)="eliminarMinutaContable()" class="mine-btnbig" mat-flat-button style="margin-right:10px;" *ngIf="existe">
   ELIMINAR
 </button>
@@ -73,7 +74,7 @@
       <div class="col s12 m12 l8">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Observaciones</mat-label>
-          <input matInput placeholder="" formControlName="observaciones" >
+          <input matInput placeholder="" formControlName="observaciones">
         </mat-form-field>
       </div>
       

@@ -24,6 +24,7 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
   @ViewChild(AnclaParaAvanzadosDirective) contenedorAvanzados: AnclaParaAvanzadosDirective;
 
   datosFiltros: any;
+  datosFiltrosAplicados: any;
   
   constructor(public ngxSmartModalService: NgxSmartModalService,
               private componentFactoryResolver: ComponentFactoryResolver,
@@ -35,12 +36,13 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
   selectedTab: number = 0;
 
   ngOnInit() {
+    //suscribir a los datos ingresados en filtros
     this.consultaDinService.datosFiltrosAct.subscribe(datos => this.datosFiltros = datos);
   }
 
   ngAfterViewInit() {
      // here, please receive a param that was sent by the caller.
-    this.ngxSmartModalService.getModal('cdFiltrosModal').onOpen.subscribe(() => {
+      this.ngxSmartModalService.getModal('cdFiltrosModal').onOpen.subscribe(() => {
       this.inputParam = this.ngxSmartModalService.getModalData('cdFiltrosModal');
       
       this.loading = true;
@@ -52,9 +54,7 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
       else{
         this.selectedTab = 1;
       }
-      console.log('Your param is:', this.inputParam);
-      console.log('la pagina elegida es: ' + this.selectedTab);
-      console.log('la pagina elegida es: ' + this.inputParam.modal);
+      console.log('parametros para filtros:', this.inputParam);
       this.loading = false;
     });
 
@@ -76,41 +76,58 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
     
     //recorrer lista de atributos para filtros
     console.log('generando controles de filtrado para la lista: ');
+    console.log('tipos');
     console.log(this.inputParam.datos);
+    console.log('valores');
+    console.log(this.inputParam.valores);
+    let temp = this.inputParam.valores as Map<string, string>;
+    let valorAEnviar : any = null;
     //
     let atributosFiltro = this.inputParam.datos.filter(atributoActual => atributoActual.grupo === 'Filtros');
     atributosFiltro.forEach(atributoActual => {
-      
+      // console.log((Map<string, string>)this.inputParam.valores.get(atributoActual.atributo_bd));
+      if (temp != null){
+        console.log('valor para llenar ' +  atributoActual.atributo_bd + ': '+ temp.get(atributoActual.atributo_bd));
+        valorAEnviar = temp.get(atributoActual.atributo_bd);
+      }
+      else{
+        console.log('no hay valores para llenar el filtro actual');
+        valorAEnviar = null;
+      }
+
       let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, 
                                                               atributoActual.desc_atributo, 
                                                               'Esta es una prueba',
                                                               {valores: atributoActual.valores, 
-                                                               columna: atributoActual.atributo_bd});
+                                                               columna: atributoActual.atributo_bd,
+                                                               valor:   valorAEnviar});
+                                                              //  valor:   'test(buscar en diccionario)'});
+
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
       let componentRef = this.viewContainerRefFiltros.createComponent(componentFactory);
       this.componentesFiltros.push(componentRef.instance);
       (<CompGen>componentRef.instance).data = control.data;
       // (<CompGen>componentRef.instance).datosSalida;
       
-      console.log('compa agregaaaaaaaaaaaaaaado: ');
+      // console.log('compa agregaaaaaaaaaaaaaaado: ');
       // console.log(componentRef.instance.datosSalida.subscribe(event => console.log('registrado evento en comp agregado: ', event));
-      console.log(componentRef.instance);
+      // console.log(componentRef.instance);
       // console.log(componentRef.instance.datosSalida);
-      console.log('---');
+      // console.log('---');
       // componentRef.instance.datosSalida.subscribe(v => {
       //   console.log('omg callback');
       //   console.log(v);
       // });
-      componentRef.changeDetectorRef.detectChanges();
+      // componentRef.changeDetectorRef.detectChanges();
       // .subscribe(event => console.log('registrado evento en comp agregado: ', event));
-      console.log('probando ver los valores de los filtros: ');
-      console.log((<CompGen>componentRef.instance).data);
+      // console.log('probando ver los valores de los filtros: ');
+      // console.log((<CompGen>componentRef.instance).data);
       
-      console.log('probando ver los valores de los filtros v2: ');
-      console.log(this.viewContainerRefFiltros);
+      // console.log('probando ver los valores de los filtros v2: ');
+      // console.log(this.viewContainerRefFiltros);
       
-      console.log('probando ver los valores de los filtros v3: ');
-      console.log(componentRef.instance);
+      // console.log('probando ver los valores de los filtros v3: ');
+      // console.log(componentRef.instance);
     });
     
     //Crear Avanzados
@@ -145,7 +162,7 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
     
     // console.log(this.viewContainerRefFiltros.get(0))//todo
     // console.log(this.componentesFiltros);
-    this.viewContainerRefFiltros.get(0).detectChanges();
+    // this.viewContainerRefFiltros.get(0).detectChanges();
     // this.componentesFiltros.forEach(element => {
     //   console.log(<CompGen>element.instance);
     //   console.log(element.componentType);
@@ -159,6 +176,22 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
     // console.log('---');
     // console.log(this.componentesAvanzados);
     // // console.log(componentRef.instance.datosSalida);
+    
+    //actualizar los datos del modal base
+    // this.ngxSmartModalService.resetModalData('consDinModal');
+    // this.ngxSmartModalService.setModalData(this.datosFiltros, 'consDinModal');
+    
+    this.ngxSmartModalService.resetModalData('cdFiltrosModal');
+    this.ngxSmartModalService.setModalData(this.datosFiltros, 'cdFiltrosModal');
+    //cerrar modal
+    this.ngxSmartModalService.close('cdFiltrosModal');
+  }
+
+  volver(){
+    this.ngxSmartModalService.resetModalData('cdFiltrosModal');
+    this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'cdFiltrosModal');
+    this.ngxSmartModalService.close('cdFiltrosModal');
+    // cdFiltrosModal.close()
   }
 
 }

@@ -18,7 +18,8 @@ import { ConsultaComprobantesComponent } from './components/pages/consulta-compr
 import { ConsultaRetencionesComponent } from './components/pages/consulta-retenciones/consulta-retenciones.component';
 
 const APP_ROUTES: Routes = [
-  { path: 'compra', component: AbmComprasComponent },
+  //{ path: 'compra', component: AbmComprasComponent },
+  { path: 'compra/:user/:pass', component: AbmComprasComponent },
   { path: 'articulos', component: AbmArticulosComponent },
   { path: 'articulos/:id', component: AltaArticuloComponent },
   { path: 'proveedores', component: AbmProveedoresComponent },

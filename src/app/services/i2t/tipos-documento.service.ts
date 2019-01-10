@@ -6,7 +6,7 @@ import { PreUrl } from './url';
 @Injectable({
   providedIn: 'root'
 })
-export class MonedasService {
+export class TiposDocumentoService {
 
   //compraProveedores:any [] = [];
   preUrl:string = PreUrl;
@@ -24,23 +24,23 @@ export class MonedasService {
     return this.http.post( url, body, { headers } );
   }
 
-  getMonedas( token:string ){
+  getTiposDocumento( token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_monedas`;
+    let query = `api/tg01_tipodocumento`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
   }
 
-  getMoneda( id:string, token:string ){
+  getTipoDocumento( id:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_monedas/${ id }`;
+    let query = `api/tg01_tipodocumento/${ id }`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });

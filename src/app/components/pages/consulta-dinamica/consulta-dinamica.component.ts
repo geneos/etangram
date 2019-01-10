@@ -52,6 +52,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   viewContainerRefColumnas: ViewContainerRef; */
   columnSelection: any;
   filtros: any;
+  filtrosAnteriores: any;
 
   @Input() componentes: ComponentWrapper[];
   /* 
@@ -100,13 +101,38 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       console.log('Cerrado el modal: ', modal.getData());
 
       //si cambiaron los datos:
-      console.log(this.ngxSmartModalService.modalStack);
+      // console.log(this.ngxSmartModalService.modalStack);
       // this.filtros = this.ngxSmartModalService.getModalData('consDinModal');
-      this.filtros = this.ngxSmartModalService.getModalData('cdFiltrosModal');
-      // if(nuevo != anterior)
-      {
-        this.buscarDatos();
+      let datostemp = this.ngxSmartModalService.getModalData('cdFiltrosModal');
+      console.log('temp: ', datostemp);
+      console.log('temp.estado', datostemp.estado)
+      console.log('test cancelado: ', (this.ngxSmartModalService.getModalData('cdFiltrosModal').estado !== 'cancelado'))
+
+      if(this.ngxSmartModalService.getModalData('cdFiltrosModal').estado !== 'cancelado'){
+
+        this.filtrosAnteriores = null;
+        console.log('reiniciado filtros anteriores', this.filtrosAnteriores);
+        console.log('filtros actuales: ', this.filtros);
+        this.filtrosAnteriores = this.filtros;
+        console.log('copiado filtros actuales a filtros anteriores', this.filtrosAnteriores);
+        this.filtros = this.ngxSmartModalService.getModalData('cdFiltrosModal');
+        //comprobar que sea un mapa
+        if (!(this.filtros instanceof Map)){
+          this.filtros = this.filtros.valores;
+        }
+        console.log('traidos filtros nuevos', this.filtros);
+        console.log('comparacion', (this.filtrosAnteriores !== this.filtros));
+        
+        // if(nuevo != anterior)
+        if(this.filtrosAnteriores !== this.filtros)
+        {
+          this.buscarDatos();
+        }
+        //todo quitar else
+        else{ console.log('no se filtra porque no hubo cambios  ')}
       }
+      //todo quitar else
+      else { console.log( 'cancelado filtrado')};
     });
 
     //suscribir a los valores de los filtros
@@ -314,6 +340,16 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
               } else {
                 this.datosAll = null;
+                
+                // this.constDatos = new MatTableDataSource(this.datosAll);
+                this.constDatos = new MatTableDataSource();
+                
+                this.constDatos.sort = this.sort;
+                this.constDatos.paginator = this.paginator;
+                // this.constDatos.disconnect();
+                // this.paginator.getNumberOfPages();
+                // this.constDatos.sort = this.sort;
+                // this.constDatos.paginator = this.paginator;
                 console.log('Lista de vacía');
               }
             }

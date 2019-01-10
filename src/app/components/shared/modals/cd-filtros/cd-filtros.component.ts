@@ -188,6 +188,8 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
   }
 
   volver(){
+    this.ngxSmartModalService.resetModalData('cdFiltrosModal');
+    this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'cdFiltrosModal');
     this.ngxSmartModalService.close('cdFiltrosModal');
     // cdFiltrosModal.close()
   }

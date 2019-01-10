@@ -110,7 +110,7 @@ datos =
   @ViewChild('tableReferencias') table: MatTable<any>;
   //dataSource = new MatTableDataSource(this.refContableItemData)
   dataSource: any[] = []
-  displayedColumns: string[] = ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];
+ // displayedColumns: string[] = ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];
 
   selection = new SelectionModel(true, []);
   //referenciasDataSource = new MatTableDataSource(this.referenciasData);
@@ -118,7 +118,7 @@ datos =
   loginData: any;
   token: string = "a";
   existe:boolean;
-  loading:boolean;
+  loading:boolean; 
 
   //parametros
   pData: any;
@@ -150,6 +150,8 @@ datos =
   centroCostoData: any;
   respCabecera: any;
   respRenglon: any;
+  totaldebe: number = 0;
+  totalHaber: number = 0;
   
   centroCosto: CentroCosto;
   refContable: RefContable;
@@ -723,25 +725,29 @@ console.log('json armado: ');
     
     return true;
     */
-    let debe = this.formaReferencias.controls['debe'].value;
-    let haber = this.formaReferencias.controls['haber'].value;
+    // let debe = this.formaReferencias.controls['debe'].value;
+    // let haber = this.formaReferencias.controls['haber'].value;
     
-    if ((debe === null || debe === 0) && (haber === null || haber === 0)){
-      //Debe ingresar un Debe o un Haber
-      return false;
-    }
-
-    if ((debe > 0) && (haber > 0)){
+    if ((this.formaReferencias.controls['debe'].value > 0) && (this.formaReferencias.controls['haber'].value > 0)){
       //No puede ingresar un Debe y un Haber al mismo tiempo
+      console.log("No puede ingresar un Debe y un Haber al mismo tiempo")
       return false;
     }
 
-    if (!(debe === null)&&(debe < 0)){
+    if ((this.formaReferencias.controls['debe'].value === null || this.formaReferencias.controls['debe'].value === 0) && (this.formaReferencias.controls['haber'].value === null || this.formaReferencias.controls['haber'].value === 0)){
+      //Debe ingresar un Debe o un Haber
+      console.log('Debe ingresar uno de los dos')
+      return false;
+    }
+
+   
+
+    if (!(this.formaReferencias.controls['debe'].value === null)&&(this.formaReferencias.controls['debe'].value < 0)){
       //Debe ingresar un Debe positivo
       return false;
     }
 
-    if (!(haber === null)&&(haber < 0)){
+    if (!(this.formaReferencias.controls['haber'].value === null)&&(this.formaReferencias.controls['debe'].value < 0)){
       //Debe ingresar un Haber positivo
       return false;
     }
@@ -838,18 +844,22 @@ console.log('json armado: ');
 
     this.formaReferencias.controls['haber'].setValue('');
     this.formaReferencias.controls['debe'].setValue('');
+    this.formaReferencias.controls['refContable'].setValue('');
     this.addingReferencia = true;
   }
   guardarReferencia(){
     if(this.editingAI){
+     
       this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
       centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
       debe: this.formaReferencias.controls['debe'].value, 
       haber: this.formaReferencias.controls['haber'].value }]
-
+      this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
+      
       this.dataSource[this.auxEditingArt] = this.refContableItemData;
       this.addingReferencia = false;
       this.editingAI = false;
+      
     } else {
 
 
@@ -858,20 +868,21 @@ console.log('json armado: ');
                                   debe: this.formaReferencias.controls['debe'].value, 
                                   haber: this.formaReferencias.controls['haber'].value }]
    // this.dataSource = new MatTableDataSource(this.refContableItemData)
-   
     this.dataSource.push(this.refContableItemData);
     this.table.renderRows();
-    
     console.log(this.dataSource);
+    this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
     this.addingReferencia = false;
+    this.editingAI = false;
   }
+
 }
   eliminarReferencia(index){
-  //  this.selection.selected.forEach(item => {
+  //  this.selection.selected.forEach(item => 
    //   let index: number = this.refContableItemData.findIndex(d => d === item);
       console.log(index);
-      
-      this.dataSource.splice(this.dataSource[index].RefContable,1);
+      console.log(this.dataSource[index])
+      this.dataSource.splice(index);
       this.table.renderRows();
   //  });
   }
@@ -879,6 +890,7 @@ console.log('json armado: ');
   editarReferencia(ind:number){
     this.editingAI = true;
     //this.compraArticulo = this.referenciasData[ind];
+    console
     this.formaReferencias.controls['refContable'].setValue(this.refContableItemData[ind].refContable);
     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContableItemData[ind].centroDeCosto);
     this.formaReferencias.controls['debe'].setValue(this.refContableItemData[ind].debe);

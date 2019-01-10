@@ -60,24 +60,24 @@
         </mat-form-field>
       </div>
 
-      <div class="col s6 m6 l4">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Caja</mat-label>
-          <mat-select placeholder="" formControlName="caja" >
+          <mat-select placeholder="Elija una" formControlName="caja" >
             <mat-option *ngFor="let caja of cajasAll" [value]="caja.id">
-              {{ caja.name }}
+              {{ caja.name }}{{ caja.numerocuenta }}
             </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
 
-      <div class="col s12 m12 l8">
+      <div class="col s12 m12 l7">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Observaciones</mat-label>
           <input matInput placeholder="" formControlName="observaciones">
         </mat-form-field>
       </div>
-      
+
     </div>
     <!-- todo descomentar -->
     <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="!editingCabecera">
@@ -100,13 +100,13 @@
         </ng-container>
         <!-- Columna Centro de Costo -->
         <ng-container matColumnDef="centroDeCosto">
-          <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Centro de Costo </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia[0].centroDeCosto }} </td>
+          <th mat-header-cell *matHeaderCellDef style="text-align: left;"> Centro de Costo </th>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: left;"> {{ auxreferencia[0].centroDeCosto }} </td>
         </ng-container>
         <!-- Columna Debe -->
         <ng-container matColumnDef="debe">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Debe </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia[0].debe }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia[0].debe | number:'1.2-2'}} </td>
         </ng-container>
         <!-- Columna Haber -->
         <ng-container matColumnDef="haber">
@@ -153,6 +153,15 @@
         </div>
         <div class="col s12 m7 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Nombre Ref. Contable</mat-label>
+            <!-- todo: obtener de la referencia contable-->
+            <!-- <input matInput placeholder="" formControlName="centroDeCosto" value="{{ compraArticulo?.descripcion }}"> -->
+            <input matInput placeholder="" formControlName="nombreRefContable" >
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s12 m7 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Centro de Costo</mat-label>
             <!-- todo: obtener de la referencia contable-->
             <!-- <input matInput placeholder="" formControlName="centroDeCosto" value="{{ compraArticulo?.descripcion }}"> -->
@@ -192,13 +201,13 @@
     <div class="row" *ngIf="!editingCabecera">
       <div class="col s12" style="text-align: right;">
         <h5>Debe: $ {{ totaldebe | number:'1.2-2' }}</h5>
-        <h5>Haber: $ {{ totalhaber | number:'1.2-2' }}</h5>
+        <h5>Haber: $ {{ totalHaber | number:'1.2-2' }}</h5>
       </div>
     </div>
 
 </mat-expansion-panel>
 
- 
+
 
 <div class="row" style="height:0px;"></div>
 

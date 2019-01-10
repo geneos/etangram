@@ -58,7 +58,7 @@ datos =
             tg01_tipocomprobante_id_c: '43966f4a-4fc8-11e8-b1a0-d050990fe081',
             fecha: '01/12/2018',
             tg01_cajas_id_c: 'd336b046-ee63-11e8-ab85-d050990fe081'
-        }, 
+        },
         {
           id: '2',
           name: 'Test 2',
@@ -73,7 +73,7 @@ datos =
           tg01_tipocomprobante_id_c: '43966f4a-4fc8-11e8-b1a0-d050990fe081',
           fecha: '02/12/2018',
           tg01_cajas_id_c: 'd50a0d5c-c723-88d6-85df-5bf882d33847'
-      }, 
+      },
       {
         id: '3',
         name: 'Test 3',
@@ -95,7 +95,7 @@ datos =
 */
   editingRenglones:boolean = false;
   agregarReng:boolean = true;
-  
+
   editingCabecera:boolean = true;
   addingReferencia:boolean = false;
   addingItem:boolean = false;
@@ -104,7 +104,7 @@ datos =
 
    referenciasData: any[] = [];
   refContableItemData: RefContableItem[] = []
-  
+
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableReferencias') table: MatTable<any>;
@@ -114,11 +114,11 @@ datos =
 
   selection = new SelectionModel(true, []);
   //referenciasDataSource = new MatTableDataSource(this.referenciasData);
-  
+
   loginData: any;
   token: string = "a";
   existe:boolean;
-  loading:boolean; 
+  loading:boolean;
 
   //parametros
   pData: any;
@@ -152,13 +152,13 @@ datos =
   respRenglon: any;
   totaldebe: number = 0;
   totalHaber: number = 0;
-  
+
   centroCosto: CentroCosto;
   refContable: RefContable;
   refeCont: any[] = [];
   forma:FormGroup;
   formaReferencias:FormGroup;
-/* 
+/*
   totalneto:number = 0;
   impuestosalicuotas:number = 0;
   totaltotal:number = 0;
@@ -172,8 +172,8 @@ datos =
   // @ViewChild('tableArticulos') table: MatTable<any>;//
 
   //todo cambiar
-  
-  constructor(public dialogArt: MatDialog, 
+
+  constructor(public dialogArt: MatDialog,
               private  _minContableService: MinContablesService,
               private _refContableService: RefContablesService,
               private _centroCostoService: CentrosCostosService,
@@ -194,7 +194,7 @@ datos =
       'caja': new FormControl('',Validators.required),
       'observaciones': new FormControl()
     })
-    
+
     //atributos de salida, no se pueden editar
     this.forma.controls['tipo'].disable();
     this.forma.controls['numero'].disable();
@@ -203,12 +203,14 @@ datos =
 
     this.formaReferencias = new FormGroup({
       'refContable': new FormControl('',Validators.required,this.existeRefContable),
+      'nombreRefContable': new FormControl('',Validators.required,this.existeRefContable),
       'centroDeCosto': new FormControl('',Validators.required,this.existeCentroCosto),
       'debe': new FormControl(this.esDebeHaberValido),
       'haber': new FormControl(this.esDebeHaberValido)
     })
 
     this.formaReferencias.controls['refContable'].disable();
+    this.formaReferencias.controls['nombreRefContable'].disable();
     this.formaReferencias.controls['centroDeCosto'].disable();
     this.formaReferencias.controls['debe'].disable();
     this.formaReferencias.controls['haber'].disable();
@@ -227,6 +229,7 @@ datos =
           this.buscarMinutasContablesDet(this.minutaContable.id);
           //habilitar campos de detalles/renglones
           this.formaReferencias.controls['refContable'].enable();
+          this.formaReferencias.controls['nombreRefContable'].enable();
           this.formaReferencias.controls['centroDeCosto'].enable();
           this.formaReferencias.controls['debe'].enable();
           this.formaReferencias.controls['haber'].enable();
@@ -289,7 +292,7 @@ datos =
             }
       });
   }
-  
+
   buscarTipoComprobante(auxid:string){
     this._tipoComprobanteService.getTipoComprobante( auxid, this.token )
       .subscribe( dataTC => {
@@ -312,7 +315,7 @@ datos =
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset[0];
                 this.forma.controls['tipo'].setValue(this.tipoComprobante.name);
-                
+
                 console.log('buscando tipo de comprobante con ' + auxid);
                 console.log(this.tipoComprobante);
 
@@ -422,26 +425,19 @@ datos =
           }
           //console.log(this.minContablesAll);
     });
-    
-    
+
+
   }
 
   buscarMinutasContables(auxid:string){
 
     let jsbody = {
-
       "ID_Comprobante":auxid,
-      
       "Id_Cliente":"",
-      
       "Fecha_desde":"",
-      
       "Fecha_hasta":"",
-      
       "param_limite":"1",
-      
       "param_offset":"0"
-      
   };
   let jsonbody= JSON.stringify(jsbody);
     //obtener datos
@@ -449,7 +445,7 @@ datos =
    /*  this.buscarTipoComprobante(this.minutaContable.tg01_tipocomprobante_id_c);
     this.buscarOrganizacion(this.minutaContable.account_id1_c);
     this.buscarMoneda(this.minutaContable.tg01_monedas_id2_c);
-    
+
     //mostrar datos
     console.log('Mostrar datos: ');
     //this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
@@ -461,7 +457,7 @@ datos =
     this.editingCabecera = false; */
 console.log('json armado: ');
     console.log(jsonbody);
-    
+
     this._minContableService.getMinContables( jsonbody, this.token )
     //this._refContableService.getProveedores()
       .subscribe( dataMC => {
@@ -489,15 +485,15 @@ console.log('json armado: ');
                   //console.log(this.planDeCuentas);
                   this.loading = false;
                   this.editingCabecera = false;
-                  
+
                   //todo corregir fecha
                   // this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
                   let fecha = new Date(this.minutaContable.fecha);
                   fecha.setMinutes(fecha.getMinutes() + -180);
                   this.forma.controls['fecha'].setValue(fecha);
-                  
+
                   this.forma.controls['observaciones'].setValue(this.minutaContable.description);
-                  
+
                   console.log('pidiendo tipo op con: ');
                   console.log(this.minutaContable);
                   this.buscarTipoComprobante(this.minutaContable.id);
@@ -506,7 +502,7 @@ console.log('json armado: ');
                   // this.buscarTipoComprobante('43966f4a-4fc8-11e8-b1a0-d050990fe081');
                   console.log('buscando organizacion con '+this.minutaContable.account_id_c);
                   this.buscarOrganizacion(this.minutaContable.account_id_c);
-                  
+
                   this.buscarMinutasContablesDet(this.minutaContable.id);
                  /*  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);
@@ -537,7 +533,7 @@ console.log('json armado: ');
             }
 
       });
-     
+
   }
 
   buscarMinutasContablesDet(auxid:string){
@@ -545,17 +541,17 @@ console.log('json armado: ');
     let jsbody = {
 
       "ID_ComprobanteCab":auxid,
-      
+
       // "ID_ComprobanteDet": "",
 
       "Fecha_desde":"",
-      
+
       "Fecha_hasta":"",
-      
+
       "param_limite":"1",
-      
+
       "param_offset":"0"
-      
+
   };
   let jsonbody= JSON.stringify(jsbody);
     //obtener datos
@@ -563,7 +559,7 @@ console.log('json armado: ');
    /*  this.buscarTipoComprobante(this.minutaContable.tg01_tipocomprobante_id_c);
     this.buscarOrganizacion(this.minutaContable.account_id1_c);
     this.buscarMoneda(this.minutaContable.tg01_monedas_id2_c);
-    
+
     //mostrar datos
     console.log('Mostrar datos: ');
     //this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
@@ -575,7 +571,7 @@ console.log('json armado: ');
     this.editingCabecera = false; */
     console.log('json armado para detalles: ');
     console.log(jsonbody);
-    
+
     this._minContableService.getMinContablesDet( jsonbody, this.token )
     //this._refContableService.getProveedores()
       .subscribe( dataMCD => {
@@ -601,23 +597,23 @@ console.log('json armado: ');
                 this.existe = true;
                 if (this.existe == true){
                   console.log('lista de detalles obtenida: ', this.detallesAll);
-            
+
                   this.loading = false;
-                  
+
                   // this.referenciasData = new MatTableDataSource(this.detallesAll);
 
                   // this.referenciasData.sort = this.sort;
                   // this.referenciasData.paginator = this.paginator;
                   // this.editingCabecera = false;
-                  
+
                   //todo corregir fecha
                   // // this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
                   // let fecha = new Date(this.minutaContable.fecha);
                   // fecha.setMinutes(fecha.getMinutes() + -180);
                   // this.forma.controls['fecha'].setValue(fecha);
-                  
+
                   // this.forma.controls['observaciones'].setValue(this.minutaContable.description);
-                  
+
                   // console.log('pidiendo tipo op con: ');
                   // console.log(this.minutaContable);
                   // this.buscarTipoComprobante(this.minutaContable.id);
@@ -626,7 +622,7 @@ console.log('json armado: ');
                   // // this.buscarTipoComprobante('43966f4a-4fc8-11e8-b1a0-d050990fe081');
                   // console.log('buscando organizacion con '+this.minutaContable.account_id_c);
                   // this.buscarOrganizacion(this.minutaContable.account_id_c);
-                  
+
 
                  /*  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);
@@ -657,7 +653,7 @@ console.log('json armado: ');
             }
 
       });
-     
+
   }
 
   existeRefContable( control: FormControl ): Promise<any>{
@@ -685,15 +681,15 @@ console.log('json armado: ');
     )
     return promesa;
   }
-  
+
   esDebeHaberValido(){
     //si los dos tienen valor, o ninguno de los dos tiene valor, o los dos son 0
     /*
-    if((this.formaReferencias.controls['debe'].value == null 
+    if((this.formaReferencias.controls['debe'].value == null
         && this.formaReferencias.controls['haber'].value ==null) ||
-       (!(this.formaReferencias.controls['debe'].value == null) 
+       (!(this.formaReferencias.controls['debe'].value == null)
         && !(this.formaReferencias.controls['haber'].value == null)) ||
-        (this.formaReferencias.controls['debe'].value === 0 
+        (this.formaReferencias.controls['debe'].value === 0
         && this.formaReferencias.controls['haber'].value ===0) ){
           console.log('debehaber INvalido');
           console.log(this.formaReferencias.controls['debe'].value);
@@ -722,12 +718,12 @@ console.log('json armado: ');
       console.log(this.formaReferencias.controls['haber'].value);
       return false;
     }
-    
+
     return true;
     */
     // let debe = this.formaReferencias.controls['debe'].value;
     // let haber = this.formaReferencias.controls['haber'].value;
-    
+
     if ((this.formaReferencias.controls['debe'].value > 0) && (this.formaReferencias.controls['haber'].value > 0)){
       //No puede ingresar un Debe y un Haber al mismo tiempo
       console.log("No puede ingresar un Debe y un Haber al mismo tiempo")
@@ -740,7 +736,7 @@ console.log('json armado: ');
       return false;
     }
 
-   
+
 
     if (!(this.formaReferencias.controls['debe'].value === null)&&(this.formaReferencias.controls['debe'].value < 0)){
       //Debe ingresar un Debe positivo
@@ -788,23 +784,32 @@ console.log('json armado: ');
                   - si ya tiene uno definido, se impone ese centro de costo y no se permite modificar
                   - si es variable, puede ingresar el valor y validar con el metodo tg01_centrocosto o bien seleccionarlo con el componente “consulta dinamica” “c_tg01_centrocosto”
                 */
-                if (this.refContable.tg01_centrocosto_id_c === null){
-                  this.formaReferencias.controls['centroDeCosto'].disable();
+                if (this.refContable.id === null){
                   this.formaReferencias.controls['centroDeCosto'].setValue('');
+                  this.formaReferencias.controls['centroDeCosto'].disable();
+                  this.formaReferencias.controls['nombreRefContable'].setValue('');
+                  this.formaReferencias.controls['nombreRefContable'].disable();
                 }
                 else{
-                  if (this.refContable.tg01_centrocosto_id_c.indexOf(',') != 0){
+                  //if (this.refContable.tg01_centrocosto_id_c.indexOf(',') != 0){
                     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContable.tg01_centrocosto_id_c);
+                    this.formaReferencias.controls['nombreRefContable'].setValue(this.refContable.name);
                     this.formaReferencias.controls['centroDeCosto'].disable();
-                  }
+                    this.formaReferencias.controls['nombreRefContable'].disable();
+                  /*}
                   else{
                     this.formaReferencias.controls['centroDeCosto'].setValue('');
                     this.formaReferencias.controls['centroDeCosto'].enable();
-                  }
+                    this.formaReferencias.controls['nombreRefContable'].setValue('');
+                    this.formaReferencias.controls['nombreRefContable'].enable();
+                  }*/
                 }
               } else {
                 this.refContable = null;
                 this.formaReferencias.controls['centroDeCosto'].disable();
+                this.formaReferencias.controls['nombreRefContable'].disable();
+                //this.formaReferencias.controls['debe'].disable();
+                //this.formaReferencias.controls['haber'].disable();
               }
             }
       });
@@ -838,47 +843,52 @@ console.log('json armado: ');
   }
 
   addReferencia(){
+    this.refContable = null;
     this.formaReferencias.controls['refContable'].enable();
+    this.formaReferencias.controls['nombreRefContable'].enable();
     this.formaReferencias.controls['debe'].enable();
     this.formaReferencias.controls['haber'].enable();
 
     this.formaReferencias.controls['haber'].setValue('');
     this.formaReferencias.controls['debe'].setValue('');
     this.formaReferencias.controls['refContable'].setValue('');
+    this.formaReferencias.controls['nombreRefContable'].setValue('');
     this.addingReferencia = true;
   }
   guardarReferencia(){
     if(this.editingAI){
-     
-      this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
+
+      this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value,
       centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-      debe: this.formaReferencias.controls['debe'].value, 
+      debe: this.formaReferencias.controls['debe'].value,
       haber: this.formaReferencias.controls['haber'].value }]
       this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
-      
+      this.totalHaber = this.totalHaber + this.formaReferencias.controls['haber'].value
+
       this.dataSource[this.auxEditingArt] = this.refContableItemData;
       this.addingReferencia = false;
       this.editingAI = false;
-      
+
     } else {
 
 
-    this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
+    this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value,
                                   centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-                                  debe: this.formaReferencias.controls['debe'].value, 
+                                  debe: this.formaReferencias.controls['debe'].value,
                                   haber: this.formaReferencias.controls['haber'].value }]
    // this.dataSource = new MatTableDataSource(this.refContableItemData)
     this.dataSource.push(this.refContableItemData);
     this.table.renderRows();
     console.log(this.dataSource);
     this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
+    this.totalHaber = this.totalHaber + this.formaReferencias.controls['haber'].value
     this.addingReferencia = false;
     this.editingAI = false;
   }
 
 }
   eliminarReferencia(index){
-  //  this.selection.selected.forEach(item => 
+  //  this.selection.selected.forEach(item =>
    //   let index: number = this.refContableItemData.findIndex(d => d === item);
       console.log(index);
       console.log(this.dataSource[index])
@@ -918,7 +928,7 @@ console.log('json armado: ');
     console.log(this.forma.controls['moneda'].value);
     console.log(this.forma.controls['observaciones'].value);
     let auxObs = this.forma.controls['observaciones'].value;
-    
+
     if (this.forma.controls['observaciones'].value == null){auxObs = "''"};
       console.log(auxObs)
     let jsbody = {
@@ -930,14 +940,14 @@ console.log('json armado: ');
       "ID_Usuario":1,//hardcoded, todo cambiar
       "P_Fecha":auxfecha,
       "P_Total":0,//todo cambiar
-      
+
       "P_Obs":auxObs,//this.forma.controls['observaciones'].value,
       "P_Estado":1//hardcoded, todo cambiar
     };
-    
+
 /*
      {
-            "servicio": "InternoCabIns",          
+            "servicio": "InternoCabIns",
                 {
                     "name": "P_Estado",
                     "required": "Y"
@@ -956,7 +966,7 @@ console.log('json armado: ');
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
     //todo modificar servicio
-    
+
     this._minContableService.postCabecera( jsonbody,this.token )
       .subscribe( resp => {
         //console.log(resp.returnset[0].RId);
@@ -1078,7 +1088,7 @@ console.log('json armado: ');
     this.formaReferencias.controls['cantidad'].setValue(1);
     this.formaReferencias.controls['descuento'].setValue(0);
   }
- 
+
   eliminarArticulo(ind:number){
     let jsbody = {
       "idrenglon":this.referenciasData[ind].renglonId,

@@ -5,8 +5,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MatSnackBarModule, MatSnackBar} from '@angular/material/snack-bar';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ConsultaCrdService } from "../../../services/i2t/consulta-crd.service";
-import { CompraService } from "../../../services/i2t/compra.service";
+//import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
+import { Router, ActivatedRoute } from "@angular/router";
 
 
 var auxArtiData:any;
@@ -23,6 +24,7 @@ export class ConsultaCrdComponent implements OnInit {
   CompraProveedor: CompraProveedor;
   ELEMENT_DATA: ConsultaCrd[] = [];
   RazonSocial:string;
+  cuitc:string;
   nroProveedor:number;
 
   displayedColumns: string[] = ['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];
@@ -32,20 +34,33 @@ export class ConsultaCrdComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  
-  selection = new SelectionModel(true, []);
 
-  constructor(private _ConsultaCrdService:ConsultaCrdService, public snackBar: MatSnackBar) {
+  selection = new SelectionModel(true, []);
+  id: any;
+  loading: boolean = true;
+
+  constructor(private route:ActivatedRoute,private router: Router,
+    private _ConsultaCrdService:ConsultaCrdService,
+    public snackBar: MatSnackBar)
+    {
     this.Controles = new FormGroup({
-      'proveedor': new FormControl('',Validators.required,this.existeProveedor),
+      'proveedor': new FormControl(),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
    })
+
+   this.route.params.subscribe( parametros=>{
+     this.id = parametros['id'];
+     //this.Controles['proveedor'].setValue(this.id);
+     this.consultar();
+   });
+
   }
+
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
+    //this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
   }
   loginData: any;
   token: string = "a";
@@ -62,7 +77,7 @@ export class ConsultaCrdComponent implements OnInit {
     )
     return promesa;
   }
-  
+
   print() {
    const content = document.getElementById('tableCrd').innerHTML;
    const content2 = 'Proovedor: ' + this.nroProveedor + ' - ' + this.RazonSocial;
@@ -78,9 +93,9 @@ export class ConsultaCrdComponent implements OnInit {
 
   consultar(){
  //   console.log(this.Controles.controls['proveedor'].value)
-    this._ConsultaCrdService.getProveedorCrd( this.Controles.controls['proveedor'].value, this.token )
+    this._ConsultaCrdService.getProveedorCrd( this.id, this.token )
       .subscribe( dataP => {
-  //      console.log(dataP);
+        console.log(dataP);
           this.ProveedorData = dataP;
           auxProvData = this.ProveedorData.dataset.length;
           if(this.ProveedorData.returnset[0].RCode=="-6003"){
@@ -101,14 +116,17 @@ export class ConsultaCrdComponent implements OnInit {
  //               console.log(this.ELEMENT_DATA[1].name);
                 this.RazonSocial = this.ELEMENT_DATA[0].name;
                 this.nroProveedor = this.ELEMENT_DATA[0].npro;
+                this.cuitc = this.ELEMENT_DATA[0].cuit_c;
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
+                this.loading = false;
 
               } else {
                 this.ELEMENT_DATA = null;
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
                 this.RazonSocial = null;
+                this.cuitc = null;
                 this.nroProveedor = null;
-                
+
               }
             }
       });
@@ -133,5 +151,3 @@ export interface ConsultaCrd {
     ncomr: number;
     total: number;
 }
-
-

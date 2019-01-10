@@ -1,20 +1,21 @@
 <h2>CONSULTA DE CERTIFICADOS</h2>
+<app-loading *ngIf="loading"></app-loading>
 
 <form [formGroup]="Controles" novalidate="novalidate">
-  <div class="row" style="margin-top:0px; margin-bottom:10px !important;">
+  <div class="row" style="margin-top:0px; margin-bottom:10px !important;" *ngIf="!loading">
         <div class="col s8 m4 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Proveedor</mat-label>
-              <input matInput (keyup)="consultar()"  #codigoProv placeholder="" formControlName="proveedor">
-              <!--<mat-hint>Hint</mat-hint>-->
+              <input matInput #codigoProv placeholder="" readonly formControlName="proveedor" value="{{id}}">
+              <!--<mat-hint>Hint</mat-hint>
               <mat-hint *ngIf="Controles.status=='PENDING'">
                 Buscando código...
               </mat-hint>
               <mat-hint *ngIf="Controles.controls['proveedor'].errors?.noExiste">
                 No existen certificados para este proveedor
-              </mat-hint>
+              </mat-hint>-->
             </mat-form-field>
-            
+
           </div>
           <div class="col s4 m4 l4">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -26,13 +27,13 @@
           <div class="col s12 m2 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>CUIT</mat-label>
-              <input matInput placeholder="" formControlName="cuit" readonly value="{{ CompraProveedor?.cuit }}">
+              <input matInput placeholder="" formControlName="cuit" readonly value="{{ cuitc }}">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
         </div>
-      
-  <div class="row" style="margin-top:0px; margin-bottom:10px !important;">
+
+  <div class="row" style="margin-top:0px; margin-bottom:10px !important;" *ngIf="!loading">
    <!-- <div class="col s6 m3 l1" style="padding-left:2px;">
       <button (click)="consultar()" class="mine-btnbig" mat-flat-button>
         CONSULTAR
@@ -42,37 +43,37 @@
       <button (click)="print()" class="mine-btnbig" mat-flat-button>
         IMPRIMIR
       </button>
-    </div> 
+    </div>
   </div>
-  
-  <div id="tableCrd" class="mat-elevation-z8">
-    
+
+  <div id="tableCrd" class="mat-elevation-z8" *ngIf="!loading">
+
     <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
-      
+
       <!-- Position Column -->
       <ng-container matColumnDef="ncrd">
         <th mat-header-cell *matHeaderCellDef> Certificado </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.ncrd }} </td>
       </ng-container>
-  
+
       <!-- Name Column -->
       <ng-container matColumnDef="fech">
         <th mat-header-cell *matHeaderCellDef> Fecha </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.fech }} </td>
-      </ng-container> 
-  
+      </ng-container>
+
       <!-- Weight Column
       <ng-container matColumnDef="npro">
         <th mat-header-cell *matHeaderCellDef> Proveedor </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.npro }} </td>
       </ng-container>  -->
-  
-      <!-- Symbol Column 
+
+      <!-- Symbol Column
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Razon Social </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.name }} </td>
       </ng-container>-->
-      
+
       <!-- Symbol Column
       <ng-container matColumnDef="cuit_c">
         <th mat-header-cell *matHeaderCellDef> Cuit </th>
@@ -85,7 +86,7 @@
         <td mat-cell *cdkCellDef="let element"> {{ element.pexp + "-" + element.nexp}} </td>
       </ng-container>
 
-      <!-- Symbol Column 
+      <!-- Symbol Column
       <ng-container matColumnDef="nexp">
         <th mat-header-cell *matHeaderCellDef>  </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.nexp }} </td>
@@ -103,7 +104,7 @@
         <td mat-cell *cdkCellDef="let element"> {{ element.tcom + "-" + element.ncomr}} </td>
       </ng-container>
 
-      <!-- Symbol Column 
+      <!-- Symbol Column
       <ng-container matColumnDef="ncomr">
         <th mat-header-cell *matHeaderCellDef> Nro. Comprobante </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.ncomr }} </td>
@@ -117,7 +118,7 @@
       <tr mat-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-  
-    
+
+
   </div>
-  <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons *ngIf="false"></mat-paginator>

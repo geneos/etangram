@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MatPaginator, MatSort } from '@angular/material';
 import { MonedasService } from 'src/app/services/i2t/monedas.service';
 import { TiposComprobanteService } from 'src/app/services/i2t/tipos-comprobante.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLinkWithHref } from '@angular/router';
 import { ParametrosService } from 'src/app/services/i2t/parametros.service';
 import { Parametros } from 'src/app/interfaces/parametros.interface';
 import { TipoComprobante } from 'src/app/interfaces/tipo-comprobante.interface';
@@ -13,11 +13,12 @@ import { Organizacion } from 'src/app/interfaces/organizacion.interfac';
 import { MinContable, MinContableDet } from 'src/app/interfaces/min-contable.interface';
 import { CajasService } from 'src/app/services/i2t/cajas.service';
 import { RefContablesService } from 'src/app/services/i2t/ref-contables.service';
-import { RefContable } from 'src/app/interfaces/ref-contable.interface';
+import { RefContable,RefContableItem } from 'src/app/interfaces/ref-contable.interface';
 import { CentroCosto } from 'src/app/interfaces/cen-costo.interface';
 import { CentrosCostosService } from 'src/app/services/i2t/cen-costos.service';
 import { MinContablesService } from 'src/app/services/i2t/min-contables.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { CdkRowDef } from '@angular/cdk/table';
 
 
 var auxRefConData,auxCCostoData:any;
@@ -94,23 +95,26 @@ datos =
 */
   editingRenglones:boolean = false;
   agregarReng:boolean = true;
-
+  
   editingCabecera:boolean = true;
   addingReferencia:boolean = false;
   addingItem:boolean = false;
   editingAI:boolean = false;
   auxEditingArt:number = null;
 
-  // referenciasData: any[] = [];
-  referenciasData = new MatTableDataSource();
+   referenciasData: any[] = [];
+  refContableItemData: RefContableItem[] = []
   
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableReferencias') table: MatTable<any>;
+  //dataSource = new MatTableDataSource(this.refContableItemData)
+  dataSource: any[] = []
+  displayedColumns: string[] = ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];
 
   selection = new SelectionModel(true, []);
   //referenciasDataSource = new MatTableDataSource(this.referenciasData);
-
+  
   loginData: any;
   token: string = "a";
   existe:boolean;
@@ -142,13 +146,14 @@ datos =
   cabeceraId: string;
   renglonId: string;
   refContableData: any;
+  //refContableItemData: RefContableItem;
   centroCostoData: any;
   respCabecera: any;
   respRenglon: any;
   
   centroCosto: CentroCosto;
   refContable: RefContable;
-
+  refeCont: any[] = [];
   forma:FormGroup;
   formaReferencias:FormGroup;
 /* 
@@ -165,6 +170,7 @@ datos =
   // @ViewChild('tableArticulos') table: MatTable<any>;//
 
   //todo cambiar
+  
   constructor(public dialogArt: MatDialog, 
               private  _minContableService: MinContablesService,
               private _refContableService: RefContablesService,
@@ -186,7 +192,7 @@ datos =
       'caja': new FormControl('',Validators.required),
       'observaciones': new FormControl()
     })
-
+    
     //atributos de salida, no se pueden editar
     this.forma.controls['tipo'].disable();
     this.forma.controls['numero'].disable();
@@ -596,10 +602,10 @@ console.log('json armado: ');
             
                   this.loading = false;
                   
-                  this.referenciasData = new MatTableDataSource(this.detallesAll);
+                  // this.referenciasData = new MatTableDataSource(this.detallesAll);
 
-                  this.referenciasData.sort = this.sort;
-                  this.referenciasData.paginator = this.paginator;
+                  // this.referenciasData.sort = this.sort;
+                  // this.referenciasData.paginator = this.paginator;
                   // this.editingCabecera = false;
                   
                   //todo corregir fecha
@@ -834,6 +840,52 @@ console.log('json armado: ');
     this.formaReferencias.controls['debe'].setValue('');
     this.addingReferencia = true;
   }
+  guardarReferencia(){
+    if(this.editingAI){
+      this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
+      centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
+      debe: this.formaReferencias.controls['debe'].value, 
+      haber: this.formaReferencias.controls['haber'].value }]
+
+      this.dataSource[this.auxEditingArt] = this.refContableItemData;
+      this.addingReferencia = false;
+      this.editingAI = false;
+    } else {
+
+
+    this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
+                                  centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
+                                  debe: this.formaReferencias.controls['debe'].value, 
+                                  haber: this.formaReferencias.controls['haber'].value }]
+   // this.dataSource = new MatTableDataSource(this.refContableItemData)
+   
+    this.dataSource.push(this.refContableItemData);
+    this.table.renderRows();
+    
+    console.log(this.dataSource);
+    this.addingReferencia = false;
+  }
+}
+  eliminarReferencia(index){
+  //  this.selection.selected.forEach(item => {
+   //   let index: number = this.refContableItemData.findIndex(d => d === item);
+      console.log(index);
+      
+      this.dataSource.splice(this.dataSource[index].RefContable,1);
+      this.table.renderRows();
+  //  });
+  }
+
+  editarReferencia(ind:number){
+    this.editingAI = true;
+    //this.compraArticulo = this.referenciasData[ind];
+    this.formaReferencias.controls['refContable'].setValue(this.refContableItemData[ind].refContable);
+    this.formaReferencias.controls['centroDeCosto'].setValue(this.refContableItemData[ind].centroDeCosto);
+    this.formaReferencias.controls['debe'].setValue(this.refContableItemData[ind].debe);
+    this.formaReferencias.controls['haber'].setValue(this.refContableItemData[ind].haber);
+    //console.log(this.compraArticulo);
+    this.auxEditingArt=ind;
+  };
 
   guardarCabecera(){
     this.editingCabecera = false;
@@ -1014,7 +1066,7 @@ console.log('json armado: ');
     this.formaReferencias.controls['cantidad'].setValue(1);
     this.formaReferencias.controls['descuento'].setValue(0);
   }
-
+ 
   eliminarArticulo(ind:number){
     let jsbody = {
       "idrenglon":this.referenciasData[ind].renglonId,
@@ -1038,7 +1090,7 @@ console.log('json armado: ');
     this.totaltotal=this.totalneto+this.impuestosalicuotas; */
 
     // this.referenciasData.splice(ind, 1);todo revisar
-    this.referenciasData.data.push();//todo agregar nueva referencia
+    //this.referenciasData.data.push();//todo agregar nueva referencia
     this.table.renderRows();
   };
 

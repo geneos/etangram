@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 //import { Http } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PreUrl } from './url';
+
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultaCrdService {
   Proveedor:any [] = [];
 
-  urlProveedor:string = "http://tstvar.i2tsa.com.ar:3000/";
-  
+  urlProveedor:string = PreUrl;
+
   constructor(private http:HttpClient) { }
   login( body:string ){
     const headers = new HttpHeaders({

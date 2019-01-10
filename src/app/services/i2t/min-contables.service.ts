@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 //import { Http } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PreUrl } from './url';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class MinContablesService {
 
   //compraProveedores:any [] = [];
-  preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
+  preUrl:string = PreUrl;
 
   datos =
   {
@@ -26,12 +27,12 @@ export class MinContablesService {
             "id": "1",
             "name": "Test 1",
             "estado": "0",
-        }, 
+        },
         {
           "id": "2",
           "name": "Test 2",
           "estado": "0",
-        }, 
+        },
         {
           "id": "3",
           "name": "Test 3",
@@ -74,7 +75,7 @@ export class MinContablesService {
   }
 
   getMinContables( body:string, token:string ){
-    
+
     const headers = new HttpHeaders({
       'x-access-token': token,
       'Content-Type': 'application/json'
@@ -84,7 +85,7 @@ export class MinContablesService {
     let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers });
-   
+
   }
 
   postCabecera( body:string, token:string ){
@@ -100,7 +101,7 @@ export class MinContablesService {
   }
 
   getMinContablesDet( body:string, token:string ){
-    
+
     const headers = new HttpHeaders({
       'x-access-token': token,
       'Content-Type': 'application/json'
@@ -110,7 +111,7 @@ export class MinContablesService {
     let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers });
-   
+
   }
 
   /*

@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.interface";
+import { Router, ActivatedRoute } from "@angular/router";
 
 var auxProvData,auxArtiData:any;
 
@@ -51,8 +52,16 @@ export class AbmComprasComponent implements OnInit {
 "Monotributista Social","Pequeño Contribuyente Eventual Social"];
 
   @ViewChild('tableArticulos') table: MatTable<any>;
+  user: string;
+  pass: string;
 
-  constructor(public dialogArt: MatDialog, private _compraService:CompraService) {
+  constructor(public dialogArt: MatDialog, private _compraService:CompraService, private route:ActivatedRoute,)
+  {
+
+    this.route.params.subscribe( parametros=>{
+      this.user = parametros['user'];
+      this.pass = parametros['pass'];
+    });
 
     this.forma = new FormGroup({
       'proveedor': new FormControl('',Validators.required,this.existeProveedor),
@@ -130,7 +139,8 @@ export class AbmComprasComponent implements OnInit {
           if(this.proveedorData.returnset[0].RCode=="-6003"){
             //token invalido
             this.compraProveedor = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            //let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsbody = {"usuario":this.user,"pass":this.pass}
             let jsonbody = JSON.stringify(jsbody);
             this._compraService.login(jsonbody)
               .subscribe( dataL => {
@@ -143,7 +153,7 @@ export class AbmComprasComponent implements OnInit {
               if(this.proveedorData.dataset.length>0){
                 this.compraProveedor = this.proveedorData.dataset[0];
               } else {
-                this.compraProveedor = null; 
+                this.compraProveedor = null;
               }
             }
       });

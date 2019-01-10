@@ -15,6 +15,8 @@ import { stringify } from '@angular/compiler/src/util';
 //   { like: 'lk' },//like, ídem SQL.
 //   { in: 'in' }//in a set, ídem SQL
 // ]
+import { PreUrl } from './url';
+
 const operadores = [
   { condicion: 'equal', texto : 'eq'},  //igual que
   { condicion: 'not', texto: 'not' },   //distinto de
@@ -45,7 +47,7 @@ const otros = [
 export class ConsultaDinamicaService {
 
   //compraProveedores:any [] = [];
-  preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
+  preUrl:string = PreUrl;
 
   //datos de filtros
   // private datosFiltros = new BehaviorSubject('default message');
@@ -140,7 +142,7 @@ export class ConsultaDinamicaService {
     //   element
     // });
     //
-    
+
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
@@ -174,3 +176,4 @@ export class ConsultaDinamicaService {
     return apendiceURL;
   }
 }
+

@@ -18,26 +18,24 @@ import { stringify } from '@angular/compiler/src/util';
 import { PreUrl } from './url';
 
 const operadores = [
-  { condicion: 'equal', texto : 'eq'},  //igual que
-  { condicion: 'not', texto: 'not' },   //distinto de
-  { condicion: 'less_than', texto: 'lt' },  //menor que
-  { condicion: 'less_equal', texto: 'le' }, //menor o igual que
-  { condicion: 'greater_than', texto: 'gt' },//mayor que.
+  { condicion: 'equal',         texto : 'eq'},  //igual que
+  { condicion: 'not',           texto: 'not' },   //distinto de
+  { condicion: 'less_than',     texto: 'lt' },  //menor que
+  { condicion: 'less_equal',    texto: 'le' }, //menor o igual que
+  { condicion: 'greater_than',  texto: 'gt' },//mayor que.
   { condicion: 'greater_equal', texto: 'ge' },//mayor o igual que.
-  { condicion: 'like', texto: 'lk' },//like, ídem SQL.
-  { condicion: 'in', texto: 'in' }//in a set, ídem SQL
-]
-const valores = [
-  { null: 'isnull'},
-  { notnull: 'isnotnull'}
+  { condicion: 'like',          texto: 'lk' },//like, ídem SQL.
+  { condicion: 'in',            texto: 'in' },//in a set, ídem SQL
+  { condicion: 'null',          texto: 'isnull'},
+  { condicion: 'notnull',       texto: 'isnotnull'}
 ]
 
 const otros = [
-  { orderby: '_orderby'},
-  { include: '_include'},
-  { exclude: '_exclude'},
-  { limit: '_limit'},
-  { offset: '_offset'}
+  { misc: 'orderby' , texto: '_orderby'},
+  { misc: 'include' , texto: '_include'},
+  { misc: 'exclude' , texto: '_exclude'},
+  { misc: 'limit'   , texto: '_limit'},
+  { misc: 'offset'  , texto: '_offset'}
 ]
 
 

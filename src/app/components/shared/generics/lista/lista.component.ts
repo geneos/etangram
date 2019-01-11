@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
 
@@ -12,15 +12,16 @@ export class ListaComponent implements CompGen {
   private _data: string;
   datosInternos: number;
   datosInternosMap: Map<string, string> ;
+  @ViewChild('lista') lista;
 
     @Input() set data(value: any) {
 
       this._data = value;
-      console.log('datos recibidos por componente numerico: ', this._data);
+      console.log('datos recibidos por componente lista: ', this._data);
       
       if (this._data != null) {
         console.log(this._data);
-        console.log('llamado a armado de liosta desp con setter');
+        console.log('llamado a armado de lista desp con setter');
         this.construirLista();
       }
 
@@ -57,16 +58,23 @@ export class ListaComponent implements CompGen {
     });
     console.log('Lista armada en control: ');
     console.log(this.options);
+    console.log('opcion traida a componente lista: ', this.data.datos.valor);
+    this.datosInternos = this.data.datos.valor;
+    this.lista.select(this.data.datos.valor);
+    console.log('opcion seteada: ', this.datosInternos);
+
   }
   /* 
   ngOnInit() {
   } */
 
-  selected(value: number){
-    console.log('seleccionado: '+value);
+  // selected(value: number){
+  selected(value: any){
+    console.log('seleccionado: '+value.key, value);
     this.datosInternos = value;
 
     
+    // this.datosInternosMap.set(this.data.datos.columna,this.datosInternos.toString());
     this.datosInternosMap.set(this.data.datos.columna,this.datosInternos.toString());
     // this.consultaDinService.actualizarDatos(this.datosInternos);
     this.consultaDinService.actualizarDatos(this.datosInternosMap);
@@ -77,7 +85,15 @@ export class ListaComponent implements CompGen {
     console.log('guardado: ', this.datosInternos);
   }
 
+  // compareOptions(object1: any, object2: any) {
+  compareOptions(object1: {key: string, value: string}, object2: {key: string, value: string}) {
+    console.log('ejecutado comparador: ', object1, object2);
+    return object1 && object2 && object1.key == object2.key;
+  }
+
 }
+
+
 /* 
     console.log(this.datosUsuario);
     console.log(this.datosUsuario.nativeElement.value);

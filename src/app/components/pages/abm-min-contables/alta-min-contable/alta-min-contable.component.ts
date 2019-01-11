@@ -937,15 +937,16 @@ console.log('json armado: ');
       //                               haber: this.formaReferencias.controls['haber'].value }]
       
       this.dataSource[this.auxEditingArt] = this.refContableItemData[this.auxEditingArt]
+
       if(this.debeAnterior != this.refContableItemData[this.auxEditingArt].debe){
-        this.totaldebe = this.totaldebe - this.debeAnterior
-        this.totaldebe = this.totaldebe + this.refContableItemData[this.auxEditingArt].debe
+        this.totaldebe = Number(this.totaldebe) - Number(this.debeAnterior)
+        this.totaldebe = Number(this.totaldebe) + Number(this.refContableItemData[this.auxEditingArt].debe)
       }
       if(this.haberAnterior != this.refContableItemData[this.auxEditingArt].haber){
-        this.totalhaber = this.totalhaber - this.haberAnterior
-        this.totalhaber = this.totalhaber + this.refContableItemData[this.auxEditingArt].haber
+        this.totalhaber = Number(this.totalhaber) - Number(this.haberAnterior)
+        this.totalhaber = Number(this.totalhaber) + Number(this.refContableItemData[this.auxEditingArt].haber)
       }
-        
+      this.guardarRenglon()  
     //  this.dataSource[this.auxEditingArt] = this.refContableItemData;
       this.addingReferencia = false;
       this.editingAI = false;
@@ -1210,7 +1211,41 @@ console.log('json armado: ');
     }
     this.editingID = this.refContableItemData[ind].idEnMinuta;
   };
+  guardarRenglon(){
+    this.refContableItemData.forEach(refContableDet => {
+      //obtener importe
+      let importe: number;
+      if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
+        importe = 0- refContableDet.debe;
+      }
+      else{
+        importe = 0+ refContableDet.haber;
+      }
+      
+      //determinar acción
+        //insert
+        let tipo: string;
+        if (importe < 0){
+          tipo = 'D';
+        }
+        else{
+          tipo = 'H';
+        }
+        let jsbody = {
+          "ID_ComprobanteCab": this.cabeceraId,
+          "ID_Item": refContableDet.refContable,
+          "ID_CentroCosto": refContableDet.centroDeCosto,
+          "P_TipoImputacion": tipo,
+          "P_Importe": importe,
+          "ID_Usuario": 'lsole' //todo cambiar por uno real
+        }
+        console.log('stringifeando');
+        let jsonbody= JSON.stringify(jsbody);
+        console.log(jsonbody);
+        this._minContableService.postMinContablesDet(jsonbody, this.token);
 
+        this.openSnackBar('Datos guardados');})
+  }
   guardarCabecera(){
     console.clear();
     console.log('guardando cabecera');

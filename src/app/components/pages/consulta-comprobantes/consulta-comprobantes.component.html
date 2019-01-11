@@ -3,59 +3,62 @@
 
 <form [formGroup]="forma" novalidate="novalidate">
 
-<mat-expansion-panel [expanded]=true [disabled]=true>
+<!--<mat-expansion-panel [expanded]=true [disabled]=true>
   <mat-expansion-panel-header>
     <mat-panel-title>
       Proveedor
     </mat-panel-title>
-  </mat-expansion-panel-header>
+  </mat-expansion-panel-header>-->
 
-    <div class="row" style="margin-top:15px;">
-      <div class="col s8 m4 l2">
+    <div class="row" style="margin-top:15px;" *ngIf="!loading">
+      <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Proveedor</mat-label>
-          <input (keyup)="buscarProveedor()"  #codProv matInput placeholder="" formControlName="proveedor">
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <input readonly #codProv matInput placeholder="" formControlName="proveedor" value="{{id}}">
+          <!--<mat-hint *ngIf="forma.status=='PENDING'">
             Buscando código...
           </mat-hint>
           <mat-hint *ngIf="forma.controls['proveedor'].errors?.noExiste">
             El proveedor no existe
-          </mat-hint>
+          </mat-hint>-->
         </mat-form-field>
       </div>
 
 
-      <div class="col s12 m6 l4">
+      <div class="col s6 m6 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Razón Social</mat-label>
           <input matInput placeholder="" formControlName="razonSocial" readonly value="{{ compraProveedor?.razon_social }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l3">
+      <div class="col s12 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>CUIT</mat-label>
           <input matInput placeholder="" formControlName="cuit" readonly value="{{ compraProveedor?.cuit }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l3">
+
+    </div>
+
+    <div class="row" style="margin-top:15px;" *ngIf="!loading">
+      <h6 style="margin-top:0px !important; margin-bottom: 20px !important; margin-left: 20px !important;">Filtros:</h6>
+
+      <div class="col s12 m3 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo Comprobante</mat-label>
-          <mat-select placeholder="Elija una opción">
-            <mat-option value="1">Todos</mat-option>
+          <mat-select placeholder="Elija una opción" value="">
+            <mat-option value="">Todos</mat-option>
             <mat-option value="FCCR">Factura / Debito a Credito</mat-option>
-            <mat-option value="3">Factura / Debito Contado </mat-option>
-            <mat-option value="4">Nota de Credito</mat-option>
+            <mat-option value="FCC">Factura / Debito Contado </mat-option>
+            <mat-option value="NCCC">Nota de Credito</mat-option>
           </mat-select>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
        </div>
-    </div>
 
-    <div class="row" style="margin-top:15px;">
-
-      <div class="col s6 m3 l3">
+      <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha desde</mat-label>
           <input matInput [matDatepicker]="picker1" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fecdesde" [value]="fechaDesde">
@@ -64,7 +67,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l3">
+      <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha Hasta</mat-label>
           <input matInput [matDatepicker]="picker2" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fechasta" [value]="fechaActual">
@@ -73,14 +76,14 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m3 l3">
+      <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Expediente</mat-label>
           <input matInput placeholder="" formControlName="expediente">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m3 l3">
+      <div class="col s6 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Certificado</mat-label>
           <input matInput placeholder="" formControlName="certificado">
@@ -90,19 +93,21 @@
 
     </div>
 
-    <div class="row" style="margin-top:0px; margin-bottom:10px !important;">
+    <div class="row" style="margin-top:0px; margin-bottom:10px !important;" *ngIf="!loading">
        <div class="col s6 m3 l1" style="padding-left:2px;">
          <button (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>
            CONSULTAR
          </button>
        </div>
-     <!-- --> <div class="col s6 m4 l1" style="padding-left:15px; margin-left: 5px;">
+     <!--  <div class="col s6 m4 l1" style="padding-left:15px; margin-left: 5px;">
          <button (click)="print()" class="mine-btnbig" mat-flat-button>
-           Generar PDF
+           IMPRIMIR
          </button>
+       </div> -->
        </div>
 
-     <div  class="mat-elevation-z8">
+
+     <div class="mat-elevation-z8" *ngIf="!loading">
 
        <table id="tablaDatos" mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
           <mat-action-row>
@@ -134,7 +139,7 @@
 
          <!-- Symbol Column -->
          <ng-container matColumnDef="Importe_Total">
-           <th mat-header-cell *matHeaderCellDef> Importe_Total </th>
+           <th mat-header-cell *matHeaderCellDef> Importe </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Importe_Total }} </td>
          </ng-container>
 

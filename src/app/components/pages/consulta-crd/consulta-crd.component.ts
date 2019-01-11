@@ -58,9 +58,9 @@ export class ConsultaCrdComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    /*this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;*/
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
   }
   loginData: any;
   token: string = "a";
@@ -119,6 +119,8 @@ export class ConsultaCrdComponent implements OnInit {
                 this.cuitc = this.ELEMENT_DATA[0].cuit_c;
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
                 this.loading = false;
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
 
               } else {
                 this.ELEMENT_DATA = null;

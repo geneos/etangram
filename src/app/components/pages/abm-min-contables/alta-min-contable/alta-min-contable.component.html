@@ -190,15 +190,15 @@
         </div>
 
         <div class="col s12" style="text-align: right;">
-          <button *ngIf="!editingAI" (click)="guardarReferencia()" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
+          <a *ngIf="!editingAI" (click)="guardarReferencia()" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
             AGREGAR
-          </button>
-          <button *ngIf="editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
+          </a>
+          <a *ngIf="editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
             ACTUALIZAR
-          </button>
-          <button type="reset" (click)="cancelarArtItem()" class="mine-btnbig-grey" mat-flat-button>
+          </a>
+          <a type="reset" (click)="cancelarArtItem()" class="mine-btnbig-grey" mat-flat-button>
             CANCELAR
-          </button>
+          </a>
         </div>
       </form>
     </div>
@@ -224,7 +224,7 @@
 </form>
 
 <div class="row" style="text-align: right;" *ngIf="!editingCabecera">
-  <a class="mine-btnbig" (click)="confirmar" mat-flat-button [disabled]="false">
+  <a class="mine-btnbig" (click)="confirmar()" mat-flat-button [disabled]="false">
     CONFIRMAR
   </a>
 </div>

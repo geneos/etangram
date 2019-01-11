@@ -104,7 +104,7 @@ datos =
 
    referenciasData: any[] = [];
   refContableItemData: RefContableItem[] = []
-
+  tienectocosto:number = 0;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableReferencias') table: MatTable<any>;
@@ -792,7 +792,7 @@ console.log('json armado: ');
                 this.refContable = this.refContableData.dataset[0];
                 console.log('auto referencia: ');
                 console.log(this.refContable);
-
+              
 
                 //centro de costo
                 /*
@@ -809,6 +809,8 @@ console.log('json armado: ');
                 }
                 else{
                   //if (this.refContable.tg01_centrocosto_id_c.indexOf(',') != 0){
+                    this.tienectocosto = this.refContable.tienectocosto;
+                    
                     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContable.tg01_centrocosto_id_c);
                     this.formaReferencias.controls['nombreRefContable'].setValue(this.refContable.name);
                     this.formaReferencias.controls['centroDeCosto'].disable();
@@ -873,6 +875,7 @@ console.log('json armado: ');
     this.addingReferencia = true;
   }
   guardarReferencia(){
+  
    if(this.auxDebeHaber){ 
     if(this.editingAI){
    //   this.totaldebe = this.totaldebe - this.refContableItemData[this.auxEditingArt].debe
@@ -902,7 +905,7 @@ console.log('json armado: ');
       this.editingAI = false;
 
     } else {
-
+      this.esDebeHaberValido()
     this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
     nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
     centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
@@ -918,7 +921,7 @@ console.log('json armado: ');
     this.editingAI = false;
   }
    }else {
-    this.openSnackBar('Se debe ingresar solo un Debe o un Haber');
+    this.openSnackBar('Se debe ingresar un Debe o un Haber');
    }
 }
   eliminarReferencia(index){
@@ -1075,6 +1078,7 @@ console.log('json armado: ');
         console.log(jsonbody);
         this._minContableService.postMinContablesDet(jsonbody, this.token);
 
+        this.openSnackBar('Datos guardados');
         /*
         //update
         let jsbody = {

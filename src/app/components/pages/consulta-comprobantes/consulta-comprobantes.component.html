@@ -1,4 +1,5 @@
-<h2>Comprobantes de compra</h2>
+<h2>CONSULTA DE COMPROBANTES DE COMPRA</h2>
+<app-loading *ngIf="loading"></app-loading>
 
 <form [formGroup]="forma" novalidate="novalidate">
 
@@ -23,7 +24,7 @@
         </mat-form-field>
       </div>
 
-      
+
       <div class="col s12 m6 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Razón Social</mat-label>
@@ -52,8 +53,8 @@
        </div>
     </div>
 
-    <div class="row" style="margin-top:15px;">  
-      
+    <div class="row" style="margin-top:15px;">
+
       <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha desde</mat-label>
@@ -88,7 +89,7 @@
       </div>
 
     </div>
-    
+
     <div class="row" style="margin-top:0px; margin-bottom:10px !important;">
        <div class="col s6 m3 l1" style="padding-left:2px;">
          <button (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>
@@ -99,10 +100,10 @@
          <button (click)="print()" class="mine-btnbig" mat-flat-button>
            Generar PDF
          </button>
-       </div> 
-     
+       </div>
+
      <div  class="mat-elevation-z8">
-       
+
        <table id="tablaDatos" mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
           <mat-action-row>
               <button mat-button>Click me</button>
@@ -112,43 +113,43 @@
            <th mat-header-cell *matHeaderCellDef> Fecha </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Fecha }} </td>
          </ng-container>
-     
+
          <!-- Name Column -->
          <ng-container matColumnDef="Tipo_Comprobante">
            <th mat-header-cell *matHeaderCellDef> Comprobante </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + ' - ' + element.Numero_Comprobante }} </td>
-         </ng-container> 
-     
+         </ng-container>
+
          <!-- Weight Column -->
          <ng-container matColumnDef="Expediente">
            <th mat-header-cell *matHeaderCellDef> Expediente </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Expediente }} </td>
-         </ng-container> 
-     
+         </ng-container>
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Certificado">
            <th mat-header-cell *matHeaderCellDef> Certificado </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Certificado }} </td>
          </ng-container>
-         
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Importe_Total">
            <th mat-header-cell *matHeaderCellDef> Importe_Total </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Importe_Total }} </td>
-         </ng-container> 
-   
+         </ng-container>
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Saldo">
            <th mat-header-cell *matHeaderCellDef> Saldo</th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Saldo}} </td>
          </ng-container>
-   
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Estado">
            <th mat-header-cell *matHeaderCellDef> Estado </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Estado }} </td>
          </ng-container>
-         
+
 
          <ng-container matColumnDef="expandedDetail">
           <td mat-cell *cdkCellDef="let element" [attr.colspan]="columnsToDisplay.length">
@@ -162,9 +163,9 @@
           </td>
         </ng-container>
 
-        
+
          <tr mat-header-row *matHeaderRowDef="columnsToDisplay "></tr>
-         <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;" 
+         <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;"
          class="example-element-row"
          [class.example-expanded-row]="expandedElement === element"
          (click)="expandedElement = expandedElement === element ? null : element"></tr>

@@ -17,3 +17,10 @@ export interface RefContable{
   tg01_cuentascontables_id_c:string;
   tienectocosto: number;
 }
+
+export interface RefContableItem{
+  refContable: number;
+  centroDeCosto: string;
+  debe: number;
+  haber: number;
+}

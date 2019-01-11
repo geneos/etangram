@@ -1,8 +1,9 @@
 <h2 *ngIf="!existe">NUEVA MINUTA CONTABLE</h2>
 <h2 *ngIf="existe">EDITANDO MINUTA CONTABLE</h2>
-<button [routerLink]="['/min-contables']" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+
+<!-- <button [routerLink]="['/min-contables']" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
   VOLVER A LISTA
-</button>
+</button> -->
 <button (click)="eliminarMinutaContable()" class="mine-btnbig" mat-flat-button style="margin-right:10px;" *ngIf="existe">
   ELIMINAR
 </button>
@@ -59,35 +60,35 @@
         </mat-form-field>
       </div>
 
-      <div class="col s6 m6 l4">
+      <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Caja</mat-label>
-          <mat-select placeholder="" formControlName="caja" >
+          <mat-select placeholder="Elija una" formControlName="caja" >
             <mat-option *ngFor="let caja of cajasAll" [value]="caja.id">
-              {{ caja.name }}
+              {{ caja.name }}{{ caja.numerocuenta }}
             </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
 
-      <div class="col s12 m12 l8">
+      <div class="col s12 m12 l7">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Observaciones</mat-label>
-          <input matInput placeholder="" formControlName="observaciones" >
+          <input matInput placeholder="" formControlName="observaciones">
         </mat-form-field>
       </div>
-      
+
     </div>
     <!-- todo descomentar -->
     <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="!editingCabecera">
     <!-- <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="editingCabecera"> -->
-      <table #tableReferencias mat-table [dataSource]="referenciasData" class="mat-elevation-z1"
+      <table #tableReferencias mat-table [dataSource]="dataSource" class="mat-elevation-z1"
         style="font-family: 'Lato', sans-serif !important;">
 
         <!-- Columna Opciones -->
         <ng-container matColumnDef="opciones">
           <th mat-header-cell *matHeaderCellDef> </th>
-          <td mat-cell *matCellDef="let element; let in = index" style="width:70px;">
+          <td mat-cell *cdkCellDef="let element; let in = index" style="width:70px;">
             <a (click)="eliminarReferencia(in)" style="color:#000;"><i class="material-icons" style="color:red;">close</i></a>
             <a (click)="editarReferencia(in)" style="color:#000;"><i class="material-icons">edit</i></a>
           </td>
@@ -95,28 +96,28 @@
         <!-- Columna Referencia Contable -->
         <ng-container matColumnDef="refContable">
           <th mat-header-cell *matHeaderCellDef> Referencia Contable </th>
-          <td mat-cell *matCellDef="let auxreferencia" style="font-weight:bold;"> {{ auxreferencia.refcontable }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="font-weight:bold;"> {{ auxreferencia.refContable }} </td>
         </ng-container>
         <!-- Columna Centro de Costo -->
         <ng-container matColumnDef="centroDeCosto">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Centro de Costo </th>
-          <td mat-cell *matCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.centrodecosto }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.centroDeCosto }} </td>
         </ng-container>
         <!-- Columna Debe -->
         <ng-container matColumnDef="debe">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Debe </th>
-          <td mat-cell *matCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.debe }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.debe }} </td>
         </ng-container>
         <!-- Columna Haber -->
         <ng-container matColumnDef="haber">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Haber </th>
-          <td mat-cell *matCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.haber | number:'1.2-2'}} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.haber | number:'1.2-2'}} </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
+        <tr mat-header-row *matHeaderRowDef="['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
+        <tr mat-row *cdkRowDef="let row; columns: ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
       </table>
-      <div class="col s12" style="margin-top:5px;" *ngIf="referenciasData.length < 1">
+      <div class="col s12" style="margin-top:5px;" *ngIf="dataSource.length < 1">
         <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>Todavía no se ha cargado ninguna Referencia</i></mat-card>
       </div>
     </div>
@@ -130,7 +131,7 @@
       </div>
     </div>
 
-    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingReferencia || editingAI)">
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingReferencia || editingAI || editingRenglones)">
       <form [formGroup]="formaReferencias" (ngSubmit)="guardarReferencia()" novalidate="novalidate">
         <div class="col s8 m3 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -149,6 +150,15 @@
           <button class="mine-btnforms" mat-flat-button>
             <i class="material-icons" style="font-size:20px;">more_horiz</i>
           </button>
+        </div>
+        <div class="col s12 m7 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Nombre Ref. Contable</mat-label>
+            <!-- todo: obtener de la referencia contable-->
+            <!-- <input matInput placeholder="" formControlName="centroDeCosto" value="{{ compraArticulo?.descripcion }}"> -->
+            <input matInput placeholder="" formControlName="nombreRefContable" >
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
         </div>
         <div class="col s12 m7 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -197,7 +207,7 @@
 
 </mat-expansion-panel>
 
- 
+
 
 <div class="row" style="height:0px;"></div>
 

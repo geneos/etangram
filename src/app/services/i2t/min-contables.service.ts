@@ -100,6 +100,7 @@ export class MinContablesService {
     return this.http.post( url, body, { headers });
   }
 
+  //traer minutas
   getMinContablesDet( body:string, token:string ){
 
     const headers = new HttpHeaders({
@@ -113,6 +114,52 @@ export class MinContablesService {
     return this.http.post( url, body, { headers });
 
   }
+
+  //insertar detalle de minuta
+  postMinContablesDet( body:string, token:string ){
+
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/proc/InternoDetIns`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+
+  }
+
+  //actualizar detalle de minuta
+  putMinContablesDet( body:string, token:string ){
+
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/proc/InternoDetUpd`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+
+  }
+
+  //eliminar detalle de minuta
+  delMinContablesDet( body:string, token:string ){
+
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/proc/InternoDetDel`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+
+  }
+
 
   /*
   getRefContablesSinCuenta( token:string ){

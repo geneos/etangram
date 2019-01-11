@@ -500,7 +500,10 @@ console.log('json armado: ');
                   fecha.setMinutes(fecha.getMinutes() + -180);
                   this.forma.controls['fecha'].setValue(fecha);
 
-                  this.forma.controls['observaciones'].setValue(this.minutaContable.description);
+                  //descripción no está siendo guardada por la api
+                  // this.forma.controls['observaciones'].setValue(this.minutaContable.description);
+
+                  this.forma.controls['numero'].setValue(this.minutaContable.name);
 
                   console.log('pidiendo tipo op con: ');
                   console.log(this.minutaContable);
@@ -968,13 +971,12 @@ console.log('json armado: ');
     let jsbody = {
       // "ID_TipoComp":this.forma.controls['tipo'].value,
       "ID_TipoComp":this.tipoComprobante.id,
-      "ID_Cliente":1,//hardcoded, todo cambiar
+      "ID_Cliente":this.parametrosSistema.account_id1_c,//hardcoded, según parámetro
       "ID_Caja":this.forma.controls['caja'].value,
       "ID_Moneda":this.moneda.idmoneda,//this.forma.controls['moneda'].value,
       "ID_Usuario":1,//hardcoded, todo cambiar
       "P_Fecha":auxfecha,
       "P_Total":0,//todo cambiar
-
       "P_Obs":auxObs,//this.forma.controls['observaciones'].value,
       "P_Estado":1//hardcoded, todo cambiar
     };
@@ -1005,12 +1007,30 @@ console.log('json armado: ');
       .subscribe( resp => {
         //console.log(resp.returnset[0].RId);
         this.respCabecera = resp;
-        this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
-        console.log('respuesta del post >>');
-        console.log(resp);
-        console.log(resp[0].returnset[0].RTxt);
-        console.log('<< respuesta del post');
+        if(this.respCabecera.returnset[0].RCode=="-6003"){
+          //token invalido
+          this.refContable = null;
+          let jsbody = {"usuario":"usuario1","pass":"password1"}
+          let jsonbody = JSON.stringify(jsbody);
+          this._minContableService.login(jsonbody)
+            .subscribe( dataL => {
+              console.log(dataL);
+              this.loginData = dataL;
+              this.token = this.loginData.dataset[0].jwt;
+              this.guardarCabecera();
+            });
+        }
+        else{
+          this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
+          //todo agregar redireccion
+          this.forma.controls['numero'].setValue(this.cabeceraId);
+          console.log('respuesta del post >>');
+          console.log(this.respCabecera);
+          console.log(this.cabeceraId);
+          console.log('<< respuesta del post');
 
+        }
+        
 
       });
 
@@ -1020,6 +1040,71 @@ console.log('json armado: ');
     this.forma.controls['organizacion'].disable();
     this.forma.controls['moneda'].disable();
     this.forma.controls['caja'].disable();
+  }
+
+  confirmar(){
+    this.refContableItemData.forEach(refContableDet => {
+      //obtener importe
+      let importe: number;
+      if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
+        importe = 0- refContableDet.debe;
+      }
+      else{
+        importe = 0+ refContableDet.haber;
+      }
+      
+      //determinar acción
+        //insert
+        let tipo: string;
+        if (importe < 0){
+          tipo = 'D';
+        }
+        else{
+          tipo = 'H';
+        }
+        let jsbody = {
+          "ID_ComprobanteCab": this.cabeceraId,
+          "ID_Item": refContableDet.refContable,
+          "ID_CentroCosto": refContableDet.centroDeCosto,
+          "P_TipoImputacion": tipo,
+          "P_Importe": importe,
+          "ID_Usuario": 'lsole' //todo cambiar por uno real
+        }
+        console.log('stringifeando');
+        let jsonbody= JSON.stringify(jsbody);
+        console.log(jsonbody);
+        this._minContableService.postMinContablesDet(jsonbody, this.token);
+
+        /*
+        //update
+        let jsbody = {
+          // "ID_ComprobanteCab": this.cabeceraId,
+          "ID_ComprobanteDet": refContableDet.refContable, //ID_Item
+          // "ID_CentroCosto": refContableDet.centroDeCosto,
+          // "P_TipoImputacion": tipo,
+          "ID_Usuario": 'lsole', //todo cambiar por uno real
+          "P_Importe": importe
+        }
+        console.log('stringifeando');
+        let jsonbody= JSON.stringify(jsbody);
+        console.log(jsonbody);
+        this._minContableService.putMinContablesDet(jsonbody, this.token);
+
+        //delete
+        let jsbody = {
+          "ID_ComprobanteCab": this.cabeceraId,
+          "ID_ComprobanteDet": refContableDet.refContable, //ID_Item
+          // "ID_CentroCosto": refContableDet.centroDeCosto,
+          // "P_TipoImputacion": tipo,
+          "ID_Usuario": 'lsole' //todo cambiar por uno real
+          // "P_Importe": importe
+        }
+        console.log('stringifeando');
+        let jsonbody= JSON.stringify(jsbody);
+        console.log(jsonbody);
+        this._minContableService.delMinContablesDet(jsonbody, this.token);
+        */
+    });
   }
 
   guardarArticulo(){

@@ -34,7 +34,7 @@ const APP_ROUTES: Routes = [
   { path: 'min-contables/:id', component: AltaMinContableComponent },
   { path: 'consulta', component: ConsultaDinamicaComponent },
   { path: 'consulta-crd/:id', component: ConsultaCrdComponent },
-  { path: 'consulta-comprobantes', component: ConsultaComprobantesComponent },
+  { path: 'consulta-comprobantes/:id', component: ConsultaComprobantesComponent },
   { path: 'consulta-retenciones', component: ConsultaRetencionesComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'compra' }
 ];

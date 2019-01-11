@@ -111,7 +111,7 @@
         <!-- Columna Debe -->
         <ng-container matColumnDef="debe">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Debe </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.debe }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.debe | number:'1.2-2' }} </td>
         </ng-container>
         <!-- Columna Haber -->
         <ng-container matColumnDef="haber">

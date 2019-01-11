@@ -911,6 +911,40 @@ console.log('json armado: ');
 
     } else {
       this.esDebeHaberValido()
+      this.refContableItemData.forEach(refContableDet => {
+        //obtener importe
+        let importe: number;
+        if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
+          importe = 0- refContableDet.debe;
+        }
+        else{
+          importe = 0+ refContableDet.haber;
+        }
+        
+        //determinar acción
+          //insert
+          let tipo: string;
+          if (importe < 0){
+            tipo = 'D';
+          }
+          else{
+            tipo = 'H';
+          }
+          let jsbody = {
+            "ID_ComprobanteCab": this.cabeceraId,
+            "ID_Item": refContableDet.refContable,
+            "ID_CentroCosto": refContableDet.centroDeCosto,
+            "P_TipoImputacion": tipo,
+            "P_Importe": importe,
+            "ID_Usuario": 'lsole' //todo cambiar por uno real
+          }
+          console.log('stringifeando');
+          let jsonbody= JSON.stringify(jsbody);
+          console.log(jsonbody);
+          this._minContableService.postMinContablesDet(jsonbody, this.token);
+  
+          this.openSnackBar('Datos guardados');})
+          
     this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
     nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
     centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
@@ -1051,39 +1085,7 @@ console.log('json armado: ');
   }
 
   confirmar(){
-    this.refContableItemData.forEach(refContableDet => {
-      //obtener importe
-      let importe: number;
-      if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
-        importe = 0- refContableDet.debe;
-      }
-      else{
-        importe = 0+ refContableDet.haber;
-      }
-      
-      //determinar acción
-        //insert
-        let tipo: string;
-        if (importe < 0){
-          tipo = 'D';
-        }
-        else{
-          tipo = 'H';
-        }
-        let jsbody = {
-          "ID_ComprobanteCab": this.cabeceraId,
-          "ID_Item": refContableDet.refContable,
-          "ID_CentroCosto": refContableDet.centroDeCosto,
-          "P_TipoImputacion": tipo,
-          "P_Importe": importe,
-          "ID_Usuario": 'lsole' //todo cambiar por uno real
-        }
-        console.log('stringifeando');
-        let jsonbody= JSON.stringify(jsbody);
-        console.log(jsonbody);
-        this._minContableService.postMinContablesDet(jsonbody, this.token);
-
-        this.openSnackBar('Datos guardados');
+    
         /*
         //update
         let jsbody = {
@@ -1113,7 +1115,6 @@ console.log('json armado: ');
         console.log(jsonbody);
         this._minContableService.delMinContablesDet(jsonbody, this.token);
         */
-    });
   }
 
   guardarArticulo(){

@@ -95,12 +95,12 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
         valorAEnviar = null;
       }
 
-      let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, 
-                                                              atributoActual.desc_atributo, 
-                                                              'Esta es una prueba',
-                                                              {valores: atributoActual.valores, 
-                                                               columna: atributoActual.atributo_bd,
-                                                               valor:   valorAEnviar});
+      let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, //tipo de componente
+                                                              atributoActual.desc_atributo, //titulo
+                                                              'Esta es una prueba',//placeholder
+                                                              {valores: atributoActual.valores, //valores por defecto/ para armar listas desplegables
+                                                               columna: atributoActual.atributo_bd,//columna correspondiente para armado de consultas
+                                                               valor:   valorAEnviar});//valor ingresado previamente por el usuario
                                                               //  valor:   'test(buscar en diccionario)'});
 
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
@@ -141,15 +141,31 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
     //recorrer lista de atributos para filtros
     console.log('generando controles avanzados para la lista: ');
     console.log(this.inputParam.datos);
+    console.log('valores');
+    console.log(this.inputParam.valores);
+    let temp2 = this.inputParam.valores as Map<string, string>;
+    let valorAEnviar2 : any = null;
     //
     let atributosAvanzados = this.inputParam.datos.filter(atributoActual => atributoActual.grupo === 'Avanzado');
     atributosAvanzados.forEach(atributoActual => {
       
-      let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, 
-                                                              atributoActual.desc_atributo, 
-                                                              'Esta es una prueba',
-                                                              {valores: atributoActual.valores, 
-                                                               columna: atributoActual.atributo_bd});
+      if (temp2 != null){
+        console.log('valor para llenar ' +  atributoActual.atributo_bd + ': '+ temp2.get(atributoActual.atributo_bd));
+        valorAEnviar2 = temp2.get(atributoActual.atributo_bd);
+      }
+      else{
+        console.log('no hay valores para llenar el filtro actual');
+        valorAEnviar2 = null;
+      }
+
+      let control = this.generadorDeComponentes.getComponent( atributoActual.tipo_dato, 
+                                                              atributoActual.desc_atributo, //titulo
+                                                              'Esta es una prueba',//placeholder
+                                                              {valores: atributoActual.valores, //valores por defecto/ para armar listas desplegables
+                                                               columna: atributoActual.atributo_bd,//columna correspondiente para armado de consultas
+                                                               valor:   valorAEnviar2});//valor ingresado previamente por el usuario
+                                                              //  valor:   'test(buscar en diccionario)'});
+
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
       let componentRef = this.viewContainerRefAvanzados.createComponent(componentFactory);
       this.componentesAvanzados.push(componentRef.instance);

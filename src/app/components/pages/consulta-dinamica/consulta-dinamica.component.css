@@ -1,3 +1,13 @@
 [hidden] {
     display: none !important;
   }
+
+[class*="mat-column"], 
+[class*="cdk-column"], 
+:not(mat-column-select), 
+:not(cdk-column-select), 
+:not(mat-column-opciones), 
+:not(cdk-column-opciones) {
+  flex: 0 0 100px;
+}
+  /* <mat-cell _ngcontent-c6="" class="mat-cell cdk-column-codigo mat-column-codigo ng-star-inserted" role="gridcell">15407340</mat-cell> */

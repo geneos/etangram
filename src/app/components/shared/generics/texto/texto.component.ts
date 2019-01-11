@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, AfterViewInit, ViewChild, ElementRef, OnChanges } from '@angular/core';
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
-import { EventEmitter } from '@angular/core';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
 
 @Component({

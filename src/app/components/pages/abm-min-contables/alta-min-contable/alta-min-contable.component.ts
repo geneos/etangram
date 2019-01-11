@@ -810,10 +810,15 @@ console.log('json armado: ');
                 else{
                   //if (this.refContable.tg01_centrocosto_id_c.indexOf(',') != 0){
                     this.tienectocosto = this.refContable.tienectocosto;
-                    
+                    console.log(this.tienectocosto)
+                    if (this.tienectocosto == 2){
+                      this.formaReferencias.controls['centroDeCosto'].enable();
+                    } else{
+                      this.formaReferencias.controls['centroDeCosto'].disable();
+                    }
                     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContable.tg01_centrocosto_id_c);
                     this.formaReferencias.controls['nombreRefContable'].setValue(this.refContable.name);
-                    this.formaReferencias.controls['centroDeCosto'].disable();
+                    
                     this.formaReferencias.controls['nombreRefContable'].disable();
                   /*}
                   else{

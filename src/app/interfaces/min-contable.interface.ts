@@ -26,12 +26,12 @@ export interface MinContable{
 }
 
 export interface MinContableDet{
-  assigned_user_id: number;
-  created_by: string;
-  date_entered: string;
-  date_modified: string;
-  deleted: number;
-  estado: number;
+  // assigned_user_id: number;
+  // created_by: string;
+  // date_entered: string;
+  // date_modified: string;
+  // deleted: number;
+  // estado: number;
 
   id: string;
   name: string;
@@ -53,7 +53,7 @@ export interface MinContableDet{
   tienectocosto: number;
   */
   // tg01_monedas_id2_c: string;
-  account_id1_c: string;
+  // account_id1_c: string;
   // tg01_tipocomprobante_id_c: string;
   // tg01_cajas_id_c: string;
 }

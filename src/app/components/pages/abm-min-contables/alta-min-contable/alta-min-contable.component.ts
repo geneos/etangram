@@ -242,7 +242,7 @@ datos =
         console.log('Obtener parametros');
 
         //obtener valores parametrizados
-        this.buscarParametros();
+        this.buscarParametros(true);
 
         //establecer valores de salida
         //this.buscarTipoComprobante(this.parametrosSistema.tg01_tipocomprobante_id_c);
@@ -271,7 +271,7 @@ datos =
     });
   }
 
-  buscarParametros(){
+  buscarParametros(incluirOrg: boolean){
     this._parametrosService.getParametros( this.token )
     //this._refContableService.getProveedores()
       .subscribe( dataP => {
@@ -288,14 +288,16 @@ datos =
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarParametros();
+                this.buscarParametros(incluirOrg);
               });
             } else {
               if(this.pData.dataset.length>0){
                 this.parametrosSistema = this.pData.dataset[0];
                 this.buscarTipoComprobante(this.parametrosSistema.tg01_tipocomprobante_id_c);
-                this.buscarOrganizacion(this.parametrosSistema.account_id1_c);
                 this.buscarMoneda(this.parametrosSistema.tg01_monedas_id2_c);
+                if (incluirOrg){
+                  this.buscarOrganizacion(this.parametrosSistema.account_id1_c);
+                }
               }
             }
       });
@@ -317,7 +319,7 @@ datos =
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarParametros();
+                this.buscarTipoComprobante(auxid);
               });
             } else {
               if(this.tcData.dataset.length>0){
@@ -351,7 +353,7 @@ datos =
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarParametros();
+                this.buscarMoneda(auxid);
               });
             } else {
               if(this.mData.dataset.length>0){
@@ -380,7 +382,7 @@ datos =
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarParametros();
+                this.buscarOrganizacion(auxid);
               });
             } else {
               if(this.oData.dataset.length>0){
@@ -491,18 +493,27 @@ console.log('json armado: ');
                 this.existe = true;
                 if (this.existe == true){
                   //console.log(this.planDeCuentas);
+
+                  //usado el parametro, actualmente no se guarda por la api
+                  // this.buscarMoneda(this.parametrosSistema.tg01_monedas_id2_c);
+                  this.buscarParametros(false);
+                  
                   this.loading = false;
                   this.editingCabecera = false;
 
                   //todo corregir fecha
                   // this.forma.controls['fecha'].setValue(this.minutaContable.fecha);
                   let fecha = new Date(this.minutaContable.fecha);
-                  fecha.setMinutes(fecha.getMinutes() + -180);
+                  // fecha.setMinutes(fecha.getMinutes() + -180);
+                  fecha.setDate(fecha.getDate() + 1);
                   this.forma.controls['fecha'].setValue(fecha);
 
                   //descripción no está siendo guardada por la api
                   // this.forma.controls['observaciones'].setValue(this.minutaContable.description);
 
+                  //caja no está siendo guardada por la api
+                  // this.forma.controls['caja'].setValue(this.minutaContable.caja);
+                  
                   this.forma.controls['numero'].setValue(this.minutaContable.name);
 
                   console.log('pidiendo tipo op con: ');
@@ -515,6 +526,7 @@ console.log('json armado: ');
                   this.buscarOrganizacion(this.minutaContable.account_id_c);
 
                   this.buscarMinutasContablesDet(this.minutaContable.id);
+
                  /*  this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
                   this.forma.controls['name'].setValue(this.planDeCuentas.name);
                   this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
@@ -559,7 +571,7 @@ console.log('json armado: ');
 
       "Fecha_hasta":"",
 
-      "param_limite":"1",
+      "param_limite":"1000",
 
       "param_offset":"0"
 
@@ -608,7 +620,17 @@ console.log('json armado: ');
                 this.existe = true;
                 if (this.existe == true){
                   console.log('lista de detalles obtenida: ', this.detallesAll);
+                  
+                  /*
+                  this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
+                  nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
+                  centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
+                  debe: this.formaReferencias.controls['debe'].value, 
+                  haber: this.formaReferencias.controls['haber'].value });
 
+                  this.dataSource = new MatTableDataSource(this.refContableItemData)
+                  this.table.renderRows();
+*/
                   this.loading = false;
 
                   // this.referenciasData = new MatTableDataSource(this.detallesAll);
@@ -1066,13 +1088,23 @@ console.log('json armado: ');
             });
         }
         else{
-          this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
-          //todo agregar redireccion
-          this.forma.controls['numero'].setValue(this.cabeceraId);
-          console.log('respuesta del post >>');
-          console.log(this.respCabecera);
-          console.log(this.cabeceraId);
-          console.log('<< respuesta del post');
+          if (this.respCabecera.returnset[0].RId != null){
+
+            this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
+            this.openSnackBar('Minuta Contable creada. Redireccionando...');
+            // this.forma.controls['numero'].setValue(this.cabeceraId);
+            console.log('respuesta del post >>');
+            console.log(this.respCabecera);
+            console.log(this.cabeceraId);
+            console.log('<< respuesta del post');
+            setTimeout(() => {
+              // this.router.navigate(['nextRoute']);
+              this.router.navigate(['/min-contables', this.cabeceraId]);
+            }, 5000);  //5s
+          }
+          else{
+            this.openSnackBar('No se pudo crear la Minuta Contable');
+          }
 
         }
         
@@ -1088,7 +1120,85 @@ console.log('json armado: ');
   }
 
   confirmar(){
-    
+    console.clear();
+    console.log('confirmar clickeado');
+    this.refContableItemData.forEach(refContableDet => {
+      //obtener importe
+      let importe: number;
+      if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
+        importe = 0- refContableDet.debe;
+      }
+      else{
+        importe = 0+ refContableDet.haber;
+      }
+
+      let centro: string;
+      if (refContableDet.centroDeCosto == null){
+        centro = '0';
+      }
+      else{
+        centro = refContableDet.centroDeCosto;
+      }
+      
+      //determinar acción
+        //insert
+        let tipo: string;
+        if (importe < 0){
+          tipo = 'D';
+        }
+        else{
+          tipo = 'H';
+        }
+        let jsbody = {
+          "ID_ComprobanteCab": this.cabeceraId,
+          "ID_Item": refContableDet.refContable,
+          "ID_CentroCosto": centro, //refContableDet.centroDeCosto,
+          "P_TipoImputacion": tipo,
+          "P_Importe": importe,
+          "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080' //morecchia //todo cambiar por uno real
+        }
+        console.log('stringifeando');
+        let jsonbody= JSON.stringify(jsbody);
+        console.log('json para post de detalle: ', jsonbody);
+        this._minContableService.postMinContablesDet(jsonbody, this.token)
+          .subscribe( resp => {
+          //console.log(resp.returnset[0].RId);
+          this.respRenglon = resp;
+          if(this.respRenglon.returnset[0].RCode=="-6003"){
+            //token invalido
+            // this.refContable = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._minContableService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this._minContableService.postMinContablesDet(jsonbody, this.token);//todo comprobar
+              });
+          }
+          else{
+            console.log('respuesta del post detalle >>');
+            console.log(this.respRenglon);
+            console.log('<< respuesta del post detalle');
+            if (this.respRenglon.returnset[0].RId != null){
+  
+              // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
+              
+              // this.forma.controls['numero'].setValue(this.cabeceraId);
+            }
+            else{
+              this.openSnackBar('No se pudo crear el renglon de Minuta Contable');
+            }
+  
+          }
+          
+  
+        });
+      }
+    );
+  }
+
         /*
         //update
         let jsbody = {
@@ -1118,7 +1228,7 @@ console.log('json armado: ');
         console.log(jsonbody);
         this._minContableService.delMinContablesDet(jsonbody, this.token);
         */
-  }
+      
 
   guardarArticulo(){
     /*

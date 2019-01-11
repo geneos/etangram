@@ -121,4 +121,4 @@
 
 
   </div>
-  <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons *ngIf="false"></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons [ngStyle]="{'display':loading ? 'none' : 'block' }"></mat-paginator>

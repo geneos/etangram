@@ -95,8 +95,13 @@
         </ng-container>
         <!-- Columna Referencia Contable -->
         <ng-container matColumnDef="refContable">
-          <th mat-header-cell *matHeaderCellDef> Referencia Contable </th>
+          <th mat-header-cell *matHeaderCellDef> Id </th>
           <td mat-cell *cdkCellDef="let auxreferencia" style="font-weight:bold;"> {{ auxreferencia.refContable }} </td>
+        </ng-container>
+        <!-- Columna Referencia Contable Name -->
+        <ng-container matColumnDef="nombreRefContable">
+          <th mat-header-cell *matHeaderCellDef> Referencia Contable </th>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="font-weight:bold;"> {{ auxreferencia.nombreRefContable }} </td>
         </ng-container>
         <!-- Columna Centro de Costo -->
         <ng-container matColumnDef="centroDeCosto">
@@ -106,7 +111,7 @@
         <!-- Columna Debe -->
         <ng-container matColumnDef="debe">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Debe </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.debe }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.debe }} </td>
         </ng-container>
         <!-- Columna Haber -->
         <ng-container matColumnDef="haber">
@@ -114,8 +119,8 @@
           <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.haber | number:'1.2-2'}} </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
-        <tr mat-row *cdkRowDef="let row; columns: ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
+        <tr mat-header-row *matHeaderRowDef="['opciones', 'refContable', 'nombreRefContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
+        <tr mat-row *cdkRowDef="let row; columns: ['opciones', 'refContable', 'nombreRefContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
       </table>
       <div class="col s12" style="margin-top:5px;" *ngIf="dataSource.length < 1">
         <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>Todavía no se ha cargado ninguna Referencia</i></mat-card>
@@ -185,7 +190,7 @@
         </div>
 
         <div class="col s12" style="text-align: right;">
-          <button *ngIf="!editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
+          <button *ngIf="!editingAI" (click)="guardarReferencia()" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
             AGREGAR
           </button>
           <button *ngIf="editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">

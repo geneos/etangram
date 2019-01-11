@@ -20,6 +20,7 @@ export interface RefContable{
 
 export interface RefContableItem{
   refContable: number;
+  nombreRefContable: string;
   centroDeCosto: string;
   debe: number;
   haber: number;

@@ -111,7 +111,7 @@
         <!-- Columna Debe -->
         <ng-container matColumnDef="debe">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Debe </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.debe }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.debe | number:'1.2-2' }} </td>
         </ng-container>
         <!-- Columna Haber -->
         <ng-container matColumnDef="haber">
@@ -173,6 +173,11 @@
             <input matInput placeholder="" formControlName="centroDeCosto" >
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
+        </div>
+        <div class="col s4 m2 l1" style="margin-top:10px;" *ngIf="tienectocosto == 2">
+          <button class="mine-btnforms" mat-flat-button>
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
         </div>
         <div class="col s4 m2 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">

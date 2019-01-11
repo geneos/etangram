@@ -104,7 +104,7 @@ datos =
 
    referenciasData: any[] = [];
   refContableItemData: RefContableItem[] = []
-
+  tienectocosto:number = 0;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableReferencias') table: MatTable<any>;
@@ -814,7 +814,7 @@ console.log('json armado: ');
                 this.refContable = this.refContableData.dataset[0];
                 console.log('auto referencia: ');
                 console.log(this.refContable);
-
+              
 
                 //centro de costo
                 /*
@@ -831,9 +831,16 @@ console.log('json armado: ');
                 }
                 else{
                   //if (this.refContable.tg01_centrocosto_id_c.indexOf(',') != 0){
+                    this.tienectocosto = this.refContable.tienectocosto;
+                    console.log(this.tienectocosto)
+                    if (this.tienectocosto == 2){
+                      this.formaReferencias.controls['centroDeCosto'].enable();
+                    } else{
+                      this.formaReferencias.controls['centroDeCosto'].disable();
+                    }
                     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContable.tg01_centrocosto_id_c);
                     this.formaReferencias.controls['nombreRefContable'].setValue(this.refContable.name);
-                    this.formaReferencias.controls['centroDeCosto'].disable();
+                    
                     this.formaReferencias.controls['nombreRefContable'].disable();
                   /*}
                   else{
@@ -895,6 +902,7 @@ console.log('json armado: ');
     this.addingReferencia = true;
   }
   guardarReferencia(){
+  
    if(this.auxDebeHaber){ 
     if(this.editingAI){
    //   this.totaldebe = this.totaldebe - this.refContableItemData[this.auxEditingArt].debe
@@ -924,7 +932,41 @@ console.log('json armado: ');
       this.editingAI = false;
 
     } else {
-
+      this.esDebeHaberValido()
+      this.refContableItemData.forEach(refContableDet => {
+        //obtener importe
+        let importe: number;
+        if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
+          importe = 0- refContableDet.debe;
+        }
+        else{
+          importe = 0+ refContableDet.haber;
+        }
+        
+        //determinar acción
+          //insert
+          let tipo: string;
+          if (importe < 0){
+            tipo = 'D';
+          }
+          else{
+            tipo = 'H';
+          }
+          let jsbody = {
+            "ID_ComprobanteCab": this.cabeceraId,
+            "ID_Item": refContableDet.refContable,
+            "ID_CentroCosto": refContableDet.centroDeCosto,
+            "P_TipoImputacion": tipo,
+            "P_Importe": importe,
+            "ID_Usuario": 'lsole' //todo cambiar por uno real
+          }
+          console.log('stringifeando');
+          let jsonbody= JSON.stringify(jsbody);
+          console.log(jsonbody);
+          this._minContableService.postMinContablesDet(jsonbody, this.token);
+  
+          this.openSnackBar('Datos guardados');})
+          
     this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
     nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
     centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
@@ -940,7 +982,7 @@ console.log('json armado: ');
     this.editingAI = false;
   }
    }else {
-    this.openSnackBar('Se debe ingresar solo un Debe o un Haber');
+    this.openSnackBar('Se debe ingresar un Debe o un Haber');
    }
 }
   eliminarReferencia(index){
@@ -1150,6 +1192,9 @@ console.log('json armado: ');
           
   
         });
+      }
+    );
+  }
 
         /*
         //update
@@ -1180,8 +1225,7 @@ console.log('json armado: ');
         console.log(jsonbody);
         this._minContableService.delMinContablesDet(jsonbody, this.token);
         */
-    });
-  }
+      
 
   guardarArticulo(){
     /*

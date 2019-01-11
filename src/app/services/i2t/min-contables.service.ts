@@ -100,6 +100,30 @@ export class MinContablesService {
     return this.http.post( url, body, { headers });
   }
 
+  putCabecera(body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/InternoCabUpd";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  delCabecera(body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/InternoCabDel";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
   //traer minutas
   getMinContablesDet( body:string, token:string ){
 

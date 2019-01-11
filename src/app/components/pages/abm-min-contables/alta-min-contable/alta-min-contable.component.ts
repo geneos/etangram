@@ -100,6 +100,7 @@ datos =
   addingReferencia:boolean = false;
   addingItem:boolean = false;
   editingAI:boolean = false;
+  editingID: string;
   auxEditingArt:number = null;
 
    referenciasData: any[] = [];
@@ -565,7 +566,7 @@ console.log('json armado: ');
 
       "ID_ComprobanteCab":auxid,
 
-      // "ID_ComprobanteDet": "",
+      "ID_ComprobanteDet": "", //docu dice no obligatorio, pero si no está no trae nada (aunque no de error)
 
       "Fecha_desde":"",
 
@@ -621,6 +622,18 @@ console.log('json armado: ');
                 if (this.existe == true){
                   console.log('lista de detalles obtenida: ', this.detallesAll);
                   
+                  //todo agregar cargado de detalles
+                  // this.detallesAll.forEach(detalle => {
+                  //   let referencia: number;
+                  //   referencia = this._refContableService.getRefContablesPorNombre(detalle.name, this.token)
+                  //   this.refContableItemData.push(
+                  //     {
+                  //       refContable: detalle.
+                        
+                  //     }
+                  //   );
+                  // });
+
                   /*
                   this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
                   nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
@@ -810,11 +823,13 @@ console.log('json armado: ');
                 this.buscarRefContable();
               });
             } else {
-              if(this.refContableData.dataset.length>0){
+              //validar que se haya encontrado 1 referencia
+              //validar que la referencia no esté eliminada (deleted = 1)
+              if((this.refContableData.dataset.length>0)&&(this.refContableData.dataset[0].deleted!==1)){
                 this.refContable = this.refContableData.dataset[0];
+                //(this.refContable.deleted !== 1)
                 console.log('auto referencia: ');
                 console.log(this.refContable);
-              
 
                 //centro de costo
                 /*
@@ -901,7 +916,11 @@ console.log('json armado: ');
     this.formaReferencias.controls['nombreRefContable'].setValue('');
     this.addingReferencia = true;
   }
+
   guardarReferencia(){
+    
+    console.clear();
+    console.log('guardando ref');
   
    if(this.auxDebeHaber){ 
     if(this.editingAI){
@@ -930,72 +949,245 @@ console.log('json armado: ');
     //  this.dataSource[this.auxEditingArt] = this.refContableItemData;
       this.addingReferencia = false;
       this.editingAI = false;
+      //update
 
-    } else {
-      this.esDebeHaberValido()
-      this.refContableItemData.forEach(refContableDet => {
-        //obtener importe
-        let importe: number;
-        if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
-          importe = 0- refContableDet.debe;
+      //actualizar en backend
+      let importe: number;
+      // if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
+        if((this.formaReferencias.controls['debe'].value)&&(this.formaReferencias.controls['debe'].value)){
+          // importe = 0- refContableDet.debe;
+          importe = 0- this.formaReferencias.controls['debe'].value
         }
         else{
-          importe = 0+ refContableDet.haber;
+          // importe = 0+ refContableDet.haber;
+          importe = 0+ this.formaReferencias.controls['haber'].value
         }
-        
-        //determinar acción
-          //insert
-          let tipo: string;
-          if (importe < 0){
-            tipo = 'D';
+        let jsbody = {
+          // "ID_ComprobanteCab": this.cabeceraId,
+          "ID_ComprobanteDet": this.editingID, //ID_Item
+          // "ID_CentroCosto": refContableDet.centroDeCosto,
+          // "P_TipoImputacion": tipo,
+          "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080', //morecchia //todo cambiar por uno real
+          "P_Importe": importe
+        }
+        console.log('stringifeando');
+        let jsonbody= JSON.stringify(jsbody);
+        console.log(jsonbody);
+        this._minContableService.putMinContablesDet(jsonbody, this.token).subscribe( resp => {
+          //console.log(resp.returnset[0].RId);
+          this.respRenglon = resp;
+          if(this.respRenglon.returnset[0].RCode=="-6003"){
+            //token invalido
+            // this.refContable = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._minContableService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this._minContableService.postMinContablesDet(jsonbody, this.token);//todo comprobar
+              });
           }
           else{
-            tipo = 'H';
-          }
-          let jsbody = {
-            "ID_ComprobanteCab": this.cabeceraId,
-            "ID_Item": refContableDet.refContable,
-            "ID_CentroCosto": refContableDet.centroDeCosto,
-            "P_TipoImputacion": tipo,
-            "P_Importe": importe,
-            "ID_Usuario": 'lsole' //todo cambiar por uno real
-          }
-          console.log('stringifeando');
-          let jsonbody= JSON.stringify(jsbody);
-          console.log(jsonbody);
-          this._minContableService.postMinContablesDet(jsonbody, this.token);
+            console.log('respuesta del put detalle >>');
+            console.log(this.respRenglon);
+            console.log('<< respuesta del put detalle');
+            if (this.respRenglon.returnset[0].RCode == 1){
+              // this.renglonId = this.respRenglon.returnset[0].RId;
+              console.log(this.renglonId);
+              this.openSnackBar('Modificado el renglon de Minuta Contable');
+              // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
+              
+              // this.forma.controls['numero'].setValue(this.cabeceraId);
+            }
+            else{
+              this.openSnackBar('No se pudo modificar el renglon de Minuta Contable');
+            }
   
-          this.openSnackBar('Datos guardados');})
-          
-    this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
-    nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
-    centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-    debe: this.formaReferencias.controls['debe'].value, 
-    haber: this.formaReferencias.controls['haber'].value });
+          }
+    
+            this.openSnackBar('Datos guardados');
+          });
+        //actualizar lista
+        //todo todo
+        let index = this.refContableItemData.findIndex((e) => e.idEnMinuta === this.editingID);
 
-    this.dataSource = new MatTableDataSource(this.refContableItemData)
-    this.table.renderRows();
-    console.log(this.dataSource);
-    this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
-    this.totalhaber = this.totalhaber + this.formaReferencias.controls['haber'].value
-    this.addingReferencia = false;
-    this.editingAI = false;
-  }
-   }else {
+        if (index === -1) {
+          this.refContableItemData.push();
+        } 
+        else{
+          this.refContableItemData[index] = { refContable: this.formaReferencias.controls['refContable'].value,
+          nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
+          centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
+          debe: this.formaReferencias.controls['debe'].value, 
+          haber: this.formaReferencias.controls['haber'].value,
+          idEnMinuta: this.editingID };
+          // this.openSnackBar('No se pudo actualizar la lista mostrada');
+        }
+    } 
+    else {
+      this.esDebeHaberValido();
+      
+      //obtener importe
+      let importe: number;
+      // if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
+      if((this.formaReferencias.controls['debe'].value)&&(this.formaReferencias.controls['debe'].value)){
+        // importe = 0- refContableDet.debe;
+        importe = 0- this.formaReferencias.controls['debe'].value
+      }
+      else{
+        // importe = 0+ refContableDet.haber;
+        importe = 0+ this.formaReferencias.controls['haber'].value
+      }
+      
+      let centro: string;
+      if (this.formaReferencias.controls['centroDeCosto'].value == null){
+        centro = '0';
+      }
+      else{
+        centro =this.formaReferencias.controls['centroDeCosto'].value;
+      }
+
+      //determinar acción
+      //insert
+      let tipo: string;
+      if (importe < 0){
+        tipo = 'D';
+      }
+      else{
+        tipo = 'H';
+      }
+      let jsbody = {
+        "ID_ComprobanteCab": this.cabeceraId,
+        "ID_Item": this.formaReferencias.controls['refContable'].value,
+        "ID_CentroCosto": centro, //refContableDet.centroDeCosto,
+        "P_TipoImputacion": tipo,
+        "P_Importe": importe,
+        "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080' //morecchia //todo cambiar por uno real
+      }
+
+      console.log('stringifeando');
+      let jsonbody= JSON.stringify(jsbody);
+      console.log(jsonbody);
+      //guardar id de renglon
+      this._minContableService.postMinContablesDet(jsonbody, this.token).subscribe( resp => {
+        //console.log(resp.returnset[0].RId);
+        this.respRenglon = resp;
+        if(this.respRenglon.returnset[0].RCode=="-6003"){
+          //token invalido
+          // this.refContable = null;
+          let jsbody = {"usuario":"usuario1","pass":"password1"}
+          let jsonbody = JSON.stringify(jsbody);
+          this._minContableService.login(jsonbody)
+            .subscribe( dataL => {
+              console.log(dataL);
+              this.loginData = dataL;
+              this.token = this.loginData.dataset[0].jwt;
+              this._minContableService.postMinContablesDet(jsonbody, this.token);//todo comprobar
+            });
+        }
+        else{
+          console.log('respuesta del post detalle >>');
+          console.log(this.respRenglon);
+          console.log('<< respuesta del post detalle');
+          if (this.respRenglon.returnset[0].RId != null){
+            this.renglonId = this.respRenglon.returnset[0].RId;
+            console.log(this.renglonId);
+            // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
+            
+            // this.forma.controls['numero'].setValue(this.cabeceraId);
+          }
+          else{
+            this.openSnackBar('No se pudo crear el renglon de Minuta Contable');
+          }
+
+        }
+  
+          this.openSnackBar('Datos guardados');
+        })
+          
+      this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
+      nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
+      centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
+      debe: this.formaReferencias.controls['debe'].value, 
+      haber: this.formaReferencias.controls['haber'].value,
+      idEnMinuta: this.renglonId });
+
+      this.dataSource = new MatTableDataSource(this.refContableItemData)
+      this.table.renderRows();
+      console.log(this.dataSource);
+      this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
+      this.totalhaber = this.totalhaber + this.formaReferencias.controls['haber'].value
+      this.addingReferencia = false;
+      this.editingAI = false;
+    }
+   }
+   else {
     this.openSnackBar('Se debe ingresar un Debe o un Haber');
    }
 }
   eliminarReferencia(index){
-   //   let index: number = this.refContableItemData.findIndex(d => d === item);
-   this.totaldebe = this.totaldebe - this.refContableItemData[index].debe
-   this.totalhaber = this.totalhaber - this.refContableItemData[index].haber
-      this.refContableItemData.splice(index,1);
-      
-      this.table.renderRows();
-  //  });
+    
+    console.clear();
+    console.log('eliminando ref');
+    let jsbody = {
+      "ID_ComprobanteCab": this.cabeceraId,
+      "ID_ComprobanteDet": this.refContableItemData[index].idEnMinuta,
+      "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080' //morecchia //todo cambiar por uno real
+    }
+    
+    //   let index: number = this.refContableItemData.findIndex(d => d === item);
+    this.totaldebe = this.totaldebe - this.refContableItemData[index].debe
+    this.totalhaber = this.totalhaber - this.refContableItemData[index].haber
+    this.refContableItemData.splice(index,1);
+    
+    //eliminar del backend
+    
+    console.log('stringifeando');
+    let jsonbody= JSON.stringify(jsbody);
+    this._minContableService.delMinContablesDet(jsonbody, this.token)
+    .subscribe( resp => {
+      //console.log(resp.returnset[0].RId);
+      this.respRenglon = resp;
+      if(this.respRenglon.returnset[0].RCode=="-6003"){
+        //token invalido
+        // this.refContable = null;
+        let jsbody = {"usuario":"usuario1","pass":"password1"}
+        let jsonbody = JSON.stringify(jsbody);
+        this._minContableService.login(jsonbody)
+          .subscribe( dataL => {
+            console.log(dataL);
+            this.loginData = dataL;
+            this.token = this.loginData.dataset[0].jwt;
+            this._minContableService.postMinContablesDet(jsonbody, this.token);//todo comprobar
+          });
+      }
+      else{
+        console.log('respuesta del delete detalle >>');
+        console.log(this.respRenglon);
+        console.log('<< respuesta del delete detalle');
+        if (this.respRenglon.returnset[0].RCode === 1){
+          
+          this.openSnackBar('Renglon de Minuta Contable eliminado');
+          // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
+          
+          // this.forma.controls['numero'].setValue(this.cabeceraId);
+        }
+        else{
+          this.openSnackBar('No se pudo crear eliminar renglon de Minuta Contable');
+        }
+
+      }
+
+    this.table.renderRows();
+    });
   }
 
   editarReferencia(ind:number){
+    
+    console.clear();
+    console.log('editando referencia');
     this.editingAI = true;
     //this.compraArticulo = this.referenciasData[ind];
     
@@ -1008,9 +1200,20 @@ console.log('json armado: ');
     this.debeAnterior = this.refContableItemData[ind].debe;
     this.haberAnterior = this.refContableItemData[ind].haber;
     this.auxEditingArt=ind;
+    if(this.debeAnterior > 0){
+      this.formaReferencias.controls['haber'].disable();
+      this.formaReferencias.controls['debe'].enable();
+    }
+    else{
+      this.formaReferencias.controls['haber'].enable();
+      this.formaReferencias.controls['debe'].disable();
+    }
+    this.editingID = this.refContableItemData[ind].idEnMinuta;
   };
 
   guardarCabecera(){
+    console.clear();
+    console.log('guardando cabecera');
     this.editingCabecera = false;
     console.log('armando fecha');
     let ano = this.forma.controls['fecha'].value.getFullYear().toString();
@@ -1042,7 +1245,7 @@ console.log('json armado: ');
       "P_Fecha":auxfecha,
       "P_Total":0,//todo cambiar
       "P_Obs":auxObs,//this.forma.controls['observaciones'].value,
-      "P_Estado":1//hardcoded, todo cambiar
+      "P_Estado":0//hardcoded, los nuevos son siempre 0 (todo revisar)
     };
 
 /*
@@ -1116,6 +1319,59 @@ console.log('json armado: ');
     this.forma.controls['caja'].disable();
   }
 
+  confirmar(  ){
+    console.clear();
+    console.log('confirmando');
+    console.log(this.totaldebe, this.totalhaber)
+    if(Number(this.totaldebe) == Number(this.totalhaber)){
+      let jsbody = {
+        "ID_Comprobante":this.cabeceraId,
+        "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080', //morecchia //todo cambiar por uno real, 
+        "P_Total": this.totalhaber - this.totaldebe,
+        "P_Obs": this.minutaContable.description, //todo revisar
+        "Id_Cliente": this.parametrosSistema.account_id1_c,
+        "P_Estado": 1
+      };
+      console.log('stringifeando');
+      let jsonbody= JSON.stringify(jsbody);
+      console.log(jsonbody);
+
+      this._minContableService.putCabecera( jsonbody,this.token ).subscribe( resp => {
+        //console.log(resp.returnset[0].RId);
+        this.respCabecera = resp;
+        if(this.respCabecera.returnset[0].RCode=="-6003"){
+          //token invalido
+          // this.refContable = null;
+          let jsbody = {"usuario":"usuario1","pass":"password1"}
+          let jsonbody = JSON.stringify(jsbody);
+          this._minContableService.login(jsonbody)
+            .subscribe( dataL => {
+              console.log(dataL);
+              this.loginData = dataL;
+              this.token = this.loginData.dataset[0].jwt;
+              this.confirmar();
+            });
+        }
+        else{
+          console.log(this.respCabecera);
+
+          if (this.respCabecera.returnset[0].RCode === 1){
+            this.openSnackBar('Se confirmó la Minuta Contable');
+          }
+          else{
+            this.openSnackBar('No se pudo confirmar la Minuta Contable');
+          }
+        }
+      
+      })
+    }
+    else{
+      this.openSnackBar('El Debe y el Haber deben tener el mismo importe');
+    }
+  }
+
+
+  /*
   confirmar(){
     console.clear();
     console.log('confirmar clickeado');
@@ -1316,6 +1572,20 @@ console.log('json armado: ');
     this.formaReferencias.controls['descuento'].setValue(0);
     this.compraArticulo = null;
     */
+  }
+
+  cancelarReferencia(){
+    
+    this.addingItem = false;
+    this.addingReferencia = false;
+    this.editingAI = false;
+    //this.compraArticulo = null;
+    
+    this.formaReferencias.controls['refContable'].setValue("");
+    this.formaReferencias.controls['nombreRefContable'].setValue("");
+    this.formaReferencias.controls['centroDeCosto'].setValue("");
+    this.formaReferencias.controls['debe'].setValue("");
+    this.formaReferencias.controls['haber'].setValue("");
   }
 
   cancelarArtItem(){

@@ -154,7 +154,7 @@ datos =
   totalhaber: number = 0;
   debeAnterior: number = 0;
   haberAnterior: number = 0;
-  
+  auxDebeHaber: boolean = false;
   centroCosto: CentroCosto;
   refContable: RefContable;
   refeCont: any[] = [];
@@ -263,6 +263,12 @@ datos =
 
   test(){
     //console.log(this.forma.controls['caicae'].errors)
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
   }
 
   buscarParametros(){
@@ -732,27 +738,33 @@ console.log('json armado: ');
     if ((this.formaReferencias.controls['debe'].value > 0) && (this.formaReferencias.controls['haber'].value > 0)){
       //No puede ingresar un Debe y un Haber al mismo tiempo
       console.log("No puede ingresar un Debe y un Haber al mismo tiempo")
+      this.auxDebeHaber = false
       return false;
     }
 
     if ((this.formaReferencias.controls['debe'].value === null || this.formaReferencias.controls['debe'].value === 0) && (this.formaReferencias.controls['haber'].value === null || this.formaReferencias.controls['haber'].value === 0)){
       //Debe ingresar un Debe o un Haber
       console.log('Debe ingresar uno de los dos')
+      this.auxDebeHaber = false
       return false;
     }
 
 
-
-    if (!(this.formaReferencias.controls['debe'].value === null)&&(this.formaReferencias.controls['debe'].value < 0)){
-      //Debe ingresar un Debe positivo
-      return false;
-    }
 
     if (!(this.formaReferencias.controls['haber'].value === null)&&(this.formaReferencias.controls['debe'].value < 0)){
-      //Debe ingresar un Haber positivo
+      //Debe ingresar un Debe positivo
+      this.auxDebeHaber = false
+      this.openSnackBar('Debe Ingresar un Debe Positivo');
       return false;
     }
 
+    if (!(this.formaReferencias.controls['debe'].value === null)&&(this.formaReferencias.controls['haber'].value < 0)){
+      //Debe ingresar un Haber positivo
+      this.auxDebeHaber = false
+      this.openSnackBar('Debe Ingresar un Haber Positivo');
+      return false;
+    }
+    this.auxDebeHaber = true
     return true;
   }
 
@@ -861,9 +873,11 @@ console.log('json armado: ');
     this.addingReferencia = true;
   }
   guardarReferencia(){
+   if(this.auxDebeHaber){ 
     if(this.editingAI){
    //   this.totaldebe = this.totaldebe - this.refContableItemData[this.auxEditingArt].debe
       this.refContableItemData[this.auxEditingArt].refContable = this.formaReferencias.controls['refContable'].value,
+      this.refContableItemData[this.auxEditingArt].nombreRefContable = this.formaReferencias.controls['nombreRefContable'].value,
       this.refContableItemData[this.auxEditingArt].centroDeCosto = this.formaReferencias.controls['centroDeCosto'].value,
       this.refContableItemData[this.auxEditingArt].debe = this.formaReferencias.controls['debe'].value, 
       this.refContableItemData[this.auxEditingArt].haber = this.formaReferencias.controls['haber'].value
@@ -889,7 +903,8 @@ console.log('json armado: ');
 
     } else {
 
-    this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value, 
+    this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
+    nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
     centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
     debe: this.formaReferencias.controls['debe'].value, 
     haber: this.formaReferencias.controls['haber'].value });
@@ -902,7 +917,9 @@ console.log('json armado: ');
     this.addingReferencia = false;
     this.editingAI = false;
   }
-
+   }else {
+    this.openSnackBar('Se debe ingresar solo un Debe o un Haber');
+   }
 }
   eliminarReferencia(index){
    //   let index: number = this.refContableItemData.findIndex(d => d === item);
@@ -917,8 +934,9 @@ console.log('json armado: ');
   editarReferencia(ind:number){
     this.editingAI = true;
     //this.compraArticulo = this.referenciasData[ind];
-    console
+    
     this.formaReferencias.controls['refContable'].setValue(this.refContableItemData[ind].refContable);
+    this.formaReferencias.controls['nombreRefContable'].setValue(this.refContableItemData[ind].nombreRefContable);
     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContableItemData[ind].centroDeCosto);
     this.formaReferencias.controls['debe'].setValue(this.refContableItemData[ind].debe);
     this.formaReferencias.controls['haber'].setValue(this.refContableItemData[ind].haber);

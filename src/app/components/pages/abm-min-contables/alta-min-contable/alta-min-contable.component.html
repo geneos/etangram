@@ -219,7 +219,7 @@
 </form>
 
 <div class="row" style="text-align: right;" *ngIf="!editingCabecera">
-  <button class="mine-btnbig" mat-flat-button [disabled]="false">
+  <a class="mine-btnbig" (click)="confirmar" mat-flat-button [disabled]="false">
     CONFIRMAR
-  </button>
+  </a>
 </div>

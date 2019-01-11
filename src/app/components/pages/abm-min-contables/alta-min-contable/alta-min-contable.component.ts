@@ -896,6 +896,7 @@ console.log('json armado: ');
       //                               haber: this.formaReferencias.controls['haber'].value }]
       
       this.dataSource[this.auxEditingArt] = this.refContableItemData[this.auxEditingArt]
+
       if(this.debeAnterior != this.refContableItemData[this.auxEditingArt].debe){
         this.totaldebe = this.totaldebe - this.debeAnterior
         this.totaldebe = this.totaldebe + this.refContableItemData[this.auxEditingArt].debe
@@ -904,47 +905,14 @@ console.log('json armado: ');
         this.totalhaber = this.totalhaber - this.haberAnterior
         this.totalhaber = this.totalhaber + this.refContableItemData[this.auxEditingArt].haber
       }
-        
+      this.guardarRenglon()  
     //  this.dataSource[this.auxEditingArt] = this.refContableItemData;
       this.addingReferencia = false;
       this.editingAI = false;
 
     } else {
-      this.esDebeHaberValido()
-      this.refContableItemData.forEach(refContableDet => {
-        //obtener importe
-        let importe: number;
-        if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
-          importe = 0- refContableDet.debe;
-        }
-        else{
-          importe = 0+ refContableDet.haber;
-        }
-        
-        //determinar acción
-          //insert
-          let tipo: string;
-          if (importe < 0){
-            tipo = 'D';
-          }
-          else{
-            tipo = 'H';
-          }
-          let jsbody = {
-            "ID_ComprobanteCab": this.cabeceraId,
-            "ID_Item": refContableDet.refContable,
-            "ID_CentroCosto": refContableDet.centroDeCosto,
-            "P_TipoImputacion": tipo,
-            "P_Importe": importe,
-            "ID_Usuario": 'lsole' //todo cambiar por uno real
-          }
-          console.log('stringifeando');
-          let jsonbody= JSON.stringify(jsbody);
-          console.log(jsonbody);
-          this._minContableService.postMinContablesDet(jsonbody, this.token);
-  
-          this.openSnackBar('Datos guardados');})
-          
+    this.esDebeHaberValido()
+
     this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
     nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
     centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
@@ -956,6 +924,7 @@ console.log('json armado: ');
     console.log(this.dataSource);
     this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
     this.totalhaber = this.totalhaber + this.formaReferencias.controls['haber'].value
+    this.guardarRenglon()
     this.addingReferencia = false;
     this.editingAI = false;
   }
@@ -987,7 +956,41 @@ console.log('json armado: ');
     this.haberAnterior = this.refContableItemData[ind].haber;
     this.auxEditingArt=ind;
   };
+  guardarRenglon(){
+    this.refContableItemData.forEach(refContableDet => {
+      //obtener importe
+      let importe: number;
+      if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
+        importe = 0- refContableDet.debe;
+      }
+      else{
+        importe = 0+ refContableDet.haber;
+      }
+      
+      //determinar acción
+        //insert
+        let tipo: string;
+        if (importe < 0){
+          tipo = 'D';
+        }
+        else{
+          tipo = 'H';
+        }
+        let jsbody = {
+          "ID_ComprobanteCab": this.cabeceraId,
+          "ID_Item": refContableDet.refContable,
+          "ID_CentroCosto": refContableDet.centroDeCosto,
+          "P_TipoImputacion": tipo,
+          "P_Importe": importe,
+          "ID_Usuario": 'lsole' //todo cambiar por uno real
+        }
+        console.log('stringifeando');
+        let jsonbody= JSON.stringify(jsbody);
+        console.log(jsonbody);
+        this._minContableService.postMinContablesDet(jsonbody, this.token);
 
+        this.openSnackBar('Datos guardados');})
+  }
   guardarCabecera(){
     this.editingCabecera = false;
     console.log('armando fecha');

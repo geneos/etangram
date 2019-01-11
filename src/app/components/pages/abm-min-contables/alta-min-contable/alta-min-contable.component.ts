@@ -109,7 +109,7 @@ datos =
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableReferencias') table: MatTable<any>;
   //dataSource = new MatTableDataSource(this.refContableItemData)
-  dataSource: any[] = []
+  dataSource = new MatTableDataSource(this.refContableItemData)
  // displayedColumns: string[] = ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];
 
   selection = new SelectionModel(true, []);
@@ -151,7 +151,9 @@ datos =
   respCabecera: any;
   respRenglon: any;
   totaldebe: number = 0;
-  totalHaber: number = 0;
+  totalhaber: number = 0;
+  debeAnterior: number = 0;
+  haberAnterior: number = 0;
   
   centroCosto: CentroCosto;
   refContable: RefContable;
@@ -849,40 +851,54 @@ console.log('json armado: ');
   }
   guardarReferencia(){
     if(this.editingAI){
-     
-      this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
-      centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-      debe: this.formaReferencias.controls['debe'].value, 
-      haber: this.formaReferencias.controls['haber'].value }]
-      this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
+   //   this.totaldebe = this.totaldebe - this.refContableItemData[this.auxEditingArt].debe
+      this.refContableItemData[this.auxEditingArt].refContable = this.formaReferencias.controls['refContable'].value,
+      this.refContableItemData[this.auxEditingArt].centroDeCosto = this.formaReferencias.controls['centroDeCosto'].value,
+      this.refContableItemData[this.auxEditingArt].debe = this.formaReferencias.controls['debe'].value, 
+      this.refContableItemData[this.auxEditingArt].haber = this.formaReferencias.controls['haber'].value
+
+      // this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
+      //                               centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
+      //                               debe: this.formaReferencias.controls['debe'].value, 
+      //                               haber: this.formaReferencias.controls['haber'].value }]
       
-      this.dataSource[this.auxEditingArt] = this.refContableItemData;
+      this.dataSource[this.auxEditingArt] = this.refContableItemData[this.auxEditingArt]
+      if(this.debeAnterior != this.refContableItemData[this.auxEditingArt].debe){
+        this.totaldebe = this.totaldebe - this.debeAnterior
+        this.totaldebe = this.totaldebe + this.refContableItemData[this.auxEditingArt].debe
+      }
+      if(this.haberAnterior != this.refContableItemData[this.auxEditingArt].haber){
+        this.totalhaber = this.totalhaber - this.haberAnterior
+        this.totalhaber = this.totalhaber + this.refContableItemData[this.auxEditingArt].haber
+      }
+        
+    //  this.dataSource[this.auxEditingArt] = this.refContableItemData;
       this.addingReferencia = false;
       this.editingAI = false;
       
     } else {
 
+    this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value, 
+    centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
+    debe: this.formaReferencias.controls['debe'].value, 
+    haber: this.formaReferencias.controls['haber'].value });
 
-    this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
-                                  centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-                                  debe: this.formaReferencias.controls['debe'].value, 
-                                  haber: this.formaReferencias.controls['haber'].value }]
-   // this.dataSource = new MatTableDataSource(this.refContableItemData)
-    this.dataSource.push(this.refContableItemData);
+    this.dataSource = new MatTableDataSource(this.refContableItemData)
     this.table.renderRows();
     console.log(this.dataSource);
     this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
+    this.totalhaber = this.totalhaber + this.formaReferencias.controls['haber'].value
     this.addingReferencia = false;
     this.editingAI = false;
   }
 
 }
   eliminarReferencia(index){
-  //  this.selection.selected.forEach(item => 
    //   let index: number = this.refContableItemData.findIndex(d => d === item);
-      console.log(index);
-      console.log(this.dataSource[index])
-      this.dataSource.splice(index);
+   this.totaldebe = this.totaldebe - this.refContableItemData[index].debe
+   this.totalhaber = this.totalhaber - this.refContableItemData[index].haber
+      this.refContableItemData.splice(index,1);
+      
       this.table.renderRows();
   //  });
   }
@@ -896,6 +912,8 @@ console.log('json armado: ');
     this.formaReferencias.controls['debe'].setValue(this.refContableItemData[ind].debe);
     this.formaReferencias.controls['haber'].setValue(this.refContableItemData[ind].haber);
     //console.log(this.compraArticulo);
+    this.debeAnterior = this.refContableItemData[ind].debe;
+    this.haberAnterior = this.refContableItemData[ind].haber;
     this.auxEditingArt=ind;
   };
 

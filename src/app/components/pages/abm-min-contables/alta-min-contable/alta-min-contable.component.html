@@ -96,22 +96,22 @@
         <!-- Columna Referencia Contable -->
         <ng-container matColumnDef="refContable">
           <th mat-header-cell *matHeaderCellDef> Referencia Contable </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="font-weight:bold;"> {{ auxreferencia[0].refContable }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="font-weight:bold;"> {{ auxreferencia.refContable }} </td>
         </ng-container>
         <!-- Columna Centro de Costo -->
         <ng-container matColumnDef="centroDeCosto">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Centro de Costo </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia[0].centroDeCosto }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.centroDeCosto }} </td>
         </ng-container>
         <!-- Columna Debe -->
         <ng-container matColumnDef="debe">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Debe </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia[0].debe }} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> {{ auxreferencia.debe }} </td>
         </ng-container>
         <!-- Columna Haber -->
         <ng-container matColumnDef="haber">
           <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Haber </th>
-          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia[0].haber | number:'1.2-2'}} </td>
+          <td mat-cell *cdkCellDef="let auxreferencia" style="text-align: right;"> $ {{ auxreferencia.haber | number:'1.2-2'}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];"></tr>
@@ -163,7 +163,7 @@
         <div class="col s4 m2 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Debe</mat-label>
-            <input type="number" (keyup)="esDebeHaberValido().isValid()" matInput placeholder=""  formControlName="debe" style="text-align: right;">
+            <input type="number" (keyup)="esDebeHaberValido()" matInput placeholder=""  formControlName="debe" style="text-align: right;">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>

@@ -898,12 +898,12 @@ console.log('json armado: ');
       this.dataSource[this.auxEditingArt] = this.refContableItemData[this.auxEditingArt]
 
       if(this.debeAnterior != this.refContableItemData[this.auxEditingArt].debe){
-        this.totaldebe = this.totaldebe - this.debeAnterior
-        this.totaldebe = this.totaldebe + this.refContableItemData[this.auxEditingArt].debe
+        this.totaldebe = Number(this.totaldebe) - Number(this.debeAnterior)
+        this.totaldebe = Number(this.totaldebe) + Number(this.refContableItemData[this.auxEditingArt].debe)
       }
       if(this.haberAnterior != this.refContableItemData[this.auxEditingArt].haber){
-        this.totalhaber = this.totalhaber - this.haberAnterior
-        this.totalhaber = this.totalhaber + this.refContableItemData[this.auxEditingArt].haber
+        this.totalhaber = Number(this.totalhaber) - Number(this.haberAnterior)
+        this.totalhaber = Number(this.totalhaber) + Number(this.refContableItemData[this.auxEditingArt].haber)
       }
       this.guardarRenglon()  
     //  this.dataSource[this.auxEditingArt] = this.refContableItemData;
@@ -922,8 +922,8 @@ console.log('json armado: ');
     this.dataSource = new MatTableDataSource(this.refContableItemData)
     this.table.renderRows();
     console.log(this.dataSource);
-    this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
-    this.totalhaber = this.totalhaber + this.formaReferencias.controls['haber'].value
+    this.totaldebe = Number(this.totaldebe) + Number(this.formaReferencias.controls['debe'].value)
+    this.totalhaber = Number(this.totalhaber) + Number(this.formaReferencias.controls['haber'].value)
     this.guardarRenglon()
     this.addingReferencia = false;
     this.editingAI = false;

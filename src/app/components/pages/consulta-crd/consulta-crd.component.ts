@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint} from '@angular/material';
+import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatIcon} from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MatSnackBarModule, MatSnackBar} from '@angular/material/snack-bar';
 import { CdkTableModule } from '@angular/cdk/table';
@@ -27,7 +27,7 @@ export class ConsultaCrdComponent implements OnInit {
   cuitc:string;
   nroProveedor:number;
 
-  displayedColumns: string[] = ['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];
+  displayedColumns: string[] = ['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total', 'accion'];
   dataSource = new MatTableDataSource<ConsultaCrd>(this.ELEMENT_DATA);
 // ['ncrd', 'fech', 'npro', 'name', 'cuit_c', 'pexp', 'nexp', 'opub', 'tcom', 'ncomr', 'total']
   Controles: FormGroup;

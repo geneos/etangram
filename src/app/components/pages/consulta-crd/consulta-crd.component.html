@@ -103,7 +103,7 @@
         <th mat-header-cell *matHeaderCellDef> Comprobante</th>
         <td mat-cell *cdkCellDef="let element"> {{ element.tcom + "-" + element.ncomr}} </td>
       </ng-container>
-
+    
       <!-- Symbol Column
       <ng-container matColumnDef="ncomr">
         <th mat-header-cell *matHeaderCellDef> Nro. Comprobante </th>
@@ -115,8 +115,15 @@
         <th mat-header-cell *matHeaderCellDef> Importe </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.total }} </td>
       </ng-container>
-      <tr mat-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *cdkRowDef="let row; columns: displayedColumns;"></tr>
+
+      <ng-container matColumnDef="accion">
+        <th mat-header-cell *matHeaderCellDef> Imprimir</th>
+        <td mat-cell *cdkCellDef="let a; let in = index"></td>
+        <i class="material-icons">edit</i>
+      </ng-container>
+
+      <tr mat-header-row *cdkHeaderRowDef="['accion', 'ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total']"></tr>
+      <tr mat-row *cdkRowDef="let row; columns: ['accion', 'ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];"></tr>
     </table>
 
 

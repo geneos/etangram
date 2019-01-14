@@ -20,14 +20,14 @@
           <div class="col s4 m4 l4">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Razón Social</mat-label>
-              <input matInput placeholder="" formControlName="razonSocial" readonly value="{{ RazonSocial }}">
+              <input matInput placeholder="" formControlName="razonSocial" readonly value="{{ compraProveedor?.razon_social }}">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
           <div class="col s12 m2 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>CUIT</mat-label>
-              <input matInput placeholder="" formControlName="cuit" readonly value="{{ cuitc }}">
+              <input matInput placeholder="" formControlName="cuit" readonly value="{{ compraProveedor?.cuit }}">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { CompraService } from "../../../services/i2t/compra.service";
@@ -32,6 +32,10 @@ export class ConsultaOrdPagosComponent implements OnInit {
   cuitc:string;
   nroProveedor:number;
 
+  public fechaActual: Date = new Date();
+  public fechaDesde: Date = new Date();
+  tabla: any = [];
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -41,8 +45,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
   id: any;
   loading: boolean = true;
 
-  constructor( @Inject('Window') private window: Window,
-              private route:ActivatedRoute,private router: Router,
+  constructor( private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar, 
               public dialogArt: MatDialog, private _compraService:CompraService,
               private _impresionCompService: ImpresionCompService) {
@@ -64,7 +67,11 @@ export class ConsultaOrdPagosComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  //  this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toString
+    console.log(this.fechaDesde)
   }
 
   openSnackBar(message: string) {
@@ -109,9 +116,10 @@ export class ConsultaOrdPagosComponent implements OnInit {
             } else {
             if(this.proveedorData.dataset.length>0){
               this.loading = false;
-              this.compraProveedor = this.proveedorData.dataset[0];
+              this.compraProveedor = this.proveedorData.dataset[0]
             } else {
               this.compraProveedor = null; 
+
             }
           }
       });

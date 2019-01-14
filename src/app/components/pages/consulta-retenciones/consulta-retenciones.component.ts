@@ -5,7 +5,9 @@ import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnack
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaRetencionesService } from 'src/app/services/i2t/consulta-retenciones.service';
-
+import { Router, ActivatedRoute } from "@angular/router";
+import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
+import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 
 var auxProvData: any;
 @Component({
@@ -26,10 +28,16 @@ export class ConsultaRetencionesComponent implements OnInit {
   consultaRetenciones: consultaRetenciones[] = [];
   respCabecera: any;
   cabeceraId: string;
-  loading:boolean; 
   public fechaActual: Date = new Date();
   public fechaDesde: Date = new Date();
   tabla: any = [];
+  ProveedorData: any;
+  baseDatos: any;
+  informes: informes[] = [];
+  urlBaseDatos: string;
+  urlInforme: any;
+  baseUrl: ImpresionBase[] = [];
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -38,11 +46,14 @@ export class ConsultaRetencionesComponent implements OnInit {
 
   
   selection = new SelectionModel(true, []);
+  id: any;
+  loading: boolean = true;
   constructor( @Inject('Window') private window: Window,
-               public snackBar: MatSnackBar, 
+              private route:ActivatedRoute,private router: Router,
+              public snackBar: MatSnackBar, 
               public dialogArt: MatDialog, private _compraService:CompraService,
-              private _consultaRetenciones:ConsultaRetencionesService ) {
-    this.loading = true;
+              private _consultaRetenciones:ConsultaRetencionesService, 
+              private _impresionCompService: ImpresionCompService) {
     
   
     this.forma = new FormGroup({
@@ -53,8 +64,13 @@ export class ConsultaRetencionesComponent implements OnInit {
       'fechasta': new FormControl(new Date()),
       'expediente': new FormControl(),
     })
+    this.route.params.subscribe( parametros=>{
+      this.id = parametros['id'];
+      //this.Controles['proveedor'].setValue(this.id);
+      this.buscarProveedor();
+    });
    }
-
+   
    
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
@@ -83,7 +99,7 @@ export class ConsultaRetencionesComponent implements OnInit {
 
 
   buscarProveedor(){
-    this._compraService.getProveedor( this.forma.controls['proveedor'].value, this.token )
+    this._compraService.getProveedor( this.id, this.token )
     //this._compraService.getProveedores()
       .subscribe( dataP => {
         console.log(dataP);
@@ -103,6 +119,7 @@ export class ConsultaRetencionesComponent implements OnInit {
               });
             } else {
             if(this.proveedorData.dataset.length>0){
+              this.loading = false;
               this.compraProveedor = this.proveedorData.dataset[0];
             } else {
               this.compraProveedor = null; 
@@ -114,19 +131,14 @@ export class ConsultaRetencionesComponent implements OnInit {
   getComprobantes(){
 
     let jsbody = {
-      "IdCliente":this.forma.controls['proveedor'].value,
-      "FechaDesde":"2018-06-01",//hardcoded
-      "FechaHasta":"2018-07-03",//hardcoded
-      "TipoReferente":"OP",//hardcoded
-      "TipoOperacion": "INT",//hardcoded
-      "TipoComprobante":"Contable",//hardcoded
-      "Expendiente":"",//hardcoded
-      "ReservaPresup":"",//hardcoded
-      "Certificado":"",//hardcoded
-      "param_limite": 10,
-      "param_offset": 0
-
+      "idcliente": "999999",
+      "fechadesde": "2018-06-30",
+      "fechahasta": "2018-07-03",
+      "tipocliente": "",
+      "tipooperacion": "INT",
+      "tipocomprobante": "RET",
     };
+
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
     this._consultaRetenciones.getComprobante( jsonbody,this.token )
@@ -147,6 +159,33 @@ export class ConsultaRetencionesComponent implements OnInit {
       });
   }
 
+  print() {
+    
+    this._impresionCompService.getBaseDatos( this.token )
+    .subscribe ( dataP => {
+      console.log(dataP)
+      this.ProveedorData = dataP;
+      this.baseUrl = this.ProveedorData.dataset
+      this.urlBaseDatos = this.baseUrl[0].jasperserver + this.baseUrl[0].app
+      if(this.ProveedorData.dataset.length>0){
+        this._impresionCompService.getInfromes('ETG_retencion_crd', this.token)
+        .subscribe ( dataP => {
+          console.log(dataP)
+          this.ProveedorData = dataP;
+          this.informes = this.ProveedorData.dataset
+          this.urlInforme = this.urlBaseDatos + this.informes[0].url
+          console.log(this.urlInforme)
+          if(this.ProveedorData.dataset.length>0){
+
+            this._impresionCompService.getReporte( this.urlInforme, this.id,  this.token)
+            .subscribe (dataP => {
+              console.log(dataP);
+            })
+          }
+        })
+      }
+    })
+  }
 } 
 export interface consultaRetenciones {
   

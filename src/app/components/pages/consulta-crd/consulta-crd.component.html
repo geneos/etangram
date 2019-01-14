@@ -33,22 +33,22 @@
           </div>
         </div>
 
-  <div class="row" style="margin-top:0px; margin-bottom:10px !important;" *ngIf="!loading">
-   <!-- <div class="col s6 m3 l1" style="padding-left:2px;">
+  <!--<div class="row" style="margin-top:0px; margin-bottom:10px !important;" >
+    <div class="col s6 m3 l1" style="padding-left:2px;">
       <button (click)="consultar()" class="mine-btnbig" mat-flat-button>
         CONSULTAR
       </button>
-    </div>-->
+    </div>
     <div class="col s6 m4 l1">
       <button (click)="print()" class="mine-btnbig" mat-flat-button>
         IMPRIMIR
       </button>
     </div>
-  </div>
+  </div>-->
 
   <div id="tableCrd" class="mat-elevation-z8" *ngIf="!loading">
 
-    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
 
       <!-- Position Column -->
       <ng-container matColumnDef="ncrd">
@@ -62,35 +62,11 @@
         <td mat-cell *cdkCellDef="let element"> {{ element.fech }} </td>
       </ng-container>
 
-      <!-- Weight Column
-      <ng-container matColumnDef="npro">
-        <th mat-header-cell *matHeaderCellDef> Proveedor </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.npro }} </td>
-      </ng-container>  -->
-
-      <!-- Symbol Column
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef> Razon Social </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.name }} </td>
-      </ng-container>-->
-
-      <!-- Symbol Column
-      <ng-container matColumnDef="cuit_c">
-        <th mat-header-cell *matHeaderCellDef> Cuit </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.cuit_c }} </td>
-      </ng-container> -->
-
       <!-- Symbol Column -->
       <ng-container matColumnDef="pexp">
         <th mat-header-cell *matHeaderCellDef> Expediente</th>
         <td mat-cell *cdkCellDef="let element"> {{ element.pexp + "-" + element.nexp}} </td>
       </ng-container>
-
-      <!-- Symbol Column
-      <ng-container matColumnDef="nexp">
-        <th mat-header-cell *matHeaderCellDef>  </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.nexp }} </td>
-      </ng-container>-->
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="opub">
@@ -117,13 +93,12 @@
       </ng-container>
 
       <ng-container matColumnDef="accion">
-        <th mat-header-cell *matHeaderCellDef> Imprimir</th>
-        <td mat-cell *cdkCellDef="let a; let in = index"></td>
-        <i class="material-icons">edit</i>
+        <th mat-header-cell *matHeaderCellDef> </th>
+        <td mat-cell *cdkCellDef="let a; let in = index"><i (click)="print()" class="material-icons" style="cursor: pointer">print</i></td>  
       </ng-container>
 
-      <tr mat-header-row *cdkHeaderRowDef="['accion', 'ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total']"></tr>
-      <tr mat-row *cdkRowDef="let row; columns: ['accion', 'ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];"></tr>
+      <tr mat-header-row *cdkHeaderRowDef="['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total', 'accion']"></tr>
+      <tr mat-row *cdkRowDef="let row; columns: ['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total', 'accion'];"></tr>
     </table>
 
 

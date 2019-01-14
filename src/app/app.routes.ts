@@ -35,7 +35,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta', component: ConsultaDinamicaComponent },
   { path: 'consulta-crd/:id', component: ConsultaCrdComponent },
   { path: 'consulta-comprobantes/:id', component: ConsultaComprobantesComponent },
-  { path: 'consulta-retenciones', component: ConsultaRetencionesComponent },
+  { path: 'consulta-retenciones/:id', component: ConsultaRetencionesComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'compra' }
 ];
 

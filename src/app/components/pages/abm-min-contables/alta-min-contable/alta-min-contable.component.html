@@ -198,10 +198,11 @@
           <a *ngIf="!editingAI" (click)="guardarReferencia()" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
             AGREGAR
           </a>
-          <a *ngIf="editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
+          <a *ngIf="editingAI" (click)="guardarReferencia()" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid">
+          <!-- <a *ngIf="editingAI" type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px; margin-bottom:10px;" [disabled]="!formaReferencias.valid"> -->
             ACTUALIZAR
           </a>
-          <a type="reset" (click)="cancelarArtItem()" class="mine-btnbig-grey" mat-flat-button>
+          <a type="reset" (click)="cancelarReferencia()" class="mine-btnbig-grey" mat-flat-button>
             CANCELAR
           </a>
         </div>

@@ -24,4 +24,5 @@ export interface RefContableItem{
   centroDeCosto: string;
   debe: number;
   haber: number;
+  idEnMinuta: string;
 }

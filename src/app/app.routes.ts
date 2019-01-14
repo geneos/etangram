@@ -16,6 +16,7 @@ import { ConsultaDinamicaComponent } from './components/pages/consulta-dinamica/
 import { ConsultaCrdComponent } from './components/pages/consulta-crd/consulta-crd.component';
 import { ConsultaComprobantesComponent } from './components/pages/consulta-comprobantes/consulta-comprobantes.component';
 import { ConsultaRetencionesComponent } from './components/pages/consulta-retenciones/consulta-retenciones.component';
+import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos/consulta-ord-pagos.component';
 
 const APP_ROUTES: Routes = [
   //{ path: 'compra', component: AbmComprasComponent },
@@ -36,6 +37,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta-crd/:id', component: ConsultaCrdComponent },
   { path: 'consulta-comprobantes/:id', component: ConsultaComprobantesComponent },
   { path: 'consulta-retenciones/:id', component: ConsultaRetencionesComponent },
+  { path: 'consulta-ord-pago/:id', component: ConsultaOrdPagosComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'compra' }
 ];
 

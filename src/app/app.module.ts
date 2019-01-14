@@ -58,6 +58,7 @@ import { ConsultaRetencionesComponent } from './components/pages/consulta-retenc
 import { TablaComponent } from './components/shared/generics/tabla/tabla.component';
 import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
 import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
+import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos/consulta-ord-pagos.component';
 
 
 
@@ -98,7 +99,8 @@ import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.c
     CdFiltrosComponent,
     CdTablaComponent,
     CdAvanzadoComponent,
-    ConsultaRetencionesComponent
+    ConsultaRetencionesComponent,
+    ConsultaOrdPagosComponent
   ],
   imports: [
     BrowserModule,

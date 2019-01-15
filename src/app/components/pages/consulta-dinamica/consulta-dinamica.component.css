@@ -2,12 +2,50 @@
     display: none !important;
   }
 
-[class*="mat-column"], 
-[class*="cdk-column"], 
+  /*
+mat-header-cell[class*="mat-column"], 
+mat-header-cell[class*="cdk-column"], 
 :not(mat-column-select), 
 :not(cdk-column-select), 
 :not(mat-column-opciones), 
 :not(cdk-column-opciones) {
-  flex: 0 0 100px;
+  flex: 1 1 100px;
+  color: red;
+}
+
+mat-cell[class*="mat-column"], 
+mat-cell[class*="cdk-column"], 
+:not(mat-column-select), 
+:not(cdk-column-select), 
+:not(mat-column-opciones), 
+:not(cdk-column-opciones) {
+  flex: 1 1 100px;
+  color: red;
+}
+
+*/
+
+mat-cell, mat-header-cell { display: inline-block}
+
+mat-cell:not(.mat-column-select),
+mat-cell:not(.mat-column-opciones),
+mat-header-cell:not(.mat-column-select), 
+mat-header-cell:not(.mat-column-opciones) 
+{
+  word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 1 25% !important;
+  width: 25% !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  word-break: break-word;
+
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }
   /* <mat-cell _ngcontent-c6="" class="mat-cell cdk-column-codigo mat-column-codigo ng-star-inserted" role="gridcell">15407340</mat-cell> */
+
+  /* [class*="mat-column"][_ngcontent-c6], [class*="cdk-column"][_ngcontent-c6], [_ngcontent-c6]:not(mat-column-select), [_ngcontent-c6]:not(cdk-column-select), [_ngcontent-c6]:not(mat-column-opciones), [_ngcontent-c6]:not(cdk-column-opciones) */

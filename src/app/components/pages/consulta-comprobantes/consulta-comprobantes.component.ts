@@ -116,9 +116,9 @@ print = () => {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+  //  this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
     this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toString
-
+    console.log(this.fechaDesde)
   }
 
   openSnackBar(message: string) {

@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint} from '@angular/material';
+import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatIcon} from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MatSnackBarModule, MatSnackBar} from '@angular/material/snack-bar';
 import { CdkTableModule } from '@angular/cdk/table';
 import { ConsultaCrdService } from "../../../services/i2t/consulta-crd.service";
 //import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
+import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
+import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { Router, ActivatedRoute } from "@angular/router";
 
 
@@ -19,15 +21,22 @@ var auxProvData:any;
   templateUrl: './consulta-crd.component.html',
   styleUrls: ['./consulta-crd.component.css']
 })
+
 export class ConsultaCrdComponent implements OnInit {
   ProveedorData: any;
+  baseDatos: any;
+  informes: informes[] = [];
+  urlBaseDatos: string;
+  urlInforme: any;
+  baseUrl: ImpresionBase[] = [];
   CompraProveedor: CompraProveedor;
   ELEMENT_DATA: ConsultaCrd[] = [];
   RazonSocial:string;
   cuitc:string;
   nroProveedor:number;
 
-  displayedColumns: string[] = ['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];
+  displayedColumns: string[] = ['accion', 'ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];
+  columnsToDisplay = ['accion', 'ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];
   dataSource = new MatTableDataSource<ConsultaCrd>(this.ELEMENT_DATA);
 // ['ncrd', 'fech', 'npro', 'name', 'cuit_c', 'pexp', 'nexp', 'opub', 'tcom', 'ncomr', 'total']
   Controles: FormGroup;
@@ -40,8 +49,9 @@ export class ConsultaCrdComponent implements OnInit {
   loading: boolean = true;
 
   constructor(private route:ActivatedRoute,private router: Router,
-    private _ConsultaCrdService:ConsultaCrdService,
-    public snackBar: MatSnackBar)
+              private _ConsultaCrdService:ConsultaCrdService,
+              private _ImpresionCompService:ImpresionCompService,
+              public snackBar: MatSnackBar)
     {
     this.Controles = new FormGroup({
       'proveedor': new FormControl(),
@@ -60,7 +70,7 @@ export class ConsultaCrdComponent implements OnInit {
   ngOnInit() {
     /*this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;*/
-    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+   // this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
   }
   loginData: any;
   token: string = "a";
@@ -79,7 +89,32 @@ export class ConsultaCrdComponent implements OnInit {
   }
 
   print() {
-   const content = document.getElementById('tableCrd').innerHTML;
+    
+    this._ImpresionCompService.getBaseDatos( this.token )
+    .subscribe ( dataP => {
+      console.log(dataP)
+      this.ProveedorData = dataP;
+      this.baseUrl = this.ProveedorData.dataset
+      this.urlBaseDatos = this.baseUrl[0].jasperserver + this.baseUrl[0].app
+      if(this.ProveedorData.dataset.length>0){
+        this._ImpresionCompService.getInfromes('ETG_retencion_crd', this.token)
+        .subscribe ( dataP => {
+          console.log(dataP)
+          this.ProveedorData = dataP;
+          this.informes = this.ProveedorData.dataset
+          this.urlInforme = this.urlBaseDatos + this.informes[0].url
+          console.log(this.urlInforme)
+          if(this.ProveedorData.dataset.length>0){
+
+            this._ImpresionCompService.getReporte( this.urlInforme, this.id,  this.token)
+            .subscribe (dataP => {
+              console.log(dataP);
+            })
+          }
+        })
+      }
+    })
+  /* const content = document.getElementById('tableCrd').innerHTML;
    const content2 = 'Proovedor: ' + this.nroProveedor + ' - ' + this.RazonSocial;
    const printWindow = window.open('', 'Print', 'height=745,width=1024');
     printWindow.document.write(content2);
@@ -88,7 +123,7 @@ export class ConsultaCrdComponent implements OnInit {
     printWindow.document.close();
       printWindow.focus();
       printWindow.print();
-      printWindow.close();
+      printWindow.close();*/
     }
 
   consultar(){

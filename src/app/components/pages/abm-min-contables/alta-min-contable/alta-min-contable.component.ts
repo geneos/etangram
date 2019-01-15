@@ -1244,7 +1244,8 @@ console.log('json armado: ');
         console.log(jsonbody);
         this._minContableService.postMinContablesDet(jsonbody, this.token);
 
-        this.openSnackBar('Datos guardados');})
+      //  this.openSnackBar('Datos guardados')
+    ;})
   }
   guardarCabecera(){
     console.clear();

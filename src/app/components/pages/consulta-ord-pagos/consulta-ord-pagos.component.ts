@@ -7,6 +7,7 @@ import { ImpresionCompService } from "../../../services/i2t/impresion-comp.servi
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MatSnackBarModule, MatSnackBar} from '@angular/material/snack-bar';
+import { ConsultaOrdPagosService } from "../../../services/i2t/consulta-ord-pagos.service";
 import { Router, ActivatedRoute } from "@angular/router";
 
 var auxProvData: any;
@@ -32,6 +33,8 @@ export class ConsultaOrdPagosComponent implements OnInit {
   RazonSocial:string;
   cuitc:string;
   nroProveedor:number;
+  respCabecera: any;
+  cabeceraId: string;
 
   public fechaActual: Date = new Date();
   public fechaDesde: Date = new Date();
@@ -49,6 +52,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
   constructor( private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar, 
               public dialogArt: MatDialog, private _compraService:CompraService,
+              private _ConsultaOrdPagosService: ConsultaOrdPagosService,
               private _ImpresionCompService: ImpresionCompService) {
     
   
@@ -126,6 +130,36 @@ export class ConsultaOrdPagosComponent implements OnInit {
       });
   }
 
+  getComprobantes(){
+
+    let jsbody = {
+      "idcliente": this.id,
+      "fechadesde":"",// this.forma.controls['fecdesde'].value,
+      "fechahasta":"",// this.forma.controls['fechasta'].value,
+      "tiporeferente": "P",
+      "tipooperacion": "INT",
+      "tipocomprobante": "RET",
+    };
+
+    let jsonbody= JSON.stringify(jsbody);
+    console.log(jsonbody);
+    this._ConsultaOrdPagosService.getComprobante( jsonbody,this.token )
+      .subscribe( resp => {
+        console.log(resp);
+        this.respCabecera = resp;
+        this.cabeceraId = this.respCabecera.returnset[0].RId;
+        console.log(this.respCabecera.dataset[0])
+        if(this.respCabecera.dataset.length>0){
+          this.consultaOrdPago = this.respCabecera.dataset;
+          this.dataSource = new MatTableDataSource(this.consultaOrdPago)
+
+        } else {
+          this.consultaOrdPago = null;
+          this.dataSource = null
+          this.openSnackBar('No hay datos para mostrar');
+        }
+      });
+  }
 
   print = (nint: number) => {
     
@@ -136,7 +170,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
       this.baseUrl = this.ProveedorData.dataset
       this.urlBaseDatos = this.baseUrl[0].jasperserver + this.baseUrl[0].app
       if(this.ProveedorData.dataset.length>0){
-        this._ImpresionCompService.getInfromes('ETG_retencion_crd', this.token)
+        this._ImpresionCompService.getInfromes('ETG_ordenpago', this.token)
         .subscribe ( dataP => {
           console.log(dataP)
           this.ProveedorData = dataP;

@@ -66,7 +66,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
       'cuentacontable': new FormControl(),
       'name': new FormControl('',Validators.required),
       'imputable': new FormControl('',Validators.required),
-      'patrimonial': new FormControl('',Validators.required),
+      'patrimonial': new FormControl(),
       //'nomenclador': new FormControl(),
       //'nomencladorpadre': new FormControl(),
       //'orden': new FormControl('',Validators.required),
@@ -353,7 +353,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
     var auxorden;
     if(this.forma.controls['imputable'].value==0){auxorden=0}
-    else{auxorden=this.forma.controls['n'+this.cdadniveles].value;}
+    else{auxorden=this.forma.controls['n'+(this.cdadnivelespadre+1)].value;}
 
     if( this.id == "nuevo" ){
       // insertando
@@ -408,7 +408,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                 // carga ok
                 this.openSnackBar("Alta Correcta.");
                 //todo cambiar por lo real de plan de cuentas
-                this.router.navigate(['/plan-cuentas', 0]);
+                this.router.navigate(['/plan-cuentas', auxid]);
               } else {
                 //error al cargar
                 this.openSnackBar("Error. Alta no permitida.");

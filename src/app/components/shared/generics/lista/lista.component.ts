@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-lista',
@@ -12,6 +13,7 @@ export class ListaComponent implements CompGen {
   private _data: string;
   datosInternos: number;
   datosInternosMap: Map<string, string> ;
+  forma: FormGroup;
   @ViewChild('lista') lista;
 
     @Input() set data(value: any) {
@@ -37,7 +39,9 @@ export class ListaComponent implements CompGen {
     }
   options : any[];
   constructor( private  consultaDinService: ConsultaDinamicaService) { 
-    
+    this.forma = new FormGroup({
+      'listaDin': new FormControl()
+    });
   }
   //ngOnChanges no funcionó como esperado.
   /* 
@@ -60,8 +64,20 @@ export class ListaComponent implements CompGen {
     console.log(this.options);
     console.log('opcion traida a componente lista: ', this.data.datos.valor);
     this.datosInternos = this.data.datos.valor;
-    this.lista.select(this.data.datos.valor);
-    console.log('opcion seteada: ', this.datosInternos);
+    //
+    // this.lista.select(this.data.datos.valor);
+    // this.forma.controls['listaDin'].setValue(this.data.datos.valor);
+    this.forma = new FormGroup({
+      // 'listaDin': new FormControl([this.datosInternos])
+      'listaDin': new FormControl([this.options.find(option => option.key === this.datosInternos)])
+
+    });
+    //
+    console.log('opcion obtenida: ', this.options.find(option => option.key === this.datosInternos))
+    this.forma.controls['listaDin'].setValue(this.options.find(option => option.key === this.datosInternos));
+
+
+    console.log('opcion seteada: ', this.datosInternos, this.data.datos.valor);
 
   }
   /* 
@@ -75,7 +91,10 @@ export class ListaComponent implements CompGen {
 
     
     // this.datosInternosMap.set(this.data.datos.columna,this.datosInternos.toString());
-    this.datosInternosMap.set(this.data.datos.columna,this.datosInternos.toString());
+    // this.datosInternosMap.set(this.data.datos.columna,this.datosInternos.toString());
+    // this.datosInternosMap.set(this.data.datos.columna,this.forma.controls['listaDin'].value.toString());
+    this.datosInternosMap.set(this.data.datos.columna,value);
+
     // this.consultaDinService.actualizarDatos(this.datosInternos);
     this.consultaDinService.actualizarDatos(this.datosInternosMap);
     // this.consultaDinService.actualizarDatos(this.datosInternos);

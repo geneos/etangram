@@ -57,6 +57,17 @@ export class RefContablesService {
     return this.http.get( url , { headers });
   }
 
+  getRefContablesPorNombre( token:string , nombreCuenta:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_referenciascontables/?deleted=eq[0]&name=lk[${ nombreCuenta }]`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
   getRefContable( id:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token

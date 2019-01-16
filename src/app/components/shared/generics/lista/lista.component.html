@@ -1,15 +1,19 @@
 <!-- <div class="col s6 m3 l3"> -->
 <div>
-  <mat-form-field appearance="outline" floatLabel="always" style="width:100%; z-index: 99999 !important;">
-    <mat-label>{{data.title}}</mat-label>
-    <mat-select (selectionChange)="selected($event.value)" 
-                placeholder="Elija una opción" 
-                style="z-index: 99999 !important;"
-                [compareWith]="compareOptions"
-                #lista>
-      <!-- <mat-option *ngFor="let option of options" value="{{option.key}}" style="z-index: 99999 !important;">{{option.value}}</mat-option> -->
-      <mat-option *ngFor="let option of options" value="{{option.key}}" style="z-index: 99999 !important;">{{option.value}}</mat-option>
-    </mat-select>
-    <!--<mat-hint>Hint</mat-hint>-->
-  </mat-form-field>
+  <form [formGroup]="forma">
+    <mat-form-field appearance="outline" floatLabel="always" style="width:100%; z-index: 99999 !important;">
+      <mat-label>{{data.title}}</mat-label>
+      <mat-select (selectionChange)="selected($event.value)" 
+                  placeholder="Elija una opción" 
+                  style="z-index: 99999 !important;"
+                  formControlName="listaDin"
+                  #lista>
+        <!-- <mat-option *ngFor="let option of options" value="{{option.key}}" style="z-index: 99999 !important;">{{option.value}}</mat-option> -->
+        <mat-option *ngFor="let option of options" value="{{option.key}}" style="z-index: 99999 !important;">{{option.value}}</mat-option>
+      </mat-select>
+      <!--<mat-hint>Hint</mat-hint>-->
+    </mat-form-field>
+  </form>
 </div>
+
+<!-- [compareWith]="compareOptions" -->

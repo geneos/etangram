@@ -11,6 +11,7 @@ import { CompGen } from 'src/app/interfaces/comp-gen.interface';
 import { AnclaParaAvanzadosDirective } from 'src/app/directives/ancla-para-avanzados.directive';
 import { AnclaParaColumnasDirective } from 'src/app/directives/ancla-para-columnas.directive';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -28,7 +29,11 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   loading:boolean;
   token: string = "a";
   loginData: any;
-  reportesAll: Reporte[];
+
+  reportesAll: Reporte[] = [];
+  nombreReporte: string;
+  reporteSeleccionado : number;
+
   atributosAll: Atributo[];
   datosAll: any[];
   rData: any;
@@ -40,8 +45,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   columnasSelectas: any;
   constDatos = new MatTableDataSource();
   irADetalle: boolean;
-
-  reporteSeleccionado : number;
+  inputParam: any;
   
   //para controles dinamicos
   /* viewContainerRefFiltros: ViewContainerRef;
@@ -66,11 +70,18 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   //
   constructor(private _consultaDinamicaService: ConsultaDinamicaService,
               public snackBar: MatSnackBar,
+              private route:ActivatedRoute,
+              private router: Router,
               private componentFactoryResolver: ComponentFactoryResolver,
               private generadorDeComponentes: CompGenService,
               public ngxSmartModalService: NgxSmartModalService) { 
     this.loading = true;
-    this.reporteSeleccionado=0;//todo elegir reporte inicial
+
+    this.route.params.subscribe( parametros=>{
+      
+      this.nombreReporte = parametros['id'];
+      // this.reporteSeleccionado=0;//todo elegir reporte inicial
+    });
     
 
     //todo: dialogo|modal: mostrar sólo el botón del reporte|objeto que corresponda
@@ -88,14 +99,36 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(){
+    
+
+    console.log('suscribiendo al modal de tabla')
     //suscribir a los cambios en los otros modales
     this.ngxSmartModalService.getModal('cdTablaModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
-      console.log('Cerrado el modal: ', modal.getData());
-      //todo agregar if en caso de que se cancele
-      this.establecerColumnas();
+      // console.log('Cerrado el modal: ', modal.getData());
+      console.log('Cerrado el modal de tabla: ', modal);
+      
+      let datostemp = this.ngxSmartModalService.getModalData('cdTablaModal');
+      console.log('temp: ', datostemp);
+      console.log('temp.estado', datostemp.estado)
+      console.log('test cancelado: ', (this.ngxSmartModalService.getModalData('cdTablaModal').estado !== 'cancelado'))
+
+      if(this.ngxSmartModalService.getModalData('cdTablaModal').estado !== 'cancelado'){
+
+        this.establecerColumnas();
+      }
       // this.ngxSmartModalService.getModal(nombreModal).onClose.unsubscribe();
     });
+    
+    // console.log('suscribiendo al modal de tabla v2')
+    // this.ngxSmartModalService.getModal('cdTablaModal').onAnyCloseEvent.subscribe((modal: NgxSmartModalComponent) => {
+    //   // console.log('Cerrado el modal: ', modal.getData());
+    //   console.log('Cerrado el modal de tabla: ', modal);
+    //   //todo agregar if en caso de que se cancele
+    //   // this.establecerColumnas();
+    //   // this.ngxSmartModalService.getModal(nombreModal).onClose.unsubscribe();
+    // });
 
+    console.log('suscribiendo filtros')
     //suscribir a los botones de los modales
     this.ngxSmartModalService.getModal('cdFiltrosModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal: ', modal.getData());
@@ -140,7 +173,20 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     //   console.log('Cerrado el modal: ', modal.getData());
     // });
     
-
+    console.log('suscripcion propia');
+    // suscribir a los datos del modal
+    this.ngxSmartModalService.getModal('consDinModal').onOpen.subscribe((modal: NgxSmartModalComponent) => {
+      this.inputParam = this.ngxSmartModalService.getModalData('consDinModal');
+      
+      //todo borrar if
+      if (this.inputParam.modo ==null)
+      {
+        this.inputParam = {modo: true, selection: []};
+      }
+      //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
+      this.selection = new SelectionModel(this.inputParam.modo, this.inputParam.selection);
+      console.log('configuracion del modal de consulta din: ', this.inputParam);
+    });
   }
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -236,18 +282,30 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               if(this.rData.dataset.length>0){
                 this.reportesAll = this.rData.dataset;
                 console.log(this.reportesAll);
-                this.loading = false;
                 
-                this.buscarAtributos();
+                this.reporteSeleccionado = this.reportesAll.findIndex(reporte => reporte.name === this.nombreReporte);
+                if (this.reporteSeleccionado != -1)
+                {
+                  this.buscarAtributos();
+                }
+                else{
+                  this.openSnackBar('No existe la consulta "' + this.nombreReporte + '"');
+                  this.loading = false;
+                }
+                
+                // this.buscarAtributos();
 
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
 
               } else {
                 this.reportesAll = null;
+                this.openSnackBar('No se pudo realizar la consulta "' + this.nombreReporte + '"');
+                this.loading = false;
               }
             }
       });
+    
   }
   
   buscarAtributos(){
@@ -292,6 +350,9 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               } else {
                 this.atributosAll = null;
                 console.log('Lista de atributos vacía');
+                this.openSnackBar('No se encontraron los atributos correspondientes a la consulta "' + this.nombreReporte + '"');
+                this.loading = false;
+
               }
             }
       });

@@ -119,6 +119,7 @@ datos =
   loginData: any;
   token: string = "a";
   existe:boolean;
+  existenDetalles:boolean;
   loading:boolean;
 
   //parametros
@@ -542,6 +543,7 @@ console.log('json armado: ');
                 this.existe = false;
                 if (this.existe == false){
                   console.log('no existe este id!');
+                  this.openSnackBar('La Minuta Contable no existe');
                   this.forma.controls['fecha'].disable();
                   this.forma.controls['observaciones'].disable();
                   /* this.forma.controls['cuentacontable'].disable();
@@ -561,7 +563,7 @@ console.log('json armado: ');
   }
 
   buscarMinutasContablesDet(auxid:string){
-    this.existe = false;//
+    this.existenDetalles = false;//
     let jsbody = {
 
       "ID_ComprobanteCab":auxid,
@@ -618,8 +620,8 @@ console.log('json armado: ');
             } else {
               if(this.mcdData.dataset.length>0){
                 this.detallesAll = this.mcdData.dataset[0];
-                this.existe = true;
-                if (this.existe == true){
+                this.existenDetalles = true;
+                if (this.existenDetalles == true){
                   console.log('lista de detalles obtenida: ', this.detallesAll);
                   
                   //todo agregar cargado de detalles
@@ -681,9 +683,9 @@ console.log('json armado: ');
                 }
               } else {
                 this.detallesAll = null;
-                this.existe = false;
-                if (this.existe == false){
-                  console.log('no existe este id de detalle!');
+                this.existenDetalles = false;
+                if (this.existenDetalles == false){
+                  console.log('no existen detalles!');
                   // this.forma.controls['fecha'].disable();
                   // this.forma.controls['observaciones'].disable();
                   /* this.forma.controls['cuentacontable'].disable();
@@ -1118,8 +1120,8 @@ console.log('json armado: ');
       this.dataSource = new MatTableDataSource(this.refContableItemData)
       this.table.renderRows();
       console.log(this.dataSource);
-      this.totaldebe = this.totaldebe + this.formaReferencias.controls['debe'].value
-      this.totalhaber = this.totalhaber + this.formaReferencias.controls['haber'].value
+      this.totaldebe = Number(this.totaldebe) + Number(this.formaReferencias.controls['debe'].value);
+      this.totalhaber = Number(this.totalhaber) + Number(this.formaReferencias.controls['haber'].value);
       this.addingReferencia = false;
       this.editingAI = false;
     }
@@ -1139,8 +1141,8 @@ console.log('json armado: ');
     }
     
     //   let index: number = this.refContableItemData.findIndex(d => d === item);
-    this.totaldebe = this.totaldebe - this.refContableItemData[index].debe
-    this.totalhaber = this.totalhaber - this.refContableItemData[index].haber
+    this.totaldebe = Number(this.totaldebe) - Number(this.refContableItemData[index].debe);
+    this.totalhaber = Number(this.totalhaber) - Number(this.refContableItemData[index].haber);
     this.refContableItemData.splice(index,1);
     
     //eliminar del backend
@@ -1325,18 +1327,22 @@ console.log('json armado: ');
         }
         else{
           if (this.respCabecera.returnset[0].RId != null){
-
-            this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
-            this.openSnackBar('Minuta Contable creada. Redireccionando...');
-            // this.forma.controls['numero'].setValue(this.cabeceraId);
-            console.log('respuesta del post >>');
-            console.log(this.respCabecera);
-            console.log(this.cabeceraId);
-            console.log('<< respuesta del post');
-            setTimeout(() => {
-              // this.router.navigate(['nextRoute']);
-              this.router.navigate(['/min-contables', this.cabeceraId]);
-            }, 5000);  //5s
+            if (this.respCabecera.returnset[0].Rid === 0){
+              this.openSnackBar(this.respCabecera.returnset[0].RTxt);
+            }
+            else{
+              this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
+              this.openSnackBar('Minuta Contable creada. Redireccionando...');
+              // this.forma.controls['numero'].setValue(this.cabeceraId);
+              console.log('respuesta del post >>');
+              console.log(this.respCabecera);
+              console.log(this.cabeceraId);
+              console.log('<< respuesta del post');
+              setTimeout(() => {
+                // this.router.navigate(['nextRoute']);
+                this.router.navigate(['/min-contables', this.cabeceraId]);
+              }, 2000);  //2s
+            }
           }
           else{
             this.openSnackBar('No se pudo crear la Minuta Contable');
@@ -1363,7 +1369,7 @@ console.log('json armado: ');
       let jsbody = {
         "ID_Comprobante":this.cabeceraId,
         "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080', //morecchia //todo cambiar por uno real, 
-        "P_Total": this.totalhaber - this.totaldebe,
+        "P_Total": Number(this.totalhaber) - Number(this.totaldebe),
         "P_Obs": this.minutaContable.description, //todo revisar
         "Id_Cliente": this.parametrosSistema.account_id1_c,
         "P_Estado": 1

@@ -28,6 +28,7 @@ export class CdTablaComponent implements AfterViewInit {
   columnSelection : any;
   
   listaSeleccionada: any;
+  listaRecibida: any;
 
   @Input() componentes: ComponentWrapper[];
   viewContainerRefColumnas: ViewContainerRef; 
@@ -60,13 +61,15 @@ export class CdTablaComponent implements AfterViewInit {
     
     // this._inputParam = JSON.parse(JSON.stringify(this.inputParam));
     console.log('asignando: ',this.inputParam);
-    // this.modal = this.inputParam.modal;
-    // this.datos = [...this.inputParam.datos];
-    // this.columnSelection = [this.inputParam.columnSelection];
-    this.modal = JSON.parse(JSON.stringify(this.inputParam.modal));
+    this.modal = this.inputParam.modal;
+    this.datos = [...this.inputParam.datos];
+    this.columnSelection = [this.inputParam.columnSelection];
+    /* this.modal = JSON.parse(JSON.stringify(this.inputParam.modal));
     this.datos = JSON.parse(JSON.stringify(this.inputParam.datos));
-    this.columnSelection = JSON.parse(JSON.stringify(this.inputParam.columnSelection));
+    this.columnSelection = JSON.parse(JSON.stringify(this.inputParam.columnSelection)); */
 
+    //lista recibida backup
+    // this.listaRecibida = new SelectionModel(true, this.inputParam.columnSelection);
 
      this.listaSeleccionada = this.inputParam.columnSelection;
     //  Object.freeze(this._inputParam);
@@ -104,10 +107,20 @@ export class CdTablaComponent implements AfterViewInit {
  }
  
  aplicar(){
+    console.log('aplicando seleccion de columnas');
+    console.log('seleccionado al aplicar: ', this.inputParam.columnSelection);
+    this.inputParam.modal = this.modal;
+    this.inputParam.datos = [...this.datos];
+    this.inputParam.columnSelection = [...this.columnSelection];
+
+    
+    this.ngxSmartModalService.setModalData(this.inputParam, 'cdTablaModal');
+    console.log('datos en modal:' ,this.ngxSmartModalService.getModalData('cdTablaModal'));
     this.ngxSmartModalService.close('cdTablaModal');
  }
 
  cancelar(){
+   /*
     //reiniciar valores
     console.log('cancelado')
     console.log('era ', this.inputParam)
@@ -117,20 +130,29 @@ export class CdTablaComponent implements AfterViewInit {
     
     // this.inputParam = JSON.parse(JSON.stringify(this._inputParam));
 
-    // this.inputParam.modal = this.modal;
-    // this.inputParam.datos = [...this.datos];
-    // this.inputParam.columnSelection = [...this.columnSelection];
-    this.inputParam.modal = JSON.parse(JSON.stringify(this.modal));
+    this.inputParam.modal = this.modal;
+    this.inputParam.datos = [...this.datos];
+    this.inputParam.columnSelection = [...this.columnSelection];
+    /* this.inputParam.modal = JSON.parse(JSON.stringify(this.modal));
     this.inputParam.datos = JSON.parse(JSON.stringify(this.modal));
-    this.inputParam.columnSelection = JSON.parse(JSON.stringify(this.modal));
+    this.inputParam.columnSelection = JSON.parse(JSON.stringify(this.modal)); *
 
-    
+    //restaurar lista recibida 
+    // this.inputParam.columnSelection = new SelectionModel(true, this.listaRecibida);
+    // this.columnSelection = new SelectionModel(true, this.listaRecibida);
 
     console.log('es ahora ', this.modal, this.datos, this.columnSelection)
     // console.log('es ahora: ', this.listaSeleccionada);
     // this.inputParam.columnSelection = this.listaSeleccionada;
-
+    this.ngxSmartModalService.setModalData(this.inputParam, 'cdTablaModal');
+    console.log('datos en modal:' ,this.ngxSmartModalService.getModalData('cdTablaModal'));
     this.ngxSmartModalService.close('cdTablaModal');
+
+*/
+
+  this.ngxSmartModalService.resetModalData('cdTablaModal');
+  this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'cdTablaModal');
+  this.ngxSmartModalService.close('cdTablaModal');
  }
   
 }

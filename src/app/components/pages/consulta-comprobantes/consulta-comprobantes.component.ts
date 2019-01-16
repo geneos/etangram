@@ -22,6 +22,7 @@ require('jspdf-autotable');
 //declare var jsPDF: any;
 
 var auxProvData: any;
+
 let itemActual:any;
 
 
@@ -56,6 +57,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   fechaActual: Date = new Date();
   fechaDesde: Date = new Date();
   tabla: any = [];
+  filtrada:boolean = false;
 
   ProveedorData: any;
   baseDatos: any;
@@ -73,7 +75,7 @@ export class ConsultaComprobantesComponent implements OnInit {
 
 print = () => {
 
-  
+
   // let doc = new jsPDF();
   // doc.autoTable({
   //   head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
@@ -114,11 +116,11 @@ print = () => {
       'proveedor': new FormControl(),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
-      'tipocomprobante': new FormControl(),
+      'tipocomprobante': new FormControl(''),
       'fecdesde': new FormControl(),
-      'fechasta': new FormControl(new Date()),
-      'expediente': new FormControl(),
-      'certificado': new FormControl()
+      'fechasta': new FormControl(),
+      'expediente': new FormControl(''),
+      'certificado': new FormControl('')
     })
 
     this.route.params.subscribe( parametros=>{
@@ -126,15 +128,20 @@ print = () => {
       //this.Controles['proveedor'].setValue(this.id);
       this.buscarProveedor();
     });
+
+    this.fechaActual.setDate(this.fechaActual.getDate() + 1);
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
+    this.forma.controls['fechasta'].setValue(this.fechaActual);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
+
+    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
    }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  //  this.fechaActual.setDate(this.fechaActual.getDate() + 1).toLocaleString();
-  //  this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
-   // this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toLocaleString();
-    
+    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+
   }
 
   openSnackBar(message: string) {
@@ -189,16 +196,32 @@ print = () => {
 
   getComprobantes(){
 
+    let ano = this.forma.controls['fecdesde'].value.getFullYear().toString();
+    let mes = (this.forma.controls['fecdesde'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    let dia = this.forma.controls['fecdesde'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechadesde = ano+"-"+mes+"-"+dia;
+
+    ano = this.forma.controls['fechasta'].value.getFullYear().toString();
+    mes = (this.forma.controls['fechasta'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    dia = this.forma.controls['fechasta'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechahasta = ano+"-"+mes+"-"+dia;
+
     let jsbody = {
       "IdCliente": this.id,
-      "FechaDesde":this.forma.controls['fecdesde'].value,//"2015-01-01",
-      "FechaHasta":this.forma.controls['fechasta'].value,//"2019-12-3",
+      "FechaDesde":auxfechadesde,//this.forma.controls['fecdesde'].value,//"2015-01-01",
+      "FechaHasta":auxfechahasta,//this.forma.controls['fechasta'].value,//"2019-12-3",
       "TipoReferente": "P",
       "TipoOperacion": "CPA",
-      "TipoComprobante": "",
-      "Expendiente":"",//this.forma.controls['expediente'].value,
+      "TipoComprobante": this.forma.controls['tipocomprobante'].value,
+      "Expendiente":this.forma.controls['expediente'].value,
       "ReservaPresup":"",
-      "Certificado":"",//this.forma.controls['certificado'].value,
+      "Certificado":this.forma.controls['certificado'].value,
 
       "param_limite": 10,
       "param_offset": 0
@@ -216,7 +239,8 @@ print = () => {
         if(this.respCabecera.dataset.length>0){
           this.consultaComprobantes = this.respCabecera.dataset;
           this.dataSource = new MatTableDataSource(this.consultaComprobantes)
-
+          this.filtrada = true;
+          //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
         } else {
           this.consultaComprobantes = null;
           this.dataSource = null
@@ -226,8 +250,8 @@ print = () => {
   }
 
   getdatetime(){
-  
-    
+
+
   }
 
 }

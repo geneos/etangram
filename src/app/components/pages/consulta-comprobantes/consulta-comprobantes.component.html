@@ -48,7 +48,7 @@
       <div class="col s12 m3 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo Comprobante</mat-label>
-          <mat-select placeholder="Elija una opción" value="">
+          <mat-select placeholder="Elija una opción" formControlName="tipocomprobante">
             <mat-option value="">Todos</mat-option>
             <mat-option value="FCCR">Factura / Debito a Credito</mat-option>
             <mat-option value="FCC">Factura / Debito Contado </mat-option>
@@ -61,7 +61,7 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha desde</mat-label>
-          <input matInput [matDatepicker]="picker1" placeholder="" [min]="fechaDesde | date: 'yyyy-MM-dd'" [max]="fechaActual | date: 'yyyy-MM-dd'" formControlName="fecdesde" [value]="fechaDesde | date: 'yyyy-MM-dd'">
+          <input matInput [matDatepicker]="picker1" [min]="fechaDesde | date: 'yyyy-MM-dd'" [max]="fechaActual | date: 'yyyy-MM-dd'" formControlName="fecdesde">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
           <!--<mat-hint>Hint</mat-hint>-->
@@ -70,7 +70,7 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha Hasta</mat-label>
-          <input matInput [matDatepicker]="picker2" placeholder="" [min]="fechaDesde | date: 'yyyy-MM-dd'" [max]="fechaActual | date: 'yyyy-MM-dd'" formControlName="fechasta" [value]="fechaActual | date: 'yyyy-MM-dd'">
+          <input matInput [matDatepicker]="picker2" [min]="fechaDesde | date: 'yyyy-MM-dd'" [max]="fechaActual | date: 'yyyy-MM-dd'" formControlName="fechasta">
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2></mat-datepicker>
           <!--<mat-hint>Hint</mat-hint>-->
@@ -95,9 +95,9 @@
 
     <div class="row" style="margin-top:0px; margin-bottom:10px !important;" *ngIf="!loading">
        <div class="col s6 m3 l1" style="padding-left:2px;">
-         <button (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>
+         <a (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>
            CONSULTAR
-         </button>
+         </a>
        </div>
      <!--  <div class="col s6 m4 l1" style="padding-left:15px; margin-left: 5px;">
          <button (click)="print()" class="mine-btnbig" mat-flat-button>
@@ -107,10 +107,10 @@
        </div>
 
 
-     <div class="mat-elevation-z8" *ngIf="!loading">
+     <div class="mat-elevation-z8" *ngIf="!loading&&filtrada">
 
        <table id="tablaDatos" mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
-  
+
          <!-- Fecha Column -->
          <ng-container matColumnDef= "Fecha">
            <th mat-header-cell *matHeaderCellDef> Fecha </th>
@@ -156,7 +156,7 @@
          <!-- Accion Column -->
         <ng-container matColumnDef="accion">
           <th mat-header-cell *matHeaderCellDef> </th>
-          <td mat-cell *cdkCellDef="let a; let in = index"><i class="material-icons" style="cursor: pointer">expand_more</i></td>  
+          <td mat-cell *cdkCellDef="let a; let in = index"><i class="material-icons" style="cursor: pointer">expand_more</i></td>
         </ng-container>
 
          <ng-container matColumnDef="expandedDetail">
@@ -183,4 +183,3 @@
        </table>
        <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
      </div>
-     

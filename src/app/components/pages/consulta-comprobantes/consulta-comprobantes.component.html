@@ -61,7 +61,7 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha desde</mat-label>
-          <input matInput [matDatepicker]="picker1" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fecdesde" [value]="fechaDesde">
+          <input matInput [matDatepicker]="picker1" placeholder="" [min]="fechaDesde | date: 'yyyy-MM-dd'" [max]="fechaActual | date: 'yyyy-MM-dd'" formControlName="fecdesde" [value]="fechaDesde | date: 'yyyy-MM-dd'">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
           <!--<mat-hint>Hint</mat-hint>-->
@@ -70,7 +70,7 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha Hasta</mat-label>
-          <input matInput [matDatepicker]="picker2" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fechasta" [value]="fechaActual">
+          <input matInput [matDatepicker]="picker2" placeholder="" [min]="fechaDesde | date: 'yyyy-MM-dd'" [max]="fechaActual | date: 'yyyy-MM-dd'" formControlName="fechasta" [value]="fechaActual | date: 'yyyy-MM-dd'">
           <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2></mat-datepicker>
           <!--<mat-hint>Hint</mat-hint>-->
@@ -111,48 +111,53 @@
 
        <table id="tablaDatos" mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
   
-         <!-- Position Column -->
+         <!-- Fecha Column -->
          <ng-container matColumnDef= "Fecha">
            <th mat-header-cell *matHeaderCellDef> Fecha </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Fecha }} </td>
          </ng-container>
 
-         <!-- Name Column -->
+         <!-- Comprobante Column -->
          <ng-container matColumnDef="Tipo_Comprobante">
            <th mat-header-cell *matHeaderCellDef> Comprobante </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + ' - ' + element.Numero_Comprobante }} </td>
          </ng-container>
 
-         <!-- Weight Column -->
+         <!-- Expediente Column -->
          <ng-container matColumnDef="Expediente">
            <th mat-header-cell *matHeaderCellDef> Expediente </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Expediente }} </td>
          </ng-container>
 
-         <!-- Symbol Column -->
+         <!-- Certificado Column -->
          <ng-container matColumnDef="Certificado">
            <th mat-header-cell *matHeaderCellDef> Certificado </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Certificado }} </td>
          </ng-container>
 
-         <!-- Symbol Column -->
+         <!-- Importe Column -->
          <ng-container matColumnDef="Importe_Total">
            <th mat-header-cell *matHeaderCellDef> Importe </th>
-           <td mat-cell *cdkCellDef="let element"> {{ element.Importe_Total }} </td>
+           <td mat-cell *cdkCellDef="let element"> $ {{ element.Importe_Total | number:'1.2-2' }} </td>
          </ng-container>
 
-         <!-- Symbol Column -->
+         <!-- Saldo Column -->
          <ng-container matColumnDef="Saldo">
            <th mat-header-cell *matHeaderCellDef> Saldo</th>
-           <td mat-cell *cdkCellDef="let element"> {{ element.Saldo}} </td>
+           <td mat-cell *cdkCellDef="let element"> $ {{ element.Saldo | number:'1.2-2' }} </td>
          </ng-container>
 
-         <!-- Symbol Column -->
+         <!-- Estado Column -->
          <ng-container matColumnDef="Estado">
            <th mat-header-cell *matHeaderCellDef> Estado </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Estado }} </td>
          </ng-container>
 
+         <!-- Accion Column -->
+        <ng-container matColumnDef="accion">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *cdkCellDef="let a; let in = index"><i class="material-icons" style="cursor: pointer">expand_more</i></td>  
+        </ng-container>
 
          <ng-container matColumnDef="expandedDetail">
           <td mat-cell *cdkCellDef="let element" [attr.colspan]="columnsToDisplay.length">
@@ -176,5 +181,6 @@
          <tr mat-row *cdkRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 
        </table>
-       <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+       <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
      </div>
+     

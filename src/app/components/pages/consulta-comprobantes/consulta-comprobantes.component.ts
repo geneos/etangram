@@ -53,8 +53,8 @@ export class ConsultaComprobantesComponent implements OnInit {
   cabeceraId: string;
   loading: boolean = true;
   dateNow : Date = new Date();
-  public fechaActual: Date = new Date();
-  public fechaDesde: Date = new Date();
+  fechaActual: Date = new Date();
+  fechaDesde: Date = new Date();
   tabla: any = [];
 
   ProveedorData: any;
@@ -131,9 +131,9 @@ print = () => {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.fechaActual.setDate(this.fechaActual.getDate() + 1).toLocaleString();
+  //  this.fechaActual.setDate(this.fechaActual.getDate() + 1).toLocaleString();
   //  this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
-    this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toLocaleString();
+   // this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toLocaleString();
     
   }
 
@@ -191,8 +191,8 @@ print = () => {
 
     let jsbody = {
       "IdCliente": this.id,
-      "FechaDesde":"2015-01-01",// this.forma.controls['fecdesde'].value,
-      "FechaHasta":"2019-12-3",// this.forma.controls['fechasta'].value,
+      "FechaDesde":this.forma.controls['fecdesde'].value,//"2015-01-01",
+      "FechaHasta":this.forma.controls['fechasta'].value,//"2019-12-3",
       "TipoReferente": "P",
       "TipoOperacion": "CPA",
       "TipoComprobante": "",

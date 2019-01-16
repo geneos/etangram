@@ -79,9 +79,7 @@
       </div>
 
     </div>
-    <!-- todo descomentar -->
-    <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="!editingCabecera">
-    <!-- <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="editingCabecera"> -->
+    <div class="row" style="margin-top:10px; margin-bottom:5px;" *ngIf="!editingCabecera && existe">
       <table #tableReferencias mat-table [dataSource]="dataSource" class="mat-elevation-z1"
         style="font-family: 'Lato', sans-serif !important;">
 
@@ -127,7 +125,7 @@
       </div>
     </div>
 
-    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && !addingItem && !addingReferencia && !editingAI">
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && !addingItem && !addingReferencia && !editingAI && existe">
 
       <div class="col s12">
         <button (click)="addReferencia()" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
@@ -159,17 +157,15 @@
         <div class="col s12 m7 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Nombre Ref. Contable</mat-label>
-            <!-- todo: obtener de la referencia contable-->
-            <!-- <input matInput placeholder="" formControlName="centroDeCosto" value="{{ compraArticulo?.descripcion }}"> -->
-            <input matInput placeholder="" formControlName="nombreRefContable" >
+            <input matInput placeholder="" formControlName="nombreRefContable" value="{{ refContable?.name }} ">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s12 m7 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Centro de Costo</mat-label>
-            <!-- todo: obtener de la referencia contable-->
-            <!-- <input matInput placeholder="" formControlName="centroDeCosto" value="{{ compraArticulo?.descripcion }}"> -->
+            <!-- hecho en el ts -->
+            <!-- <input matInput placeholder="" formControlName="centroDeCosto" value="{{ refContable?.tg01_centrocosto_id_c }}"> -->
             <input matInput placeholder="" formControlName="centroDeCosto" >
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
@@ -209,7 +205,7 @@
       </form>
     </div>
     <!--panel totales-->
-    <div class="row" *ngIf="!editingCabecera">
+    <div class="row" *ngIf="!editingCabecera && existe">
       <div class="col s12" style="text-align: right;">
         <h5>Debe: $ {{ totaldebe | number:'1.2-2' }}</h5>
         <h5>Haber: $ {{ totalhaber | number:'1.2-2' }}</h5>
@@ -222,7 +218,7 @@
 
 <div class="row" style="height:0px;"></div>
 
-<div class="row" style="text-align: right;" *ngIf="editingCabecera">
+<div class="row" style="text-align: right;" *ngIf="editingCabecera && !existe">
   <button type="submit" class="mine-btnbig" mat-flat-button [disabled]="!forma.valid">
     GUARDAR
   </button>

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject  } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar} from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar, MatPaginatorIntl} from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
@@ -39,11 +39,12 @@ let itemActual:any;
   ],
   providers: [
     { provide: 'Window',  useValue: window }
-  ]
+  ],
+  
 })
 
 export class ConsultaComprobantesComponent implements OnInit {
-
+  paginatorIntl = new MatPaginatorIntl();
   forma: FormGroup;
   compraProveedor: CompraProveedor;
   loginData: any;
@@ -66,8 +67,9 @@ export class ConsultaComprobantesComponent implements OnInit {
   urlInforme: any;
   baseUrl: ImpresionBase[] = [];
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   @ViewChild('tablaDatos') tablaDatos: ElementRef;
 
@@ -108,8 +110,7 @@ print = () => {
               public snackBar: MatSnackBar,
               public dialogArt: MatDialog,
               private _compraService:CompraService,
-              private _consultaComprobantesServices:ConsultaComprobantesService,
-              private _ImpresionCompService:ImpresionCompService) {
+              private _consultaComprobantesServices:ConsultaComprobantesService,) {
     this.loading = true;
 
     this.forma = new FormGroup({
@@ -134,12 +135,13 @@ print = () => {
     this.forma.controls['fechasta'].setValue(this.fechaActual);
     this.forma.controls['fecdesde'].setValue(this.fechaDesde);
 
-    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
    }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
+    this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    
     //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
 
   }

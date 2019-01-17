@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
@@ -59,6 +59,8 @@ import { TablaComponent } from './components/shared/generics/tabla/tabla.compone
 import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
 import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
 import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos/consulta-ord-pagos.component';
+import { ErrorHandlerService } from './services/error-handler.service';
+import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.component';
 
 
 
@@ -95,6 +97,7 @@ import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos
     TablaComponent,
     KeysPipe,
     ConsultaComprobantesComponent,
+    ConsDinComponent,
     CdAvanzadoComponent,
     CdFiltrosComponent,
     CdTablaComponent,
@@ -126,6 +129,7 @@ import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+    // {provide: ErrorHandler, useClass: ErrorHandlerService}
   ],
   bootstrap: [AppComponent],
   

@@ -12,6 +12,7 @@ export class ListaComponent implements CompGen {
   // @Input() data: any;
   private _data: string;
   datosInternos: number;
+  opcionElegida: any;
   datosInternosMap: Map<string, string> ;
   forma: FormGroup;
   @ViewChild('lista') lista;
@@ -67,6 +68,7 @@ export class ListaComponent implements CompGen {
     //
     // this.lista.select(this.data.datos.valor);
     // this.forma.controls['listaDin'].setValue(this.data.datos.valor);
+    this.opcionElegida = this.options.find(option => option.key === this.datosInternos);
     this.forma = new FormGroup({
       // 'listaDin': new FormControl([this.datosInternos])
       'listaDin': new FormControl([this.options.find(option => option.key === this.datosInternos)])

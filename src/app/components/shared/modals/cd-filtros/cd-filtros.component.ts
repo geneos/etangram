@@ -172,6 +172,20 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
       (<CompGen>componentRef.instance).data = control.data;
     });
 
+    //todo borrar (prueba de calendario)
+    /* let control = this.generadorDeComponentes.getComponent( 'Fecha',
+                                                            'FechaTest', //titulo
+                                                            'Esta es una prueba de fecha',//placeholder
+                                                            {valores: '2018-02-01', //valores por defecto/ para armar listas desplegables
+                                                            columna: 'fechainicio',//columna correspondiente para armado de consultas
+                                                            valor:   '2019-01-16'});//valor ingresado previamente por el usuario
+                                                            //  valor:   'test(buscar en diccionario)'});
+
+    let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
+    let componentRef = this.viewContainerRefAvanzados.createComponent(componentFactory);
+    this.componentesAvanzados.push(componentRef.instance);
+    (<CompGen>componentRef.instance).data = control.data; */
+    //todo borrar ^
   }
 
   aplicar(){

@@ -118,6 +118,13 @@ h6 {
   z-index: 9999 !important;
 }
 
+.nsm-dialog { width: 85% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; }
+
+/* app-cd-filtros.nsm-dialog { width: 55% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; }
+ */
+ app-cd-filtros ngx-smart-modal div div div.nsm-dialog,
+ app-cd-filtros ngx-smart-modal div div.nsm-dialog,
+ { width: 55% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; }
 /* .cdk-global-overlay-wrapper {
   z-index: 1000;
 } */

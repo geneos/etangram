@@ -5,6 +5,7 @@ import { ListaComponent } from 'src/app/components/shared/generics/lista/lista.c
 import { ConsultaComponent } from 'src/app/components/shared/generics/consulta/consulta.component';
 import { TablaComponent } from 'src/app/components/shared/generics/tabla/tabla.component';
 import { NumeroComponent } from 'src/app/components/shared/generics/numero/numero.component';
+import { FechaComponent } from 'src/app/components/shared/generics/fecha/fecha.component';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,10 @@ export class CompGenService {
       case 'Tabla':
         nuevoComponent = TablaComponent;
         place = 'Selecciones Columnas';
+        break;
+      case 'Fecha':
+        nuevoComponent = FechaComponent;
+        place = 'Ingrese o seleccione una fecha';
         break;
       default:
         nuevoComponent = TextoComponent;

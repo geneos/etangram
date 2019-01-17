@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.interface";
 import { Router, ActivatedRoute } from "@angular/router";
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { Subscription } from 'rxjs';
 
 var auxProvData,auxArtiData:any;
 
@@ -51,11 +53,17 @@ export class AbmComprasComponent implements OnInit {
 "IVA Responsable Inscripto - Agente de Percepción","Pequeño Contribuyente Eventual",
 "Monotributista Social","Pequeño Contribuyente Eventual Social"];
 
+  suscripcionConsDin: Subscription;
+
   @ViewChild('tableArticulos') table: MatTable<any>;
   user: string;
   pass: string;
 
-  constructor(public dialogArt: MatDialog, private _compraService:CompraService, private route:ActivatedRoute,)
+  constructor(public dialogArt: MatDialog, 
+              private _compraService:CompraService, 
+              private route:ActivatedRoute,
+              public ngxSmartModalService: NgxSmartModalService,
+              public snackBar: MatSnackBar,)
   {
 
     this.route.params.subscribe( parametros=>{
@@ -101,6 +109,58 @@ export class AbmComprasComponent implements OnInit {
 
   test(){
     //console.log(this.forma.controls['caicae'].errors)
+  }
+
+  abrirConsulta(consulta: string){
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null
+    }
+
+    // this.ngxSmartModalService.setModalData(datosModal, nombreModal);
+    
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData('consDinModal');
+    this.ngxSmartModalService.setModalData(datosModal, 'consDinModal');
+    // this.ngxSmartModalService.getModal('consDinModal').onCloseFinished
+    this.suscripcionConsDin = this.ngxSmartModalService.getModal('consDinModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData('consDinModal');
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección de Proveedor');
+      }
+      else{
+        this.forma.controls['proveedor'].setValue(respuesta.selection[0].codigo);
+        this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionConsDin.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open('consDinModal');
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
   }
 
   existeProveedor( control: FormControl ): Promise<any>{

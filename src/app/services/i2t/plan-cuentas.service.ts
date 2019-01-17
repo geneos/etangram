@@ -61,9 +61,9 @@ export class PlanCuentasService {
     var query;
 
     if(padre==""){
-      query = `api/tg01_cuentascontables/?_orderby=nomencladorpadre&_limit=9`;
+      query = `api/tg01_cuentascontables/?deleted=eq[0]&_orderby=nomencladorpadre&_limit=9`;
     } else {
-      query = `api/tg01_cuentascontables/?nomencladorpadre=lk[${ padre }]`;
+      query = `api/tg01_cuentascontables/?deleted=eq[0]&nomencladorpadre=lk[${ padre }]`;
     }
 
     let url = this.preUrl + query;

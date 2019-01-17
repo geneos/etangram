@@ -7,7 +7,8 @@
                   placeholder="Elija una opción" 
                   style="z-index: 99999 !important;"
                   formControlName="listaDin"
-                  #lista>
+                  #lista
+                  value="{{ opcionElegida }}">
         <!-- <mat-option *ngFor="let option of options" value="{{option.key}}" style="z-index: 99999 !important;">{{option.value}}</mat-option> -->
         <mat-option *ngFor="let option of options" value="{{option.key}}" style="z-index: 99999 !important;">{{option.value}}</mat-option>
       </mat-select>

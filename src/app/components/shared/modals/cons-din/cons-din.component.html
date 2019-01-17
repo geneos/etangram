@@ -1,13 +1,18 @@
-<ngx-smart-modal #consDinModal [identifier]="'consDinModal'">
+<ngx-smart-modal #consDinModal 
+                 customClass="overlay-cons-din" 
+                 [identifier]="'consDinModal'"
+                 [closable]="false"
+                 >
 <div class="modal-header">
-    <h4 class="modal-title pull-left">Modal Header</h4>
     
 </div>
-<div class="modal-body">
+<div class="modal-body"  style="max-width: 2000px !important;">
   <app-consulta-dinamica></app-consulta-dinamica>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-default" (click)="consDinModal.close()">Cancel</button>
+    <button type="button" class="mine-btnbig" (click)="aplicar()">Aplicar</button>
+    <button type="button" class="mine-btnbig" (click)="cancelar()">Cancelar</button>
 </div>
 </ngx-smart-modal>
+
 

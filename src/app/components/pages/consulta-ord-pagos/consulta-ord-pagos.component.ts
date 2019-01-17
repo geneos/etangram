@@ -7,6 +7,7 @@ import { ImpresionCompService } from "../../../services/i2t/impresion-comp.servi
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MatSnackBarModule, MatSnackBar} from '@angular/material/snack-bar';
+import { ConsultaOrdPagosService } from "../../../services/i2t/consulta-ord-pagos.service";
 import { Router, ActivatedRoute } from "@angular/router";
 
 var auxProvData: any;
@@ -22,6 +23,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
   loginData: any;
   token: string = "a";
   proveedorData: any;
+  ProveedorData: any;
   baseDatos: any;
   informes: informes[] = [];
   urlBaseDatos: string;
@@ -31,6 +33,8 @@ export class ConsultaOrdPagosComponent implements OnInit {
   RazonSocial:string;
   cuitc:string;
   nroProveedor:number;
+  respCabecera: any;
+  cabeceraId: string;
 
   public fechaActual: Date = new Date();
   public fechaDesde: Date = new Date();
@@ -48,7 +52,8 @@ export class ConsultaOrdPagosComponent implements OnInit {
   constructor( private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar, 
               public dialogArt: MatDialog, private _compraService:CompraService,
-              private _impresionCompService: ImpresionCompService) {
+              private _ConsultaOrdPagosService: ConsultaOrdPagosService,
+              private _ImpresionCompService: ImpresionCompService) {
     
   
     this.forma = new FormGroup({
@@ -125,8 +130,79 @@ export class ConsultaOrdPagosComponent implements OnInit {
       });
   }
 
+  getComprobantes(){
 
+    let jsbody = {
+      "idcliente": this.id,
+      "fechadesde":"",// this.forma.controls['fecdesde'].value,
+      "fechahasta":"",// this.forma.controls['fechasta'].value,
+      "tiporeferente": "P",
+      "tipooperacion": "INT",
+      "tipocomprobante": "RET",
+    };
+
+    let jsonbody= JSON.stringify(jsbody);
+    console.log(jsonbody);
+    this._ConsultaOrdPagosService.getComprobante( jsonbody,this.token )
+      .subscribe( resp => {
+        console.log(resp);
+        this.respCabecera = resp;
+        this.cabeceraId = this.respCabecera.returnset[0].RId;
+        console.log(this.respCabecera.dataset[0])
+        if(this.respCabecera.dataset.length>0){
+          this.consultaOrdPago = this.respCabecera.dataset;
+          this.dataSource = new MatTableDataSource(this.consultaOrdPago)
+
+        } else {
+          this.consultaOrdPago = null;
+          this.dataSource = null
+          this.openSnackBar('No hay datos para mostrar');
+        }
+      });
+  }
+
+  print = (nint: number) => {
+    
+    this._ImpresionCompService.getBaseDatos( this.token )
+    .subscribe ( dataP => {
+      console.log(dataP)
+      this.ProveedorData = dataP;
+      this.baseUrl = this.ProveedorData.dataset
+      this.urlBaseDatos = this.baseUrl[0].jasperserver + this.baseUrl[0].app
+      if(this.ProveedorData.dataset.length>0){
+        this._ImpresionCompService.getInfromes('ETG_ordenpago', this.token)
+        .subscribe ( dataP => {
+          console.log(dataP)
+          this.ProveedorData = dataP;
+          this.informes = this.ProveedorData.dataset
+          this.urlInforme = this.urlBaseDatos + this.informes[0].url
+          console.log(this.urlInforme)
+          if(this.ProveedorData.dataset.length>0){
+            window.open(this.urlInforme + nint)
+          }
+        })
+      }
+    })
+    // let doc = new jsPDF();
+    // doc.autoTable({
+    //   head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
   
+    // })
+    // for (let index = 0; index < this.dataSource.data.length; index++) {
+    //   // itemActual[index] = dataSource.trim();
+    //   // console.log(itemActual[index].toString);
+    //   doc.autoTable({
+    //     body: [[,this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
+    //     this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
+    //     this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]]
+  
+    //   });
+    //   console.log(this.dataSource.data[index])
+    //   console.log(index);
+    // }
+  
+    // doc.save('table.pdf')
+  }
 }
 export interface consultaOrdPago {
   

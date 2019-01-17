@@ -32,6 +32,7 @@ export class ConsultaCrdComponent implements OnInit {
   CompraProveedor: CompraProveedor;
   ELEMENT_DATA: ConsultaCrd[] = [];
   RazonSocial:string;
+  nroInterno:number;
   cuitc:string;
   nroProveedor:number;
 
@@ -88,8 +89,8 @@ export class ConsultaCrdComponent implements OnInit {
     return promesa;
   }
 
-  print() {
-    
+  print(nint: number) {
+   // window.open('http://devjasper.i2tsa.com.ar/Ejecutar_Reportes2.php?ruta_reporte=/E_Tangram/Reports/Compras/ET_ReferenciasContables&formato=PDF&param_param_nint=213334');
     this._ImpresionCompService.getBaseDatos( this.token )
     .subscribe ( dataP => {
       console.log(dataP)
@@ -105,11 +106,7 @@ export class ConsultaCrdComponent implements OnInit {
           this.urlInforme = this.urlBaseDatos + this.informes[0].url
           console.log(this.urlInforme)
           if(this.ProveedorData.dataset.length>0){
-
-            this._ImpresionCompService.getReporte( this.urlInforme, this.id,  this.token)
-            .subscribe (dataP => {
-              console.log(dataP);
-            })
+            window.open(this.urlInforme + nint)
           }
         })
       }
@@ -152,6 +149,7 @@ export class ConsultaCrdComponent implements OnInit {
                 this.RazonSocial = this.ELEMENT_DATA[0].name;
                 this.nroProveedor = this.ELEMENT_DATA[0].npro;
                 this.cuitc = this.ELEMENT_DATA[0].cuit_c;
+                this.nroInterno = this.ELEMENT_DATA[0].nint;
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
                 this.loading = false;
                 this.dataSource.paginator = this.paginator;
@@ -162,6 +160,7 @@ export class ConsultaCrdComponent implements OnInit {
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);
                 this.RazonSocial = null;
                 this.cuitc = null;
+                this.nroInterno = null;
                 this.nroProveedor = null;
 
               }
@@ -176,6 +175,7 @@ export class ConsultaCrdComponent implements OnInit {
   }
 }
 export interface ConsultaCrd {
+    nint: number;
     ncrd: number;
     fech: string;
     npro: number;

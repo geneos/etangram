@@ -41,7 +41,7 @@ export class ConsultaRetencionesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  columnsToDisplay  = ['Fecha', 'Comprobante', 'Expediente', 'Impuesto', 'Concepto', 'Importe'];
+  columnsToDisplay  = ['Fecha', 'Comprobante', 'Expediente', 'Impuesto', 'Concepto', 'Importe', 'accion'];
   dataSource = new MatTableDataSource<consultaRetenciones>(this.consultaRetenciones);
 
   
@@ -57,7 +57,7 @@ export class ConsultaRetencionesComponent implements OnInit {
     
   
     this.forma = new FormGroup({
-      'proveedor': new FormControl('',Validators.required,this.existeProveedor),
+      'proveedor': new FormControl(),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
       'fecdesde': new FormControl(),
@@ -75,7 +75,8 @@ export class ConsultaRetencionesComponent implements OnInit {
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+  //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+  this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toLocaleString();
   }
 
   openSnackBar(message: string) {
@@ -131,10 +132,10 @@ export class ConsultaRetencionesComponent implements OnInit {
   getComprobantes(){
 
     let jsbody = {
-      "idcliente": "999999",
-      "fechadesde": "2018-06-30",
-      "fechahasta": "2018-07-03",
-      "tipocliente": "",
+      "idcliente": this.id,
+      "fechadesde":"",// this.forma.controls['fecdesde'].value,
+      "fechahasta":"",// this.forma.controls['fechasta'].value,
+      "tiporeferente": "P",
       "tipooperacion": "INT",
       "tipocomprobante": "RET",
     };
@@ -208,5 +209,5 @@ export interface consultaRetenciones {
   Reserva_Presupuestaria: string,
   Certificado: string,
   Estado: string,
-  Saldo: number
+  Saldo: number 
 }

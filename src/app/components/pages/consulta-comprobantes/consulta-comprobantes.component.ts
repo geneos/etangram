@@ -7,7 +7,12 @@ import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
 import { CdkTableModule } from '@angular/cdk/table';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
+import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { Router, ActivatedRoute } from "@angular/router";
+import { DatePipe } from '@angular/common';
+
+
 //import jsPDF from 'jspdf';
 //import jspdf from 'jspdf-autotable';
 
@@ -17,6 +22,7 @@ require('jspdf-autotable');
 //declare var jsPDF: any;
 
 var auxProvData: any;
+
 let itemActual:any;
 
 
@@ -36,7 +42,6 @@ let itemActual:any;
   ]
 })
 
-
 export class ConsultaComprobantesComponent implements OnInit {
 
   forma: FormGroup;
@@ -48,9 +53,19 @@ export class ConsultaComprobantesComponent implements OnInit {
   respCabecera: any;
   cabeceraId: string;
   loading: boolean = true;
-  public fechaActual: Date = new Date();
-  public fechaDesde: Date = new Date();
+  dateNow : Date = new Date();
+  fechaActual: Date = new Date();
+  fechaDesde: Date = new Date();
   tabla: any = [];
+  filtrada:boolean = false;
+
+  ProveedorData: any;
+  baseDatos: any;
+  informes: informes[] = [];
+  urlBaseDatos: string;
+  urlInforme: any;
+  baseUrl: ImpresionBase[] = [];
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -60,27 +75,28 @@ export class ConsultaComprobantesComponent implements OnInit {
 
 print = () => {
 
-  let doc = new jsPDF();
-  doc.autoTable({
-    head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
 
-  })
-  for (let index = 0; index < this.dataSource.data.length; index++) {
-    // itemActual[index] = dataSource.trim();
-    // console.log(itemActual[index].toString);
-    doc.autoTable({
-      body: [[,this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
-      this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
-      this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]]
+  // let doc = new jsPDF();
+  // doc.autoTable({
+  //   head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
 
-    });
-    console.log(this.dataSource.data[index])
-    console.log(index);
-  }
+  // })
+  // for (let index = 0; index < this.dataSource.data.length; index++) {
+  //   // itemActual[index] = dataSource.trim();
+  //   // console.log(itemActual[index].toString);
+  //   doc.autoTable({
+  //     body: [[,this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
+  //     this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
+  //     this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]]
 
-  doc.save('table.pdf')
+  //   });
+  //   console.log(this.dataSource.data[index])
+  //   console.log(index);
+  // }
+
+  // doc.save('table.pdf')
 }
-  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado'];
+  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado', 'accion'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;
 
@@ -92,18 +108,19 @@ print = () => {
               public snackBar: MatSnackBar,
               public dialogArt: MatDialog,
               private _compraService:CompraService,
-              private _consultaComprobantesServices:ConsultaComprobantesService) {
+              private _consultaComprobantesServices:ConsultaComprobantesService,
+              private _ImpresionCompService:ImpresionCompService) {
     this.loading = true;
 
     this.forma = new FormGroup({
       'proveedor': new FormControl(),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
-      'tipcomp': new FormControl(),
+      'tipocomprobante': new FormControl(''),
       'fecdesde': new FormControl(),
-      'fechasta': new FormControl(new Date()),
-      'expediente': new FormControl(),
-      'certificado': new FormControl()
+      'fechasta': new FormControl(),
+      'expediente': new FormControl(''),
+      'certificado': new FormControl('')
     })
 
     this.route.params.subscribe( parametros=>{
@@ -111,14 +128,20 @@ print = () => {
       //this.Controles['proveedor'].setValue(this.id);
       this.buscarProveedor();
     });
+
+    this.fechaActual.setDate(this.fechaActual.getDate() + 1);
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
+    this.forma.controls['fechasta'].setValue(this.fechaActual);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
+
+    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
    }
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  //  this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
-    this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toString
-    console.log(this.fechaDesde)
+    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+
   }
 
   openSnackBar(message: string) {
@@ -173,16 +196,33 @@ print = () => {
 
   getComprobantes(){
 
+    let ano = this.forma.controls['fecdesde'].value.getFullYear().toString();
+    let mes = (this.forma.controls['fecdesde'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    let dia = this.forma.controls['fecdesde'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechadesde = ano+"-"+mes+"-"+dia;
+
+    ano = this.forma.controls['fechasta'].value.getFullYear().toString();
+    mes = (this.forma.controls['fechasta'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    dia = this.forma.controls['fechasta'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechahasta = ano+"-"+mes+"-"+dia;
+
     let jsbody = {
-      "IdCliente":this.id,
-      "FechaDesde":"2018-06-01",//hardcoded
-      "FechaHasta":"2018-07-03",//hardcoded
-      "TipoReferente":"OP",//hardcoded
-      "TipoOperacion": "INT",//hardcoded
-      "TipoComprobante":"Contable",//hardcoded
-      "Expendiente":"",//hardcoded
-      "ReservaPresup":"",//hardcoded
-      "Certificado":"",//hardcoded
+      "IdCliente": this.id,
+      "FechaDesde":auxfechadesde,//this.forma.controls['fecdesde'].value,//"2015-01-01",
+      "FechaHasta":auxfechahasta,//this.forma.controls['fechasta'].value,//"2019-12-3",
+      "TipoReferente": "P",
+      "TipoOperacion": "CPA",
+      "TipoComprobante": this.forma.controls['tipocomprobante'].value,
+      "Expendiente":this.forma.controls['expediente'].value,
+      "ReservaPresup":"",
+      "Certificado":this.forma.controls['certificado'].value,
+
       "param_limite": 10,
       "param_offset": 0
 
@@ -195,10 +235,12 @@ print = () => {
         this.respCabecera = resp;
         this.cabeceraId = this.respCabecera.returnset[0].RId;
         console.log(this.respCabecera.dataset[0])
+        console.log(this.forma.controls['fecdesde'].value);
         if(this.respCabecera.dataset.length>0){
           this.consultaComprobantes = this.respCabecera.dataset;
           this.dataSource = new MatTableDataSource(this.consultaComprobantes)
-
+          this.filtrada = true;
+          //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
         } else {
           this.consultaComprobantes = null;
           this.dataSource = null
@@ -206,14 +248,12 @@ print = () => {
         }
       });
   }
-  mostrar(){
-    for (let index = 0; index < this.dataSource.data.length; index++) {
-      // itemActual[index] = dataSource.trim();
-      // console.log(itemActual[index].toString);
-      console.log(this.dataSource.data[index])
-      console.log(index);
-    }
+
+  getdatetime(){
+
+
   }
+
 }
 export interface consultaComprobantes {
 

@@ -44,13 +44,14 @@ export class ImpresionCompService {
     return this.http.get( url, { headers })
   }
 
-  getReporte( url:string, id:string, token:string){
+  getReporte( url:string, id:number, token:string){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
     let query = url + `${ id }`
-    console.log(query)
+   // console.log(query)
     return this.http.get( query, { headers })
+   
   }
 }

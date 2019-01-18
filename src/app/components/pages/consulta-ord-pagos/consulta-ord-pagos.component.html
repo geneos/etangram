@@ -33,18 +33,7 @@
           </div>
         </div>
 
-  <!--<div class="row" style="margin-top:0px; margin-bottom:10px !important;" >
-    <div class="col s6 m3 l1" style="padding-left:2px;">
-      <button (click)="consultar()" class="mine-btnbig" mat-flat-button>
-        CONSULTAR
-      </button>
-    </div>
-    <div class="col s6 m4 l1">
-      <button (click)="print()" class="mine-btnbig" mat-flat-button>
-        IMPRIMIR
-      </button>
-    </div>
-  </div>-->
+  
   <div class="row" style="margin-top:15px;" *ngIf="!loading">  
     <h6 style="margin-top:0px !important; margin-bottom: 20px !important; margin-left: 20px !important;">Filtros:</h6>
     <div class="col s6 m3 l3">
@@ -73,50 +62,60 @@
       </mat-form-field>
     </div>
   </div>
+  <div class="row" style="margin-top:0px; margin-bottom:10px !important;" >
+    <div class="col s6 m3 l1" style="padding-left:2px;">
+      <button (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>
+        CONSULTAR
+      </button>
+    </div>
+    <!--<div class="col s6 m4 l1">
+      <button (click)="print()" class="mine-btnbig" mat-flat-button>
+        IMPRIMIR
+      </button>
+    </div>-->
+  </div>
 
-  <div class="mat-elevation-z8" *ngIf="!loading">
+  <div class="mat-elevation-z8" *ngIf="!loading&&filtrada">
 
     <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
 
       <!-- Name Column -->
       <ng-container matColumnDef="fecha">
         <th mat-header-cell *matHeaderCellDef> Fecha </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.fech }} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.Fecha }} </td>
       </ng-container>
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="comprobante">
         <th mat-header-cell *matHeaderCellDef> Comprobante</th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.pexp + "-" + element.nexp}} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + "-" + element.Numero_Comprobante}} </td>
       </ng-container>
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="expediente">
         <th mat-header-cell *matHeaderCellDef> Expediente </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.opub }} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.Expediente }} </td>
       </ng-container>
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="observaciones">
         <th mat-header-cell *matHeaderCellDef> observaciones</th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.tcom + "-" + element.ncomr}} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.Observaciones_Comprobante}} </td>
       </ng-container>
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="importe">
         <th mat-header-cell *matHeaderCellDef> Importe </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.total }} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.Saldo }} </td>
       </ng-container>
 
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> </th>
-        <td mat-cell *cdkCellDef="let a; let in = index"><i (click)="print()" class="material-icons" style="cursor: pointer">print</i></td>  
+        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>  
       </ng-container>
 
       <tr mat-header-row *cdkHeaderRowDef="['fecha', 'comprobante', 'expediente', 'observaciones', 'importe', 'accion']"></tr>
       <tr mat-row *cdkRowDef="let row; columns: ['fecha', 'comprobante', 'expediente', 'observaciones', 'importe', 'accion'];"></tr>
     </table>
-
-
+    <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons [ngStyle]="{'display':loading ? 'none' : 'block' }"></mat-paginator>
   </div>
-  <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons [ngStyle]="{'display':loading ? 'none' : 'block' }"></mat-paginator>

@@ -48,6 +48,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
   selection = new SelectionModel(true, []);
   id: any;
   loading: boolean = true;
+  filtrada:boolean = false;
 
   constructor( private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar, 
@@ -61,7 +62,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
       'fecdesde': new FormControl(),
-      'fechasta': new FormControl(new Date()),
+      'fechasta': new FormControl(),
       'expediente': new FormControl(),
     })
     this.route.params.subscribe( parametros=>{
@@ -128,17 +129,38 @@ export class ConsultaOrdPagosComponent implements OnInit {
             }
           }
       });
-  }
+  } 
 
   getComprobantes(){
 
+  /*  let ano = this.forma.controls['fecdesde'].value.getFullYear().toString();
+    let mes = (this.forma.controls['fecdesde'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    let dia = this.forma.controls['fecdesde'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechadesde = ano+"-"+mes+"-"+dia;
+
+    ano = this.forma.controls['fechasta'].value.getFullYear().toString();
+    mes = (this.forma.controls['fechasta'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    dia = this.forma.controls['fechasta'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechahasta = ano+"-"+mes+"-"+dia;
+*/
     let jsbody = {
-      "idcliente": this.id,
-      "fechadesde":"",// this.forma.controls['fecdesde'].value,
-      "fechahasta":"",// this.forma.controls['fechasta'].value,
-      "tiporeferente": "P",
-      "tipooperacion": "INT",
-      "tipocomprobante": "RET",
+        "IdCliente": this.id,
+        "FechaDesde": "2015-01-01",
+        "FechaHasta": "2019-12-31",
+        "TipoReferente": "P",
+        "TipoOperacion": "CAJ",
+        "TipoComprobante": "OP",
+        "Expendiente":" ",
+        "ReservaPresup":" ",
+        "Certificado":" ",
+        "param_limite": 10,
+        "param_offset": 0
     };
 
     let jsonbody= JSON.stringify(jsbody);
@@ -150,9 +172,9 @@ export class ConsultaOrdPagosComponent implements OnInit {
         this.cabeceraId = this.respCabecera.returnset[0].RId;
         console.log(this.respCabecera.dataset[0])
         if(this.respCabecera.dataset.length>0){
+          this.filtrada = true;
           this.consultaOrdPago = this.respCabecera.dataset;
           this.dataSource = new MatTableDataSource(this.consultaOrdPago)
-
         } else {
           this.consultaOrdPago = null;
           this.dataSource = null
@@ -161,7 +183,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
       });
   }
 
-  print = (nint: number) => {
+  print = (nint: string) => {
     
     this._ImpresionCompService.getBaseDatos( this.token )
     .subscribe ( dataP => {
@@ -178,6 +200,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
           this.urlInforme = this.urlBaseDatos + this.informes[0].url
           console.log(this.urlInforme)
           if(this.ProveedorData.dataset.length>0){
+            console.log(nint)
             window.open(this.urlInforme + nint)
           }
         })

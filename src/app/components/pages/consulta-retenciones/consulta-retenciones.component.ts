@@ -48,6 +48,8 @@ export class ConsultaRetencionesComponent implements OnInit {
   selection = new SelectionModel(true, []);
   id: any;
   loading: boolean = true;
+  filtrada:boolean = false;
+
   constructor( @Inject('Window') private window: Window,
               private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar, 
@@ -132,12 +134,17 @@ export class ConsultaRetencionesComponent implements OnInit {
   getComprobantes(){
 
     let jsbody = {
-      "idcliente": this.id,
-      "fechadesde":"",// this.forma.controls['fecdesde'].value,
-      "fechahasta":"",// this.forma.controls['fechasta'].value,
-      "tiporeferente": "P",
-      "tipooperacion": "INT",
-      "tipocomprobante": "RET",
+      "IdCliente": this.id,
+      "FechaDesde": "2015-01-01",
+      "FechaHasta": "2019-12-31",
+      "TipoReferente": "P",
+      "TipoOperacion": "INT",
+      "TipoComprobante": "RET",
+      "Expendiente":" ",
+      "ReservaPresup":" ",
+      "Certificado":" ",
+      "param_limite": 10,
+      "param_offset": 0
     };
 
     let jsonbody= JSON.stringify(jsbody);
@@ -151,7 +158,7 @@ export class ConsultaRetencionesComponent implements OnInit {
         if(this.respCabecera.dataset.length>0){
           this.consultaRetenciones = this.respCabecera.dataset;
           this.dataSource = new MatTableDataSource(this.consultaRetenciones)
-
+          this.filtrada = true;
         } else {
           this.consultaRetenciones = null;
           this.dataSource = null
@@ -160,7 +167,7 @@ export class ConsultaRetencionesComponent implements OnInit {
       });
   }
 
-  print() {
+  print(nint: number) {
     
     this._impresionCompService.getBaseDatos( this.token )
     .subscribe ( dataP => {
@@ -178,10 +185,7 @@ export class ConsultaRetencionesComponent implements OnInit {
           console.log(this.urlInforme)
           if(this.ProveedorData.dataset.length>0){
 
-            this._impresionCompService.getReporte( this.urlInforme, this.id,  this.token)
-            .subscribe (dataP => {
-              console.log(dataP);
-            })
+            window.open(this.urlInforme + nint)
           }
         })
       }

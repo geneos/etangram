@@ -68,14 +68,9 @@
            CONSULTAR
          </button>
        </div>
-       <div class="col s6 m4 l1">
-         <button (click)="downloadPdf()" class="mine-btnbig" mat-flat-button>
-           IMPRIMIR
-         </button>
-       </div> 
      </div>
      
-     <div id="tablaDatos" class="mat-elevation-z8" *ngIf="!loading">
+     <div id="tablaDatos" class="mat-elevation-z8" *ngIf="!loading&&filtrada">
        
        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
         
@@ -118,8 +113,8 @@
          <!-- Columna Imprimir-->
          <ng-container matColumnDef="accion">
           <th mat-header-cell *matHeaderCellDef> </th>
-          <td mat-cell *cdkCellDef="let a; let in = index">
-            <i (click)="print()" class="material-icons" style="cursor: pointer">print</i>
+          <td mat-cell *cdkCellDef="let element">
+            <i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i>
           </td>  
         </ng-container>
        
@@ -128,5 +123,6 @@
          <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;"></tr>
 
        </table>
+       
+        <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
      </div>
-     <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>

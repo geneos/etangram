@@ -153,6 +153,67 @@ export class AltaArticuloComponent implements OnInit {
   guardarArticulo(){
     if( this.id == "nuevo" ){
       // insertando
+      let jsbody = {
+        "ArticuloItem" : this.forma.controls['tipo'].value,
+        "IPart_number" : this.forma.controls['nroArticulo'].value,
+        "IName" : this.forma.controls['descripcion'].value,
+        "C_alternativo": this.forma.controls['codigoAlternativo'].value,
+        "C_barra": this.forma.controls['codigoBarra'].value,
+        "Grupo": "",//id de tabla grupos-consulta dinamica
+
+        "Tipo":"",// id de la tabla tipo de articulos consulta dinamica
+        "procedencia": this.forma.controls['tipo'].value,// combo ->0 nacional,1-importado
+        "marca":"",// id de marcas ->consulta dinamica
+        "campo1": 1,
+        "campo2": 1,
+        "campo3": 1,
+        "estado": this.forma.controls['tipo'].value,// "Activo", 
+        "cat_b": "Reposteria",
+        "Obs_auto_vta":this.forma.controls['tipo'].value, // , 0 false , 1 true
+        "Obs_auto_cpa":this.forma.controls['tipo'].value, //,0 false , 1 true
+        "Obs_ingr_cpa":this.forma.controls['tipo'].value, //,0 false , 1 true
+        "Obs_ingr_vta": this.forma.controls['tipo'].value,//,0 false , 1 true
+        "Obs_imprime_vta": this.forma.controls['tipo'].value,//,0 false , 1 true
+        "Obs_auditoria_cpa": this.forma.controls['tipo'].value,//,0 false , 1 true
+        "Obs_auditoria_vta": this.forma.controls['tipo'].value,//,0 false , 1 true
+        "Categoria_vta": this.forma.controls['tipo'].value,//,0 false , 1 true
+        "Categoria_inventario": this.forma.controls['tipo'].value,//,0 false , 1 true
+        "Categoria_cpa": this.forma.controls['tipo'].value,//,0 false , 1 true
+
+        "precio_UCpa":this.forma.controls['tipo'].value,// 200,
+        "fecha_UCpa": "2018-10-01",
+        "moneda":this.forma.controls['tipo'].value,// codigo de monedas → lista desplegable con tg01_monedas
+        "Cant_Op_cpa": 5,
+        "PrecioU_vta": 250,
+        "FechaU_vta": "2018-10-01",
+        "moneda1":"",//, codigo de monedas-> lista desplegable con tg01_monedas
+
+        "ref_contable": "",//id de referencia contable ->consulta dinamica
+        "alicuota": "",//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
+        "alicuota1":"",//,id de alicuota->consulta dinamica (tipo impuestos internos)
+        "Area_AAII":"",// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
+        "Area_AIFII":"",//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
+        "incorporaCosto":"",// 0, 0 false , 1 true
+        "impuesto_intFijo": 12,
+        "gestion_despacho":"",//0, 0 false , 1 true
+        "gestion_lote":"",// 0,0 false , 1 true
+        "gestion_serie":"",//0,0 false , 1 true
+
+        "admStock": "",//0, 0 false , 1 true
+        "stockIdeal": 10,
+        "stockMax": 15,
+        "stockRepo":5,
+        "dimensiones": "3 dimensiones",
+        "pesable":1,
+        "pesableE":"GS1", 
+        "unidad_medida":"",//char(36),id de UM,consulta dinamica,
+        "unidad_medida1":"",// char(36) id de UM,consulta dinamica,
+        "largo":10,
+        "ancho":10,
+        "profundo":8,
+        "m3": 800
+      };
+      
     }else{
       //actualizando
     }

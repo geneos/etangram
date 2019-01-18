@@ -10,7 +10,6 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { Router, ActivatedRoute } from "@angular/router";
-import { DatePipe } from '@angular/common';
 
 
 //import jsPDF from 'jspdf';
@@ -73,31 +72,6 @@ export class ConsultaComprobantesComponent implements OnInit {
 
   @ViewChild('tablaDatos') tablaDatos: ElementRef;
 
-
-
-print = () => {
-
-
-  // let doc = new jsPDF();
-  // doc.autoTable({
-  //   head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
-
-  // })
-  // for (let index = 0; index < this.dataSource.data.length; index++) {
-  //   // itemActual[index] = dataSource.trim();
-  //   // console.log(itemActual[index].toString);
-  //   doc.autoTable({
-  //     body: [[,this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
-  //     this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
-  //     this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]]
-
-  //   });
-  //   console.log(this.dataSource.data[index])
-  //   console.log(index);
-  // }
-
-  // doc.save('table.pdf')
-}
   columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado', 'accion'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;
@@ -251,10 +225,6 @@ print = () => {
       });
   }
 
-  getdatetime(){
-
-
-  }
 
 }
 export interface consultaComprobantes {

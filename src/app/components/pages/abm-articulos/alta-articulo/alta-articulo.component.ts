@@ -276,7 +276,6 @@ export class AltaArticuloComponent implements OnInit {
         "ancho":this.forma.controls['ancho'].value,
         "profundidad":this.forma.controls['profundidad'].value,
         "m3": this.forma.controls['m3'].value
-
       }
     }
   }

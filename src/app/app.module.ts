@@ -117,13 +117,13 @@ import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.c
     APP_ROUTING,
     CdkTableModule,
     NgxSmartModalModule.forRoot(),
-    
+
   ],
-  entryComponents: [  
+  entryComponents: [
     TextoComponent,
-    NumeroComponent, 
-    FechaComponent,  
-    ListaComponent, 
+    NumeroComponent,
+    FechaComponent,
+    ListaComponent,
     ConsultaComponent,
     TablaComponent
   ],
@@ -132,7 +132,7 @@ import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.c
     // {provide: ErrorHandler, useClass: ErrorHandlerService}
   ],
   bootstrap: [AppComponent],
-  
+
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
 ],

@@ -1,35 +1,38 @@
-<h2>CONSULTA DE CERTIFICADOS DE RECEPCIÓN DEFINITIVA</h2>
+<h2>CERTIFICADOS DE RECEPCIÓN DEFINITIVA</h2>
 <app-loading *ngIf="loading"></app-loading>
 
-<form [formGroup]="Controles" novalidate="novalidate">
-  <div class="row" style="margin-top:0px; margin-bottom:10px !important;" *ngIf="!loading">
+<mat-expansion-panel [expanded]=true [disabled]=true [ngStyle]="{'display':loading ? 'none' : 'block' }">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      PROVEEDOR
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <div class="row" style="margin-top:15px; margin-bottom:20px !important;" *ngIf="!loading">
         <div class="col s8 m4 l2">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Código</p>
+          <p style="margin-top:7px;">{{ id }}</p>
+            <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Proveedor</mat-label>
               <input matInput #codigoProv placeholder="" readonly formControlName="proveedor" value="{{id}}">
-              <!--<mat-hint>Hint</mat-hint>
-              <mat-hint *ngIf="Controles.status=='PENDING'">
-                Buscando código...
-              </mat-hint>
-              <mat-hint *ngIf="Controles.controls['proveedor'].errors?.noExiste">
-                No existen certificados para este proveedor
-              </mat-hint>-->
-            </mat-form-field>
+            </mat-form-field>-->
 
           </div>
           <div class="col s4 m4 l4">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Razón Social</p>
+            <p style="margin-top:7px;">{{ RazonSocial }}</p>
+            <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Razón Social</mat-label>
               <input matInput placeholder="" formControlName="razonSocial" readonly value="{{ RazonSocial }}">
-              <!--<mat-hint>Hint</mat-hint>-->
-            </mat-form-field>
+            </mat-form-field>-->
           </div>
           <div class="col s12 m2 l2">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">CUIT</p>
+            <p style="margin-top:7px;">{{ cuitc }}</p>
+            <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>CUIT</mat-label>
               <input matInput placeholder="" formControlName="cuit" readonly value="{{ cuitc }}">
-              <!--<mat-hint>Hint</mat-hint>-->
-            </mat-form-field>
+            </mat-form-field>-->
           </div>
         </div>
 
@@ -46,7 +49,7 @@
     </div>
   </div>-->
 
-  <div id="tableCrd" class="mat-elevation-z8" *ngIf="!loading">
+  <div id="tableCrd" class="mat-elevation-z8">
 
     <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
 
@@ -70,7 +73,7 @@
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="opub">
-        <th mat-header-cell *matHeaderCellDef> OPublicidad </th>
+        <th mat-header-cell *matHeaderCellDef> O. Compra </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.opub }} </td>
       </ng-container>
 
@@ -79,7 +82,7 @@
         <th mat-header-cell *matHeaderCellDef> Comprobante</th>
         <td mat-cell *cdkCellDef="let element"> {{ element.tcom + "-" + element.ncomr}} </td>
       </ng-container>
-    
+
       <!-- Symbol Column
       <ng-container matColumnDef="ncomr">
         <th mat-header-cell *matHeaderCellDef> Nro. Comprobante </th>
@@ -88,19 +91,22 @@
 
       <!-- Symbol Column -->
       <ng-container matColumnDef="total">
-        <th mat-header-cell *matHeaderCellDef> Importe </th>
-        <td mat-cell *cdkCellDef="let element"> $ {{ element.total | number:'1.2-2'}} </td>
+        <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:right;"> $ {{ element.total | number:'1.2-2'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> </th>
-        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.nint)" class="material-icons" style="cursor: pointer">print</i></td>  
+        <td mat-cell *cdkCellDef="let element" style="text-align:right;">
+          <i (click)="print(element.nint)" class="material-icons" style="cursor: pointer">print</i>
+        </td>
       </ng-container>
 
       <tr mat-header-row *cdkHeaderRowDef="['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total', 'accion']"></tr>
       <tr mat-row *cdkRowDef="let row; columns: ['ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total', 'accion'];"></tr>
     </table>
-
+    <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons [ngStyle]="{'display':loading ? 'none' : 'block' }"></mat-paginator>
 
   </div>
-  <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons [ngStyle]="{'display':loading ? 'none' : 'block' }"></mat-paginator>
+
+</mat-expansion-panel>

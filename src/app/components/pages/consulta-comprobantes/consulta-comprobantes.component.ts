@@ -56,6 +56,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   dateNow : Date = new Date();
   fechaActual: Date = new Date();
   fechaDesde: Date = new Date();
+  fechaActualMasUno: Date = new Date();
   tabla: any = [];
   filtrada:boolean = false;
 
@@ -68,35 +69,10 @@ export class ConsultaComprobantesComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
+  @ViewChild('tableCompr') table: MatTable<any>;
   @ViewChild('tablaDatos') tablaDatos: ElementRef;
 
-
-
-print = () => {
-
-
-  // let doc = new jsPDF();
-  // doc.autoTable({
-  //   head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
-
-  // })
-  // for (let index = 0; index < this.dataSource.data.length; index++) {
-  //   // itemActual[index] = dataSource.trim();
-  //   // console.log(itemActual[index].toString);
-  //   doc.autoTable({
-  //     body: [[,this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
-  //     this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
-  //     this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]]
-
-  //   });
-  //   console.log(this.dataSource.data[index])
-  //   console.log(index);
-  // }
-
-  // doc.save('table.pdf')
-}
-  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado', 'accion'];
+  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Estado', 'Importe_Total', 'Saldo', 'accion'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;
 
@@ -129,18 +105,25 @@ print = () => {
       this.buscarProveedor();
     });
 
-    this.fechaActual.setDate(this.fechaActual.getDate() + 1);
+    /*this.fechaActual.setDate(this.fechaActual.getDate());
     this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
     this.forma.controls['fechasta'].setValue(this.fechaActual);
-    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);*/
 
     //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
    }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    /*this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;*/
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    console.log(this.paginator._intl.getRangeLabel);
+
+    this.fechaActual.setDate(this.fechaActual.getDate());
+    this.fechaActualMasUno.setDate(this.fechaActual.getDate() + 1);
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
+    this.forma.controls['fechasta'].setValue(this.fechaActual);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
 
   }
 
@@ -238,8 +221,11 @@ print = () => {
         console.log(this.forma.controls['fecdesde'].value);
         if(this.respCabecera.dataset.length>0){
           this.consultaComprobantes = this.respCabecera.dataset;
-          this.dataSource = new MatTableDataSource(this.consultaComprobantes)
           this.filtrada = true;
+          this.dataSource = new MatTableDataSource(this.consultaComprobantes);
+
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
           //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
         } else {
           this.consultaComprobantes = null;

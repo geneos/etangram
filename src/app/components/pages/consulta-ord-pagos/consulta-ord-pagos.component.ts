@@ -58,7 +58,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
     
   
     this.forma = new FormGroup({
-      'proveedor': new FormControl('',Validators.required,this.existeProveedor),
+      'proveedor': new FormControl(this.existeProveedor),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
       'fecdesde': new FormControl(),

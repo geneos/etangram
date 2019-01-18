@@ -59,7 +59,7 @@ import { TablaComponent } from './components/shared/generics/tabla/tabla.compone
 import { CdFiltrosComponent } from './components/shared/modals/cd-filtros/cd-filtros.component';
 import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.component';
 import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos/consulta-ord-pagos.component';
-import { ErrorHandlerService } from './services/error-handler.service';
+//import { ErrorHandlerService } from './services/error-handler.service';
 import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.component';
 
 

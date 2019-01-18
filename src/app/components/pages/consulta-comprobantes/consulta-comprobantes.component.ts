@@ -56,6 +56,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   dateNow : Date = new Date();
   fechaActual: Date = new Date();
   fechaDesde: Date = new Date();
+  fechaActualMasUno: Date = new Date();
   tabla: any = [];
   filtrada:boolean = false;
 
@@ -68,11 +69,11 @@ export class ConsultaComprobantesComponent implements OnInit {
 
   
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('tableCompr') table: MatTable<any>;
+  @ViewChild('tablaDatos') tablaDatos: ElementRef;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  @ViewChild('tablaDatos') tablaDatos: ElementRef;
-
-  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado', 'accion'];
+  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Estado', 'Importe_Total', 'Saldo', 'accion'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;
 
@@ -104,19 +105,24 @@ export class ConsultaComprobantesComponent implements OnInit {
       this.buscarProveedor();
     });
 
-    this.fechaActual.setDate(this.fechaActual.getDate() + 1);
+    /*this.fechaActual.setDate(this.fechaActual.getDate());
     this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
     this.forma.controls['fechasta'].setValue(this.fechaActual);
-    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);*/
 
    }
 
   ngOnInit() {
-    this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    
-    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    /*this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;*/
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    console.log(this.paginator._intl.getRangeLabel);
+
+    this.fechaActual.setDate(this.fechaActual.getDate());
+    this.fechaActualMasUno.setDate(this.fechaActual.getDate() + 1);
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
+    this.forma.controls['fechasta'].setValue(this.fechaActual);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
 
   }
 
@@ -214,8 +220,11 @@ export class ConsultaComprobantesComponent implements OnInit {
         console.log(this.forma.controls['fecdesde'].value);
         if(this.respCabecera.dataset.length>0){
           this.consultaComprobantes = this.respCabecera.dataset;
-          this.dataSource = new MatTableDataSource(this.consultaComprobantes)
           this.filtrada = true;
+          this.dataSource = new MatTableDataSource(this.consultaComprobantes);
+
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
           //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
         } else {
           this.consultaComprobantes = null;

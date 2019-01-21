@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { CompraService } from "../../../services/i2t/compra.service";
-import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatIcon} from '@angular/material';
+import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatPaginatorIntl} from '@angular/material';
 import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -17,6 +17,8 @@ var auxProvData: any;
   styleUrls: ['./consulta-ord-pagos.component.css']
 })
 export class ConsultaOrdPagosComponent implements OnInit {
+
+  paginatorIntl = new MatPaginatorIntl();
   consultaOrdPago: consultaOrdPago[] = [];
   forma: FormGroup;
   compraProveedor: CompraProveedor;
@@ -36,12 +38,15 @@ export class ConsultaOrdPagosComponent implements OnInit {
   respCabecera: any;
   cabeceraId: string;
 
-  public fechaActual: Date = new Date();
-  public fechaDesde: Date = new Date();
+  dateNow : Date = new Date();
+  fechaActual: Date = new Date();
+  fechaDesde: Date = new Date();
+  fechaActualMasUno: Date = new Date();
   tabla: any = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('tableCompr') table: MatTable<any>;
 
   displayedColumns: string[] = ['fecha', 'comprobante', 'expediente', 'observaciones', 'importe', 'accion'];
   dataSource = new MatTableDataSource<consultaOrdPago>(this.consultaOrdPago);
@@ -63,7 +68,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
       'cuit': new FormControl(),
       'fecdesde': new FormControl(),
       'fechasta': new FormControl(),
-      'expediente': new FormControl(),
+      'expediente': new FormControl(''),
     })
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
@@ -73,11 +78,14 @@ export class ConsultaOrdPagosComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  //  this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
-    this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toString
-    console.log(this.fechaDesde)
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    console.log(this.paginator._intl.getRangeLabel);
+
+    this.fechaActual.setDate(this.fechaActual.getDate());
+    this.fechaActualMasUno.setDate(this.fechaActual.getDate() + 1);
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
+    this.forma.controls['fechasta'].setValue(this.fechaActual);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
   }
 
   openSnackBar(message: string) {
@@ -133,7 +141,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
 
   getComprobantes(){
 
-  /*  let ano = this.forma.controls['fecdesde'].value.getFullYear().toString();
+    let ano = this.forma.controls['fecdesde'].value.getFullYear().toString();
     let mes = (this.forma.controls['fecdesde'].value.getMonth()+1).toString();
     if(mes.length==1){mes="0"+mes};
     let dia = this.forma.controls['fecdesde'].value.getDate().toString();
@@ -148,15 +156,15 @@ export class ConsultaOrdPagosComponent implements OnInit {
     if(dia.length==1){dia="0"+dia};
 
     let auxfechahasta = ano+"-"+mes+"-"+dia;
-*/
+
     let jsbody = {
         "IdCliente": this.id,
-        "FechaDesde": "2015-01-01",
-        "FechaHasta": "2019-12-31",
+        "FechaDesde": auxfechadesde,
+        "FechaHasta": auxfechahasta,
         "TipoReferente": "P",
         "TipoOperacion": "CAJ",
         "TipoComprobante": "OP",
-        "Expendiente":" ",
+        "Expendiente":this.forma.controls['expediente'].value,
         "ReservaPresup":" ",
         "Certificado":" ",
         "param_limite": 10,

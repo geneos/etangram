@@ -1,7 +1,7 @@
 <app-loading *ngIf="loading"></app-loading>
 
 <div [ngStyle]="{'display':loading ? 'none' : 'block' }">
-<h2>Consulta Retenciones</h2>
+<h2>RETENCIONES</h2>
 
 <mat-expansion-panel [expanded]=true [disabled]=true>
     <mat-expansion-panel-header>
@@ -42,7 +42,7 @@
 
   <form [formGroup]="forma" novalidate="novalidate">
 
-    <div class="row" style="margin-top:15px;" *ngIf="!loading">  
+    <div class="row" style="margin-top:15px;" *ngIf="!loading">
       <h6 style="margin-top:0px !important; margin-bottom: 20px !important; margin-left: 20px !important;">Filtros:</h6>
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -75,63 +75,63 @@
           </a>
       </div>
     </div>
-    
+
     </form>
-     
+
      <div [ngStyle]="{'display':!loading&&filtrada ? 'block' : 'none' }" class="mat-elevation-z8">
-       
+
        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
-        
+
          <!-- Position Column -->
          <ng-container matColumnDef= "Fecha">
            <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Fecha </th>
            <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Fecha }} </td>
          </ng-container>
-     
+
          <!-- Name Column -->
          <ng-container matColumnDef="Comprobante">
            <th mat-header-cell *matHeaderCellDef> Comprobante </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + ' - ' + element.Numero_Comprobante }} </td>
-         </ng-container> 
-     
+         </ng-container>
+
          <!-- Weight Column -->
          <ng-container matColumnDef="Expediente">
            <th mat-header-cell *matHeaderCellDef> Expediente </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Expediente }} </td>
-         </ng-container> 
-     
+         </ng-container>
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Impuesto">
            <th mat-header-cell *matHeaderCellDef> Impuesto </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Certificado }} </td>
          </ng-container>
-         
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Concepto">
            <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Concepto </th>
            <td mat-cell *cdkCellDef="let element" style="text-align:right;"> $ {{ element.Importe_Total | number:'1.2-2' }} </td>
-         </ng-container> 
-   
+         </ng-container>
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Importe">
            <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Saldo</th>
            <td mat-cell *cdkCellDef="let element" style="text-align:right;"> {{ element.Saldo=="B"?("$ "+element.Saldo+".00"):"" }} </td>
          </ng-container>
-         
+
          <!-- Columna Imprimir-->
          <ng-container matColumnDef="accion">
           <th mat-header-cell *matHeaderCellDef> </th>
           <td mat-cell *cdkCellDef="let element">
             <i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i>
-          </td>  
+          </td>
         </ng-container>
-       
-        
+
+
          <tr mat-header-row *matHeaderRowDef="columnsToDisplay "></tr>
          <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;"></tr>
 
        </table>
-       
+
         <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
      </div>
     </mat-expansion-panel>

@@ -1,6 +1,6 @@
 <app-loading *ngIf="loading"></app-loading>
 <div [ngStyle]="{'display':loading ? 'none' : 'block' }">
-<h2>CONSULTA ORDENES DE PAGO</h2>
+<h2>ÓRDENES DE PAGO</h2>
 
 <mat-expansion-panel [expanded]=true [disabled]=true>
     <mat-expansion-panel-header>
@@ -19,7 +19,7 @@
             <input readonly #codProv matInput placeholder="" value="{{id}}">
           </mat-form-field>-->
         </div>
-    
+
         <div class="col s6 m4 l3">
           <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Razón Social</p>
           <p style="margin-top:7px;">{{ compraProveedor?.razon_social }}</p>
@@ -36,9 +36,9 @@
             <input matInput placeholder="" readonly value="{{ compraProveedor?.cuit }}">
           </mat-form-field>-->
         </div>
-    
+
     </div>
-    
+
   <form [formGroup]="forma" novalidate="novalidate">
 
       <div class="row" style="margin-top:15px;margin-bottom: 0px" *ngIf="!loading">
@@ -113,7 +113,7 @@
 
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> </th>
-        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>  
+        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>
       </ng-container>
 
       <tr mat-header-row *cdkHeaderRowDef="['fecha', 'comprobante', 'expediente', 'observaciones', 'importe', 'accion']"></tr>

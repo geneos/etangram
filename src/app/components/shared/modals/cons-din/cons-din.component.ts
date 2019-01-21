@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Output, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
@@ -6,7 +6,8 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-cons-din',
   templateUrl: './cons-din.component.html',
-  styleUrls: ['./cons-din.component.css']
+  styleUrls: ['./cons-din.component.css'], 
+  // encapsulation: ViewEncapsulation.None
 })
 export class ConsDinComponent implements OnInit, AfterViewInit {
 

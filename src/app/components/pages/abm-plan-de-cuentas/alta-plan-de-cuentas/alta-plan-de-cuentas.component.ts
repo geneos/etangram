@@ -86,6 +86,9 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
       if( this.id !== "nuevo" ){
         this.buscarPlanDeCuentas(this.id);
+        /*if(this.forma.controls['imputable'].value == '0'){
+          this.forma.controls['patrimonial'].disable();
+        }*/
       } else {
         this.loading = false;
         this.forma.controls['estado'].setValue('0');
@@ -358,6 +361,8 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     if( this.id == "nuevo" ){
       // insertando
       var d = new Date();
+      var auxpat = this.forma.controls['patrimonial'].value;
+      if(!auxpat){auxpat = 0}
 
       // let usuarioActual: any = this.obtenerIDUsuario().id;
       let usuarioActual: any = 'idDePrueba';
@@ -369,7 +374,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
         "nomencladorpadre":auxnomencladorpadre,
         "orden":auxorden,
         "imputable":this.forma.controls['imputable'].value,
-        "patrimonial":this.forma.controls['patrimonial'].value,
+        "patrimonial":auxpat,//this.forma.controls['patrimonial'].value,
         "estado":this.forma.controls['estado'].value,
         //auditoría
         /* "date_entered":d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),

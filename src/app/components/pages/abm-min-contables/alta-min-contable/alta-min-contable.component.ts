@@ -227,6 +227,7 @@ datos =
       this.existe = false;
 
       if( this.cabeceraId !== "nuevo" ){
+        this.editingCabecera=true;
         this.buscarMinutasContables(this.cabeceraId);
         //cargar lista de referencias contables
         if (this.minutaContable != null){
@@ -499,7 +500,7 @@ console.log('json armado: ');
                   //usado el parametro, actualmente no se guarda por la api
                   // this.buscarMoneda(this.parametrosSistema.tg01_monedas_id2_c);
                   this.buscarParametros(false);
-                  
+
                   this.loading = false;
                   this.editingCabecera = false;
 
@@ -515,7 +516,7 @@ console.log('json armado: ');
 
                   //caja no está siendo guardada por la api
                   // this.forma.controls['caja'].setValue(this.minutaContable.caja);
-                  
+
                   this.forma.controls['numero'].setValue(this.minutaContable.name);
 
                   console.log('pidiendo tipo op con: ');
@@ -623,7 +624,7 @@ console.log('json armado: ');
                 this.existenDetalles = true;
                 if (this.existenDetalles == true){
                   console.log('lista de detalles obtenida: ', this.detallesAll);
-                  
+
                   //todo agregar cargado de detalles
                   // this.detallesAll.forEach(detalle => {
                   //   let referencia: number;
@@ -631,16 +632,16 @@ console.log('json armado: ');
                   //   this.refContableItemData.push(
                   //     {
                   //       refContable: detalle.
-                        
+
                   //     }
                   //   );
                   // });
 
                   /*
                   this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
-                  nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
+                  nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value,
                   centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-                  debe: this.formaReferencias.controls['debe'].value, 
+                  debe: this.formaReferencias.controls['debe'].value,
                   haber: this.formaReferencias.controls['haber'].value });
 
                   this.dataSource = new MatTableDataSource(this.refContableItemData)
@@ -857,7 +858,7 @@ console.log('json armado: ');
                     }
                     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContable.tg01_centrocosto_id_c);
                     this.formaReferencias.controls['nombreRefContable'].setValue(this.refContable.name);
-                    
+
                     this.formaReferencias.controls['nombreRefContable'].disable();
                   /*}
                   else{
@@ -920,24 +921,24 @@ console.log('json armado: ');
   }
 
   guardarReferencia(){
-    
+
     console.clear();
     console.log('guardando ref');
-  
-   if(this.auxDebeHaber){ 
+
+   if(this.auxDebeHaber){
     if(this.editingAI){
    //   this.totaldebe = this.totaldebe - this.refContableItemData[this.auxEditingArt].debe
       this.refContableItemData[this.auxEditingArt].refContable = this.formaReferencias.controls['refContable'].value,
       this.refContableItemData[this.auxEditingArt].nombreRefContable = this.formaReferencias.controls['nombreRefContable'].value,
       this.refContableItemData[this.auxEditingArt].centroDeCosto = this.formaReferencias.controls['centroDeCosto'].value,
-      this.refContableItemData[this.auxEditingArt].debe = this.formaReferencias.controls['debe'].value, 
+      this.refContableItemData[this.auxEditingArt].debe = this.formaReferencias.controls['debe'].value,
       this.refContableItemData[this.auxEditingArt].haber = this.formaReferencias.controls['haber'].value
 
-      // this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value, 
+      // this.refContableItemData = [{ refContable: this.formaReferencias.controls['refContable'].value,
       //                               centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-      //                               debe: this.formaReferencias.controls['debe'].value, 
+      //                               debe: this.formaReferencias.controls['debe'].value,
       //                               haber: this.formaReferencias.controls['haber'].value }]
-      
+
       this.dataSource[this.auxEditingArt] = this.refContableItemData[this.auxEditingArt]
 
       if(this.debeAnterior != this.refContableItemData[this.auxEditingArt].debe){
@@ -948,7 +949,7 @@ console.log('json armado: ');
         this.totalhaber = Number(this.totalhaber) - Number(this.haberAnterior)
         this.totalhaber = Number(this.totalhaber) + Number(this.refContableItemData[this.auxEditingArt].haber)
       }
-      this.guardarRenglon()  
+      this.guardarRenglon()
     //  this.dataSource[this.auxEditingArt] = this.refContableItemData;
       this.addingReferencia = false;
       this.editingAI = false;
@@ -1001,15 +1002,15 @@ console.log('json armado: ');
               console.log(this.renglonId);
               this.openSnackBar('Modificado el renglon de Minuta Contable');
               // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
-              
+
               // this.forma.controls['numero'].setValue(this.cabeceraId);
             }
             else{
               this.openSnackBar('No se pudo modificar el renglon de Minuta Contable');
             }
-  
+
           }
-    
+
             this.openSnackBar('Datos guardados');
           });
         //actualizar lista
@@ -1018,20 +1019,20 @@ console.log('json armado: ');
 
         if (index === -1) {
           this.refContableItemData.push();
-        } 
+        }
         else{
           this.refContableItemData[index] = { refContable: this.formaReferencias.controls['refContable'].value,
-          nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
+          nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value,
           centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-          debe: this.formaReferencias.controls['debe'].value, 
+          debe: this.formaReferencias.controls['debe'].value,
           haber: this.formaReferencias.controls['haber'].value,
           idEnMinuta: this.editingID };
           // this.openSnackBar('No se pudo actualizar la lista mostrada');
         }
-    } 
+    }
     else {
       this.esDebeHaberValido();
-      
+
       //obtener importe
       let importe: number;
       // if ((refContableDet.debe != null)&&(refContableDet.debe != 0)){
@@ -1043,7 +1044,7 @@ console.log('json armado: ');
         // importe = 0+ refContableDet.haber;
         importe = 0+ this.formaReferencias.controls['haber'].value
       }
-      
+
       let centro: string;
       if (this.formaReferencias.controls['centroDeCosto'].value == null){
         centro = '0';
@@ -1098,7 +1099,7 @@ console.log('json armado: ');
             this.renglonId = this.respRenglon.returnset[0].RId;
             console.log(this.renglonId);
             // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
-            
+
             // this.forma.controls['numero'].setValue(this.cabeceraId);
           }
           else{
@@ -1106,14 +1107,14 @@ console.log('json armado: ');
           }
 
         }
-  
+
           this.openSnackBar('Datos guardados');
         })
-          
+
       this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
-      nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value, 
+      nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value,
       centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-      debe: this.formaReferencias.controls['debe'].value, 
+      debe: this.formaReferencias.controls['debe'].value,
       haber: this.formaReferencias.controls['haber'].value,
       idEnMinuta: this.renglonId });
 
@@ -1131,7 +1132,7 @@ console.log('json armado: ');
    }
 }
   eliminarReferencia(index){
-    
+
     console.clear();
     console.log('eliminando ref');
     let jsbody = {
@@ -1139,14 +1140,14 @@ console.log('json armado: ');
       "ID_ComprobanteDet": this.refContableItemData[index].idEnMinuta,
       "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080' //morecchia //todo cambiar por uno real
     }
-    
+
     //   let index: number = this.refContableItemData.findIndex(d => d === item);
     this.totaldebe = Number(this.totaldebe) - Number(this.refContableItemData[index].debe);
     this.totalhaber = Number(this.totalhaber) - Number(this.refContableItemData[index].haber);
     this.refContableItemData.splice(index,1);
-    
+
     //eliminar del backend
-    
+
     console.log('stringifeando');
     let jsonbody= JSON.stringify(jsbody);
     this._minContableService.delMinContablesDet(jsonbody, this.token)
@@ -1171,10 +1172,10 @@ console.log('json armado: ');
         console.log(this.respRenglon);
         console.log('<< respuesta del delete detalle');
         if (this.respRenglon.returnset[0].RCode === 1){
-          
+
           this.openSnackBar('Renglon de Minuta Contable eliminado');
           // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
-          
+
           // this.forma.controls['numero'].setValue(this.cabeceraId);
         }
         else{
@@ -1188,12 +1189,12 @@ console.log('json armado: ');
   }
 
   editarReferencia(ind:number){
-    
+
     console.clear();
     console.log('editando referencia');
     this.editingAI = true;
     //this.compraArticulo = this.referenciasData[ind];
-    
+
     this.formaReferencias.controls['refContable'].setValue(this.refContableItemData[ind].refContable);
     this.formaReferencias.controls['nombreRefContable'].setValue(this.refContableItemData[ind].nombreRefContable);
     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContableItemData[ind].centroDeCosto);
@@ -1223,7 +1224,7 @@ console.log('json armado: ');
       else{
         importe = 0+ refContableDet.haber;
       }
-      
+
       //determinar acción
         //insert
         let tipo: string;
@@ -1252,7 +1253,7 @@ console.log('json armado: ');
   guardarCabecera(){
     console.clear();
     console.log('guardando cabecera');
-    this.editingCabecera = false;
+    //this.editingCabecera = false;
     console.log('armando fecha');
     let ano = this.forma.controls['fecha'].value.getFullYear().toString();
     let mes = (this.forma.controls['fecha'].value.getMonth()+1).toString();
@@ -1340,8 +1341,10 @@ console.log('json armado: ');
               console.log('<< respuesta del post');
               setTimeout(() => {
                 // this.router.navigate(['nextRoute']);
+                this.editingCabecera = false;
                 this.router.navigate(['/min-contables', this.cabeceraId]);
-              }, 2000);  //2s
+              }, 1000);  //2s
+
             }
           }
           else{
@@ -1349,7 +1352,7 @@ console.log('json armado: ');
           }
 
         }
-        
+
 
       });
 
@@ -1368,7 +1371,7 @@ console.log('json armado: ');
     if(Number(this.totaldebe) == Number(this.totalhaber)){
       let jsbody = {
         "ID_Comprobante":this.cabeceraId,
-        "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080', //morecchia //todo cambiar por uno real, 
+        "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080', //morecchia //todo cambiar por uno real,
         "P_Total": Number(this.totalhaber) - Number(this.totaldebe),
         "P_Obs": this.minutaContable.description, //todo revisar
         "Id_Cliente": this.parametrosSistema.account_id1_c,
@@ -1404,7 +1407,7 @@ console.log('json armado: ');
             this.openSnackBar('No se pudo confirmar la Minuta Contable');
           }
         }
-      
+
       })
     }
     else{
@@ -1434,7 +1437,7 @@ console.log('json armado: ');
       else{
         centro = refContableDet.centroDeCosto;
       }
-      
+
       //determinar acción
         //insert
         let tipo: string;
@@ -1477,18 +1480,18 @@ console.log('json armado: ');
             console.log(this.respRenglon);
             console.log('<< respuesta del post detalle');
             if (this.respRenglon.returnset[0].RId != null){
-  
+
               // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
-              
+
               // this.forma.controls['numero'].setValue(this.cabeceraId);
             }
             else{
               this.openSnackBar('No se pudo crear el renglon de Minuta Contable');
             }
-  
+
           }
-          
-  
+
+
         });
       }
     );
@@ -1523,7 +1526,7 @@ console.log('json armado: ');
         console.log(jsonbody);
         this._minContableService.delMinContablesDet(jsonbody, this.token);
         */
-      
+
 
   guardarArticulo(){
     /*
@@ -1617,12 +1620,12 @@ console.log('json armado: ');
   }
 
   cancelarReferencia(){
-    
+
     this.addingItem = false;
     this.addingReferencia = false;
     this.editingAI = false;
     //this.compraArticulo = null;
-    
+
     this.formaReferencias.controls['refContable'].setValue("");
     this.formaReferencias.controls['nombreRefContable'].setValue("");
     this.formaReferencias.controls['centroDeCosto'].setValue("");

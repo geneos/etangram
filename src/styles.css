@@ -19,7 +19,7 @@ mat-panel-title {
   font-family: 'Lato', sans-serif;
 }
 
-input {
+input,p {
   font-family: 'Lato', sans-serif !important;
 }
 

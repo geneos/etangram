@@ -25,6 +25,8 @@ mat-cell[class*="cdk-column"],
 
 */
 
+
+
 mat-cell, mat-header-cell { display: inline-block}
 
 mat-cell:not(.mat-column-select),
@@ -49,3 +51,5 @@ mat-header-cell:not(.mat-column-opciones)
   /* <mat-cell _ngcontent-c6="" class="mat-cell cdk-column-codigo mat-column-codigo ng-star-inserted" role="gridcell">15407340</mat-cell> */
 
   /* [class*="mat-column"][_ngcontent-c6], [class*="cdk-column"][_ngcontent-c6], [_ngcontent-c6]:not(mat-column-select), [_ngcontent-c6]:not(cdk-column-select), [_ngcontent-c6]:not(mat-column-opciones), [_ngcontent-c6]:not(cdk-column-opciones) */
+
+  /* .overlay-cons-din { width: 60% !important; max-width: 200px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: thistle} */

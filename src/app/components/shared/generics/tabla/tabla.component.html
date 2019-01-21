@@ -74,6 +74,6 @@
     <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="mat-elevation-z1"></mat-paginator>
 
     <!-- <div class="col s12" style="margin-top:5px;" *ngIf="constRefContables.length < 1"> -->
-    <div class="col s12" style="margin-top:5px;">
+    <div class="col s12" style="margin-top:5px;" *ngIf="constDatos.length < 1">
       <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No hay coincidencias.</i></mat-card>
     </div>

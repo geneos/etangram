@@ -118,13 +118,35 @@ h6 {
   z-index: 9999 !important;
 }
 
-.nsm-dialog { width: 85% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; }
+/* primer dialogo */
+/* .nsm-dialog { width: 85% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; } */
+/* .nsm-dialog { width: 85% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; } */
+
+.overlay-cons-din.nsm-dialog { width: 85% !important; max-width: 2000px !important;
+  /*  border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: thistle */
+}
+.overlay-filtros.nsm-dialog,  
+.overlay-columnas.nsm-dialog
+{ width: 60% !important; max-width: 2000px !important;
+  /*  border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: purple */
+}
+
+
+/* .modal-body { background-color: saddlebrown} */
+/* primer dialogo de filtros/columnas */
+/* .nsm-dialog .nsm-content .nsm-body div, */
+/* .nsm-dialog .nsm-content .nsm-body div app-consulta-dinamica app-cd-filtros,
+.nsm-dialog .nsm-content .nsm-body div app-consulta-dinamica app-cd-tablas
+{
+  width: 50% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ;
+} */
+
 
 /* app-cd-filtros.nsm-dialog { width: 55% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; }
  */
- app-cd-filtros ngx-smart-modal div div div.nsm-dialog,
+/*  app-cd-filtros ngx-smart-modal div div div.nsm-dialog,
  app-cd-filtros ngx-smart-modal div div.nsm-dialog,
- { width: 55% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; }
+ { width: 55% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; } */
 /* .cdk-global-overlay-wrapper {
   z-index: 1000;
 } */

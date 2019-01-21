@@ -125,8 +125,6 @@ export class AbmComprasComponent implements OnInit {
       permiteMultiples: false,
       selection: null
     }
-
-    // this.ngxSmartModalService.setModalData(datosModal, nombreModal);
     
     console.log('enviando datosModal: ');
     console.log(datosModal);
@@ -135,7 +133,7 @@ export class AbmComprasComponent implements OnInit {
     console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
     this.ngxSmartModalService.resetModalData('consDinModal');
     this.ngxSmartModalService.setModalData(datosModal, 'consDinModal');
-    // this.ngxSmartModalService.getModal('consDinModal').onCloseFinished
+    
     this.suscripcionConsDin = this.ngxSmartModalService.getModal('consDinModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
 

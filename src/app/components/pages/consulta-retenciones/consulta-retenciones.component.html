@@ -114,8 +114,8 @@
    
          <!-- Symbol Column -->
          <ng-container matColumnDef="Importe">
-           <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe</th>
-           <td mat-cell *cdkCellDef="let element" style="text-align:right;"> {{ element.Saldo}} </td>
+           <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Saldo</th>
+           <td mat-cell *cdkCellDef="let element" style="text-align:right;"> {{ element.Saldo=="B"?("$ "+element.Saldo+".00"):"" }} </td>
          </ng-container>
          
          <!-- Columna Imprimir-->

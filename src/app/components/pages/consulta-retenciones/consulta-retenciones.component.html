@@ -44,7 +44,7 @@
 
     <div class="row" style="margin-top:15px;" *ngIf="!loading">  
       <h6 style="margin-top:0px !important; margin-bottom: 20px !important; margin-left: 20px !important;">Filtros:</h6>
-      <div class="col s6 m3 l3">
+      <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha desde</mat-label>
           <input matInput [matDatepicker]="picker1" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fecdesde" [value]="fechaDesde">
@@ -53,7 +53,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l3">
+      <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha Hasta</mat-label>
           <input matInput [matDatepicker]="picker2" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fechasta" [value]="fechaActual">
@@ -62,7 +62,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m3 l4">
+      <div class="col s12 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Expediente</mat-label>
           <input matInput placeholder="" formControlName="expediente">

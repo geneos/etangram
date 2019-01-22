@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar} from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar, MatPaginatorIntl} from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaRetencionesService } from 'src/app/services/i2t/consulta-retenciones.service';
@@ -19,7 +19,7 @@ var auxProvData: any;
   ]
 })
 export class ConsultaRetencionesComponent implements OnInit {
-
+  paginatorIntl = new MatPaginatorIntl();
   forma: FormGroup;
   compraProveedor: CompraProveedor;
   loginData: any;
@@ -28,8 +28,9 @@ export class ConsultaRetencionesComponent implements OnInit {
   consultaRetenciones: consultaRetenciones[] = [];
   respCabecera: any;
   cabeceraId: string;
-  public fechaActual: Date = new Date();
-  public fechaDesde: Date = new Date();
+  dateNow : Date = new Date();
+  fechaActual: Date = new Date();
+  fechaDesde: Date = new Date();
   tabla: any = [];
   ProveedorData: any;
   baseDatos: any;
@@ -37,6 +38,8 @@ export class ConsultaRetencionesComponent implements OnInit {
   urlBaseDatos: string;
   urlInforme: any;
   baseUrl: ImpresionBase[] = [];
+  modeloImpuesto: string;
+  fechaActualMasUno: Date = new Date();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -48,6 +51,8 @@ export class ConsultaRetencionesComponent implements OnInit {
   selection = new SelectionModel(true, []);
   id: any;
   loading: boolean = true;
+  filtrada:boolean = false;
+
   constructor( @Inject('Window') private window: Window,
               private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar, 
@@ -62,7 +67,7 @@ export class ConsultaRetencionesComponent implements OnInit {
       'cuit': new FormControl(),
       'fecdesde': new FormControl(),
       'fechasta': new FormControl(new Date()),
-      'expediente': new FormControl(),
+      'expediente': new FormControl(''),
     })
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
@@ -73,10 +78,14 @@ export class ConsultaRetencionesComponent implements OnInit {
    
    
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
-  this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toLocaleString();
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    console.log(this.paginator._intl.getRangeLabel);
+ 
+    this.fechaActual.setDate(this.fechaActual.getDate());
+    this.fechaActualMasUno.setDate(this.fechaActual.getDate() + 1);
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
+    this.forma.controls['fechasta'].setValue(this.fechaActual);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
   }
 
   openSnackBar(message: string) {
@@ -130,14 +139,35 @@ export class ConsultaRetencionesComponent implements OnInit {
   }
 
   getComprobantes(){
+    let ano = this.forma.controls['fecdesde'].value.getFullYear().toString();
+    let mes = (this.forma.controls['fecdesde'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    let dia = this.forma.controls['fecdesde'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechadesde = ano+"-"+mes+"-"+dia;
+
+    ano = this.forma.controls['fechasta'].value.getFullYear().toString();
+    mes = (this.forma.controls['fechasta'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    dia = this.forma.controls['fechasta'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechahasta = ano+"-"+mes+"-"+dia;
 
     let jsbody = {
-      "idcliente": this.id,
-      "fechadesde":"",// this.forma.controls['fecdesde'].value,
-      "fechahasta":"",// this.forma.controls['fechasta'].value,
-      "tiporeferente": "P",
-      "tipooperacion": "INT",
-      "tipocomprobante": "RET",
+
+      "IdCliente": this.id,
+      "FechaDesde": auxfechadesde,
+      "FechaHasta": auxfechahasta,
+      "TipoReferente": "P",
+      "TipoOperacion": "INT",
+      "TipoComprobante": "RET",
+      "Expendiente":this.forma.controls['expediente'].value,
+      "ReservaPresup":" ",
+      "Certificado":" ",
+      "param_limite": 10,
+      "param_offset": 0
     };
 
     let jsonbody= JSON.stringify(jsbody);
@@ -151,7 +181,7 @@ export class ConsultaRetencionesComponent implements OnInit {
         if(this.respCabecera.dataset.length>0){
           this.consultaRetenciones = this.respCabecera.dataset;
           this.dataSource = new MatTableDataSource(this.consultaRetenciones)
-
+          this.filtrada = true;
         } else {
           this.consultaRetenciones = null;
           this.dataSource = null
@@ -160,7 +190,7 @@ export class ConsultaRetencionesComponent implements OnInit {
       });
   }
 
-  print() {
+  print(nint: number) {
     
     this._impresionCompService.getBaseDatos( this.token )
     .subscribe ( dataP => {
@@ -169,7 +199,14 @@ export class ConsultaRetencionesComponent implements OnInit {
       this.baseUrl = this.ProveedorData.dataset
       this.urlBaseDatos = this.baseUrl[0].jasperserver + this.baseUrl[0].app
       if(this.ProveedorData.dataset.length>0){
-        this._impresionCompService.getInfromes('ETG_retencion_crd', this.token)
+        if(this.consultaRetenciones[0].ID_Modelo_Impuesto = 1){
+          this.modeloImpuesto = 'ETG_retencion_ibrutos'
+        } else if(this.consultaRetenciones[0].ID_Modelo_Impuesto = 2) {
+          this.modeloImpuesto = 'ETG_retencion_ganancias';
+        } else if (this.consultaRetenciones[0].ID_Modelo_Impuesto = 3){
+          this.modeloImpuesto = 'ETG_retencion_sellos'
+        }
+        this._impresionCompService.getInfromes(this.modeloImpuesto, this.token)
         .subscribe ( dataP => {
           console.log(dataP)
           this.ProveedorData = dataP;
@@ -178,10 +215,7 @@ export class ConsultaRetencionesComponent implements OnInit {
           console.log(this.urlInforme)
           if(this.ProveedorData.dataset.length>0){
 
-            this._impresionCompService.getReporte( this.urlInforme, this.id,  this.token)
-            .subscribe (dataP => {
-              console.log(dataP);
-            })
+            window.open(this.urlInforme + nint)
           }
         })
       }
@@ -204,6 +238,7 @@ export interface consultaRetenciones {
   Letra: string,
   Observaciones_Comprobante: string,
   Impuesto: string,
+  ID_Modelo_Impuesto: number,
   Modelo_Impuesto: string,
   Expediente: string,
   Reserva_Presupuestaria: string,

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject  } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar} from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar, MatPaginatorIntl} from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
@@ -10,7 +10,6 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { Router, ActivatedRoute } from "@angular/router";
-import { DatePipe } from '@angular/common';
 
 
 //import jsPDF from 'jspdf';
@@ -39,11 +38,12 @@ let itemActual:any;
   ],
   providers: [
     { provide: 'Window',  useValue: window }
-  ]
+  ],
+  
 })
 
 export class ConsultaComprobantesComponent implements OnInit {
-
+  paginatorIntl = new MatPaginatorIntl();
   forma: FormGroup;
   compraProveedor: CompraProveedor;
   loginData: any;
@@ -67,10 +67,11 @@ export class ConsultaComprobantesComponent implements OnInit {
   urlInforme: any;
   baseUrl: ImpresionBase[] = [];
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('tableCompr') table: MatTable<any>;
   @ViewChild('tablaDatos') tablaDatos: ElementRef;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Estado', 'Importe_Total', 'Saldo', 'accion'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
@@ -84,8 +85,7 @@ export class ConsultaComprobantesComponent implements OnInit {
               public snackBar: MatSnackBar,
               public dialogArt: MatDialog,
               private _compraService:CompraService,
-              private _consultaComprobantesServices:ConsultaComprobantesService,
-              private _ImpresionCompService:ImpresionCompService) {
+              private _consultaComprobantesServices:ConsultaComprobantesService,) {
     this.loading = true;
 
     this.forma = new FormGroup({
@@ -110,7 +110,6 @@ export class ConsultaComprobantesComponent implements OnInit {
     this.forma.controls['fechasta'].setValue(this.fechaActual);
     this.forma.controls['fecdesde'].setValue(this.fechaDesde);*/
 
-    //this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
    }
 
   ngOnInit() {
@@ -235,10 +234,6 @@ export class ConsultaComprobantesComponent implements OnInit {
       });
   }
 
-  getdatetime(){
-
-
-  }
 
 }
 export interface consultaComprobantes {

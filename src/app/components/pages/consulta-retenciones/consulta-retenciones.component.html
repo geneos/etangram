@@ -1,41 +1,50 @@
-<h2>Consulta Retenciones</h2>
 <app-loading *ngIf="loading"></app-loading>
 
-<form [formGroup]="forma" novalidate="novalidate">
+<div [ngStyle]="{'display':loading ? 'none' : 'block' }">
+<h2>RETENCIONES</h2>
 
-    <div class="row" style="margin-top:0px; margin-bottom:10px !important;" *ngIf="!loading">
-      <div class="col s8 m4 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Proveedor</mat-label>
-          <input #codProv matInput placeholder="" readonly formControlName="proveedor" value="{{id}}">
-       <!--   <mat-hint *ngIf="forma.status=='PENDING'">
-            Buscando código...
-          </mat-hint>
-          <mat-hint *ngIf="forma.controls['proveedor'].errors?.noExiste">
-            El proveedor no existe
-          </mat-hint>-->
-        </mat-form-field>
-      </div>
-      
-      <div class="col s4 m4 l6">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Razón Social</mat-label>
-          <input matInput placeholder="" formControlName="razonSocial" readonly value="{{ compraProveedor?.razon_social }}">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s12 m2 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>CUIT</mat-label>
-          <input matInput placeholder="" formControlName="cuit" readonly value="{{ compraProveedor?.cuit }}">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
+<mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        PROVEEDOR
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+<!--<form [formGroup]="forma" novalidate="novalidate">-->
+
+  <div class="row" style="margin-top:15px;" *ngIf="!loading">
+    <div class="col s3 m2 l1">
+      <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Código</p>
+      <p style="margin-top:7px;">{{ id }}</p>
+      <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%; ">
+        <mat-label>Código Proveedor</mat-label>
+        <input readonly #codProv matInput placeholder="" value="{{id}}">
+      </mat-form-field>-->
     </div>
 
-    <div class="row" style="margin-top:15px;" *ngIf="!loading">  
+    <div class="col s6 m4 l3">
+      <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Razón Social</p>
+      <p style="margin-top:7px;">{{ compraProveedor?.razon_social }}</p>
+      <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Razón Social</mat-label>
+        <input matInput placeholder="" readonly value="{{ compraProveedor?.razon_social }}">
+      </mat-form-field>-->
+    </div>
+    <div class="col s3 m4 l3">
+      <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">CUIT</p>
+      <p style="margin-top:7px;">{{ compraProveedor?.cuit }}</p>
+      <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>CUIT</mat-label>
+        <input matInput placeholder="" readonly value="{{ compraProveedor?.cuit }}">
+      </mat-form-field>-->
+    </div>
+
+  </div>
+
+  <form [formGroup]="forma" novalidate="novalidate">
+
+    <div class="row" style="margin-top:15px;" *ngIf="!loading">
       <h6 style="margin-top:0px !important; margin-bottom: 20px !important; margin-left: 20px !important;">Filtros:</h6>
-      <div class="col s6 m3 l3">
+      <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha desde</mat-label>
           <input matInput [matDatepicker]="picker1" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fecdesde" [value]="fechaDesde">
@@ -44,7 +53,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l3">
+      <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha Hasta</mat-label>
           <input matInput [matDatepicker]="picker2" placeholder="" [min]="fechaDesde" [max]="fechaActual" formControlName="fechasta" [value]="fechaActual">
@@ -53,80 +62,77 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m3 l4">
+      <div class="col s12 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Expediente</mat-label>
           <input matInput placeholder="" formControlName="expediente">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
+      <div class="col s3 m3 l1" style="padding-right:2px; text-align:right; vertical-align:middle; margin-top:10px;">
+          <a (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>
+            <i class="material-icons" style="font-size:20px;">search</i>
+          </a>
+      </div>
     </div>
-    
-    <div class="row" style="margin-top:0px; margin-bottom:10px !important;" *ngIf="!loading">
-       <div class="col s6 m3 l1" style="padding-left:2px;">
-         <button (click)="getComprobantes()" class="mine-btnbig" mat-flat-button>
-           CONSULTAR
-         </button>
-       </div>
-       <div class="col s6 m4 l1">
-         <button (click)="downloadPdf()" class="mine-btnbig" mat-flat-button>
-           IMPRIMIR
-         </button>
-       </div> 
-     </div>
-     
-     <div id="tablaDatos" class="mat-elevation-z8" *ngIf="!loading">
-       
+
+    </form>
+
+     <div [ngStyle]="{'display':!loading&&filtrada ? 'block' : 'none' }" class="mat-elevation-z8">
+
        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
-        
+
          <!-- Position Column -->
          <ng-container matColumnDef= "Fecha">
-           <th mat-header-cell *matHeaderCellDef> Fecha </th>
-           <td mat-cell *cdkCellDef="let element"> {{ element.Fecha }} </td>
+           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Fecha </th>
+           <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Fecha }} </td>
          </ng-container>
-     
+
          <!-- Name Column -->
          <ng-container matColumnDef="Comprobante">
            <th mat-header-cell *matHeaderCellDef> Comprobante </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Tipo_Comprobante + ' - ' + element.Numero_Comprobante }} </td>
-         </ng-container> 
-     
+         </ng-container>
+
          <!-- Weight Column -->
          <ng-container matColumnDef="Expediente">
            <th mat-header-cell *matHeaderCellDef> Expediente </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Expediente }} </td>
-         </ng-container> 
-     
+         </ng-container>
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Impuesto">
            <th mat-header-cell *matHeaderCellDef> Impuesto </th>
            <td mat-cell *cdkCellDef="let element"> {{ element.Certificado }} </td>
          </ng-container>
-         
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Concepto">
-           <th mat-header-cell *matHeaderCellDef> Concepto </th>
-           <td mat-cell *cdkCellDef="let element"> $ {{ element.Importe_Total | number:'1.2-2' }} </td>
-         </ng-container> 
-   
+           <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Concepto </th>
+           <td mat-cell *cdkCellDef="let element" style="text-align:right;"> $ {{ element.Importe_Total | number:'1.2-2' }} </td>
+         </ng-container>
+
          <!-- Symbol Column -->
          <ng-container matColumnDef="Importe">
-           <th mat-header-cell *matHeaderCellDef> Importe</th>
-           <td mat-cell *cdkCellDef="let element"> {{ element.Saldo}} </td>
+           <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Saldo</th>
+           <td mat-cell *cdkCellDef="let element" style="text-align:right;"> {{ element.Saldo=="B"?("$ "+element.Saldo+".00"):"" }} </td>
          </ng-container>
-         
+
          <!-- Columna Imprimir-->
          <ng-container matColumnDef="accion">
           <th mat-header-cell *matHeaderCellDef> </th>
-          <td mat-cell *cdkCellDef="let a; let in = index">
-            <i (click)="print()" class="material-icons" style="cursor: pointer">print</i>
-          </td>  
+          <td mat-cell *cdkCellDef="let element">
+            <i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i>
+          </td>
         </ng-container>
-       
-        
+
+
          <tr mat-header-row *matHeaderRowDef="columnsToDisplay "></tr>
          <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;"></tr>
 
        </table>
+
+        <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
      </div>
-     <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons></mat-paginator>
+    </mat-expansion-panel>
+     </div>

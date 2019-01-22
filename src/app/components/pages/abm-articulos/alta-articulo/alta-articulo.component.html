@@ -266,9 +266,16 @@
       </div>
 
       <div class="row" *ngFor="let item of proveedores; let in = index" style="margin:5px !important;">
-        <div class="col s6 m4 l2">
+        <div class="col s6 m4 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Id Proveedor</mat-label>
+            <input matInput placeholder="" type="text">
+            <!--<mat-hint>Hint</mat-hint>-->
+          </mat-form-field>
+        </div>
+        <div class="col s6 m4 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Razon Social</mat-label>
             <input matInput placeholder="" type="text">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
@@ -498,6 +505,13 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
+      <div class="col s12 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Descripción</mat-label>
+          <input matInput placeholder="" type="text">
+          <!--<mat-hint>Hint</mat-hint>-->
+        </mat-form-field>
+      </div>
       <div class="col s12 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>U.M. Artículo</mat-label>
@@ -560,11 +574,18 @@
       </div>
       <div class="col s12 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id Artículo Padre</mat-label>
+          <mat-label>Descripción</mat-label>
           <input matInput placeholder="" type="text">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
+   <!--   <div class="col s12 m6 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Artículo Padre</mat-label>
+          <input matInput placeholder="" type="text">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+      </div> -->
       <div class="col s8 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cantidad</mat-label>
@@ -652,7 +673,7 @@
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>m3</mat-label>
-              <input matInput placeholder="" formControlName="m3">
+              <input matInput placeholder="" formControlName="m3" readonly>
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>

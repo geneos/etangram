@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { CompraService } from "../../../services/i2t/compra.service";
-import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatIcon} from '@angular/material';
+import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatPaginatorIntl} from '@angular/material';
 import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -17,6 +17,8 @@ var auxProvData: any;
   styleUrls: ['./consulta-ord-pagos.component.css']
 })
 export class ConsultaOrdPagosComponent implements OnInit {
+
+  paginatorIntl = new MatPaginatorIntl();
   consultaOrdPago: consultaOrdPago[] = [];
   forma: FormGroup;
   compraProveedor: CompraProveedor;
@@ -36,18 +38,22 @@ export class ConsultaOrdPagosComponent implements OnInit {
   respCabecera: any;
   cabeceraId: string;
 
-  public fechaActual: Date = new Date();
-  public fechaDesde: Date = new Date();
+  dateNow : Date = new Date();
+  fechaActual: Date = new Date();
+  fechaDesde: Date = new Date();
+  fechaActualMasUno: Date = new Date();
   tabla: any = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('tableCompr') table: MatTable<any>;
 
   displayedColumns: string[] = ['fecha', 'comprobante', 'expediente', 'observaciones', 'importe', 'accion'];
   dataSource = new MatTableDataSource<consultaOrdPago>(this.consultaOrdPago);
   selection = new SelectionModel(true, []);
   id: any;
   loading: boolean = true;
+  filtrada:boolean = false;
 
   constructor( private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar, 
@@ -57,12 +63,12 @@ export class ConsultaOrdPagosComponent implements OnInit {
     
   
     this.forma = new FormGroup({
-      'proveedor': new FormControl('',Validators.required,this.existeProveedor),
+      'proveedor': new FormControl(this.existeProveedor),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
       'fecdesde': new FormControl(),
-      'fechasta': new FormControl(new Date()),
-      'expediente': new FormControl(),
+      'fechasta': new FormControl(),
+      'expediente': new FormControl(''),
     })
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
@@ -72,11 +78,14 @@ export class ConsultaOrdPagosComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  //  this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
-    this.fechaDesde.setDate(this.fechaActual.getDate() - 60).toString
-    console.log(this.fechaDesde)
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
+    console.log(this.paginator._intl.getRangeLabel);
+
+    this.fechaActual.setDate(this.fechaActual.getDate());
+    this.fechaActualMasUno.setDate(this.fechaActual.getDate() + 1);
+    this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
+    this.forma.controls['fechasta'].setValue(this.fechaActual);
+    this.forma.controls['fecdesde'].setValue(this.fechaDesde);
   }
 
   openSnackBar(message: string) {
@@ -128,17 +137,38 @@ export class ConsultaOrdPagosComponent implements OnInit {
             }
           }
       });
-  }
+  } 
 
   getComprobantes(){
 
+    let ano = this.forma.controls['fecdesde'].value.getFullYear().toString();
+    let mes = (this.forma.controls['fecdesde'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    let dia = this.forma.controls['fecdesde'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechadesde = ano+"-"+mes+"-"+dia;
+
+    ano = this.forma.controls['fechasta'].value.getFullYear().toString();
+    mes = (this.forma.controls['fechasta'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    dia = this.forma.controls['fechasta'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    let auxfechahasta = ano+"-"+mes+"-"+dia;
+
     let jsbody = {
-      "idcliente": this.id,
-      "fechadesde":"",// this.forma.controls['fecdesde'].value,
-      "fechahasta":"",// this.forma.controls['fechasta'].value,
-      "tiporeferente": "P",
-      "tipooperacion": "INT",
-      "tipocomprobante": "RET",
+        "IdCliente": this.id,
+        "FechaDesde": auxfechadesde,
+        "FechaHasta": auxfechahasta,
+        "TipoReferente": "P",
+        "TipoOperacion": "CAJ",
+        "TipoComprobante": "OP",
+        "Expendiente":this.forma.controls['expediente'].value,
+        "ReservaPresup":" ",
+        "Certificado":" ",
+        "param_limite": 10,
+        "param_offset": 0
     };
 
     let jsonbody= JSON.stringify(jsbody);
@@ -150,9 +180,9 @@ export class ConsultaOrdPagosComponent implements OnInit {
         this.cabeceraId = this.respCabecera.returnset[0].RId;
         console.log(this.respCabecera.dataset[0])
         if(this.respCabecera.dataset.length>0){
+          this.filtrada = true;
           this.consultaOrdPago = this.respCabecera.dataset;
           this.dataSource = new MatTableDataSource(this.consultaOrdPago)
-
         } else {
           this.consultaOrdPago = null;
           this.dataSource = null
@@ -161,7 +191,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
       });
   }
 
-  print = (nint: number) => {
+  print = (nint: string) => {
     
     this._ImpresionCompService.getBaseDatos( this.token )
     .subscribe ( dataP => {
@@ -178,6 +208,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
           this.urlInforme = this.urlBaseDatos + this.informes[0].url
           console.log(this.urlInforme)
           if(this.ProveedorData.dataset.length>0){
+            console.log(nint)
             window.open(this.urlInforme + nint)
           }
         })

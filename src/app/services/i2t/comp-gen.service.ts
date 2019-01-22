@@ -15,6 +15,7 @@ export class CompGenService {
     let nuevoComponent : any;
     //todo: quitar hardcodeo de placeholder
     let place: string;
+    console.log('datos en generador: ', datos)
     switch (componentType) {
       case 'Entero':
           // todo agregar tipo numero

@@ -30,10 +30,13 @@ export class TablaComponent implements CompGen {
       console.log('-- data --');
       console.log(this._data);
       console.log('-- datos --');
-      console.log(this._data.datos)
+      console.log(this._data.datos);
       console.log('-- datos.datos --');
-      console.log(this._data.datos.datos)
+      console.log(this._data.datos.datos);
+      console.log('-- datos.valores --');
+      console.log(this._data.datos.valores);
       // this.constDatos = this._data.datos;
+
       console.log('fin datos recibidos');
 
       //
@@ -54,16 +57,27 @@ export class TablaComponent implements CompGen {
       console.log(constDatos2); */
       //
       // this.displayedColumns= ['select', 'columna', 'tipo', 'longitud'];
-      let displayed= ['select', 'columna'];
+      // let displayed= ['select', 'columna'];
+      let displayed = ['select', 'titulo'];
       // this.displayedColumns = [...displayed, ...transpose.atributo];
       this.displayedColumns = [...displayed];
 
+      /*
       this.constDatos = new MatTableDataSource(this._data.datos.datos);
-      console.log(this.constDatos);
+      */
+    //  console.log('datos (no va) ', this._data.datos.datos)
+      // let datos = this._data.datos.valores.map(valor => valor.title);
+      /* this._data.datos.valores.forEach(valor => {
+        
+      }); */
+      // console.log('array para tabla de columnas: ', datos)
+      // this.constDatos = new MatTableDataSource(this._data.datos.valores.map(valor => valor.title))
+      this.constDatos = new MatTableDataSource(this._data.datos.valores);
+      console.log('mattabledatasource: ', this.constDatos);
       
       this.constDatos.sort = this.sort;
       this.constDatos.paginator = this.paginator;
-
+      console.log('seleccionado inicial: ', this._data.datos.selection)
       this.selection  = this._data.datos.selection;
 
       

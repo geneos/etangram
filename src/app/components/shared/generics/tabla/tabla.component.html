@@ -48,6 +48,12 @@
         <td mat-cell *matCellDef="let auxtabla" style="font-weight:bold;"> {{ auxtabla.desc_atributo }} </td>
       </ng-container>
 
+      <!-- Columna Columna -->
+      <ng-container matColumnDef="titulo">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Columna </th>
+        <td mat-cell *matCellDef="let auxtabla" style="font-weight:bold;"> {{ auxtabla.title }} </td>
+      </ng-container>
+
       <!-- Columna Tipo -->
       <ng-container matColumnDef="tipo">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de dato </th>

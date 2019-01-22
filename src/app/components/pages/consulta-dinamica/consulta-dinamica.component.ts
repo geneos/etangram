@@ -43,6 +43,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   attData: any;
   consData: any;
   displayedColumns: string[] = [];
+  columnasDisponibles: {id: number, name: string, title: string, order: number}[] = [];
   columns: any[];
   columnasSeleccionadas: string;
   columnasSelectas: any;
@@ -219,22 +220,24 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       // columnSelection: any
     } */
     //
-    this.ngxSmartModalService.getModal('consDinModal').onOpen.subscribe(() => {
-      this.inputParam = this.ngxSmartModalService.getModalData('consDinModal');
-      console.log('configuracion del modal de consulta din(suscripcion): ', this.inputParam);
-      
-      if (this.inputParam.permiteMultiples ==null)
-      {
-        this.inputParam = {permiteMultiples: true, selection: []};
-      }
-      //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
-      this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
-      if (this.nombreReporte == null){
-        this.nombreReporte = this.inputParam.consulta;
+    if(this.nombreReporte == null){
+      this.ngxSmartModalService.getModal('consDinModal').onOpen.subscribe(() => {
+        this.inputParam = this.ngxSmartModalService.getModalData('consDinModal');
+        console.log('configuracion del modal de consulta din(suscripcion): ', this.inputParam);
         
-        this.buscarReportes();
-      }
-    });
+        if (this.inputParam.permiteMultiples ==null)
+        {
+          this.inputParam = {permiteMultiples: true, selection: []};
+        }
+        //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
+        this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
+        if (this.nombreReporte == null){
+          this.nombreReporte = this.inputParam.consulta;
+          
+          this.buscarReportes();
+        }
+      });
+    }
   }
   
   selectionChanged(){
@@ -297,9 +300,35 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     }
     else{
       datosModal.columnSelection = this.columnSelection;
-      this.ngxSmartModalService.resetModalData(nombreModal);
-      this.ngxSmartModalService.setModalData(datosModal, nombreModal);
-      this.ngxSmartModalService.open(nombreModal);
+      //todo agregar if en caso de que no haya datos
+      // datosModal.valores = Object.keys(this.datosAll[0]);
+      if(this.datosAll == null){
+        this.openSnackBar('Error al obtener las columnas')
+      }
+      else{
+        /*
+        let columnas : [{id: number, name: string, title: string}] = [];
+        let indice: number = 0;
+        Object.keys(this.datosAll[0]).forEach(column => {
+          let descripcion: string;
+          let resultado = this.atributosAll.find(atributo => atributo.atributo_bd === column);
+
+          if (resultado == null){
+            descripcion = column;
+          }
+          else{
+            descripcion = resultado.desc_atributo;
+          }
+          columnas.push({id: indice, name: column, title: descripcion});
+          indice = indice + 1;
+        });
+        */
+        // datosModal.valores = columnas;
+        datosModal.valores = this.columnasDisponibles;
+        this.ngxSmartModalService.resetModalData(nombreModal);
+        this.ngxSmartModalService.setModalData(datosModal, nombreModal);
+        this.ngxSmartModalService.open(nombreModal);
+      }
     }
     console.log('nombre modal usado: '+ nombreModal + ' ')
   }
@@ -432,8 +461,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 this.atributosAll = this.attData.dataset;
                 console.log('Lista de atributos');
                 console.log(this.atributosAll);
-                this.establecerColumnas();
-                
+                // this.establecerColumnas();
+                this.buscarDatos();
                 
                 this.loading = false;
                 //this.table.renderRows();
@@ -484,12 +513,14 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 console.log('estructura de Obj. dinamico: ');
                 console.log(Object.keys(objdin));
                 //
-                this.loading = false;
-
+                
                 this.constDatos = new MatTableDataSource(this.datosAll);
-
+                
                 this.constDatos.sort = this.sort;
                 this.constDatos.paginator = this.paginator;
+
+                this.establecerColumnas();
+                this.loading = false;
 
               } else {
                 this.datosAll = null;
@@ -516,6 +547,43 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     this.irADetalle = true;
   }
 
+  //de https://stackoverflow.com/a/4760279
+  dynamicSort(property) {
+    var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
+  }
+/*
+  dynamicSortMultiple(argumentos: any) {
+    /*
+     * save the arguments object as it will be overwritten
+     * note that arguments object is an array-like object
+     * consisting of the names of the properties to sort by
+     *
+    var props = argumentos;
+    return function (obj1, obj2) {
+        var i = 0, result = 0, numberOfProperties = props.length;
+        /* try getting a different result from 0 (equal)
+         * as long as we have extra properties to compare
+         *
+        while(result === 0 && i < numberOfProperties) {
+            console.log(props, i, obj1, obj2)
+            // result = this.dynamicSort(props[i])(obj1, obj2);
+            result = this.columnSelection.selected.sort(this.dynamicSort(props[i])(obj1, obj2));
+
+            
+            i++;
+        }
+        return result;
+    }
+  }
+*/
   establecerColumnas(){
     //asignar las seleccionadas, como "['select', 'opciones', 'codigo', 'nombre']"
     this.displayedColumns = [];
@@ -523,6 +591,27 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     columnasAMostrar = '';
 
     if (this.columnSelection == null){
+
+      //armar lista de columnas disponibles
+      let indice: number = 0;
+      Object.keys(this.datosAll[0]).forEach(column => {
+        let descripcion: string;
+        let orden: number;
+        let resultado = this.atributosAll.find(atributo => atributo.atributo_bd === column);
+
+        if (resultado == null){
+          descripcion = column;
+          orden = -1;
+        }
+        else{
+          descripcion = resultado.desc_atributo;
+          orden= resultado.orden;
+        }
+        this.columnasDisponibles.push({id: indice, name: column, title: descripcion, order: orden});
+        indice = indice + 1;
+
+      });
+
       this.columnSelection = new SelectionModel(true, []);
       console.log('generada lista de columnas seleccionadas');
 
@@ -545,11 +634,15 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       // }
       
       //agregar las columnas por defecto a la lista de selección
-      this.columnSelection = new SelectionModel(true, this.atributosAll.filter(tipo => tipo.grupo == 'Filtros')); 
-    
+      // this.columnSelection = new SelectionModel(true, this.atributosAll.filter(tipo => tipo.grupo == 'Filtros')); 
+      this.columnSelection = new SelectionModel(true, this.columnasDisponibles
+        .filter(columnaDisponible =>
+          columnasAMostrar.includes(columnaDisponible.name) == true
+          ));
+      console.log('column selection inicial armado: ', this.columnSelection);
     }
     else{
-      console.log(this.columnSelection.selected);
+      console.log('Selección de columnas: ', this.columnSelection.selected);
       this.columnSelection.selected.forEach(atributo => {
         columnasAMostrar = columnasAMostrar.concat(atributo.atributo_bd, ',');
       });
@@ -561,23 +654,56 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     
     let listaColumnas : string[] = (columnasAMostrar.split(','));
     this.columns = [];
-    //
-    console.log('buscando metadatos de columnas: ');
-    //
+
+    //extraer los que vienen con orden valido, y ordenarlos
+    let listaColumnasOrdenada = this.columnSelection.selected.filter(column => column.order != -1)
+                                .sort(this.dynamicSort('order'));
+    console.log('orden parcial por order: ', listaColumnasOrdenada)
+    //extraer los que vienen sin orden y ordenarlos por nombre
+    let listaColumnasOrdenadaP2 = this.columnSelection.selected.filter(column => column.order == -1)
+                                  .sort(this.dynamicSort('name'));
+    console.log('orden parcial por name: ', listaColumnasOrdenadaP2)
+    //agregar la segunda parte al final de los que venían ordenados
+    listaColumnasOrdenada.push(listaColumnasOrdenadaP2);
+    console.log('lista ordenada de columnas: ', listaColumnasOrdenada);
+
+    this.columnSelection.selected.forEach(column => {
+      this.columns.push({ columnDef: column.name, //columna, 
+        header: column.title,    
+        // header: atributoActual.desc_atributo,    
+        cell: (item: any) => `${item[column.name]}` 
+    }
+    )});//item[columna] sirve para buscar el dato con el nombre de atributo
+
+    //forma anterior al cambio
+    /*
     listaColumnas.forEach(columna => {
       console.log('columna: ' + columna);
+      let textoCabecera:string;
+      //buscar y mostrar descripción de columna
       let atributoActual = this.atributosAll.find(atributo => atributo.atributo_bd === columna );
+      if (atributoActual != null){
+        //mostrar descripción
+        textoCabecera = atributoActual.desc_atributo;
+      }
+      else{
+        //mostrar nombre de columna
+        textoCabecera = columna;
+      }
       console.log(atributoActual);
       //todo revisar cuando corrijan las correspondencias entre apis
       if (atributoActual != null) {
       this.columns.push({ columnDef: columna, 
-                          header: atributoActual.desc_atributo,    
+                          header: textoCabecera,    
+                          // header: atributoActual.desc_atributo,    
                           cell: (item: any) => `${item[atributoActual.atributo_bd]}` 
       }
                         );}
       // this.columns.push({ columnDef: columna, header: columna,    cell: (item: any) => `${item[columna]}` });
-    }); //item[columna] sirve para buscar el dato con el nombre de atributo
+    }); 
     
+*/
+
 /*
       let columns = [
         { columnDef: 'select',    header: 'Select',   cell: (row: any) => ``      },
@@ -610,7 +736,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     console.log('filtrado: ');
     console.log(this.atributosAll.filter(tipo => tipo.grupo == 'Filtros'));
 
-    this.buscarDatos();
+    // this.buscarDatos();
     //
     console.log('lista de columnas: ');
     console.log(this.displayedColumns);
@@ -619,9 +745,9 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     let repo: Reporte;
     repo = this.reportesAll[this.reporteSeleccionado];
     console.log('estructura de Reporte: ');
-    console.log(Object.keys(repo));
-
-
+    // console.log(Object.keys(repo));
+    //obtener lista de atributos y tipos reales de la entidad
+    // Object.keys(repo).forEach(att => console.log(att, typeof repo[att]));
     //
   }
 

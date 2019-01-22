@@ -16,15 +16,18 @@ export class CdTablaComponent implements AfterViewInit {
   inputParam:  {
     modal: string;
     datos: any;
+    valores: any;
     columnSelection: any
   }
   _inputParam: {
     modal: string;
     datos: any;
+    valores: any;
     columnSelection: any
   }
   modal: string;
   datos: any;
+  valores: any;
   columnSelection : any;
   
   listaSeleccionada: any;
@@ -51,7 +54,7 @@ export class CdTablaComponent implements AfterViewInit {
       datos: null,
       columnSelection : null
     }; */
-    this._inputParam = {modal: '', datos: {}, columnSelection: []};
+    this._inputParam = {modal: '', datos: {}, valores: {}, columnSelection: []};
     // this._inputParam.modal = '';
     // this._inputParam.columnSelection = [];
     // this._inputParam.datos = {};
@@ -63,6 +66,7 @@ export class CdTablaComponent implements AfterViewInit {
     console.log('asignando: ',this.inputParam);
     this.modal = this.inputParam.modal;
     this.datos = [...this.inputParam.datos];
+    this.valores = [...this.inputParam.valores]
     this.columnSelection = [this.inputParam.columnSelection];
     /* this.modal = JSON.parse(JSON.stringify(this.inputParam.modal));
     this.datos = JSON.parse(JSON.stringify(this.inputParam.datos));
@@ -96,7 +100,7 @@ export class CdTablaComponent implements AfterViewInit {
     let control = this.generadorDeComponentes.getComponent('Tabla', 
                   'Datos de la tabla', 
                   'Seleccione columnas a visualizar',                                                             
-                   {datos: this.inputParam.datos, selection: this.inputParam.columnSelection});
+                   {datos: this.inputParam.datos, valores: this.inputParam.valores, selection: this.inputParam.columnSelection});
                   // {datos: {datos: this.atributosAll, selection: this.columnasSelectas}});
       let componentFactory = this.componentFactoryResolver.resolveComponentFactory(control.component);
       let componentRef = this.viewContainerRefColumnas.createComponent(componentFactory);
@@ -120,36 +124,6 @@ export class CdTablaComponent implements AfterViewInit {
  }
 
  cancelar(){
-   /*
-    //reiniciar valores
-    console.log('cancelado')
-    console.log('era ', this.inputParam)
-    // this.inputParam = this._inputParam; 
-    // Object.assign(this.inputParam, this._inputParam);
-    // this.inputParam = Object.assign({}, this._inputParam);
-    
-    // this.inputParam = JSON.parse(JSON.stringify(this._inputParam));
-
-    this.inputParam.modal = this.modal;
-    this.inputParam.datos = [...this.datos];
-    this.inputParam.columnSelection = [...this.columnSelection];
-    /* this.inputParam.modal = JSON.parse(JSON.stringify(this.modal));
-    this.inputParam.datos = JSON.parse(JSON.stringify(this.modal));
-    this.inputParam.columnSelection = JSON.parse(JSON.stringify(this.modal)); *
-
-    //restaurar lista recibida 
-    // this.inputParam.columnSelection = new SelectionModel(true, this.listaRecibida);
-    // this.columnSelection = new SelectionModel(true, this.listaRecibida);
-
-    console.log('es ahora ', this.modal, this.datos, this.columnSelection)
-    // console.log('es ahora: ', this.listaSeleccionada);
-    // this.inputParam.columnSelection = this.listaSeleccionada;
-    this.ngxSmartModalService.setModalData(this.inputParam, 'cdTablaModal');
-    console.log('datos en modal:' ,this.ngxSmartModalService.getModalData('cdTablaModal'));
-    this.ngxSmartModalService.close('cdTablaModal');
-
-*/
-
   this.ngxSmartModalService.resetModalData('cdTablaModal');
   this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'cdTablaModal');
   this.ngxSmartModalService.close('cdTablaModal');

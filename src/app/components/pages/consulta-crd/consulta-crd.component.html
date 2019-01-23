@@ -53,48 +53,44 @@
 
     <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
 
-      <!-- Position Column -->
+      <!-- Certificado Column -->
       <ng-container matColumnDef="ncrd">
         <th mat-header-cell *matHeaderCellDef> Certificado </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.ncrd }} </td>
       </ng-container>
 
-      <!-- Name Column -->
+      <!-- Fecha Column -->
       <ng-container matColumnDef="fech">
         <th mat-header-cell *matHeaderCellDef> Fecha </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.fech }} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.fech | date: 'dd-MM-yyyy' }} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- Expediente Column -->
       <ng-container matColumnDef="pexp">
         <th mat-header-cell *matHeaderCellDef> Expediente</th>
         <td mat-cell *cdkCellDef="let element"> {{ element.pexp + "-" + element.nexp}} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- O. Compra Column -->
       <ng-container matColumnDef="opub">
         <th mat-header-cell *matHeaderCellDef> O. Compra </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.opub }} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- Comprobante Column -->
       <ng-container matColumnDef="ncomr">
         <th mat-header-cell *matHeaderCellDef> Comprobante</th>
         <td mat-cell *cdkCellDef="let element"> {{ element.tcom + "-" + element.ncomr}} </td>
       </ng-container>
 
-      <!-- Symbol Column
-      <ng-container matColumnDef="ncomr">
-        <th mat-header-cell *matHeaderCellDef> Nro. Comprobante </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.ncomr }} </td>
-      </ng-container>-->
 
-      <!-- Symbol Column -->
+      <!-- Importe Column -->
       <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
         <td mat-cell *cdkCellDef="let element" style="text-align:right;"> $ {{ element.total | number:'1.2-2'}} </td>
       </ng-container>
 
+      <!-- accion Column -->
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> </th>
         <td mat-cell *cdkCellDef="let element" style="text-align:right;">

@@ -30,7 +30,7 @@
         </div>
         <div class="col s3 m4 l3">
           <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">CUIT</p>
-          <p style="margin-top:7px;">{{ compraProveedor?.cuit }}</p>
+          <p style="margin-top:7px;">{{ cuit }}</p>
           <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>CUIT</mat-label>
             <input matInput placeholder="" readonly value="{{ compraProveedor?.cuit }}">
@@ -81,36 +81,37 @@
 
     <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
 
-      <!-- Name Column -->
+      <!-- fecha Column -->
       <ng-container matColumnDef="fecha">
         <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Fecha </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Fecha }} </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Fecha | date: 'dd-MM-yyyy' }} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- comprobante Column -->
       <ng-container matColumnDef="comprobante">
         <th mat-header-cell *matHeaderCellDef> Comprobante</th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.Nombre_Comprobante + "-" + element.Numero_Comprobante}} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.Nombre_Comprobante }} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- expediente Column -->
       <ng-container matColumnDef="expediente">
         <th mat-header-cell *matHeaderCellDef> Expediente </th>
         <td mat-cell *cdkCellDef="let element"> {{ element.Expediente }} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- observaciones Column -->
       <ng-container matColumnDef="observaciones">
         <th mat-header-cell *matHeaderCellDef> observaciones</th>
         <td mat-cell *cdkCellDef="let element"> {{ element.Observaciones_Comprobante}} </td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- importe Column -->
       <ng-container matColumnDef="importe">
         <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
         <td mat-cell *cdkCellDef="let element" style="text-align:right;"> {{ element.Saldo=="B"?("$ "+element.Saldo+".00"):"" }} </td>
       </ng-container>
 
+       <!-- accion Column -->
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> </th>
         <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>

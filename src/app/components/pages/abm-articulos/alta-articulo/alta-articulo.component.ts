@@ -160,7 +160,7 @@ export class AltaArticuloComponent implements OnInit {
         "C_alternativo": this.forma.controls['codigoAlternativo'].value,
         "C_barra": this.forma.controls['codigoBarra'].value,
         "Grupo": "",//id de tabla grupos-consulta dinamica
-
+ 
         "Tipo":"",// id de la tabla tipo de articulos consulta dinamica
         "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
         "marca":"",// id de marcas ->consulta dinamica

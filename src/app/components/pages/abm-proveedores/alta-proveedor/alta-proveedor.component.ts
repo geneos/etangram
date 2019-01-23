@@ -81,6 +81,16 @@ export class AltaProveedorComponent implements OnInit {
       'fechaVtoCai': new FormControl(),
     });
 
+    this.formaImpuesto = new FormGroup({
+      'tipo': new FormControl(),
+      'modelo': new FormControl(),
+      'situacion': new FormControl(),
+      'codInscripcion': new FormControl(),
+      'fechaInscripcion': new FormControl(),
+      'exenciones': new FormControl()
+    });
+
+    
     this.forma.controls['facCiudad'].disable();
     this.forma.controls['facProvincia'].disable();
     this.forma.controls['facPais'].disable();
@@ -242,6 +252,22 @@ export class AltaProveedorComponent implements OnInit {
       }
       let jsonbodyRC= JSON.stringify(jsbodyRC);
       console.log(jsonbodyRC);
+
+      //IMPUESTOS
+      let jsbodyImp = {
+        "Id_Proveedor": auxRid, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        "p_imp_tipo" : "1", // id de tabla tg01_impuestos
+        "p_imp_modelo" : "1", // id de tabla  tg01_modeloimpuestos
+        "p_imp_situacion" : this.formaImpuesto.controls['situacion'].value,
+        "p_imp_codigo" : this.formaImpuesto.controls['codInscripcion'].value,//"1",
+        "p_imp_fecha_insc" : this.formaImpuesto.controls['fechaInscripcion'].value,//"1997-05-05",
+        "p_imp_excenciones" : this.formaImpuesto.controls['exenciones'].value,//"false",
+        "p_imp_fecha_comienzo_excencion" : "", // → si es true
+        "p_imp_fecha_caducidad_excencion" : "",//  → si es true
+        "p_imp_obs" : ""
+
+      }
+      let jsonbodyImp = JSON.stringify(jsbodyImp);
     }else{
       //actualizando
     }

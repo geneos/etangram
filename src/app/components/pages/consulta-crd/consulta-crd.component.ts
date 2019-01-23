@@ -34,6 +34,7 @@ export class ConsultaCrdComponent implements OnInit {
   RazonSocial:string;
   nroInterno:number;
   cuitc:string;
+  cuit:string;
   nroProveedor:number;
 
   displayedColumns: string[] = ['accion', 'ncrd', 'fech', 'pexp', 'opub', 'ncomr', 'total'];
@@ -154,7 +155,11 @@ export class ConsultaCrdComponent implements OnInit {
                 this.loading = false;
                 this.dataSource.paginator = this.paginator;
                 this.dataSource.sort = this.sort;
+                let icuit = this.ELEMENT_DATA[0].cuit_c.slice(0,2)
+              let mcuit = this.ELEMENT_DATA[0].cuit_c.slice(2,10)
+              let fcuit = this.ELEMENT_DATA[0].cuit_c.slice(10)
 
+              this.cuitc = icuit + '-' + mcuit + '-' + fcuit;
               } else {
                 this.ELEMENT_DATA = null;
                 this.dataSource = new MatTableDataSource(this.ELEMENT_DATA);

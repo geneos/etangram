@@ -40,6 +40,7 @@ export class ConsultaRetencionesComponent implements OnInit {
   baseUrl: ImpresionBase[] = [];
   modeloImpuesto: string;
   fechaActualMasUno: Date = new Date();
+  cuit: any;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -131,6 +132,12 @@ export class ConsultaRetencionesComponent implements OnInit {
             if(this.proveedorData.dataset.length>0){
               this.loading = false;
               this.compraProveedor = this.proveedorData.dataset[0];
+
+              let icuit = this.compraProveedor.cuit.slice(0,2)
+              let mcuit = this.compraProveedor.cuit.slice(2,10)
+              let fcuit = this.compraProveedor.cuit.slice(10)
+
+              this.cuit = icuit + '-' + mcuit + '-' + fcuit;
             } else {
               this.compraProveedor = null; 
             }

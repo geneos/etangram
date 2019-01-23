@@ -384,12 +384,12 @@
         </button>
       </span>
     </div>
-
+    <form [formGroup]="formaImpuesto" (ngSubmit)="guardarProveedor()" novalidate="novalidate">
     <div class="row" *ngFor="let item of impuestos; let in = index" style="margin:5px !important;">
       <div class="col s10 m2 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo</mat-label>
-          <input matInput placeholder="" disabled>
+          <input matInput placeholder="" formControlName="tipo" disabled>
         </mat-form-field>
       </div>
       <div class="col s2 m1 l1" style="margin-top:10px;">
@@ -400,7 +400,7 @@
       <div class="col s10 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Modelo</mat-label>
-          <input matInput placeholder="" value="" disabled>
+          <input matInput placeholder="" formControlName="modelo" value="" disabled>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -412,7 +412,7 @@
       <div class="col s12 m4 l4">
       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
         <mat-label>Situación</mat-label>
-        <mat-select placeholder="Elija una opción">
+        <mat-select placeholder="Elija una opción" formControlName="situacion">
           <mat-option value="1">Exento</mat-option>
           <mat-option value="2">Inscripto</mat-option>
           <mat-option value="3">No inscripto</mat-option>
@@ -423,7 +423,7 @@
       <div class="col s12 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código inscripción</mat-label>
-          <input matInput placeholder="" style="text-align: right;"
+          <input matInput placeholder="" formControlName="codInscripcion" style="text-align: right;"
            value="">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
@@ -431,19 +431,20 @@
       <div class="col s12 m3 l3">
       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
         <mat-label>Fecha Inscripción</mat-label>
-        <input matInput [matDatepicker]="picker" placeholder="">
+        <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaInscripcion">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
       </div>
       <div class="col s6 m4 l4" style="margin-top:12px;">
-          <mat-checkbox #poseeExenc>¿Posee exenciones?</mat-checkbox>
+          <mat-checkbox #poseeExenc formControlName="exenciones">¿Posee exenciones?</mat-checkbox>
       </div>
       <div class="col s6 m3 l3">
         <button (click)="deleteImpuesto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
           -
         </button>
       </div>
+      
       <!-- relacion impuestos exenciones -->
       <div class="col s12 m12 l12" style="margin-top:0px !important; margin-bottom: 15px !important; margin-left: 30px !important;" *ngIf="poseeExenc.checked">
         <span style="display:flex;">
@@ -492,7 +493,7 @@
       </div>
     </div>
     <!--fin relacion-->
-
+  </form>
     <!-- relacion formularios -->
     <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
       <span style="display:flex;">
@@ -502,7 +503,7 @@
         </button>
       </span>
     </div>
-
+   
     <div class="row" *ngFor="let item of formularios; let in = index" style="margin:5px !important;">
       <div class="col s12 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -532,6 +533,7 @@
         </button>
       </div>
     </div>
+   
     <!--fin relacion-->
 
    </div>

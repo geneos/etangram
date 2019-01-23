@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject  } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar, MatPaginatorIntl} from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar, MatPaginatorIntl, } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
@@ -10,6 +10,8 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { Router, ActivatedRoute } from "@angular/router";
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 
 
 //import jsPDF from 'jspdf';
@@ -37,7 +39,10 @@ let itemActual:any;
     ]),
   ],
   providers: [
-    { provide: 'Window',  useValue: window }
+    { provide: 'Window',  useValue: window },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
   ],
   
 })
@@ -85,7 +90,9 @@ export class ConsultaComprobantesComponent implements OnInit {
               public snackBar: MatSnackBar,
               public dialogArt: MatDialog,
               private _compraService:CompraService,
-              private _consultaComprobantesServices:ConsultaComprobantesService,) {
+              private _consultaComprobantesServices:ConsultaComprobantesService,
+              private adapter: DateAdapter<any>
+              ) {
     this.loading = true;
 
     this.forma = new FormGroup({
@@ -115,6 +122,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   ngOnInit() {
     /*this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;*/
+  //  this.adapter.setLocale('fr');
     this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
     console.log(this.paginator._intl.getRangeLabel);
 

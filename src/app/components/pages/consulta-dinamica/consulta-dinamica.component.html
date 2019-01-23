@@ -1,7 +1,7 @@
 <h2>{{reportesAll && reportesAll[this.reporteSeleccionado]?.titulo}}</h2>
 {{records && (records[0] | json)}}
 <!-- <h2>{{reportesAll[this.reporteSeleccionado]?.titulo || "Consulta Dinámica (Cargando)" }}</h2> -->
-<button class="mine-btnbig" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu">
+<button *ngIf="nivel == 1" class="mine-btnbig" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu">
   ACCIONES
 </button>
 <mat-menu #rootMenu="matMenu">
@@ -29,7 +29,7 @@
   </ng-template>
 </mat-menu> -->
 
-<button class="mine-btnbig" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu2">
+<button *ngIf="nivel == 1" class="mine-btnbig" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu2">
   FILTROS
 </button>
 <mat-menu #rootMenu2="matMenu">
@@ -131,3 +131,4 @@
   <app-cd-filtros></app-cd-filtros>
   <!-- <app-cd-avanzado></app-cd-avanzado> -->
   <app-cd-tabla></app-cd-tabla>
+  <!-- <app-cons-din-n2></app-cons-din-n2> -->

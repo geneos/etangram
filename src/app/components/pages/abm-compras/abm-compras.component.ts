@@ -117,13 +117,15 @@ export class AbmComprasComponent implements OnInit {
       consulta: string;
       permiteMultiples: boolean;
       selection: any;
+      modal: string;
       // valores: any;
       // columnSelection: any
     }
     datosModal = {
       consulta: consulta,
       permiteMultiples: false,
-      selection: null
+      selection: null,
+      modal: 'consDinModal'
     }
     
     console.log('enviando datosModal: ');
@@ -131,13 +133,13 @@ export class AbmComprasComponent implements OnInit {
     
     // datosModal.columnSelection = this.columnSelection;
     console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
-    this.ngxSmartModalService.resetModalData('consDinModal');
-    this.ngxSmartModalService.setModalData(datosModal, 'consDinModal');
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
     
-    this.suscripcionConsDin = this.ngxSmartModalService.getModal('consDinModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
+    this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
 
-      let respuesta = this.ngxSmartModalService.getModalData('consDinModal');
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
       console.log('Respuesta del modal: ', respuesta);
 
       if (respuesta.estado === 'cancelado'){
@@ -152,7 +154,7 @@ export class AbmComprasComponent implements OnInit {
       this.suscripcionConsDin.unsubscribe();
       console.log('se desuscribió al modal de consulta dinamica');
     });
-    this.ngxSmartModalService.open('consDinModal');
+    this.ngxSmartModalService.open(datosModal.modal);
   }
 
   openSnackBar(message: string) {

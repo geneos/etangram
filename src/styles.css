@@ -122,12 +122,31 @@ h6 {
 /* .nsm-dialog { width: 85% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; } */
 /* .nsm-dialog { width: 85% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; } */
 
-.overlay-cons-din.nsm-dialog { width: 85% !important; max-width: 2000px !important;
+/* .overlay-cons-din.nsm-dialog { width: 85% !important; max-width: 2000px !important; */
+.overlay-cons-din.nsm-dialog { width: 85vw !important; max-width: 2000px !important;
   /*  border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: thistle */
 }
+
+/* Para que el segundo dialogo de consulta dinamica no quede detrás del primero */
+/* .overlay-cons-din2.nsm-dialog { width: 85vw !important; max-width: 2000px !important; z-index: 1100 !important; */
+app-cons-din-n2 ngx-smart-modal div { 
+  /* width: 85vw !important;  */
+  max-width: 2000px !important; 
+  z-index: 1100 !important;
+  /*  border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: thistle */
+}
+
 .overlay-filtros.nsm-dialog,  
 .overlay-columnas.nsm-dialog
-{ width: 60% !important; max-width: 2000px !important;
+{ width: 60vw !important; max-width: 2000px !important; z-index: 1200 !important;
+/* { width: 60% !important; max-width: 2000px !important; */
+  /*  border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: purple */
+}
+
+.overlay-filtros-n2.nsm-dialog,  
+.overlay-columnas-n2.nsm-dialog
+{ width: 60vw !important; max-width: 2000px !important; z-index: 1200 !important;
+/* { width: 60% !important; max-width: 2000px !important; */
   /*  border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: purple */
 }
 

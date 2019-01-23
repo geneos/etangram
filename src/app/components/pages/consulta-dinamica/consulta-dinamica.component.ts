@@ -27,6 +27,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableDatos') table: MatTable<any>;
 
+  @Input() nivel: number;
+
   selection = new SelectionModel(true, []);
   loading:boolean;
   token: string = "a";
@@ -54,6 +56,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   columnSelection: any;
   filtros: any;
   filtrosAnteriores: any;
+  // nivelConsulta: number;
 
   //permisos
   /* permiso_crear: boolean;
@@ -84,11 +87,17 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               public ngxSmartModalService: NgxSmartModalService,
               private _permisosService: PermisosService) { 
     this.loading = true;
+    
+    if (this.nivel == null){
+      this.nivel = 1;
+    }
+    console.log('nivel de generación: ', this.nivel);
 
     this.route.params.subscribe( parametros=>{
       console.log('ruta actual: ',this.router.url)
       if (this.router.url.includes('/consulta/') == true)
       {
+        //todo ver si cambiar por parametros para consulta n1
         this.nombreReporte = parametros['id'];
         this.buscarReportes();
       }
@@ -132,6 +141,13 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(){    
+    let nombreModalActual: string;
+    if (this.nivel == 1){
+      nombreModalActual = 'consDinModal';
+    }
+    else{
+      nombreModalActual = 'consDinModalN' + this.nivel.toString();
+    }
     // this.habilitarAcciones();
 
     console.log('suscribiendo al modal de tabla')
@@ -156,7 +172,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     //suscribir a los botones de los modales
     this.ngxSmartModalService.getModal('cdFiltrosModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal: ', modal.getData());
-
+      console.log('estado de las colecciones: ', this.datosAll, this.atributosAll, this.reportesAll)
       //si cambiaron los datos:
       let datostemp = this.ngxSmartModalService.getModalData('cdFiltrosModal');
       console.log('temp: ', datostemp);
@@ -220,10 +236,32 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       // columnSelection: any
     } */
     //
-    if(this.nombreReporte == null){
+    
+    this.ngxSmartModalService.getModal(nombreModalActual).onOpen.subscribe(() => {
+      this.inputParam = this.ngxSmartModalService.getModalData(nombreModalActual);
+      console.log('configuracion del modal de consulta din(suscripcion) n' + this.nivel +': ', this.inputParam);
+      // this.openSnackBar('Preparando consulta n' + this.nivel +': ' + this.inputParam)
+      if (this.inputParam.permiteMultiples ==null)
+      {
+        this.inputParam = {permiteMultiples: true, selection: []};
+      }
+      //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
+      this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
+      console.log('reporte a usar: ', this.nombreReporte)
+      if ((this.nombreReporte == null)||(this.nombreReporte != this.inputParam.consulta)){
+        this.nombreReporte = this.inputParam.consulta;
+        
+      }
+      this.buscarReportes();
+    });
+    
+    
+    
+    
+    /* if(this.nombreReporte == null){
       this.ngxSmartModalService.getModal('consDinModal').onOpen.subscribe(() => {
         this.inputParam = this.ngxSmartModalService.getModalData('consDinModal');
-        console.log('configuracion del modal de consulta din(suscripcion): ', this.inputParam);
+        console.log('configuracion del modal de consulta din(suscripcion): ', this.inputParam.consulta);
         
         if (this.inputParam.permiteMultiples ==null)
         {
@@ -234,10 +272,32 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         if (this.nombreReporte == null){
           this.nombreReporte = this.inputParam.consulta;
           
-          this.buscarReportes();
         }
+        this.buscarReportes();
       });
+
+      
     }
+    
+    console.log('lista de modales antes de suscribir a cons din n2: ', this.ngxSmartModalService.getModalStack());
+    
+    this.ngxSmartModalService.getModal('consDinModalN2').onOpen.subscribe(() => {
+      this.inputParam = this.ngxSmartModalService.getModalData('consDinModalN2');
+      console.log('configuracion del modal de consulta din(suscripcion) n2: ', this.inputParam);
+      this.openSnackBar('Preparando consulta n2: ' + this.inputParam)
+      if (this.inputParam.permiteMultiples ==null)
+      {
+        this.inputParam = {permiteMultiples: true, selection: []};
+      }
+      //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
+      this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
+      console.log('reporte a usar: ', this.nombreReporte)
+      if (this.nombreReporte == null){
+        this.nombreReporte = this.inputParam.consulta;
+        
+      }
+      this.buscarReportes();
+    }); */
   }
   
   selectionChanged(){
@@ -266,7 +326,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     });
   }
 
-  menuClickHandler(nroReporte: number){
+/*   menuClickHandler(nroReporte: number){
     if (this.reporteSeleccionado!==nroReporte){
       this.loading = true;
       this.reporteSeleccionado=nroReporte;
@@ -275,28 +335,43 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     else{
       this.openSnackBar('Ya se está mostrando la lista seleccionada.');
     }
-  }
+  } */
 
   abrirModal(nombreModal: string){
     console.clear();
+    let nombreModalCorregido: string;
+    if (this.nivel != 1){
+      nombreModalCorregido = nombreModal + 'N' + this.nivel.toString();
+    }
+    else{
+      nombreModalCorregido = nombreModal;
+    }
+
     let datosModal : {
       modal: string;
       datos: any;
       valores: any;
-      columnSelection: any
+      columnSelection: any;
+      nivel: number
     }
     datosModal = {
-      modal: nombreModal,
+      modal: nombreModalCorregido,
       datos: this.atributosAll,
       valores: this.filtros,
       columnSelection: null,
+      nivel: this.nivel//todo obtener
     }
-    
+
     console.log('enviando datosModal: ', datosModal);
-    if (nombreModal != 'cdTablaModal'){
-      this.ngxSmartModalService.resetModalData('cdFiltrosModal');
-      this.ngxSmartModalService.setModalData(datosModal, 'cdFiltrosModal');
-      this.ngxSmartModalService.open('cdFiltrosModal');
+    // if (nombreModal != 'cdTablaModal'){
+    if (!(nombreModalCorregido.includes('cdTablaModal'))){    
+      // this.ngxSmartModalService.resetModalData('cdFiltrosModal');
+      // this.ngxSmartModalService.setModalData(datosModal, 'cdFiltrosModal');
+      // this.ngxSmartModalService.open('cdFiltrosModal');
+      nombreModalCorregido = nombreModalCorregido.replace('Avanzado', 'Filtros');
+      this.ngxSmartModalService.resetModalData(nombreModalCorregido);
+      this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
+      this.ngxSmartModalService.open(nombreModalCorregido);
     }
     else{
       datosModal.columnSelection = this.columnSelection;
@@ -325,12 +400,12 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         */
         // datosModal.valores = columnas;
         datosModal.valores = this.columnasDisponibles;
-        this.ngxSmartModalService.resetModalData(nombreModal);
-        this.ngxSmartModalService.setModalData(datosModal, nombreModal);
-        this.ngxSmartModalService.open(nombreModal);
+        this.ngxSmartModalService.resetModalData(nombreModalCorregido);
+        this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
+        this.ngxSmartModalService.open(nombreModalCorregido);
       }
     }
-    console.log('nombre modal usado: '+ nombreModal + ' ')
+    console.log('nombre modal usado: '+ nombreModalCorregido + ' ')
   }
 
   habilitarAcciones(){
@@ -482,6 +557,9 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   buscarDatos(){
     //
     console.log('Buscando datos con:');
+    //todo ver por qué está vacío al momento de volver del modal siguiente
+    console.log(this.reportesAll)
+    console.log(this.reporteSeleccionado)
     console.log(this.reportesAll[this.reporteSeleccionado].name);
     
     console.log('filtros a aplicar: ', this.filtros);

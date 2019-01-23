@@ -61,6 +61,9 @@ import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.c
 import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos/consulta-ord-pagos.component';
 //import { ErrorHandlerService } from './services/error-handler.service';
 import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.component';
+import { ConsDinN2Component } from './components/shared/modals/cons-din-n2/cons-din-n2.component';
+import { CdFiltrosN2Component } from './components/shared/modals/cd-filtros-n2/cd-filtros-n2.component';
+import { CdTablaN2Component } from './components/shared/modals/cd-tabla-n2/cd-tabla-n2.component';
 
 
 
@@ -103,7 +106,10 @@ import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.c
     CdTablaComponent,
     CdAvanzadoComponent,
     ConsultaRetencionesComponent,
-    ConsultaOrdPagosComponent
+    ConsultaOrdPagosComponent,
+    ConsDinN2Component,
+    CdFiltrosN2Component,
+    CdTablaN2Component
   ],
   imports: [
     BrowserModule,

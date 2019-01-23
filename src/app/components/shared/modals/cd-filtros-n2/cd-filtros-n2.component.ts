@@ -9,11 +9,11 @@ import { ComponentRef } from '@angular/core/src/render3';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
 
 @Component({
-  selector: 'app-cd-filtros',
-  templateUrl: './cd-filtros.component.html',
-  styleUrls: ['./cd-filtros.component.css']
+  selector: 'app-cd-filtros-n2',
+  templateUrl: './cd-filtros-n2.component.html',
+  styleUrls: ['./cd-filtros-n2.component.css']
 })
-export class CdFiltrosComponent implements AfterViewInit, OnInit {
+export class CdFiltrosN2Component implements AfterViewInit, OnInit {
   inputParam: any;
   viewContainerRefFiltros: ViewContainerRef;
   viewContainerRefAvanzados: ViewContainerRef;
@@ -42,12 +42,12 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
      // here, please receive a param that was sent by the caller.
-      this.ngxSmartModalService.getModal('cdFiltrosModal').onOpen.subscribe(() => {
-      this.inputParam = this.ngxSmartModalService.getModalData('cdFiltrosModal');
+      this.ngxSmartModalService.getModal('cdFiltrosModalN2').onOpen.subscribe(() => {
+      this.inputParam = this.ngxSmartModalService.getModalData('cdFiltrosModalN2');
       console.log('datos recibidos por modal de filtros: ', this.inputParam);
       this.loading = true;
       this.generarFiltros();
-      if(this.inputParam.modal == 'cdFiltrosModal'){
+      if(this.inputParam.modal == 'cdFiltrosModalN2'){
         this.selectedTab = 0;
       }
       // 'cdAvanzadoModal'
@@ -221,18 +221,18 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
     // this.ngxSmartModalService.setModalData(this.datosFiltros, 'consDinModal');
     
     console.log('cerrando modal de filtros con el servicio y enviando datos')
-    this.ngxSmartModalService.resetModalData('cdFiltrosModal');
-    this.ngxSmartModalService.setModalData(this.datosFiltros, 'cdFiltrosModal');
+    this.ngxSmartModalService.resetModalData('cdFiltrosModalN2');
+    this.ngxSmartModalService.setModalData(this.datosFiltros, 'cdFiltrosModalN2');
     //cerrar modal
-    this.ngxSmartModalService.close('cdFiltrosModal');
+    this.ngxSmartModalService.close('cdFiltrosModalN2');
   }
 
   volver(){
     console.log('cerrando modal de filtros con el servicio')
-    this.ngxSmartModalService.resetModalData('cdFiltrosModal');
-    this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'cdFiltrosModal');
-    this.ngxSmartModalService.close('cdFiltrosModal');
-    // cdFiltrosModal.close()
+    this.ngxSmartModalService.resetModalData('cdFiltrosModalN2');
+    this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'cdFiltrosModalN2');
+    this.ngxSmartModalService.close('cdFiltrosModalN2');
+    // cdFiltrosModalN2.close()
   }
 
 }

@@ -3,6 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
+import { LOCALE_ID} from '@angular/core';
 
 // rutas
 import { APP_ROUTING } from "./app.routes";
@@ -61,6 +62,7 @@ import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.c
 import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos/consulta-ord-pagos.component';
 //import { ErrorHandlerService } from './services/error-handler.service';
 import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.component';
+import { from } from 'rxjs';
 
 
 
@@ -128,7 +130,8 @@ import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.c
     TablaComponent
   ],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+    {provide: MAT_DATE_LOCALE, useValue: 'es-AR'},
+   // { provide: LOCALE_ID, useValue: 'es-AR' }
     // {provide: ErrorHandler, useClass: ErrorHandlerService}
   ],
   bootstrap: [AppComponent],

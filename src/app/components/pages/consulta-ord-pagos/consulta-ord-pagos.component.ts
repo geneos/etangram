@@ -34,6 +34,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
   CompraProveedor: CompraProveedor;
   RazonSocial:string;
   cuitc:string;
+  cuit:any;
   nroProveedor:number;
   respCabecera: any;
   cabeceraId: string;
@@ -131,6 +132,13 @@ export class ConsultaOrdPagosComponent implements OnInit {
             if(this.proveedorData.dataset.length>0){
               this.loading = false;
               this.compraProveedor = this.proveedorData.dataset[0]
+              
+              let icuit = this.compraProveedor.cuit.slice(0,2)
+              let mcuit = this.compraProveedor.cuit.slice(2,10)
+              let fcuit = this.compraProveedor.cuit.slice(10)
+
+              this.cuit = icuit + '-' + mcuit + '-' + fcuit;
+
             } else {
               this.compraProveedor = null; 
 

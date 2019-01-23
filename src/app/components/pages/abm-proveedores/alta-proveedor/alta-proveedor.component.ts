@@ -86,7 +86,8 @@ export class AltaProveedorComponent implements OnInit {
       'modelo': new FormControl(),
       'situacion': new FormControl(),
       'codInscripcion': new FormControl(),
-      'fechaInscripcion': new FormControl()
+      'fechaInscripcion': new FormControl(),
+      'exenciones': new FormControl()
     });
 
     
@@ -249,22 +250,24 @@ export class AltaProveedorComponent implements OnInit {
         "p_cuentabancaria": this.forma.controls['rcCuentaBancaria'].value,
         "p_codigo_sucursal": this.forma.controls['rcCodigoSucursal'].value
       }
+      let jsonbodyRC= JSON.stringify(jsbodyRC);
+      console.log(jsonbodyRC);
 
-      let jsBodyImp = {
-        "Id_Proveedor": "b16c0362-fee6-11e8-9ad0-d050990fe081",
-        "p_imp_tipo" : "", // id de tabla tg01_impuestos
-        "p_imp_modelo" : "", // id de tabla  tg01_modeloimpuestos
-        "p_imp_situacion" : "",
-        "p_imp_codigo" : "1",
-        "p_imp_fecha_insc" : "1997-05-05",
-        "p_imp_excenciones" : "false",
+      //IMPUESTOS
+      let jsbodyImp = {
+        "Id_Proveedor": auxRid, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        "p_imp_tipo" : "1", // id de tabla tg01_impuestos
+        "p_imp_modelo" : "1", // id de tabla  tg01_modeloimpuestos
+        "p_imp_situacion" : this.formaImpuesto.controls['situacion'].value,
+        "p_imp_codigo" : this.formaImpuesto.controls['codInscripcion'].value,//"1",
+        "p_imp_fecha_insc" : this.formaImpuesto.controls['fechaInscripcion'].value,//"1997-05-05",
+        "p_imp_excenciones" : this.formaImpuesto.controls['exenciones'].value,//"false",
         "p_imp_fecha_comienzo_excencion" : "", // → si es true
         "p_imp_fecha_caducidad_excencion" : "",//  → si es true
         "p_imp_obs" : ""
 
       }
-      let jsonbodyRC= JSON.stringify(jsbodyRC);
-      console.log(jsonbodyRC);
+      let jsonbodyImp = JSON.stringify(jsbodyImp);
     }else{
       //actualizando
     }

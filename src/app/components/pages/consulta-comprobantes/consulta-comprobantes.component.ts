@@ -71,14 +71,14 @@ export class ConsultaComprobantesComponent implements OnInit {
   urlBaseDatos: string;
   urlInforme: any;
   baseUrl: ImpresionBase[] = [];
-
+  cuit: any;
   
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('tableCompr') table: MatTable<any>;
   @ViewChild('tablaDatos') tablaDatos: ElementRef;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Estado', 'Importe_Total', 'Saldo', 'accion'];
+  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado', 'accion'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;
 
@@ -110,6 +110,7 @@ export class ConsultaComprobantesComponent implements OnInit {
       this.id = parametros['id'];
       //this.Controles['proveedor'].setValue(this.id);
       this.buscarProveedor();
+      
     });
 
     /*this.fechaActual.setDate(this.fechaActual.getDate());
@@ -177,6 +178,11 @@ export class ConsultaComprobantesComponent implements OnInit {
             if(this.proveedorData.dataset.length>0){
               this.compraProveedor = this.proveedorData.dataset[0];
               this.loading = false;
+              let icuit = this.compraProveedor.cuit.slice(0,2)
+              let mcuit = this.compraProveedor.cuit.slice(2,10)
+              let fcuit = this.compraProveedor.cuit.slice(10)
+
+              this.cuit = icuit + '-' + mcuit + '-' + fcuit;
             } else {
               this.compraProveedor = null;
             }

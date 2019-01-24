@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoginService } from 'src/app/services/i2t/login.service'; 
 import { FormGroup, FormControl } from '@angular/forms';
 
@@ -9,9 +9,10 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
-  dynamicParameter = "4081";
-  dynamicParameter2 = ""
-  routerLinkVariable = "/consulta-comprobantes"; 
+  loading: boolean = true;
+  hide = true;
+  dynamicParameter: string = "";
+  routerLinkVariable = "/compra"; 
   loginData: any;
   token: string = "a";
   forma: FormGroup;
@@ -22,15 +23,37 @@ export class LoginComponent implements OnInit {
       'password': new FormControl('')
     })
     this.formaFormulario = new FormGroup({
-      'id': new FormControl('')
+      'idCompCpa': new FormControl(''),
+      'idCrd': new FormControl(''),
+      'idOrdPagos': new FormControl(''),
+      'idRet': new FormControl('')
     })
    }
    
   ngOnInit() {
   }
   
-  llamar(){
+  compCpa(){
+    if(this.formaFormulario.controls['idCompCpa'].value != null){
+      this.dynamicParameter = this.formaFormulario.controls['idCompCpa'].value;
+    }
   }
+  consCrd(){
+    this.routerLinkVariable = '/consulta-crd'
+    this.dynamicParameter = this.formaFormulario.controls['idCrd'].value;
+  }
+  OrdPagos(){
+    this.routerLinkVariable = '/consulta-ord-pago'
+    this.dynamicParameter = this.formaFormulario.controls['idOrdPagos'].value;
+  }
+  consRet(){
+    this.routerLinkVariable = '/consulta-retenciones'
+    this.dynamicParameter = this.formaFormulario.controls['idRet'].value;
+  }
+  compras(){
+    this.routerLinkVariable = '/compra'
+  }
+
   login(){
     let jsbody = {
       "usuario": this.forma.controls['usuario'].value,//"usuario1",
@@ -43,6 +66,7 @@ export class LoginComponent implements OnInit {
     this.loginData = dataL;
     this.token = this.loginData.dataset[0].jwt;
     console.log(this.token)
+    this.loading = false;
     });
   }
 }

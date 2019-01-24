@@ -1,5 +1,5 @@
 
-<mat-expansion-panel [expanded]=true [disabled]=false style="margin-top:10px;">
+<mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;" *ngIf="loading">
   <mat-expansion-panel-header>
     <mat-panel-title>LOGIN</mat-panel-title>
   </mat-expansion-panel-header>
@@ -27,26 +27,90 @@
    </div> 
 </form>
 </mat-expansion-panel>
-<mat-expansion-panel [expanded]=false [disabled]=false style="margin-top:0px;">
+<div [ngStyle]="{'display':loading ? 'none' : 'block' }">
+<mat-expansion-panel [expanded]=true [disabled]=false style="margin-top:0px;">
   <mat-expansion-panel-header>
     <mat-panel-title>FORMULARIOS</mat-panel-title>
   </mat-expansion-panel-header>
   <form [formGroup]="formaFormulario" novalidate="novalidate">
     <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
       <div class="col s6 m4 l2">
-        <p style="font-size:16px;margin-top:10px;margin-bottom:0px;color:#000">Consulta Comprobantes: </p>
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Comprobantes: </p>
       </div>
       <div class="col s6 m4 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Id</mat-label>
-          <input matInput placeholder="" formControlName="id">
+          <input matInput (keyup)="compCpa()" placeholder="" formControlName="idCompCpa">
         </mat-form-field>
       </div>
       <div class="col s6 m4 l1">
-        <button (click)="llamar()" class="mine-btnbig" mat-flat-button>
+        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s6 m4 l2">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta CRD: </p>
+      </div>
+      <div class="col s6 m4 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id</mat-label>
+          <input matInput (keyup)="consCrd()" placeholder="" formControlName="idCrd">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m4 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s6 m4 l2">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Ordenes de Pago: </p>
+      </div>
+      <div class="col s6 m4 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id</mat-label>
+          <input matInput (keyup)="llamar()" placeholder="" formControlName="idOrdPagos">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m4 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s6 m4 l2">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Retenciones: </p>
+      </div>
+      <div class="col s6 m4 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id</mat-label>
+          <input matInput (keyup)="consRet()" placeholder="" formControlName="idRet">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m4 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s6 m4 l2">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Compras: </p>
+      </div>
+      <div class="col s6 m4 l1">
+        <button (click)="compras()" [routerLink]="[routerLinkVariable,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
           IR
         </button>
       </div>
     </div>
   </form>
 </mat-expansion-panel>
+</div>

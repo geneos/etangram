@@ -62,10 +62,12 @@ import { CdTablaComponent } from './components/shared/modals/cd-tabla/cd-tabla.c
 import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos/consulta-ord-pagos.component';
 //import { ErrorHandlerService } from './services/error-handler.service';
 import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.component';
+import { ConsDinN2Component } from './components/shared/modals/cons-din-n2/cons-din-n2.component';
+import { CdFiltrosN2Component } from './components/shared/modals/cd-filtros-n2/cd-filtros-n2.component';
+import { CdTablaN2Component } from './components/shared/modals/cd-tabla-n2/cd-tabla-n2.component';
 import { from } from 'rxjs';
 import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
 import { LoginComponent } from './components/pages/login/login.component';
-import { TokenInterceptorComponent } from './components/shared/token-interceptor/token-interceptor.component';
 
 
 
@@ -109,9 +111,11 @@ import { TokenInterceptorComponent } from './components/shared/token-interceptor
     CdAvanzadoComponent,
     ConsultaRetencionesComponent,
     ConsultaOrdPagosComponent,
+    ConsDinN2Component,
+    CdFiltrosN2Component,
+    CdTablaN2Component,
     DatosProveedoresComponent,
-    LoginComponent,
-    TokenInterceptorComponent
+    LoginComponent
   ],
   imports: [
     BrowserModule,

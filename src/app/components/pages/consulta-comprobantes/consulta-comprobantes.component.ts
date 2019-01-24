@@ -75,6 +75,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   urlInforme: any;
   baseUrl: ImpresionBase[] = [];
   cuit: any;
+  razonSocial:string;
   
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('tableCompr') table: MatTable<any>;
@@ -188,6 +189,7 @@ export class ConsultaComprobantesComponent implements OnInit {
               let fcuit = this.compraProveedor.cuit.slice(10)
 
               this.cuit = icuit + '-' + mcuit + '-' + fcuit;
+              this.razonSocial = this.compraProveedor.razon_social
             } else {
               this.compraProveedor = null;
             }

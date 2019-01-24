@@ -34,7 +34,8 @@ export class LoginComponent implements OnInit {
   }
   
   compCpa(){
-    if(this.formaFormulario.controls['idCompCpa'].value != null){
+    {
+      this.routerLinkVariable = '/consulta-comprobantes'
       this.dynamicParameter = this.formaFormulario.controls['idCompCpa'].value;
     }
   }

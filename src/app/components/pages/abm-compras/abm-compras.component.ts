@@ -198,17 +198,17 @@ export class AbmComprasComponent implements OnInit {
           auxProvData = this.proveedorData.dataset.length;
           if(this.proveedorData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.compraProveedor = null;
-            //let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsbody = {"usuario":this.user,"pass":this.pass}
-            let jsonbody = JSON.stringify(jsbody);
-            this._compraService.login(jsonbody)
-              .subscribe( dataL => {
-                console.log(dataL);
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarProveedor();
-              });
+            // this.compraProveedor = null;
+            // //let jsbody = {"usuario":"usuario1","pass":"password1"}
+            // let jsbody = {"usuario":this.user,"pass":this.pass}
+            // let jsonbody = JSON.stringify(jsbody);
+            // this._compraService.login(jsonbody)
+            //   .subscribe( dataL => {
+            //     console.log(dataL);
+            //     this.loginData = dataL;
+            //     this.token = this.loginData.dataset[0].jwt;
+              //   this.buscarProveedor();
+              // });
             } else {
               if(this.proveedorData.dataset.length>0){
                 this.compraProveedor = this.proveedorData.dataset[0];

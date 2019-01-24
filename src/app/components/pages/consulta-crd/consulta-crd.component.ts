@@ -133,16 +133,16 @@ export class ConsultaCrdComponent implements OnInit {
           auxProvData = this.ProveedorData.dataset.length;
           if(this.ProveedorData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.dataSource = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._ConsultaCrdService.login(jsonbody)
-              .subscribe( dataL => {
- //               console.log(dataL);
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.consultar();
-              });
+//             this.dataSource = null;
+//             let jsbody = {"usuario":"usuario1","pass":"password1"}
+//             let jsonbody = JSON.stringify(jsbody);
+//             this._ConsultaCrdService.login(jsonbody)
+//               .subscribe( dataL => {
+//  //               console.log(dataL);
+//                 this.loginData = dataL;
+//                 this.token = this.loginData.dataset[0].jwt;
+//                 this.consultar();
+//               });
             } else {
               if(this.ProveedorData.dataset.length>0){
                 this.ELEMENT_DATA = this.ProveedorData.dataset;

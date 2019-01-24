@@ -30,7 +30,7 @@ export class AbmComprasComponent implements OnInit {
   //articulosDataSource = new MatTableDataSource(this.articulosData);
 
   loginData: any;
-  token: string = "a";
+  token: string;
   cabeceraId: string;
   renglonId: string;
   articuloData: any;
@@ -67,8 +67,7 @@ export class AbmComprasComponent implements OnInit {
   {
 
     this.route.params.subscribe( parametros=>{
-      this.user = parametros['user'];
-      this.pass = parametros['pass'];
+      this.token = parametros['token'];
     });
 
     this.forma = new FormGroup({
@@ -198,6 +197,7 @@ export class AbmComprasComponent implements OnInit {
           auxProvData = this.proveedorData.dataset.length;
           if(this.proveedorData.returnset[0].RCode=="-6003"){
             //token invalido
+            console.log('token invalido')
             // this.compraProveedor = null;
             // //let jsbody = {"usuario":"usuario1","pass":"password1"}
             // let jsbody = {"usuario":this.user,"pass":this.pass}

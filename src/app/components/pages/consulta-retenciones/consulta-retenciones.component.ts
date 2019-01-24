@@ -23,7 +23,7 @@ export class ConsultaRetencionesComponent implements OnInit {
   forma: FormGroup;
   compraProveedor: CompraProveedor;
   loginData: any;
-  token: string = "a";
+  token: string;
   proveedorData: any;
   consultaRetenciones: consultaRetenciones[] = [];
   respCabecera: any;

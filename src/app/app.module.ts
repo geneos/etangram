@@ -66,6 +66,8 @@ import { ConsDinN2Component } from './components/shared/modals/cons-din-n2/cons-
 import { CdFiltrosN2Component } from './components/shared/modals/cd-filtros-n2/cd-filtros-n2.component';
 import { CdTablaN2Component } from './components/shared/modals/cd-tabla-n2/cd-tabla-n2.component';
 import { from } from 'rxjs';
+import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
+import { LoginComponent } from './components/pages/login/login.component';
 
 
 
@@ -111,7 +113,9 @@ import { from } from 'rxjs';
     ConsultaOrdPagosComponent,
     ConsDinN2Component,
     CdFiltrosN2Component,
-    CdTablaN2Component
+    CdTablaN2Component,
+    DatosProveedoresComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

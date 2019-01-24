@@ -31,6 +31,7 @@ export class AltaArticuloComponent implements OnInit {
   sustitutos:any[]=[{'nroSustituto':0},];
   artRelaciones:any[]=[{'nroArtRelacion':0},];
   umAlt:any[]=[{'nroUMAlt':0},];
+  auxRid:any;
 
   constructor( private route:ActivatedRoute ) {
     this.forma = new FormGroup({
@@ -213,6 +214,24 @@ export class AltaArticuloComponent implements OnInit {
         "profundidad":this.forma.controls['profundidad'].value,
         "m3": this.forma.controls['m3'].value
       };
+      // ARTÍCULO - DEPÓSITO: INSERT
+     let jsbodyDepo = {
+      "id": 12,
+      "name": "jcabrera",
+      "date_entered": "2018-02-26",
+      "date_modified": "2018-02-26",
+      "modified_user_id": 1,
+      "created_by": 1,
+      "description": null,
+      "deleted": 0,
+      "assigned_user_id": 1,
+      "aos_products_id_c": this.auxRid,
+      "tg01_depositos_id_c": 1,// Id consulta dinámica de tabla: tg01_depositos
+      "stockideal": 150,
+      "stockmaximo": 1500,
+      "stockreposicion": 15
+      
+   }
       
     }else{
       //actualizando
@@ -280,25 +299,6 @@ export class AltaArticuloComponent implements OnInit {
     }
   }
 
- // ARTÍCULO - DEPÓSITO: INSERT
-  // let jsbody = {
-  //     "id": 12,
-  //     "name": "jcabrera",
-  //     "date_entered": "2018-02-26",
-  //     "date_modified": "2018-02-26",
-  //     "modified_user_id": 1,
-  //     "created_by": 1,
-  //     "description": null,
-  //     "deleted": 0,
-  //     "assigned_user_id": 1,
-  //     "aos_products_id_c": Rid,
-  //     "tg01_depositos_id_c": 1, Id consulta dinámica de tabla: tg01_depositos
-  //     "stockideal": 150,
-  //     "stockmaximo": 1500,
-  //     "stockreposicion": 15
-      
-  // }
-
   /* +++++++++++
     ARTÍCULO - FOTOS:
 
@@ -314,7 +314,7 @@ export class AltaArticuloComponent implements OnInit {
     "description": null,
     "deleted": 0,
     "assigned_user_id": 1, usuario logueado por ahora 1
-    "aos_products_id_c": RId,
+    "aos_products_id_c": this.auxRid,
     "foto": "www.i2t-sa.com/fotoJcabrera", URL de la foto
     }
 
@@ -340,7 +340,7 @@ export class AltaArticuloComponent implements OnInit {
     "ultimacompra": "2018-02-26",
     "tg01_monedas_id_c": 1, ID de consulta dinámica a la tabla tg01_monedas
     "pordefecto": 1,
-    "aos_products_id_c": RId,
+    "aos_products_id_c": this.auxRid,
     "account_id_c": 1 ID de consulta dinámica a la tabla tg01_accounts_cstm, tiporeferente_c = P
     }
 
@@ -359,7 +359,7 @@ export class AltaArticuloComponent implements OnInit {
     "description": null,
     "deleted": 0,
     "assigned_user_id": 1,usuario logueado por ahora 1
-    "aos_products_id_c": RId,
+    "aos_products_id_c": this.auxRid,
     "aos_products_id1_c": 1, Id del producto sustituto (Consulta dinámica a aos_products)
     "cantidad": 100, Cantidad
     "tg01_unidadmedida_id_c": 1, Id consulta dinámica a tg01_unidadmedida

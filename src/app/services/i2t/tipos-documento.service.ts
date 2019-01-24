@@ -10,7 +10,7 @@ export class TiposDocumentoService {
 
   //compraProveedores:any [] = [];
   preUrl:string = PreUrl;
-
+ 
   constructor( private http:HttpClient ) { }
 
   login( body:string ){

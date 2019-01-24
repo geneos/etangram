@@ -1,0 +1,52 @@
+
+<mat-expansion-panel [expanded]=true [disabled]=false style="margin-top:10px;">
+  <mat-expansion-panel-header>
+    <mat-panel-title>LOGIN</mat-panel-title>
+  </mat-expansion-panel-header>
+
+<form [formGroup]="forma" novalidate="novalidate">
+  <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+    <div class="col s6 m6 l3">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Usuario</mat-label>
+        <input matInput placeholder="Ingrese su usuario" formControlName="usuario">
+      </mat-form-field>
+    </div>
+    <div class="col s6 m6 l3">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Contaseña</mat-label>
+        <input matInput placeholder="Ingrese su contraseña" [type]="hide ? 'password' : 'text'" formControlName="password">
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row" style="margin-top:5px; ">  
+    <button (click)="login()" class="mine-btnbig" mat-flat-button>
+      LOGIN
+    </button>
+   </div> 
+</form>
+</mat-expansion-panel>
+<mat-expansion-panel [expanded]=false [disabled]=false style="margin-top:0px;">
+  <mat-expansion-panel-header>
+    <mat-panel-title>FORMULARIOS</mat-panel-title>
+  </mat-expansion-panel-header>
+  <form [formGroup]="formaFormulario" novalidate="novalidate">
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s6 m4 l2">
+        <p style="font-size:16px;margin-top:10px;margin-bottom:0px;color:#000">Consulta Comprobantes: </p>
+      </div>
+      <div class="col s6 m4 l1">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id</mat-label>
+          <input matInput placeholder="" formControlName="id">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m4 l1">
+        <button [routerLink]="['/consulta-comprobante/4081']" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+  </form>
+</mat-expansion-panel>

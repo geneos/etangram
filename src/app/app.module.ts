@@ -63,6 +63,8 @@ import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos
 //import { ErrorHandlerService } from './services/error-handler.service';
 import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.component';
 import { from } from 'rxjs';
+import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
+import { LoginComponent } from './components/pages/login/login.component';
 
 
 
@@ -105,7 +107,9 @@ import { from } from 'rxjs';
     CdTablaComponent,
     CdAvanzadoComponent,
     ConsultaRetencionesComponent,
-    ConsultaOrdPagosComponent
+    ConsultaOrdPagosComponent,
+    DatosProveedoresComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

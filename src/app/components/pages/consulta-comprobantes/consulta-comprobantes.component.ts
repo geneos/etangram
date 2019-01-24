@@ -108,6 +108,7 @@ export class ConsultaComprobantesComponent implements OnInit {
 
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
+      this.token = parametros['token'];
       //this.Controles['proveedor'].setValue(this.id);
       this.buscarProveedor();
       
@@ -165,15 +166,15 @@ export class ConsultaComprobantesComponent implements OnInit {
           if(this.proveedorData.returnset[0].RCode=="-6003"){
             //token invalido
             this.compraProveedor = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._compraService.login(jsonbody)
-              .subscribe( dataL => {
-                console.log(dataL);
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarProveedor();
-              });
+    //        let jsbody = {"usuario":"usuario1","pass":"password1"}
+     //       let jsonbody = JSON.stringify(jsbody);
+    //        this._compraService.login(jsonbody)
+   //           .subscribe( dataL => {
+    //            console.log(dataL);
+    //            this.loginData = dataL;
+       //         this.token = this.loginData.dataset[0].jwt;
+     //           this.buscarProveedor();
+      //        });
             } else {
             if(this.proveedorData.dataset.length>0){
               this.compraProveedor = this.proveedorData.dataset[0];

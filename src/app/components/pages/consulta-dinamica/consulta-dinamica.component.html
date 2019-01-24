@@ -1,7 +1,7 @@
-<h2>{{reportesAll && reportesAll[this.reporteSeleccionado]?.titulo}}</h2>
+<h2 style="margin-bottom:15px;">{{reportesAll && reportesAll[this.reporteSeleccionado]?.titulo}}</h2>
 {{records && (records[0] | json)}}
 <!-- <h2>{{reportesAll[this.reporteSeleccionado]?.titulo || "Consulta Dinámica (Cargando)" }}</h2> -->
-<button *ngIf="nivel == 1" class="mine-btnbig" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu">
+<button *ngIf="nivel == 1" class="mine-btnbig-grey" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu">
   ACCIONES
 </button>
 <mat-menu #rootMenu="matMenu">
@@ -18,7 +18,7 @@
   <button *ngIf="permisos.permiso_borrar" mat-menu-item>
     ELIMINAR
   </button>
-  <button *ngIf="permisos.permiso_exportar" mat-menu-item> 
+  <button *ngIf="permisos.permiso_exportar" mat-menu-item>
     EXPORTAR
   </button>
 </mat-menu>
@@ -29,7 +29,7 @@
   </ng-template>
 </mat-menu> -->
 
-<button *ngIf="nivel == 1" class="mine-btnbig" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu2">
+<button *ngIf="nivel == 1" class="mine-btnbig-grey" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu2" style="margin-left:5px">
   FILTROS
 </button>
 <mat-menu #rootMenu2="matMenu">
@@ -79,7 +79,7 @@
           </a>
         </td>
       </ng-container> -->
-      
+
       <!-- columna select -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *cdkHeaderCellDef>
@@ -111,16 +111,16 @@
 
       <!-- Generic column definition -->
       <ng-container *ngFor="let column of columns" [cdkColumnDef]="column.columnDef">
-        <mat-header-cell *cdkHeaderCellDef>{{ column.header }}</mat-header-cell>
-        <mat-cell *cdkCellDef="let row">{{ column.cell(row) }}</mat-cell>
+        <mat-header-cell style="margin-top:7px;" *cdkHeaderCellDef>{{ column.header }}</mat-header-cell>
+        <mat-cell style="margin-top:7px;" *cdkCellDef="let row">{{ column.cell(row) }}</mat-cell>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="handleRowClick(row)"></tr>
-      
+
     </table>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons class="mat-elevation-z1"></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[5]" showFirstLastButtons class="mat-elevation-z1"></mat-paginator>
 
     <!-- <div class="col s12" style="margin-top:5px;" *ngIf="constRefContables.length < 1"> -->
     <div class="col s12" style="margin-top:5px;" *ngIf="constDatos.length < 1">

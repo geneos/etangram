@@ -69,9 +69,52 @@ export class ConsultaDinamicaService {
 
     console.log('prueba de mergeado: ');
     let mergedMap:Map<string, string> = new Map([...Array.from(mapaTemp.entries()), ...Array.from(datosNuevos.entries())]);
-    console.log(mergedMap);
+    // console.log(mergedMap);
+    // console.log('limpiando el mapa, entries totales: ', mergedMap.entries.length);
+    let listaFiltros = Array.from(mergedMap.entries());
+    console.log(listaFiltros)
+    /* // console.log(mergedMap.entries())
+    // console.log(mergedMap.values())
+    // let entries = mergedMap.entries();
+    // let index = mergedMap.entries.length;
+    let listToDelete: string[] = [];
+    // for (let index = 0; index < mergedMap.entries.length; index++) {
+    for (let index = 0; index < listaFiltros.length; index++) {    
+      // const element = mergedMap.entries[index];
+      const element = listaFiltros[index];
+      console.log('elemento: ', element, element[0], element[1])
+      
+      if ((element[1] == null)||(element[1]=='')){
+        console.log('agregado a la lista')
+          listToDelete.push(element[0]);
+      }
+      else{
+        console.log('salteado')
+      }
+
+      // if ((element. == null)||(element.value === '')){
+      //   console.log('agregado a la lista')
+      //   listToDelete.push(index);
+      // }
+      // else{
+      //   console.log('salteado')
+      // }
+      
+    }
+
+    listToDelete.forEach(element => {
+      console.log('borrando del mapa a: ', element)
+      mergedMap.delete(element);
+    });
+    console.log('lista a eliminar del mapa: ', listToDelete)
+    // let mapToDelete:Map<string, string>;
+    // Array.from(mergedMap.entries().filter(entry => entry.v)
+    // mergedMap.forEach(element => {
+    //   console.log(element);
+    // }); 
     // mapaTemp.set(datosNuevos.);
     // this.datosFiltros.next(datosNuevos)
+    console.log('mapa supuestamente limpio: ', mergedMap); */
     this.datosFiltros.next(mergedMap);
   }
 
@@ -155,12 +198,14 @@ export class ConsultaDinamicaService {
 
       console.log('lista de operadores', operadores);
       console.log(operadores.find(operador => operador.condicion == 'equal'));
-      //todo 10/01/19 ver si se arma correctamente
+      
       Array.from(filtrosMapa.entries()).
       forEach(entry => {
-          let op = operadores.find(operador => operador.condicion == 'equal');
-          console.log('Key: ' + entry[0] + ' Value: ' + entry[1])
-          apendiceURL = apendiceURL +  entry[0] + '=' + op.texto + '[' + entry[1] + ']' + '&';
+          if (!((entry[1]== null)||(entry[1]==''))){
+            let op = operadores.find(operador => operador.condicion == 'equal');
+            console.log('Key: ' + entry[0] + ' Value: ' + entry[1])
+            apendiceURL = apendiceURL +  entry[0] + '=' + op.texto + '[' + entry[1] + ']' + '&';
+          }
         }
       );
 

@@ -1,6 +1,6 @@
-<ngx-smart-modal #consDinModal 
-                 customClass="overlay-cons-din" 
-                 [identifier]="'consDinModal'"
+<ngx-smart-modal #consDinModalN2 
+                 customClass="overlay-cons-din2" 
+                 [identifier]="'consDinModalN2'"
                  [closable]="false"
                  [dismissable]="false"
                  [escapable]="false"
@@ -9,13 +9,12 @@
     
 </div>
 <div class="modal-body"  style="max-width: 2000px !important;">
-  <app-consulta-dinamica [nivel]="1"></app-consulta-dinamica>
+  <app-consulta-dinamica [nivel]="2"></app-consulta-dinamica>
 </div>
 <div class="modal-footer">
     <button type="button" class="mine-btnbig" (click)="aplicar()">Aplicar</button>
     <button type="button" class="mine-btnbig" (click)="cancelar()">Cancelar</button>
 </div>
 </ngx-smart-modal>
-<!-- <app-cons-din-n2></app-cons-din-n2> -->
 
 

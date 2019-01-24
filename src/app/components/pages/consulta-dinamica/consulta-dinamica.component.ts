@@ -19,13 +19,15 @@ import { PermisosService } from 'src/app/services/i2t/permisos.service';
   selector: 'app-consulta-dinamica',
   templateUrl: './consulta-dinamica.component.html',
   styleUrls: ['./consulta-dinamica.component.css'],
-  // encapsulation: ViewEncapsulation.None, 
+  // encapsulation: ViewEncapsulation.None,
 })
 export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableDatos') table: MatTable<any>;
+
+  @Input() nivel: number;
 
   selection = new SelectionModel(true, []);
   loading:boolean;
@@ -50,10 +52,11 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   constDatos = new MatTableDataSource();
   irADetalle: boolean;
   inputParam: any;
-  
+
   columnSelection: any;
   filtros: any;
   filtrosAnteriores: any;
+  // nivelConsulta: number;
 
   //permisos
   /* permiso_crear: boolean;
@@ -72,7 +75,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   @Input() componentes: ComponentWrapper[];
   //anclas para componentes generados movidas a otros componentes
   /* @ViewChild(AnclaParaFiltrosDirective) contenedorFiltros: AnclaParaFiltrosDirective;
-  @ViewChild(AnclaParaAvanzadosDirective) contenedorAvanzados: AnclaParaAvanzadosDirective; 
+  @ViewChild(AnclaParaAvanzadosDirective) contenedorAvanzados: AnclaParaAvanzadosDirective;
   @ViewChild(AnclaParaColumnasDirective) contenedorColumnas: AnclaParaColumnasDirective; */
 
   constructor(private _consultaDinamicaService: ConsultaDinamicaService,
@@ -82,13 +85,19 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               private componentFactoryResolver: ComponentFactoryResolver,
               private generadorDeComponentes: CompGenService,
               public ngxSmartModalService: NgxSmartModalService,
-              private _permisosService: PermisosService) { 
+              private _permisosService: PermisosService) {
     this.loading = true;
+
+    if (this.nivel == null){
+      this.nivel = 1;
+    }
+    console.log('nivel de generación: ', this.nivel);
 
     this.route.params.subscribe( parametros=>{
       console.log('ruta actual: ',this.router.url)
       if (this.router.url.includes('/consulta/') == true)
       {
+        //todo ver si cambiar por parametros para consulta n1
         this.nombreReporte = parametros['id'];
         this.buscarReportes();
       }
@@ -96,11 +105,12 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         this.nombreReporte = null;
       }
     });
-    
+
 
   }
 
   ngOnInit() {
+    this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
     /*
     //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
     console.log('suscripcion propia');
@@ -116,7 +126,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     this.ngxSmartModalService.getModal('consDinModal').onOpen.subscribe(() => {
       this.inputParam = this.ngxSmartModalService.getModalData('consDinModal');
       console.log('configuracion del modal de consulta din(suscripcion): ', this.inputParam);
-      
+
       if (this.inputParam.permiteMultiples ==null)
       {
         this.inputParam = {permiteMultiples: true, selection: []};
@@ -131,7 +141,14 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     */
   }
 
-  ngAfterViewInit(){    
+  ngAfterViewInit(){
+    let nombreModalActual: string;
+    if (this.nivel == 1){
+      nombreModalActual = 'consDinModal';
+    }
+    else{
+      nombreModalActual = 'consDinModalN' + this.nivel.toString();
+    }
     // this.habilitarAcciones();
 
     console.log('suscribiendo al modal de tabla')
@@ -139,7 +156,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     //modal de selección de columnas
     this.ngxSmartModalService.getModal('cdTablaModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal de tabla: ', modal);
-      
+
       let datostemp = this.ngxSmartModalService.getModalData('cdTablaModal');
       console.log('temp: ', datostemp);
       console.log('temp.estado', datostemp.estado)
@@ -151,12 +168,12 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       }
       // this.ngxSmartModalService.getModal(nombreModal).onClose.unsubscribe();
     });
-    
+
     console.log('suscribiendo a filtros')
     //suscribir a los botones de los modales
     this.ngxSmartModalService.getModal('cdFiltrosModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal: ', modal.getData());
-
+      console.log('estado de las colecciones: ', this.datosAll, this.atributosAll, this.reportesAll)
       //si cambiaron los datos:
       let datostemp = this.ngxSmartModalService.getModalData('cdFiltrosModal');
       console.log('temp: ', datostemp);
@@ -177,7 +194,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         }
         console.log('traidos filtros nuevos', this.filtros);
         console.log('comparacion', (this.filtrosAnteriores !== this.filtros));
-        
+
         // if(nuevo != anterior)
         if(this.filtrosAnteriores !== this.filtros)
         {
@@ -220,11 +237,33 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       // columnSelection: any
     } */
     //
-    if(this.nombreReporte == null){
+
+    this.ngxSmartModalService.getModal(nombreModalActual).onOpen.subscribe(() => {
+      this.inputParam = this.ngxSmartModalService.getModalData(nombreModalActual);
+      console.log('configuracion del modal de consulta din(suscripcion) n' + this.nivel +': ', this.inputParam);
+      // this.openSnackBar('Preparando consulta n' + this.nivel +': ' + this.inputParam)
+      if (this.inputParam.permiteMultiples ==null)
+      {
+        this.inputParam = {permiteMultiples: true, selection: []};
+      }
+      //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
+      this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
+      console.log('reporte a usar: ', this.nombreReporte)
+      if ((this.nombreReporte == null)||(this.nombreReporte != this.inputParam.consulta)){
+        this.nombreReporte = this.inputParam.consulta;
+
+      }
+      this.buscarReportes();
+    });
+
+
+
+
+    /* if(this.nombreReporte == null){
       this.ngxSmartModalService.getModal('consDinModal').onOpen.subscribe(() => {
         this.inputParam = this.ngxSmartModalService.getModalData('consDinModal');
-        console.log('configuracion del modal de consulta din(suscripcion): ', this.inputParam);
-        
+        console.log('configuracion del modal de consulta din(suscripcion): ', this.inputParam.consulta);
+
         if (this.inputParam.permiteMultiples ==null)
         {
           this.inputParam = {permiteMultiples: true, selection: []};
@@ -233,13 +272,35 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
         if (this.nombreReporte == null){
           this.nombreReporte = this.inputParam.consulta;
-          
-          this.buscarReportes();
+
         }
+        this.buscarReportes();
       });
+
+
     }
+
+    console.log('lista de modales antes de suscribir a cons din n2: ', this.ngxSmartModalService.getModalStack());
+
+    this.ngxSmartModalService.getModal('consDinModalN2').onOpen.subscribe(() => {
+      this.inputParam = this.ngxSmartModalService.getModalData('consDinModalN2');
+      console.log('configuracion del modal de consulta din(suscripcion) n2: ', this.inputParam);
+      this.openSnackBar('Preparando consulta n2: ' + this.inputParam)
+      if (this.inputParam.permiteMultiples ==null)
+      {
+        this.inputParam = {permiteMultiples: true, selection: []};
+      }
+      //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
+      this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
+      console.log('reporte a usar: ', this.nombreReporte)
+      if (this.nombreReporte == null){
+        this.nombreReporte = this.inputParam.consulta;
+
+      }
+      this.buscarReportes();
+    }); */
   }
-  
+
   selectionChanged(){
     console.log('llamado al cambio nuevo de items seleccionados');
     console.log(this.selection.selected);
@@ -266,7 +327,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     });
   }
 
-  menuClickHandler(nroReporte: number){
+/*   menuClickHandler(nroReporte: number){
     if (this.reporteSeleccionado!==nroReporte){
       this.loading = true;
       this.reporteSeleccionado=nroReporte;
@@ -275,28 +336,43 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     else{
       this.openSnackBar('Ya se está mostrando la lista seleccionada.');
     }
-  }
+  } */
 
   abrirModal(nombreModal: string){
     console.clear();
+    let nombreModalCorregido: string;
+    if (this.nivel != 1){
+      nombreModalCorregido = nombreModal + 'N' + this.nivel.toString();
+    }
+    else{
+      nombreModalCorregido = nombreModal;
+    }
+
     let datosModal : {
       modal: string;
       datos: any;
       valores: any;
-      columnSelection: any
+      columnSelection: any;
+      nivel: number
     }
     datosModal = {
-      modal: nombreModal,
+      modal: nombreModalCorregido,
       datos: this.atributosAll,
       valores: this.filtros,
       columnSelection: null,
+      nivel: this.nivel//todo obtener
     }
-    
+
     console.log('enviando datosModal: ', datosModal);
-    if (nombreModal != 'cdTablaModal'){
-      this.ngxSmartModalService.resetModalData('cdFiltrosModal');
-      this.ngxSmartModalService.setModalData(datosModal, 'cdFiltrosModal');
-      this.ngxSmartModalService.open('cdFiltrosModal');
+    // if (nombreModal != 'cdTablaModal'){
+    if (!(nombreModalCorregido.includes('cdTablaModal'))){
+      // this.ngxSmartModalService.resetModalData('cdFiltrosModal');
+      // this.ngxSmartModalService.setModalData(datosModal, 'cdFiltrosModal');
+      // this.ngxSmartModalService.open('cdFiltrosModal');
+      nombreModalCorregido = nombreModalCorregido.replace('Avanzado', 'Filtros');
+      this.ngxSmartModalService.resetModalData(nombreModalCorregido);
+      this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
+      this.ngxSmartModalService.open(nombreModalCorregido);
     }
     else{
       datosModal.columnSelection = this.columnSelection;
@@ -325,12 +401,12 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         */
         // datosModal.valores = columnas;
         datosModal.valores = this.columnasDisponibles;
-        this.ngxSmartModalService.resetModalData(nombreModal);
-        this.ngxSmartModalService.setModalData(datosModal, nombreModal);
-        this.ngxSmartModalService.open(nombreModal);
+        this.ngxSmartModalService.resetModalData(nombreModalCorregido);
+        this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
+        this.ngxSmartModalService.open(nombreModalCorregido);
       }
     }
-    console.log('nombre modal usado: '+ nombreModal + ' ')
+    console.log('nombre modal usado: '+ nombreModalCorregido + ' ')
   }
 
   habilitarAcciones(){
@@ -347,8 +423,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       }
       else{
         //todo cambiar por usuario real (tal vez traido por parametros)
-        //this._permisosService.getPermiso( this.usuario,         
-        this._permisosService.getPermiso( 'usuario1', 
+        //this._permisosService.getPermiso( this.usuario,
+        this._permisosService.getPermiso( 'usuario1',
                                           this.reportesAll[this.reporteSeleccionado][permiso],
                                           this.token)
         .subscribe( dataP => {
@@ -370,7 +446,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               console.log('respuesta===> ', this.pData.returnset[0])
               if(this.pData.returnset[0].RCode=="200"){
                 this.permisos[permiso] = true;
-              } 
+              }
               //this.pData.returnset[0].RCode=="-501" => no existe o usuario incorrecto
               else {
                 this.permisos[permiso] = false;
@@ -406,19 +482,19 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               if(this.rData.dataset.length>0){
                 this.reportesAll = this.rData.dataset;
                 console.log(this.reportesAll);
-                
+
                 this.reporteSeleccionado = this.reportesAll.findIndex(reporte => reporte.name === this.nombreReporte);
                 if (this.reporteSeleccionado != -1)
                 {
                   this.habilitarAcciones();
-                  
+
                   this.buscarAtributos();
                 }
                 else{
                   this.openSnackBar('No existe la consulta "' + this.nombreReporte + '"');
                   this.loading = false;
                 }
-                
+
                 // this.buscarAtributos();
 
                 //this.table.renderRows();
@@ -431,16 +507,16 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               }
             }
       });
-    
+
   }
-  
+
   buscarAtributos(){
     //
     console.log('Buscando atributos con:');
     console.log(this.reportesAll[this.reporteSeleccionado].name);
     //
     //todo obtener el correcto/seleccionado
-    this._consultaDinamicaService.getAtributos(this.reportesAll[this.reporteSeleccionado].name ,this.token) 
+    this._consultaDinamicaService.getAtributos(this.reportesAll[this.reporteSeleccionado].name ,this.token)
       .subscribe( dataAtt => {
         console.log(dataAtt);
           this.attData = dataAtt;
@@ -463,7 +539,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 console.log(this.atributosAll);
                 // this.establecerColumnas();
                 this.buscarDatos();
-                
+
                 this.loading = false;
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
@@ -482,11 +558,14 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   buscarDatos(){
     //
     console.log('Buscando datos con:');
+    //todo ver por qué está vacío al momento de volver del modal siguiente
+    console.log(this.reportesAll)
+    console.log(this.reporteSeleccionado)
     console.log(this.reportesAll[this.reporteSeleccionado].name);
-    
+
     console.log('filtros a aplicar: ', this.filtros);
     //
-    this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name, this.filtros, this.token) 
+    this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name, this.filtros, this.token)
       .subscribe( dataCons => {
         console.log(dataCons);
           this.consData = dataCons;
@@ -513,9 +592,9 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 console.log('estructura de Obj. dinamico: ');
                 console.log(Object.keys(objdin));
                 //
-                
+
                 this.constDatos = new MatTableDataSource(this.datosAll);
-                
+
                 this.constDatos.sort = this.sort;
                 this.constDatos.paginator = this.paginator;
 
@@ -524,13 +603,13 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
               } else {
                 this.datosAll = null;
-                
+
                 // this.constDatos = new MatTableDataSource(this.datosAll);
                 this.constDatos = new MatTableDataSource();
-                
+
                 this.constDatos.sort = this.sort;
                 this.constDatos.paginator = this.paginator;
-                
+
                 // this.constDatos.disconnect();
                 // this.paginator.getNumberOfPages();
                 // this.constDatos.sort = this.sort;
@@ -577,7 +656,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
             // result = this.dynamicSort(props[i])(obj1, obj2);
             result = this.columnSelection.selected.sort(this.dynamicSort(props[i])(obj1, obj2));
 
-            
+
             i++;
         }
         return result;
@@ -620,21 +699,21 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         console.log(this.reportesAll[this.reporteSeleccionado].columnas);
         //todo quitar if y descomentar cuando arreglen los datos
         let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
-        
+
         let itemActual: string;
         console.log(listaColumnas.length)
         for (let index = 0; index < listaColumnas.length; index++) {
           itemActual = listaColumnas[index].trim();
- 
+
           columnasAMostrar = columnasAMostrar.concat(itemActual, ',');
         }
         columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);
         console.log('Lista rearmada: ');
         console.log(columnasAMostrar);
       // }
-      
+
       //agregar las columnas por defecto a la lista de selección
-      // this.columnSelection = new SelectionModel(true, this.atributosAll.filter(tipo => tipo.grupo == 'Filtros')); 
+      // this.columnSelection = new SelectionModel(true, this.atributosAll.filter(tipo => tipo.grupo == 'Filtros'));
       this.columnSelection = new SelectionModel(true, this.columnasDisponibles
         .filter(columnaDisponible =>
           columnasAMostrar.includes(columnaDisponible.name) == true
@@ -651,7 +730,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       console.log('el usuario seleccionó las columnas: ');
       console.log(columnasAMostrar);
     }
-    
+
     let listaColumnas : string[] = (columnasAMostrar.split(','));
     this.columns = [];
 
@@ -668,10 +747,10 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     console.log('lista ordenada de columnas: ', listaColumnasOrdenada);
 
     this.columnSelection.selected.forEach(column => {
-      this.columns.push({ columnDef: column.name, //columna, 
-        header: column.title,    
-        // header: atributoActual.desc_atributo,    
-        cell: (item: any) => `${item[column.name]}` 
+      this.columns.push({ columnDef: column.name, //columna,
+        header: column.title,
+        // header: atributoActual.desc_atributo,
+        cell: (item: any) => `${item[column.name]}`
     }
     )});//item[columna] sirve para buscar el dato con el nombre de atributo
 
@@ -693,15 +772,15 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       console.log(atributoActual);
       //todo revisar cuando corrijan las correspondencias entre apis
       if (atributoActual != null) {
-      this.columns.push({ columnDef: columna, 
-                          header: textoCabecera,    
-                          // header: atributoActual.desc_atributo,    
-                          cell: (item: any) => `${item[atributoActual.atributo_bd]}` 
+      this.columns.push({ columnDef: columna,
+                          header: textoCabecera,
+                          // header: atributoActual.desc_atributo,
+                          cell: (item: any) => `${item[atributoActual.atributo_bd]}`
       }
                         );}
       // this.columns.push({ columnDef: columna, header: columna,    cell: (item: any) => `${item[columna]}` });
-    }); 
-    
+    });
+
 */
 
 /*
@@ -710,8 +789,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         { columnDef: 'opciones',    header: 'Opciones',   cell: (row: any) => ``      }
         //,{ columnDef: 'column.',    header: 'Codigo',   cell: (row: any) => `${row.codigo}`      }
       ];
-    */    
-   
+    */
+
     /** Column definitions in order */
     //this.displayedColumns = this.columns.map(c => c.columnDef);
     //this.displayedColumns = this.displayedColumns.push([{columnDef: 'select', header: '', cell: (item: any) => ''}, ]);
@@ -724,10 +803,10 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       { columnDef: 'opciones',    header: 'Opciones',   cell: (item: any) => ``      }]; */
     let columnasfijas = ['select', 'opciones'];
 
-    
+
     //this.displayedColumns = this.displayedColumns.concat(columnasfijas, this.columns.map(c => c.columnDef));
     this.displayedColumns = [...columnasfijas, ...this.columns.map(c => c.columnDef)];
-    
+
 
     console.log('columnas por defecto: ');
     console.log(this.columnSelection);
@@ -761,5 +840,5 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       console.log(row['id']);
     }
   }
-  
+
 }

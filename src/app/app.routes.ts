@@ -43,7 +43,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta-ord-pago/:id/:token', component: ConsultaOrdPagosComponent },
   { path: 'datos-proveedores', component: DatosProveedoresComponent },
   { path: 'login', component: LoginComponent }, 
-  { path: '**', pathMatch: 'full', redirectTo: 'compra' }
+  { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];
 
 export const APP_ROUTING = RouterModule.forRoot(APP_ROUTES);

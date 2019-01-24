@@ -4,21 +4,17 @@
                  [closable]="false"
                  [dismissable]="false"
                  [escapable]="false">
-  <div class="modal-header">
-      <h4 class="modal-title pull-left">Columnas visibles</h4>
-  </div>
-  <div class="modal-body">
-      <mat-card>
+    <div>
+        <h2 class="modal-title pull-left" style="margin-top:5px; margin-bottom:15px;">Columnas visibles:</h2>
+    </div>               
+  
+    <mat-card style="padding:0px">
         <app-loading *ngIf="loading"></app-loading>
         <ng-container AnclaParaColumnas></ng-container>
-          <!-- <mat-card-actions>
-          <button class="btn btn-default" (click)="cdFiltrosModal.close()">Cancelar</button>
-          </mat-card-actions> -->
-      </mat-card>
-  </div>
-  <div class="modal-footer">
-      <button class="mine-btnbig" (click)="aplicar()">Aplicar</button>
-      <button class="mine-btnbig" (click)="cancelar()">Cancelar</button>
-      <!-- <button class="mine-btnbig" (click)="cdTablaModal.close()">Cancelar</button> -->
-  </div>
+    </mat-card>
+  
+    <div style="margin-top: 10px; width: 100%; text-align: right;">
+        <button mat-flat-button class="mine-btnbig" (click)="aplicar()">APLICAR</button>
+        <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
+    </div>
 </ngx-smart-modal>

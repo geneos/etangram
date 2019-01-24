@@ -18,7 +18,7 @@ import { stringify } from '@angular/compiler/src/util';
 import { PreUrl } from './url';
 
 const operadores = [
-  { condicion: 'equal',         texto : 'eq'},  //igual que
+  { condicion: 'equal',         texto: 'eq'},  //igual que
   { condicion: 'not',           texto: 'not' },   //distinto de
   { condicion: 'less_than',     texto: 'lt' },  //menor que
   { condicion: 'less_equal',    texto: 'le' }, //menor o igual que

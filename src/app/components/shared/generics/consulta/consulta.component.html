@@ -1,18 +1,23 @@
-<div>
-<div class="col s11 m11 l11" style="margin-top:10px;">
-  <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-    <mat-label>{{data.title}}</mat-label>
-    <!-- <input matInput placeholder="" formControlName="largo"> -->
-    <input matInput #datosUsuario (keyup)="cambio()"  
-    [(ngModel)]="datosInternos"
-    placeholder="{{data.placeholder}}" >
-    <!--<mat-hint>Hint</mat-hint>-->
-  </mat-form-field>
-</div>
-<div class="col s1 m1 l1" style="margin-top:10px;">
-  <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('')">
-    <i class="material-icons" style="font-size:20px;">more_horiz</i>
-  </button>
-</div>
+<div class="row" style="width:100%; margin-bottom: 0px;">
+  <div class="col s11 m11 l11" style="margin-top:10px; padding:0px;">
+    <mat-form-field appearance="outline" floatLabel="always" style="width:100%; padding: 0px !important">
+      <mat-label>{{data.title}}</mat-label>
+      <!-- <input matInput placeholder="" formControlName="largo"> -->
+      <input matInput #datosUsuario (keyup)="cambio()"  
+      [(ngModel)]="datosInternos"
+      placeholder="{{data.placeholder}}" >
+      <!--<mat-hint>Hint</mat-hint>-->
+      
+    </mat-form-field>
+  </div>
+  <div class="col s1 m1 l1" style="margin-top:10px;">
+    <!-- <div class="container"> -->
+      <button type="button" class="mine-btnforms" mat-flat-button style="margin-top:10px;" (click)="abrirConsulta('')">
+        <i class="material-icons" style="font-size:20px;">more_horiz</i>
+      </button>
+    <!-- </div> -->
+  </div>
+      
+
 <!-- <app-cons-din-n2></app-cons-din-n2> -->
 </div>

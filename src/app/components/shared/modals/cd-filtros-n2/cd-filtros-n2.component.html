@@ -4,42 +4,22 @@
                  [closable]="false"
                  [dismissable]="false"
                  [escapable]="false">
-  <div class="modal-header">
-      <h4 class="modal-title pull-left">Filtros</h4>
+  <div>
+    <h2 class="modal-title pull-left" style="margin-top:5px; margin-bottom:15px;">Filtros:</h2>
   </div>
-  <!-- <div class="modal-body">
-    <!-- <mat-tab-group > - ->
-    <mat-tab-group [(selectedIndex)]="selectedTab">
-      <mat-tab label="Tab 1">Básico
-
-      </mat-tab>
-      <mat-tab label="Tab 2">Avanzado</mat-tab>
-    </mat-tab-group>
-  </div>
-  <div class="modal-footer">
-      <button class="btn btn-default" (click)="cdFiltrosModal.close()">Cancelar</button>
-  </div> -->
-  <mat-card>
+  <mat-card style="padding:0px">
     <app-loading *ngIf="loading"></app-loading>
     <mat-tab-group [(selectedIndex)]="selectedTab">
         <mat-tab label="Básico">
-          <!-- <mat-card> -->
-            <ng-container AnclaParaFiltros></ng-container>
-          <!-- </mat-card> -->
-
+            <div style="margin:15px 10px 0px 10px"><ng-container AnclaParaFiltros></ng-container></div>
         </mat-tab>
         <mat-tab label="Avanzado">
-          <ng-container AnclaParaAvanzados></ng-container>
+            <div style="margin:15px 10px 0px 10px"><ng-container AnclaParaAvanzados></ng-container></div>
         </mat-tab>
     </mat-tab-group>
-    <!-- <mat-card-actions>
-      <button class="btn btn-default" (click)="cdFiltrosModal.close()">Cancelar</button>
-    </mat-card-actions> -->
   </mat-card>
-  <div class="modal-footer">
-      <button class="mine-btnbig" (click)="aplicar()">Aplicar</button>
-      <button class="mine-btnbig" (click)="volver()">Cancelar</button>
-      <!-- <button class="mine-btnbig" (click)="cdFiltrosModal.close()">Cancelar</button> -->
+  <div style="margin-top: 10px; width: 100%; text-align: right;">
+      <button mat-flat-button class="mine-btnbig" (click)="aplicar()">APLICAR</button>
+      <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="volver()">CANCELAR</button>
   </div>
 </ngx-smart-modal>
-<!-- <app-cons-din-n2></app-cons-din-n2> -->

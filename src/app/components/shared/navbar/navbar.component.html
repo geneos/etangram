@@ -5,20 +5,22 @@
   <span style="flex: 1 1 auto;"></span>
   <span>
     <button mat-button [matMenuTriggerFor]="menu" style="color:#fff; font-family: 'Lato', sans-serif !important; font-size:16px;">
-      Menú Páginas
+      Menú
     </button>
     <mat-menu #menu="matMenu">
-      <button [routerLink]="['/compra/usuario1/password1']" mat-menu-item>Compra</button>
+      <button [routerLink]="['/login']" mat-menu-item>Lista de Formularios</button>
+      <mat-divider></mat-divider>
+      <!--<button [routerLink]="['/compra/usuario1/password1']" mat-menu-item>Compra</button>-->
       <button [routerLink]="['/proveedores']" mat-menu-item>Proveedores</button>
       <button [routerLink]="['/articulos']" mat-menu-item>Artículos</button>
       <button [routerLink]="['/ref-contables']" mat-menu-item>Ref. Contables</button>
       <button [routerLink]="['/plan-cuentas']" mat-menu-item>Plan de Cuentas</button>
       <button [routerLink]="['/min-contables/nuevo']" mat-menu-item>Minutas Contables</button>
-      <button [routerLink]="['/consulta']" mat-menu-item>Consultas Dinámicas</button>
+      <!--<button [routerLink]="['/consulta']" mat-menu-item>Consultas Dinámicas</button>
       <button [routerLink]="['/consulta-crd/23']" mat-menu-item>Consultas CRD</button>
       <button [routerLink]="['/consulta-comprobantes/4081']" mat-menu-item>Consulta Comprobantes</button>
       <button [routerLink]="['/consulta-retenciones/4081']" mat-menu-item>Consulta Retenciones</button>
-      <button [routerLink]="['/consulta-ord-pago/4081']" mat-menu-item>Consulta Ordenes de Pago</button>
+      <button [routerLink]="['/consulta-ord-pago/4081']" mat-menu-item>Consulta Ordenes de Pago</button>-->
       <!-- prueba interna. borrar
       <button [routerLink]="['/prueba']" mat-menu-item>Prueba</button>
       -->

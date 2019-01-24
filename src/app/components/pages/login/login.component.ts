@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LoginService } from 'src/app/services/i2t/login.service'; 
+import { LoginService } from 'src/app/services/i2t/login.service';
 import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
@@ -9,10 +9,10 @@ import { FormGroup, FormControl } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
-  loading: boolean = true;
+  offline: boolean = true;
   hide = true;
   dynamicParameter: string = "";
-  routerLinkVariable = "/compra"; 
+  routerLinkVariable = "/compra";
   loginData: any;
   token: string = "a";
   forma: FormGroup;
@@ -29,10 +29,10 @@ export class LoginComponent implements OnInit {
       'idRet': new FormControl('')
     })
    }
-   
+
   ngOnInit() {
   }
-  
+
   compCpa(){
     {
       this.routerLinkVariable = '/consulta-comprobantes'
@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
     this.loginData = dataL;
     this.token = this.loginData.dataset[0].jwt;
     console.log(this.token)
-    this.loading = false;
+    this.offline = false;
     });
   }
 }

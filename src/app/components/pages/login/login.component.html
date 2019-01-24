@@ -1,5 +1,5 @@
 
-<mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;" *ngIf="loading">
+<mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;" *ngIf="offline">
   <mat-expansion-panel-header>
     <mat-panel-title>LOGIN</mat-panel-title>
   </mat-expansion-panel-header>
@@ -14,103 +14,105 @@
     </div>
     <div class="col s6 m6 l3">
       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-        <mat-label>Contaseña</mat-label>
+        <mat-label>Contraseña</mat-label>
         <input matInput placeholder="Ingrese su contraseña" [type]="hide ? 'password' : 'text'" formControlName="password">
         <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
       </mat-form-field>
     </div>
   </div>
-  <div class="row" style="margin-top:5px; ">  
+  <div class="row" style="margin-top:5px; ">
     <button (click)="login()" class="mine-btnbig" mat-flat-button>
-      LOGIN
+      INGRESAR
     </button>
-   </div> 
+   </div>
 </form>
 </mat-expansion-panel>
-<div [ngStyle]="{'display':loading ? 'none' : 'block' }">
+<div [ngStyle]="{'display':offline ? 'none' : 'block' }">
 <mat-expansion-panel [expanded]=true [disabled]=false style="margin-top:0px;">
   <mat-expansion-panel-header>
     <mat-panel-title>FORMULARIOS</mat-panel-title>
   </mat-expansion-panel-header>
   <form [formGroup]="formaFormulario" novalidate="novalidate">
-    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-      <div class="col s6 m4 l2">
-        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Comprobantes: </p>
-      </div>
-      <div class="col s6 m4 l1">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id</mat-label>
-          <input matInput (keyup)="compCpa()" placeholder="" formControlName="idCompCpa">
-        </mat-form-field>
-      </div>
-      <div class="col s6 m4 l1">
-        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
-          IR
-        </button>
-      </div>
-    </div>
 
-    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-      <div class="col s6 m4 l2">
-        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta CRD: </p>
-      </div>
-      <div class="col s6 m4 l1">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id</mat-label>
-          <input matInput (keyup)="consCrd()" placeholder="" formControlName="idCrd">
-        </mat-form-field>
-      </div>
-      <div class="col s6 m4 l1">
-        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
-          IR
-        </button>
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-      <div class="col s6 m4 l2">
-        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Ordenes de Pago: </p>
-      </div>
-      <div class="col s6 m4 l1">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id</mat-label>
-          <input matInput (keyup)="OrdPagos()" placeholder="" formControlName="idOrdPagos">
-        </mat-form-field>
-      </div>
-      <div class="col s6 m4 l1">
-        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
-          IR
-        </button>
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-      <div class="col s6 m4 l2">
-        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Retenciones: </p>
-      </div>
-      <div class="col s6 m4 l1">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id</mat-label>
-          <input matInput (keyup)="consRet()" placeholder="" formControlName="idRet">
-        </mat-form-field>
-      </div>
-      <div class="col s6 m4 l1">
-        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
-          IR
-        </button>
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-      <div class="col s6 m4 l2">
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
         <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Compras: </p>
       </div>
-      <div class="col s6 m4 l1">
+      <div class="col s6 m3 l1">
         <button (click)="compras()" [routerLink]="[routerLinkVariable,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
           IR
         </button>
       </div>
     </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta CRD: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="consCrd()" placeholder="" formControlName="idCrd">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Retenciones: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="consRet()" placeholder="" formControlName="idRet">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Órdenes de Pago: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="OrdPagos()" placeholder="" formControlName="idOrdPagos">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Comprobantes de Compra: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="compCpa()" placeholder="" formControlName="idCompCpa">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter,token]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
   </form>
 </mat-expansion-panel>
 </div>

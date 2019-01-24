@@ -65,6 +65,7 @@ import { ConsDinComponent } from './components/shared/modals/cons-din/cons-din.c
 import { from } from 'rxjs';
 import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
 import { LoginComponent } from './components/pages/login/login.component';
+import { TokenInterceptorComponent } from './components/shared/token-interceptor/token-interceptor.component';
 
 
 
@@ -109,7 +110,8 @@ import { LoginComponent } from './components/pages/login/login.component';
     ConsultaRetencionesComponent,
     ConsultaOrdPagosComponent,
     DatosProveedoresComponent,
-    LoginComponent
+    LoginComponent,
+    TokenInterceptorComponent
   ],
   imports: [
     BrowserModule,

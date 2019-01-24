@@ -8,6 +8,10 @@ import { FormGroup, FormControl } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+
+  dynamicParameter = "4081";
+  dynamicParameter2 = ""
+  routerLinkVariable = "/consulta-comprobantes"; 
   loginData: any;
   token: string = "a";
   forma: FormGroup;
@@ -21,10 +25,12 @@ export class LoginComponent implements OnInit {
       'id': new FormControl('')
     })
    }
-
+   
   ngOnInit() {
   }
   
+  llamar(){
+  }
   login(){
     let jsbody = {
       "usuario": this.forma.controls['usuario'].value,//"usuario1",

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Inject  } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject, Input  } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar, MatPaginatorIntl, } from '@angular/material';
@@ -12,6 +12,8 @@ import { ImpresionBase, informes } from "../../../interfaces/impresion.interface
 import { Router, ActivatedRoute } from "@angular/router";
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import { LoginComponent } from 'src/app/components/pages/login/login.component';
+import { initDomAdapter } from '@angular/platform-browser/src/browser';
 
 
 //import jsPDF from 'jspdf';
@@ -48,11 +50,12 @@ let itemActual:any;
 })
 
 export class ConsultaComprobantesComponent implements OnInit {
+
   paginatorIntl = new MatPaginatorIntl();
   forma: FormGroup;
   compraProveedor: CompraProveedor;
   loginData: any;
-  token: string = "a";
+  token: string;
   proveedorData: any;
   consultaComprobantes: consultaComprobantes[] = [];
   respCabecera: any;
@@ -165,16 +168,17 @@ export class ConsultaComprobantesComponent implements OnInit {
           auxProvData = this.proveedorData.dataset.length;
           if(this.proveedorData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.compraProveedor = null;
-    //        let jsbody = {"usuario":"usuario1","pass":"password1"}
-     //       let jsonbody = JSON.stringify(jsbody);
-    //        this._compraService.login(jsonbody)
-   //           .subscribe( dataL => {
-    //            console.log(dataL);
-    //            this.loginData = dataL;
-       //         this.token = this.loginData.dataset[0].jwt;
-     //           this.buscarProveedor();
-      //        });
+            console.log('Token invalido');
+          //   this.compraProveedor = null;
+          //  let jsbody = {"usuario":"usuario1","pass":"password1"}
+          //  let jsonbody = JSON.stringify(jsbody);
+          //  this._compraService.login(jsonbody)
+          //    .subscribe( dataL => {
+          //      console.log(dataL);
+          //      this.loginData = dataL;
+          //      this.token = this.loginData.dataset[0].jwt;
+          //      this.buscarProveedor();
+           //  });
             } else {
             if(this.proveedorData.dataset.length>0){
               this.compraProveedor = this.proveedorData.dataset[0];

@@ -38,7 +38,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta', component: ConsultaDinamicaComponent },
   { path: 'consulta/:id', component: ConsultaDinamicaComponent },
   { path: 'consulta-crd/:id', component: ConsultaCrdComponent },
-  { path: 'consulta-comprobantes/:id', component: ConsultaComprobantesComponent },
+  { path: 'consulta-comprobantes/:id/:token', component: ConsultaComprobantesComponent },
   { path: 'consulta-retenciones/:id', component: ConsultaRetencionesComponent },
   { path: 'consulta-ord-pago/:id', component: ConsultaOrdPagosComponent },
   { path: 'datos-proveedores', component: DatosProveedoresComponent },

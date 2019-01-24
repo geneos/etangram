@@ -5,17 +5,15 @@
                  [dismissable]="false"
                  [escapable]="false"
                  >
-<div class="modal-header">
-    
-</div>
-<div class="modal-body"  style="max-width: 2000px !important;">
-  <app-consulta-dinamica [nivel]="1"></app-consulta-dinamica>
-</div>
-<div class="modal-footer">
-    <button type="button" class="mine-btnbig" (click)="aplicar()">Aplicar</button>
-    <button type="button" class="mine-btnbig" (click)="cancelar()">Cancelar</button>
-</div>
+
+  <div class="modal-body"  style="max-width: 2000px !important;">
+    <app-consulta-dinamica [nivel]="1"></app-consulta-dinamica>
+  </div>
+
+  <div style="margin-top: 10px; width: 100%; text-align: right;">
+      <button mat-flat-button class="mine-btnbig" (click)="aplicar()">APLICAR</button>
+      <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
+  </div>
 </ngx-smart-modal>
-<!-- <app-cons-din-n2></app-cons-din-n2> -->
 
 

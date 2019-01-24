@@ -113,19 +113,42 @@ h6 {
   font-weight: bold;
 }
 
-
+/* sección para modales|dialogos */
 .cdk-overlay-container, .cdk-overlay-pane {
   z-index: 9999 !important;
+}
+
+/* Formato de los labels para los tab-group */
+.nsm-body .mat-tab-label {
+  width: 100%;
+  background-color: whitesmoke;
+}
+.nsm-body .mat-ink-bar {
+  width: 50%;
+  background-color:#f08377 !important;
 }
 
 /* primer dialogo */
 /* .nsm-dialog { width: 85% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; } */
 /* .nsm-dialog { width: 85% !important; max-width: 2000px !important; border-radius: 10px !important; padding: 12px 0 0 0 ; } */
 
+/* Alto mínimo para que no se achique la lista de filtros */
+.overlay-cons-din .nsm-content,
+.overlay-cons-din2 .nsm-content
+  { min-height: 500px}
+
+.overlay-filtros .nsm-content,
+.overlay-columnas .nsm-content,
+.overlay-filtros-n2 .nsm-content,
+.overlay-columnas-n2 .nsm-content
+  { min-height: unset}
+
 /* .overlay-cons-din.nsm-dialog { width: 85% !important; max-width: 2000px !important; */
 .overlay-cons-din.nsm-dialog { width: 85vw !important; max-width: 2000px !important;
   /*  border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: thistle */
 }
+
+
 
 /* Para que el segundo dialogo de consulta dinamica no quede detrás del primero */
 /* .overlay-cons-din2.nsm-dialog { width: 85vw !important; max-width: 2000px !important; z-index: 1100 !important; */

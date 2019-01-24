@@ -540,7 +540,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 // this.establecerColumnas();
                 this.buscarDatos();
 
-                this.loading = false;
+                // this.loading = false;
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
 
@@ -556,6 +556,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   }
 
   buscarDatos(){
+    this.loading = true;
     //
     console.log('Buscando datos con:');
     //todo ver por qué está vacío al momento de volver del modal siguiente
@@ -599,7 +600,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 this.constDatos.paginator = this.paginator;
 
                 this.establecerColumnas();
-                this.loading = false;
+                // this.loading = false;
 
               } else {
                 this.datosAll = null;
@@ -807,6 +808,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     //this.displayedColumns = this.displayedColumns.concat(columnasfijas, this.columns.map(c => c.columnDef));
     this.displayedColumns = [...columnasfijas, ...this.columns.map(c => c.columnDef)];
 
+    this.loading = false;
 
     console.log('columnas por defecto: ');
     console.log(this.columnSelection);

@@ -63,7 +63,7 @@ export class ConsultaCrdComponent implements OnInit {
 
    this.route.params.subscribe( parametros=>{
      this.id = parametros['id'];
-     //this.Controles['proveedor'].setValue(this.id);
+     this.token = parametros['token'];
      this.consultar();
    });
 

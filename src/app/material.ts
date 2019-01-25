@@ -18,7 +18,8 @@ import {MatButtonModule,
   MatSelectModule,
   MatSnackBarModule,
   MatTreeModule,
-  MatTabsModule
+  MatTabsModule,
+  MatTooltipModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -43,7 +44,8 @@ import { NgModule } from '@angular/core';
     MatSelectModule,
     MatSnackBarModule,
     MatTreeModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTooltipModule
   ],
   exports: [MatButtonModule,
     MatCheckboxModule,
@@ -65,7 +67,8 @@ import { NgModule } from '@angular/core';
     MatSelectModule,
     MatSnackBarModule,
     MatTreeModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTooltipModule
   ],
 })
 export class MyMaterialModule { }

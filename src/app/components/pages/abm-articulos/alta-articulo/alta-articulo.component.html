@@ -269,28 +269,48 @@
         <div class="col s6 m4 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Id Proveedor</mat-label>
-            <input matInput placeholder="" type="text">
-            <!--<mat-hint>Hint</mat-hint>-->
+            <input (keyup)="buscarProveedor()" (changed)="buscarProveedor()" #codProv matInput placeholder="" formControlName="proveedor">
+            <mat-hint *ngIf="forma.status=='PENDING'">
+              Buscando código...
+            </mat-hint>
+            <mat-hint *ngIf="forma.controls['proveedor'].errors?.noExiste">
+              El proveedor no existe
+            </mat-hint>
           </mat-form-field>
+        </div>
+        <div class="col s2 m1 l1" style="margin-top:10px;">
+          <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_proveedores', 'proveedor')">
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
         </div>
         <div class="col s6 m4 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Razon Social</mat-label>
-            <input matInput placeholder="" type="text">
+            <input matInput placeholder="" formControlName="razonSocial" value="{{ proveedor?.razon_social }}">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s6 m4 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Código Artículo</mat-label>
-            <input matInput placeholder="" type="text">
-            <!--<mat-hint>Hint</mat-hint>-->
+            <input (keyup)="buscarArtProveedor()" #codArtProv matInput placeholder="" formControlName="artDeProveedor">
+            <mat-hint *ngIf="forma.status=='PENDING'">
+              Buscando código...
+            </mat-hint>
+            <mat-hint *ngIf="forma.controls['artDeProveedor'].errors?.noExiste">
+              El artículo no existe
+            </mat-hint>
           </mat-form-field>
+        </div>
+        <div class="col s2 m1 l1" style="margin-top:10px;">
+          <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artDeProveedor')">
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
         </div>
         <div class="col s4 m4 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Código de Barra</mat-label>
-            <input matInput placeholder="" type="text">
+            <input matInput placeholder="" type="text" formControlName="artCodBarra">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
@@ -501,9 +521,19 @@
       <div class="col s12 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Id Artículo Sustituto</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
+          <input (keyup)="buscarArtSust()" #codArtSust matInput placeholder="" formControlName="artSust">
+          <mat-hint *ngIf="forma.status=='PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['artSust'].errors?.noExiste">
+            El artículo no existe
+          </mat-hint>
         </mat-form-field>
+      </div>
+      <div class="col s2 m1 l1" style="margin-top:10px;">
+        <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artSust')">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
       <div class="col s12 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -568,9 +598,19 @@
       <div class="col s12 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Id Artículo Hijo</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
+          <input (keyup)="buscarArtHijo()" #codArtHijo matInput placeholder="" formControlName="artHijo">
+          <mat-hint *ngIf="forma.status=='PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['artHijo'].errors?.noExiste">
+            El artículo no existe
+          </mat-hint>
         </mat-form-field>
+      </div>
+      <div class="col s2 m1 l1" style="margin-top:10px;">
+        <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artHijo')">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
       <div class="col s12 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -760,3 +800,4 @@
     </div>
   </div>
 </form>
+<app-cons-din></app-cons-din>

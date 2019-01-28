@@ -1,15 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { formatDate } from '@angular/common';
 import { TiposDocumentoService } from '../../../../services/i2t/tipos-documento.service';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { Subscription } from 'rxjs';
+import { LocalidadesService } from 'src/app/services/i2t/localidades.service';
+import { Localidad, Provincia } from 'src/app/interfaces/localidades.interface';
 
 const PROVEEDORES:any[] = [
   {'numero':0,'razonSocial':'Deux IT SRL','cuit':'30-123456789-9','posicionFiscal':'IVA Responsable Inscripto'},
   {'numero':1,'razonSocial':'Deux IT SRL','cuit':'30-123456789-9','posicionFiscal':'IVA Responsable Inscripto'},
   {'numero':2,'razonSocial':'Lunix S.R.L.','cuit':'30-987654321-0','posicionFiscal':'IVA Responsable Inscripto'},
 ];
+
+var auxLocalidadFac,auxLocalidadEnv: any;
 
 @Component({
   selector: 'app-alta-proveedor',
@@ -40,14 +46,31 @@ export class AltaProveedorComponent implements OnInit {
 
   existe:boolean;
 
+  suscripcionConsDin: Subscription;
+  itemDeConsulta: any;
+  
    @ViewChild('tableImpuestos') table: MatTable<any>;
    @ViewChild('tableStock') table2: MatTable<any>;
+   @ViewChild('artID') elArtID: any;
+   @ViewChild('facCodigoPostal') elFacCodigoPostal: any;
+   @ViewChild('envCodigoPostal') elEnvCodigoPostal: any;
   today: Date;
   tcData: any;
+  fcpData: any;//localidades
+  fpData: any;//provincias
+
   tiposDocumentoAll:any[];
+  localidadFac: Localidad;
+  localidadEnv: Localidad;
+  provinciaFac: Provincia;
+  provinciaEnv: Provincia;
   loginData: any;
 
-  constructor( private route:ActivatedRoute, private _tiposDocumentoService:TiposDocumentoService ) {
+  constructor(private route:ActivatedRoute, 
+              private _tiposDocumentoService:TiposDocumentoService,
+              private _localidadesService: LocalidadesService,
+              public ngxSmartModalService: NgxSmartModalService,
+              public snackBar: MatSnackBar,) {
     this.forma = new FormGroup({
       //FILIATORIOS Y GEOGRÁFICOS
       //'tipoReferente': new FormControl('',Validators.required),
@@ -59,12 +82,12 @@ export class AltaProveedorComponent implements OnInit {
       'facCalle': new FormControl('',Validators.required),
       'facCiudad': new FormControl('',Validators.required),
       'facProvincia': new FormControl('',Validators.required),
-      'facCodigoPostal': new FormControl('',Validators.required),
+      'facCodigoPostal': new FormControl('',Validators.required, this.existeLocalidadFac),
       'facPais': new FormControl('',Validators.required),
       'envCalle': new FormControl(),
       'envCiudad': new FormControl(),
       'envProvincia': new FormControl(),
-      'envCodigoPostal': new FormControl(),
+      'envCodigoPostal': new FormControl('', this.existeLocalidadEnv),
       'envPais': new FormControl(),
       'telefono1': new FormControl('',Validators.required),
       'telefono2': new FormControl(),
@@ -76,9 +99,12 @@ export class AltaProveedorComponent implements OnInit {
       'rcCuentaBancaria': new FormControl(),
       'rcCodigoSucursal': new FormControl(),
       //IMPUESTOS
+      'sitIVA': new FormControl(),
       'cuit': new FormControl(),
       'cai': new FormControl(),
       'fechaVtoCai': new FormControl(),
+      //STOCK
+      'artID': new FormControl(),
     });
 
     this.formaImpuesto = new FormGroup({
@@ -121,6 +147,60 @@ export class AltaProveedorComponent implements OnInit {
         }
       }
 
+    });
+
+    //suscripciones para rellenar datos después 
+    this.forma.controls['facCodigoPostal'].valueChanges.subscribe(() => {
+      // console.clear()
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['facCodigoPostal'])  
+        console.log('Objeto recibido: ', this.itemDeConsulta)
+        this.elFacCodigoPostal.nativeElement.dispatchEvent(new Event('keyup'));
+        // if (this.itemDeConsulta != null){
+        //   this.forma.controls['']
+        // }
+
+
+
+        // this.forma.controls['facCodigoPostal'].updateValueAndValidity();
+        // this.ref.detectChanges();
+        // this.forma.updateValueAndValidity();
+        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+      })
+      // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
+    });
+
+    this.forma.controls['envCodigoPostal'].valueChanges.subscribe(() => {
+      // console.clear()
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['envCodigoPostal'])  
+        // console.log('Valor de el otro elemento: ', this.forma.controls['razonSocial'].value)
+        this.elEnvCodigoPostal.nativeElement.dispatchEvent(new Event('keyup'));
+
+        // this.forma.controls['proveedor'].updateValueAndValidity();
+        // this.ref.detectChanges();
+        // this.forma.updateValueAndValidity();
+        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+      })
+      // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
+    });
+
+    this.forma.controls['artID'].valueChanges.subscribe(() => {
+      // console.clear()
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['artID'])  
+        // console.log('Valor de el otro elemento: ', this.forma.controls['razonSocial'].value)
+        this.elArtID.nativeElement.dispatchEvent(new Event('keyup'));
+
+        // this.forma.controls['proveedor'].updateValueAndValidity();
+        // this.ref.detectChanges();
+        // this.forma.updateValueAndValidity();
+        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+      })
+      // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
     });
 
   }
@@ -192,10 +272,240 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
 
+  buscarCPostalFac(){
+    console.log('buscando codigo postal: ', this.forma.controls['facCodigoPostal'].value)
+    this._localidadesService.getLocalidades(this.forma.controls['facCodigoPostal'].value, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.fcpData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.fcpData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.localidadFac = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarCPostalFac();
+              });
+            } else {
+              if(this.fcpData.dataset.length>0){
+                this.localidadFac = this.fcpData.dataset[0];
+                console.log('Localidad de facturacion: ', this.localidadFac);
+                //this.loading = false;
+                // this.buscarProvinciaFac(this.localidadFac.tg01_provincias_id_c, this.token)
+                this.buscarProvinciaFac();
+
+              } else {
+                this.localidadFac = null;
+                console.log(this.fcpData)
+
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
+  
+  buscarCPostalEnv(){
+    console.log('buscando codigo postal: ', this.forma.controls['envCodigoPostal'].value)
+    this._localidadesService.getLocalidades(this.forma.controls['envCodigoPostal'].value, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.fcpData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.fcpData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.localidadEnv = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarCPostalEnv();
+              });
+            } else {
+              if(this.fcpData.dataset.length>0){
+                this.localidadEnv = this.fcpData.dataset[0];
+                console.log('Localidad de envio: ', this.localidadEnv);
+                //this.loading = false;
+                this.buscarProvinciaEnv();
+
+              } else {
+                console.log(this.fcpData)
+                this.localidadEnv = null;
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
+
+  buscarProvinciaFac(){
+    this._localidadesService.getProvincias(this.localidadFac.tg01_provincias_id_c, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.fpData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.fpData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.provinciaFac = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarCPostalFac();
+              });
+            } else {
+              if(this.fpData.dataset.length>0){
+                this.provinciaFac = this.fpData.dataset[0];
+                // console.log(this.provinciaFac);
+                console.log('provincia de fact: ', this.provinciaFac);
+                //this.loading = false;
+
+              } else {
+                this.provinciaFac = null;
+                // console.log(this.fcpData)
+
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
+
+  buscarProvinciaEnv(){
+    this._localidadesService.getProvincias(this.localidadEnv.tg01_provincias_id_c, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.fpData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.fpData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.provinciaEnv = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarCPostalFac();
+              });
+            } else {
+              if(this.fpData.dataset.length>0){
+                this.provinciaEnv = this.fpData.dataset[0];
+                console.log('provincia de env: ', this.provinciaEnv);
+                //this.loading = false;
+
+              } else {
+                this.provinciaEnv = null;
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
   /*getdatetime(){
     this.today = new Date();
     return formatDate(this.today, 'yyyy-MM-dd HH:mm:ss', 'en-US', '-0300');
   }*/
+  
+  existeLocalidadFac( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxLocalidadFac==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
+  existeLocalidadEnv( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxLocalidadEnv==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
+  }
+
+  abrirConsulta(consulta: string, control: string){
+    this.itemDeConsulta = null;
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'consDinModal'
+    }
+    
+    let atributoAUsar: string;
+    switch (consulta) {
+      case 'tg01_localidades':
+        atributoAUsar = 'cpostal';
+        break;
+      case 'tg01_categoriasiva':
+        atributoAUsar = 'idcategoria';
+      default:
+        break;
+    }
+
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+        this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+        this.itemDeConsulta = respuesta.selection[0];
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionConsDin.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
+  }
 
   guardarProveedor(){
     if( this.id == "nuevo" ){

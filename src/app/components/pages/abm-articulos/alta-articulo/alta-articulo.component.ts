@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
-import { getMatFormFieldMissingControlError } from '@angular/material';
+import { getMatFormFieldMissingControlError, MatSnackBar } from '@angular/material';
+import { ProveedoresService } from 'src/app/services/i2t/proveedores.service';
+import { Proveedor } from 'src/app/interfaces/proveedor.interface';
+import { Subscription } from 'rxjs';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -11,6 +15,8 @@ const ARTICULOS:any[] = [
   {'nroArticulo':4,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40}
 ];
 
+var auxProvData,auxArtiData:any;
+
 @Component({
   selector: 'app-alta-articulo',
   templateUrl: './alta-articulo.component.html',
@@ -19,6 +25,10 @@ const ARTICULOS:any[] = [
 export class AltaArticuloComponent implements OnInit {
 
   constArticulos = ARTICULOS;
+
+  user:string='usuario1';
+  pass:string='password1'
+  token: string = "a";
 
   forma:FormGroup;
   id:any;
@@ -32,8 +42,23 @@ export class AltaArticuloComponent implements OnInit {
   artRelaciones:any[]=[{'nroArtRelacion':0},];
   umAlt:any[]=[{'nroUMAlt':0},];
   auxRid:any;
+  loginData: any;
+  
+  proveedorData: any;
+  proveedor: Proveedor;
+  @ViewChild('codProv', { read: ElementRef}) elCodProv: any;
+  @ViewChild('codArtProv', { read: ElementRef}) elcodArtProv: any;
+  @ViewChild('codArtSust', { read: ElementRef}) elcodArtSust: any;
+  @ViewChild('codArtHijo', { read: ElementRef}) elcodArtHijo: any;
 
-  constructor( private route:ActivatedRoute ) {
+  suscripcionConsDin: Subscription;
+  
+  constructor(private route:ActivatedRoute,
+              public snackBar: MatSnackBar,
+              public ngxSmartModalService: NgxSmartModalService,
+              private _proveedorService: ProveedoresService,
+              private ref: ChangeDetectorRef 
+              ) {
     this.forma = new FormGroup({
       'tipo': new FormControl(1,Validators.required),
       'nroArticulo': new FormControl('',Validators.required),
@@ -68,6 +93,11 @@ export class AltaArticuloComponent implements OnInit {
       'precioUltVenta': new FormControl(),
       'fechaUltVenta': new FormControl(),
       'idMonedaUltVenta': new FormControl(),
+        //proveedor
+        'proveedor': new FormControl('',Validators.required,this.existeProveedor),
+        'razonSocial': new FormControl(),
+        'artDeProveedor': new FormControl('',Validators.required,this.existeArticulo),
+        'artCodBarra': new FormControl(),
       //Impositivo
       'idGrupoRefContArticulo': new FormControl(),
       'idAlicuotaIva': new FormControl(),
@@ -85,6 +115,10 @@ export class AltaArticuloComponent implements OnInit {
       'stockIdeal': new FormControl(),
       'stockMaximo': new FormControl(),
       'stockReposicion': new FormControl(),
+        //Productos sustitutos
+        'artSust': new FormControl(),
+        //Productos Relacionados
+        'artHijo': new FormControl(),
       //Datos Dimensiones
       'Dimensiones': new FormControl(),
       'Pesable': new FormControl(),
@@ -128,6 +162,58 @@ export class AltaArticuloComponent implements OnInit {
 
     });
 
+    //suscripciones para rellenar datos después 
+    this.forma.controls['proveedor'].valueChanges.subscribe(() => {
+      // console.clear()
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['proveedor'], this.proveedor)  
+        console.log('Valor de el otro elemento: ', this.forma.controls['razonSocial'].value)
+        this.elCodProv.nativeElement.dispatchEvent(new Event('keyup'));
+
+        // this.forma.controls['proveedor'].updateValueAndValidity();
+        // this.ref.detectChanges();
+        // this.forma.updateValueAndValidity();
+        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+      })
+      // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
+    });
+
+    this.forma.controls['artDeProveedor'].valueChanges.subscribe(() => {
+      // console.clear()
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['artDeProveedor'], this.proveedor)  
+        console.log('Valor de el otro elemento: ', this.forma.controls['artCodBarra'].value)
+        this.elcodArtProv.nativeElement.dispatchEvent(new Event('keyup'));
+
+        // this.forma.controls['proveedor'].updateValueAndValidity();
+        // this.ref.detectChanges();
+        // this.forma.updateValueAndValidity();
+        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+      })
+      // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
+    });
+
+    this.forma.controls['artSust'].valueChanges.subscribe(() => {
+      // console.clear()
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['artSust'])   //this.articulo?
+        // console.log('Valor de el otro elemento: ', this.forma.controls['artCodBarra'].value)
+        this.elcodArtSust.nativeElement.dispatchEvent(new Event('keyup'));
+      })
+    });
+
+    this.forma.controls['artHijo'].valueChanges.subscribe(() => {
+      // console.clear()
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['artHijo'])   //this.articulo?
+        // console.log('Valor de el otro elemento: ', this.forma.controls['artCodBarra'].value)
+        this.elcodArtHijo.nativeElement.dispatchEvent(new Event('keyup'));
+      })
+    });
   }
 
   ngOnInit() {
@@ -573,4 +659,164 @@ export class AltaArticuloComponent implements OnInit {
     }
 
   */
+
+  //validaciones
+  existeProveedor( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxProvData==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
+  existeArticulo( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxArtiData==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
+  //autocompletado
+  buscarProveedor(){
+    // console.clear()
+    console.log('llamado a la busqueda del proveedor', this.forma.controls['proveedor'].value)
+    this._proveedorService.getProveedor( this.forma.controls['proveedor'].value, this.token )
+    //this._proveedorService.getProveedores()
+      .subscribe( dataP => {
+        console.log(dataP);
+          this.proveedorData = dataP;
+          auxProvData = this.proveedorData.dataset.length;
+          if(this.proveedorData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.proveedor = null;
+            //let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsbody = {"usuario":this.user,"pass":this.pass}
+            let jsonbody = JSON.stringify(jsbody);
+            this._proveedorService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarProveedor();
+              });
+            } else {
+              if(this.proveedorData.dataset.length>0){
+                // this.proveedor = this.proveedorData.dataset[0];
+                this['proveedor'] = this.proveedorData.dataset[0];
+                console.log('encontrado: ',this.proveedor, this['proveedor']);
+        
+
+              } else {
+                this.proveedor = null;
+              }
+            }
+      });
+  }
+
+  buscarArtProveedor(){
+    console.log('todo');
+  }
+
+  buscarArtSust(){
+    console.log('todo');
+  }
+
+  buscarArtHijo(){
+    console.log('todo');
+  }
+
+  //modal
+  abrirConsulta(consulta: string, control: string){
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'consDinModal'
+    }
+    
+    let atributoAUsar: string;
+    switch (consulta) {
+      case 'c_proveedores':
+        atributoAUsar = 'codigo';
+        break;
+      case 'c_articulos':
+        atributoAUsar = 'idcategoria';
+      default:
+        break;
+    }
+
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+        setTimeout(() => {
+          this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+          // this['proveedor'] = null;
+          this[control] = respuesta.selection[0];
+          
+          //todo 
+          //disparar detección de cambios, cada parte es un intento distinto
+          // this.proveedor = respuesta.selection[0];
+          
+          // setTimeout(() => this.ref.detectChanges(), 1000);
+          // this.ref.markForCheck();
+        
+          // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+
+          console.log('seleccionado: ',this.proveedor, this['proveedor']);
+        });
+
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+        
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionConsDin.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
+  }
+
+  //otros
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
+  }
+  
 }

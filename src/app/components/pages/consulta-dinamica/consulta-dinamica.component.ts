@@ -37,6 +37,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   reportesAll: Reporte[] = [];
   nombreReporte: string;
   reporteSeleccionado : number;
+  reporteMostrado: number; 
+  reporteCambiado: boolean= false;
 
   atributosAll: Atributo[];
   datosAll: any[];
@@ -409,6 +411,28 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     console.log('nombre modal usado: '+ nombreModalCorregido + ' ')
   }
 
+  limpiarDatos(){
+    //ocultar botones, impedir filtrado/selección de columnas
+    this.nivel = 0;
+
+    //borrar tabla
+    this.reportesAll = null;
+    this.atributosAll = null;
+    this.datosAll = null;
+
+    this.displayedColumns = ['select', 'opciones'];
+
+    if (this.constDatos != null){
+      this.constDatos.sort = null;
+      this.constDatos.paginator.length = 0;
+      this.constDatos.paginator = null;
+      this.constDatos = new MatTableDataSource();
+      this.constDatos = null;
+    }
+
+
+  }
+
   habilitarAcciones(){
     /* this.permiso_crear	=;
     this.permiso_editar	=;
@@ -486,12 +510,17 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 this.reporteSeleccionado = this.reportesAll.findIndex(reporte => reporte.name === this.nombreReporte);
                 if (this.reporteSeleccionado != -1)
                 {
+                  if (this.reporteSeleccionado != this.reporteMostrado){
+                    this.reporteMostrado = this.reporteSeleccionado;
+                    this.reporteCambiado = true;
+                  }
                   this.habilitarAcciones();
 
                   this.buscarAtributos();
                 }
                 else{
                   this.openSnackBar('No existe la consulta "' + this.nombreReporte + '"');
+                  this.limpiarDatos();
                   this.loading = false;
                 }
 
@@ -503,6 +532,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               } else {
                 this.reportesAll = null;
                 this.openSnackBar('No se pudo realizar la consulta "' + this.nombreReporte + '"');
+                this.limpiarDatos();
                 this.loading = false;
               }
             }
@@ -548,6 +578,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 this.atributosAll = null;
                 console.log('Lista de atributos vacía');
                 this.openSnackBar('No se encontraron los atributos correspondientes a la consulta "' + this.nombreReporte + '"');
+                this.limpiarDatos();
                 this.loading = false;
 
               }
@@ -669,8 +700,13 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     this.displayedColumns = [];
     let columnasAMostrar: string;
     columnasAMostrar = '';
+    // this.columnasDisponibles = this.columnasDisponibles.splice(0, this.columnasDisponibles.length);
+    this.columnasDisponibles.length = 0;
 
-    if (this.columnSelection == null){
+    if ((this.columnSelection == null)||(this.reporteCambiado == true)){
+
+      this.reporteCambiado = false;
+      console.log('armando lista de columnas inicial:')
 
       //armar lista de columnas disponibles
       let indice: number = 0;
@@ -691,7 +727,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         indice = indice + 1;
 
       });
-
+      console.log('lista de columnas disponibles: ', this.columnasDisponibles)
       this.columnSelection = new SelectionModel(true, []);
       console.log('generada lista de columnas seleccionadas');
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
@@ -6,8 +6,14 @@ import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.inter
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription } from 'rxjs';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+
+// key that is used to access the data in local storage
+const TOKEN = '';
 
 var auxProvData,auxArtiData:any;
+
+@Injectable()
 
 @Component({
   selector: 'app-abm-compras',
@@ -59,16 +65,19 @@ export class AbmComprasComponent implements OnInit {
   user: string;
   pass: string;
 
-  constructor(public dialogArt: MatDialog, 
-              private _compraService:CompraService, 
+  constructor(public dialogArt: MatDialog,
+              private _compraService:CompraService,
               private route:ActivatedRoute,
               public ngxSmartModalService: NgxSmartModalService,
-              public snackBar: MatSnackBar,)
+              public snackBar: MatSnackBar,
+              @Inject(SESSION_STORAGE) private storage: StorageService
+            )
   {
-
-    this.route.params.subscribe( parametros=>{
-      this.token = parametros['token'];
-    });
+    //this.route.params.subscribe( parametros=>{
+      //this.token = parametros['token'];
+    //});
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);
 
     this.forma = new FormGroup({
       'proveedor': new FormControl('',Validators.required,this.existeProveedor),
@@ -104,7 +113,7 @@ export class AbmComprasComponent implements OnInit {
     this.formaArticulos.controls['precioUnitario'].disable();
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   test(){
     //console.log(this.forma.controls['caicae'].errors)
@@ -126,15 +135,15 @@ export class AbmComprasComponent implements OnInit {
       selection: null,
       modal: 'consDinModal'
     }
-    
+
     console.log('enviando datosModal: ');
     console.log(datosModal);
-    
+
     // datosModal.columnSelection = this.columnSelection;
     console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
     this.ngxSmartModalService.resetModalData(datosModal.modal);
     this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
-    
+
     this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
 

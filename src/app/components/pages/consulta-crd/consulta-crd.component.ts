@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatIcon} from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -10,11 +10,14 @@ import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { Router, ActivatedRoute } from "@angular/router";
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
+const TOKEN = '';
 
 var auxArtiData:any;
 var auxProvData:any;
 
+@Injectable()
 
 @Component({
   selector: 'app-consulta-crd',
@@ -53,7 +56,9 @@ export class ConsultaCrdComponent implements OnInit {
   constructor(private route:ActivatedRoute,private router: Router,
               private _ConsultaCrdService:ConsultaCrdService,
               private _ImpresionCompService:ImpresionCompService,
-              public snackBar: MatSnackBar)
+              public snackBar: MatSnackBar,
+              @Inject(SESSION_STORAGE) private storage: StorageService
+            )
     {
     this.Controles = new FormGroup({
       'proveedor': new FormControl(),
@@ -61,9 +66,12 @@ export class ConsultaCrdComponent implements OnInit {
       'cuit': new FormControl(),
    })
 
+   console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+   this.token = this.storage.get(TOKEN);
+
    this.route.params.subscribe( parametros=>{
      this.id = parametros['id'];
-     this.token = parametros['token'];
+     //this.token = parametros['token'];
      this.consultar();
    });
 

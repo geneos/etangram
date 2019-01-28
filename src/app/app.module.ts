@@ -8,6 +8,10 @@ import { LOCALE_ID} from '@angular/core';
 // rutas
 import { APP_ROUTING } from "./app.routes";
 
+//antes de importar esto de abajo:
+//npm install --save angular-webstorage-service
+import { StorageServiceModule } from 'angular-webstorage-service';
+
 //material
 import { MyMaterialModule } from "./material";
 //modales
@@ -24,7 +28,6 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { CdkTableModule } from '@angular/cdk/table';
 
 //
-
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
 import { AbmComprasComponent } from './components/pages/abm-compras/abm-compras.component';
@@ -129,7 +132,7 @@ import { LoginComponent } from './components/pages/login/login.component';
     APP_ROUTING,
     CdkTableModule,
     NgxSmartModalModule.forRoot(),
-
+    StorageServiceModule,
   ],
   entryComponents: [
     TextoComponent,

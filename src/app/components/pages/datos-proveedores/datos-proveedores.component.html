@@ -4,7 +4,7 @@
   <mat-expansion-panel-header>
     
       <span style="width:40%;">{{ datosCabecera[0].Razon_Social }}</span>
-      <span style="width:12%">{{ datosCabecera[0].CUIT }}</span>
+      <span style="width:12%">Cuit: {{ datosCabecera[0].CUIT }}</span>
       <span style="width:20%"> Estado: {{ datosCabecera[0].Estado }}</span>
       <span>Estado Afip: {{ datosCabecera[0].Estado_Afip }}</span>
     
@@ -57,7 +57,7 @@
       </mat-expansion-panel>
     </div>
   
-    <div class="mat-elevation-z8" style="float: left; width:50%;width:40%;">
+    <div class="mat-elevation-z8" style="float: left; width:40%;">
     <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%;">
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -89,7 +89,9 @@
         <ng-container matColumnDef= "opciones">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:left;">
-          <!--  <i (click)="print(element.nint)" class="material-icons" style="cursor: pointer">print</i> --><p>Ver</p><p>Upd</p>
+          <!--  <i (click)="print(element.nint)" class="material-icons" style="cursor: pointer">print</i> -->
+          <a href='{{ element.url }}' style="margin-right:5px">Ver</a>
+          <a href='#'>Upd</a>
           </td>
         </ng-container>
 
@@ -101,5 +103,51 @@
       <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
     </mat-expansion-panel>
   </div>
+  
+</div>
+<div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
+  <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%; ">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        INFORMACIÓN DE CONTACTO
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+  <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
+    <div class="col s6 m3 l4" style="display: inline-block">
+        Direccion de Facturación
+      <mat-form-field appearance="outline" style="width:100%; display: inline-block">
+        <!-- <mat-label>Direccion de Facturación</mat-label> -->
+        <input matInput type="text" readonly disabled placeholder="" value="{{ direccionFac }}">
+      </mat-form-field>
+    </div>
+    <div class="col s6 m3 l4" style="display: inline-block">
+        Direccion de Envío
+      <mat-form-field appearance="outline" style="width:100%; display: inline-block">
+        <!-- <mat-label>Direccion de Facturación</mat-label> -->
+        <input matInput type="text" readonly disabled placeholder="" value="{{ direccionEnv }}">
+      </mat-form-field>
+    </div>
+    <div class="col s6 m3 l4" style="display: inline-block">
+        Email
+      <mat-form-field appearance="outline" style="width:100%; display: inline-block">
+        <!-- <mat-label>Direccion de Facturación</mat-label> -->
+        <input matInput type="text" readonly disabled placeholder="" value="{{ datosCabecera[0].Email }}">
+      </mat-form-field>
+    </div>
+    <div class="col s6 m3 l4" style="display: inline-block">
+        Teléfonos
+      <mat-form-field appearance="outline" style="width:100%; display: inline-block">
+        <!-- <mat-label>Direccion de Facturación</mat-label> -->
+        <input matInput type="text" readonly disabled placeholder="" value="{{ telefonos }}">
+      </mat-form-field>
+    </div>
+   </div>
+   <button (click)="modificar()" class="mine-btnbig" mat-flat-button>Modificar</button>
+   <button class="mine-btnbig" mat-flat-button>Actualizar</button>
+  <!-- <p style="width:30%; display: inline-block;" >Direccion de Facturación: {{ datosCabecera[0].Domicilio }}</p><p style="width:5%; display: inline-block;">({{ datosCabecera[0].Codigo_Postal }})</p><span style="width:10%"> {{ datosCabecera[0].Ciudad }}</span><br>
+  <span>Direccion de Envío: </span><br>
+  <span>Email: </span><br>
+  <span style="width:10%">Teléfonos: {{ datosCabecera[0].Telefono_Oficina }}</span><span>{{ datosCabecera[0].Telefono_Movil }}</span> -->
+    </mat-expansion-panel>
 </div>
 </mat-expansion-panel>

@@ -18,7 +18,11 @@ export class DatosProveedoresComponent implements OnInit {
   token: string = 'a';
   loginData: any;
   loading: boolean = true;
-  
+  direccionFac: string;
+  direccionEnv: string;
+  telefonos: string;
+  url: string;
+
   dataSource = new MatTableDataSource<datosImpuesto>(this.datosImpuesto);
   dataSource2 = new MatTableDataSource<datosFormularios>(this.datosFormularios);
   columnsToDisplay = ['descripcion', 'presentacion', 'vencimiento'];
@@ -26,6 +30,10 @@ export class DatosProveedoresComponent implements OnInit {
 
   ngOnInit() {
     this.getCabecera()
+  }
+
+  modificar(){
+
   }
 
   getCabecera(){
@@ -53,6 +61,10 @@ export class DatosProveedoresComponent implements OnInit {
               if(this.respCabecera.dataset.length>0){
                 this.datosCabecera = this.respCabecera.dataset;
                 this.loading = false;
+                this.direccionFac = this.datosCabecera[0].Domicilio +', '+'('+this.datosCabecera[0].Codigo_Postal+')'+', '+this.datosCabecera[0].Ciudad;
+                this.direccionEnv = this.datosCabecera[0].Domicilio_envio +', '+'('+this.datosCabecera[0].Codigo_Postal_envio+')'+', '+this.datosCabecera[0].Ciudad_envio;
+                this.telefonos = this.datosCabecera[0].Telefono_Oficina + ' - ' + this.datosCabecera[0].Telefono_Movil;
+                
 
                 //TRAE IMPUESTOS
                 this._DatosProveedorService.getImpuesto( jsonbodyCab, this.token)

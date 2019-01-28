@@ -46,7 +46,7 @@ let itemActual:any;
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
     { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
   ],
-  
+
 })
 
 export class ConsultaComprobantesComponent implements OnInit {
@@ -76,7 +76,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   baseUrl: ImpresionBase[] = [];
   cuit: any;
   razonSocial:string;
-  
+
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('tableCompr') table: MatTable<any>;
   @ViewChild('tablaDatos') tablaDatos: ElementRef;
@@ -115,7 +115,7 @@ export class ConsultaComprobantesComponent implements OnInit {
       this.token = parametros['token'];
       //this.Controles['proveedor'].setValue(this.id);
       this.buscarProveedor();
-      
+
     });
 
     /*this.fechaActual.setDate(this.fechaActual.getDate());
@@ -278,5 +278,8 @@ export interface consultaComprobantes {
   Reserva_Presupuestaria: string,
   Certificado: string,
   Estado: string,
-  Saldo: number
+  Saldo: number,
+  estadocontable: number,
+  estadoimpositivo: number,
+  estadopresupuestario: number
 }

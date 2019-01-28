@@ -148,10 +148,14 @@
            <td mat-cell *cdkCellDef="let element" style="text-align:right;">  {{ element.Saldo=="B"?("$ "+element.Saldo+".00"):"" }} </td>
          </ng-container>
 
-         <!-- Estado Column -->
+         <!-- Estado Column // {{ element.Estado=="B"?"Borrador":"Confirmado" }} -->
          <ng-container matColumnDef="Estado">
-           <th mat-header-cell *matHeaderCellDef> Estado </th>
-           <td mat-cell *cdkCellDef="let element"> {{ element.Estado=="B"?"Borrador":"Confirmado" }} </td>
+           <th mat-header-cell *matHeaderCellDef>  </th>
+           <td mat-cell *cdkCellDef="let element" style="text-align:right;">
+             <i matTooltip="Estado Contable" class="material-icons" style="font-size:24px; " [ngStyle]="{'color': element.estadocontable==0 ? 'red' : 'green' }">{{ element.estadocontable==0?"highlight_off":"check_circle_outline" }}</i>
+             <i matTooltip="Estado Impositivo" class="material-icons" style="font-size:24px; " [ngStyle]="{'color': element.estadoimpositivo==0 ? 'red' : 'green' }">{{ element.estadoimpositivo==0?"highlight_off":"check_circle_outline" }}</i>
+             <i matTooltip="Estado Presupuestario" class="material-icons" style="font-size:24px; " [ngStyle]="{'color': element.estadopresupuestario==0 ? 'red' : 'green' }">{{ element.estadopresupuestario==0?"highlight_off":"check_circle_outline" }}</i>
+           </td>
          </ng-container>
 
          <!-- Accion Column -->

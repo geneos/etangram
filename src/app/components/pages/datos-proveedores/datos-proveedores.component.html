@@ -1,9 +1,105 @@
-<h2>DATOS PROVEEDORES</h2>
-
-<mat-expansion-panel [expanded]=true [disabled]=true>
+<h2>DATOS PROVEEDOR</h2>
+<app-loading *ngIf="loading"></app-loading>
+<mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading">
   <mat-expansion-panel-header>
-    <mat-panel-title>
-      PROVEEDOR
-    </mat-panel-title>
+    
+      <span style="width:40%;">{{ datosCabecera[0].Razon_Social }}</span>
+      <span style="width:12%">{{ datosCabecera[0].CUIT }}</span>
+      <span style="width:20%"> Estado: {{ datosCabecera[0].Estado }}</span>
+      <span>Estado Afip: {{ datosCabecera[0].Estado_Afip }}</span>
+    
   </mat-expansion-panel-header>
+
+  <div class="row" style="margin-top:15px; margin-bottom:20px !important;">
+    <div class="mat-elevation-z8" style="float: left; width:60%;">
+      <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%;">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              IMPUESTOS
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+    <div class="row" style="margin-top:15px; margin-bottom:20px !important;">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" >
+
+        <!-- Fecha Column -->
+        <ng-container matColumnDef= "descripcion">
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.name_mode}} </td>
+        </ng-container>
+
+        <!-- Comprobante Column -->
+        <ng-container matColumnDef="situacion">
+          <th mat-header-cell *matHeaderCellDef> Situacion </th>
+          <td mat-cell *cdkCellDef="let element"> {{ element.situacion }} </td>
+        </ng-container>
+
+        <!-- Expediente Column -->
+        <ng-container matColumnDef="inscripcion">
+          <th mat-header-cell *matHeaderCellDef> Inscripcion </th>
+          <td mat-cell *cdkCellDef="let element"> {{ element.nroinscripcion }} </td>
+        </ng-container>
+
+        <!-- Impuesto Column -->
+        <ng-container matColumnDef="excencion">
+          <th mat-header-cell *matHeaderCellDef> Excencion </th>
+          <td mat-cell *cdkCellDef="let element"> Desde: {{ element.exen_fechadesde }} </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="['descripcion', 'situacion', 'inscripcion', 'excencion']"></tr>
+        <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'situacion', 'inscripcion', 'excencion'] ;"></tr>
+
+      </table>
+    </div>
+      <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
+
+      </mat-expansion-panel>
+    </div>
+  
+    <div class="mat-elevation-z8" style="float: left; width:50%;width:40%;">
+    <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%;">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          FORMULARIOS
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+    <div class="row" style="margin-top:15px; margin-bottom:20px !important;">  
+      <table mat-table [dataSource]="dataSource2" multiTemplateDataRows class="mat-elevation-z8">
+
+        <!-- Fecha Column -->
+        <ng-container matColumnDef= "descripcion">
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.name }} </td>
+        </ng-container>
+
+        <!-- Comprobante Column -->
+        <ng-container matColumnDef="presentacion">
+          <th mat-header-cell *matHeaderCellDef> Presentacion </th>
+          <td mat-cell *cdkCellDef="let element"> {{ element.fechapresentacion }} </td>
+        </ng-container>
+
+        <!-- Expediente Column -->
+        <ng-container matColumnDef="vencimiento">
+          <th mat-header-cell *matHeaderCellDef> Vencimiento </th>
+          <td mat-cell *cdkCellDef="let element"> {{ element.fechavencimiento }} </td>
+        </ng-container>
+
+        <!-- Opciones -->
+        <ng-container matColumnDef= "opciones">
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;">
+          <!--  <i (click)="print(element.nint)" class="material-icons" style="cursor: pointer">print</i> --><p>Ver</p><p>Upd</p>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['descripcion', 'presentacion', 'vencimiento', 'opciones'] "></tr>
+        <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'presentacion', 'vencimiento', 'opciones'] ;"></tr>
+
+      </table>
+    </div>
+      <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
+    </mat-expansion-panel>
+  </div>
+</div>
 </mat-expansion-panel>

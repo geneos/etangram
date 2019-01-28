@@ -61,10 +61,17 @@ export class DatosProveedoresComponent implements OnInit {
               if(this.respCabecera.dataset.length>0){
                 this.datosCabecera = this.respCabecera.dataset;
                 this.loading = false;
-                this.direccionFac = this.datosCabecera[0].Domicilio +', '+'('+this.datosCabecera[0].Codigo_Postal+')'+', '+this.datosCabecera[0].Ciudad;
+                if(this.datosCabecera[0].Domicilio == null){
+                  this.direccionFac = null;
+                } else{
+                  this.direccionFac = this.datosCabecera[0].Domicilio +', '+'('+this.datosCabecera[0].Codigo_Postal+')'+', '+this.datosCabecera[0].Ciudad;
+                }
+                if(this.datosCabecera[0].Domicilio_envio == "") {
+                  this.direccionEnv = null;
+                } else {
                 this.direccionEnv = this.datosCabecera[0].Domicilio_envio +', '+'('+this.datosCabecera[0].Codigo_Postal_envio+')'+', '+this.datosCabecera[0].Ciudad_envio;
+                }
                 this.telefonos = this.datosCabecera[0].Telefono_Oficina + ' - ' + this.datosCabecera[0].Telefono_Movil;
-                
 
                 //TRAE IMPUESTOS
                 this._DatosProveedorService.getImpuesto( jsonbodyCab, this.token)

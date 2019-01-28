@@ -1,27 +1,61 @@
-<h2>DATOS PROVEEDOR</h2>
+<!-- <h2>DATOS PROVEEDOR</h2> -->
 <app-loading *ngIf="loading"></app-loading>
 <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading">
-  <mat-expansion-panel-header>
-    
-      <span style="width:40%;">{{ datosCabecera[0].Razon_Social }}</span>
-      <span style="width:12%">Cuit: {{ datosCabecera[0].CUIT }}</span>
-      <span style="width:20%"> Estado: {{ datosCabecera[0].Estado }}</span>
-      <span>Estado Afip: {{ datosCabecera[0].Estado_Afip }}</span>
-    
+    <div class="row" style="margin-top:15px;" *ngIf="!loading">
+        <div class="col s3 m2 l3">
+          <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Razon Social</p>
+          <p style="margin-top:7px;">{{ datosCabecera[0].Razon_Social }}</p>
+          <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%; ">
+            <mat-label>Código Proveedor</mat-label>
+            <input readonly #codProv matInput placeholder="" value="{{id}}">
+          </mat-form-field>-->
+        </div>
+  
+        <div class="col s6 m4 l3">
+          <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">CUIT</p>
+          <p style="margin-top:7px;">{{ datosCabecera[0].CUIT }}</p>
+          <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Razón Social</mat-label>
+            <input matInput placeholder="" readonly value="{{ compraProveedor?.razon_social }}">
+          </mat-form-field>-->
+        </div>
+        <div class="col s3 m4 l3">
+          <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">ESTADO</p>
+          <p style="margin-top:7px;">{{ datosCabecera[0].Estado }}</p>
+          <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>CUIT</mat-label>
+            <input matInput placeholder="" readonly value="{{ compraProveedor?.cuit }}">
+          </mat-form-field>-->
+        </div>
+        <div class="col s3 m4 l3">
+            <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">ESTADO AFIP</p>
+            <p style="margin-top:7px;">{{ datosCabecera[0].Estado_Afip }}</p>
+            <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>CUIT</mat-label>
+              <input matInput placeholder="" readonly value="{{ compraProveedor?.cuit }}">
+            </mat-form-field>-->
+          </div>
+  
+      </div>
+  <mat-expansion-panel-header>    
+      <mat-title-panel>
+        PROVEEDOR
+      </mat-title-panel>    
   </mat-expansion-panel-header>
 
   <div class="row" style="margin-top:15px; margin-bottom:20px !important;">
-    <div class="mat-elevation-z8" style="float: left; width:60%;">
-      <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%;">
-          <mat-expansion-panel-header>
+    <!-- <div class="mat-elevation-z8" style="float: left; width:60%;"> -->
+      <!-- <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%;">
+          <mat-expansion-panel-header style="display: none">
             <mat-panel-title>
               IMPUESTOS
             </mat-panel-title>
-          </mat-expansion-panel-header>
+          </mat-expansion-panel-header> -->
 
-    <div class="row" style="margin-top:15px; margin-bottom:20px !important;">
+    <div class="row" style="margin-top:15px; margin-bottom:20px !important; float: left; width:60%;">
+      <th style="display:flex !important;
+      justify-content:center!important;">IMPUESTOS</th>
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" >
-
         <!-- Fecha Column -->
         <ng-container matColumnDef= "descripcion">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
@@ -52,19 +86,21 @@
 
       </table>
     </div>
-      <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
+      <!-- <mat-paginator [pageSizeOptions]="[20]"></mat-paginator> -->
 
-      </mat-expansion-panel>
-    </div>
+      <!-- </mat-expansion-panel> -->
+    <!-- </div> -->
   
-    <div class="mat-elevation-z8" style="float: left; width:40%;">
-    <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%;">
+    <!-- <div class="mat-elevation-z8" style="float: left; width:40%;"> -->
+    <!-- <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%;">
       <mat-expansion-panel-header>
         <mat-panel-title>
           FORMULARIOS
         </mat-panel-title>
-      </mat-expansion-panel-header>
-    <div class="row" style="margin-top:15px; margin-bottom:20px !important;">  
+      </mat-expansion-panel-header> -->
+    <div class="row" style="margin-top:15px; margin-bottom:20px !important; float: left; width:40%;"> 
+        <th style="display:flex !important;
+        justify-content:center!important;">FORMULARIOS</th> 
       <table mat-table [dataSource]="dataSource2" multiTemplateDataRows class="mat-elevation-z8">
 
         <!-- Fecha Column -->
@@ -100,54 +136,54 @@
 
       </table>
     </div>
-      <mat-paginator [pageSizeOptions]="[20]"></mat-paginator>
-    </mat-expansion-panel>
-  </div>
+      <!-- <mat-paginator [pageSizeOptions]="[20]"></mat-paginator> -->
+    <!-- </mat-expansion-panel> -->
+  <!-- </div> -->
   
 </div>
-<div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
-  <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%; ">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        INFORMACIÓN DE CONTACTO
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-  <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
-    <div class="col s6 m3 l4" style="display: inline-block">
-        Direccion de Facturación
-      <mat-form-field appearance="outline" style="width:100%; display: inline-block">
-        <!-- <mat-label>Direccion de Facturación</mat-label> -->
-        <input matInput type="text" readonly disabled placeholder="" value="{{ direccionFac }}">
-      </mat-form-field>
-    </div>
-    <div class="col s6 m3 l4" style="display: inline-block">
-        Direccion de Envío
-      <mat-form-field appearance="outline" style="width:100%; display: inline-block">
-        <!-- <mat-label>Direccion de Facturación</mat-label> -->
-        <input matInput type="text" readonly disabled placeholder="" value="{{ direccionEnv }}">
-      </mat-form-field>
-    </div>
-    <div class="col s6 m3 l4" style="display: inline-block">
-        Email
-      <mat-form-field appearance="outline" style="width:100%; display: inline-block">
-        <!-- <mat-label>Direccion de Facturación</mat-label> -->
-        <input matInput type="text" readonly disabled placeholder="" value="{{ datosCabecera[0].Email }}">
-      </mat-form-field>
-    </div>
-    <div class="col s6 m3 l4" style="display: inline-block">
-        Teléfonos
-      <mat-form-field appearance="outline" style="width:100%; display: inline-block">
-        <!-- <mat-label>Direccion de Facturación</mat-label> -->
-        <input matInput type="text" readonly disabled placeholder="" value="{{ telefonos }}">
-      </mat-form-field>
-    </div>
-   </div>
-   <button (click)="modificar()" class="mine-btnbig" mat-flat-button>Modificar</button>
-   <button class="mine-btnbig" mat-flat-button>Actualizar</button>
-  <!-- <p style="width:30%; display: inline-block;" >Direccion de Facturación: {{ datosCabecera[0].Domicilio }}</p><p style="width:5%; display: inline-block;">({{ datosCabecera[0].Codigo_Postal }})</p><span style="width:10%"> {{ datosCabecera[0].Ciudad }}</span><br>
-  <span>Direccion de Envío: </span><br>
-  <span>Email: </span><br>
-  <span style="width:10%">Teléfonos: {{ datosCabecera[0].Telefono_Oficina }}</span><span>{{ datosCabecera[0].Telefono_Movil }}</span> -->
-    </mat-expansion-panel>
-</div>
 </mat-expansion-panel>
+<div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
+    <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%; ">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          INFORMACIÓN DE CONTACTO
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+    <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
+      <div class="col s6 m3 l4" style="display: inline-block">
+          Direccion de Facturación
+        <mat-form-field appearance="outline" style="width:100%; display: inline-block">
+        
+          <input matInput type="text" readonly disabled placeholder="" value="{{ direccionFac }}">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l4" style="display: inline-block">
+          Direccion de Envío
+        <mat-form-field appearance="outline" style="width:100%; display: inline-block">
+         
+          <input matInput type="text" readonly disabled placeholder="" value="{{ direccionEnv }}">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l4" style="display: inline-block">
+          Email
+        <mat-form-field appearance="outline" style="width:100%; display: inline-block">
+       
+          <input matInput type="text" readonly disabled placeholder="" value="{{ datosCabecera[0].Email }}">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l4" style="display: inline-block">
+          Teléfonos
+        <mat-form-field appearance="outline" style="width:100%; display: inline-block">
+         
+          <input matInput type="text" readonly disabled placeholder="" value="{{ telefonos }}">
+        </mat-form-field>
+      </div>
+     </div>
+    <!-- <p >Direccion de Facturación: {{ direccionFac }}</p><br>
+    <p>Direccion de Envío: {{ direccionEnv }}</p><br>
+    <span>Email: {{ datosCabecera[0].Email }} </span><br>
+    <span>Teléfonos: {{ datosCabecera[0].Telefono_Oficina }}</span><span>{{ datosCabecera[0].Telefono_Movil }}</span> -->
+      </mat-expansion-panel>
+      <button (click)="modificar()" class="mine-btnbig" mat-flat-button>Modificar</button>
+      <button class="mine-btnbig" mat-flat-button>Actualizar</button>
+  </div>

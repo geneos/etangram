@@ -6,7 +6,7 @@ import { PreUrl } from './url';
 @Injectable({
   providedIn: 'root'
 })
-export class LocalidadesService {
+export class VendedoresService {
 
   //compraProveedores:any [] = [];
   preUrl:string = PreUrl;
@@ -24,48 +24,36 @@ export class LocalidadesService {
     return this.http.post( url, body, { headers } );
   }
 
-  // getLocalidades( token:string ){
-  //   const headers = new HttpHeaders({
-  //     'x-access-token': token
-  //   });
-
-  //   let query = `api/organizacion`;
-  //   let url = this.preUrl + query;
-
-  //   return this.http.get( url , { headers });
-  // }
-
-  getLocalidades( id:string, token:string ){
+  getVendedores( token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_localidades?cpostal=eq[${ id }]`;
+    let query = `api/tg01_vendedores`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
   }
 
-  getProvincias( id:string, token:string ){
+  getVendedor( id:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_provincias/${ id }`;
+    let query = `api/tg01_vendedores/${ id }`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
   }
 
-  getPaises( id:string, token:string ){
+  getVendedorPorCodigo( codigo:number, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_paises/${ id }`;
+    let query = `api/tg01_vendedores?codigo=${ codigo }`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
   }
-
 }

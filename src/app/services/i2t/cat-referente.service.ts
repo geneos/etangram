@@ -6,9 +6,10 @@ import { PreUrl } from './url';
 @Injectable({
   providedIn: 'root'
 })
-export class LocalidadesService {
+export class CategoriasReferenteService {
 
   //compraProveedores:any [] = [];
+  //preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
   preUrl:string = PreUrl;
 
   constructor( private http:HttpClient ) { }
@@ -24,45 +25,23 @@ export class LocalidadesService {
     return this.http.post( url, body, { headers } );
   }
 
-  // getLocalidades( token:string ){
-  //   const headers = new HttpHeaders({
-  //     'x-access-token': token
-  //   });
-
-  //   let query = `api/organizacion`;
-  //   let url = this.preUrl + query;
-
-  //   return this.http.get( url , { headers });
-  // }
-
-  getLocalidades( id:string, token:string ){
+  getCategorias( token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_localidades?cpostal=eq[${ id }]`;
+    let query = `api/tg01_categoriareferente`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
   }
 
-  getProvincias( id:string, token:string ){
+  getCategoria( id:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_provincias/${ id }`;
-    let url = this.preUrl + query;
-
-    return this.http.get( url , { headers });
-  }
-
-  getPaises( id:string, token:string ){
-    const headers = new HttpHeaders({
-      'x-access-token': token
-    });
-
-    let query = `api/tg01_paises/${ id }`;
+    let query = `api/tg01_categoriareferente/${ id }`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });

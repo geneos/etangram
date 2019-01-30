@@ -16,3 +16,10 @@ export interface Provincia{
   tg01_paises_id_c: string;
   securitygroup_id_c: number;
 }
+
+export interface Pais{
+  id: string;
+  name: string;
+  idpais: number;
+  idpaisafip: number;
+}

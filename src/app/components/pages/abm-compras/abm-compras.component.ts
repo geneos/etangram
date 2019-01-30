@@ -2,10 +2,12 @@ import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
+import { TiposComprobanteService } from "../../../services/i2t/tipos-comprobante.service";
 import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.interface";
+import { TipoComprobante } from "../../../interfaces/tipo-comprobante.interface";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
-import { Subscription } from 'rxjs';
+import { Subscription, from } from 'rxjs';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
 // key that is used to access the data in local storage
@@ -55,6 +57,10 @@ export class AbmComprasComponent implements OnInit {
 
   idParam:string = null;
 
+  tcData: any;
+  tipoComprobante: TipoComprobante[] = [];
+  tipoComp: string[] = [];
+
   posicionesFiscales: string[] = ["N/D","IVA Responsable Inscripto","IVA Responsable no Inscripto",
 "IVA no Responsable","IVA Sujeto Exento","Consumidor Final","Responsable Monotributo",
 "Sujeto no Categorizado","Proveedor del Exterior","Cliente del Exterior","IVA Liberado - Ley N° 19.640",
@@ -69,6 +75,7 @@ export class AbmComprasComponent implements OnInit {
 
   constructor(public dialogArt: MatDialog,
               private _compraService:CompraService,
+              private _tiposComprobante:TiposComprobanteService,
               private route:ActivatedRoute,
               public ngxSmartModalService: NgxSmartModalService,
               public snackBar: MatSnackBar,
@@ -120,10 +127,43 @@ export class AbmComprasComponent implements OnInit {
     //if id existe
   }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.buscarTiposComprobante();
+  }
 
   test(){
     //console.log(this.forma.controls['caicae'].errors)
+  }
+
+  buscarTiposComprobante(){
+    this._tiposComprobante.getTipoOperacion( "225170a7-747b-679b-9550-5adfa5718844", this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.tcData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.tcData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.tipoComprobante = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._tiposComprobante.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarTiposComprobante();
+              });
+            } else {
+              if(this.tcData.dataset.length>0){
+                this.tipoComprobante = this.tcData.dataset;
+                console.log(this.tipoComprobante);
+                //this.loading = false;
+              } else {
+                this.tipoComprobante = null;
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
   }
 
   abrirConsulta(consulta: string){
@@ -189,6 +229,81 @@ export class AbmComprasComponent implements OnInit {
       }
     )
     return promesa;
+  }
+
+  abrirConsulta2(consulta: string, control: string){
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'consDinModal'
+    }
+    
+    let atributoAUsar: string;
+    switch (consulta) {
+      case 'c_proveedores':
+        atributoAUsar = 'codigo';
+        break;
+      case 'c_articulos':
+        atributoAUsar = 'idcategoria';
+      default:
+        break;
+    }
+
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+        setTimeout(() => {
+          this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+          // this['proveedor'] = null;
+          this[control] = respuesta.selection[0];
+          
+          //todo 
+          //disparar detección de cambios, cada parte es un intento distinto
+          // this.proveedor = respuesta.selection[0];
+          
+          // setTimeout(() => this.ref.detectChanges(), 1000);
+          // this.ref.markForCheck();
+        
+          // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+
+         
+        });
+
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+        
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionConsDin.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
   }
 
   existeArticulo( control: FormControl ): Promise<any>{
@@ -445,5 +560,7 @@ export class AbmComprasComponent implements OnInit {
     //console.log(this.compraArticulo);
     this.auxEditingArt=ind;
   };
+
+  
 
 }

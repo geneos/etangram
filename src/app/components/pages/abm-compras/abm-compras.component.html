@@ -51,7 +51,11 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always"  style="width:100%;">
           <mat-label>Tipo Comprobante</mat-label>
-            <input matInput formControlName="tipoComprobante">
+            <mat-select placeholder="Elija una opción..." formControlName="tipoComprobante">
+              <mat-option *ngFor="let aux of tipoComprobante" [value]="aux.idtipocomp">
+                {{aux.idtipocomp}}
+              </mat-option>
+            </mat-select>
             <!--<input matInput formControlName="nroComprobante">-->
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
@@ -190,7 +194,7 @@
           </mat-form-field>
         </div>
         <div class="col s4 m2 l1" style="margin-top:10px;">
-          <button class="mine-btnforms" mat-flat-button>
+          <button class="mine-btnforms" (click)="abrirConsulta2('c_articulos', 'codigo')"  mat-flat-button>
             <i class="material-icons" style="font-size:20px;">more_horiz</i>
           </button>
         </div>

@@ -1,23 +1,26 @@
-import { Component, OnInit, ViewChild, ElementRef, Inject, Input  } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject, Input, Injectable  } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar, MatPaginatorIntl, } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ConsultaComprobantesService } from 'src/app/services/i2t/consulta-comprobantes.service';
-import { CdkTableModule } from '@angular/cdk/table';
+//import { CdkTableModule } from '@angular/cdk/table';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
+//import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { Router, ActivatedRoute } from "@angular/router";
 import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import { LoginComponent } from 'src/app/components/pages/login/login.component';
-import { initDomAdapter } from '@angular/platform-browser/src/browser';
-
+//import { LoginComponent } from 'src/app/components/pages/login/login.component';
+//import { initDomAdapter } from '@angular/platform-browser/src/browser';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
 //import jsPDF from 'jspdf';
 //import jspdf from 'jspdf-autotable';
+
+// key that is used to access the data in local storage
+const TOKEN = '';
 
 declare var require: any
 var jsPDF = require('jspdf');
@@ -28,6 +31,7 @@ var auxProvData: any;
 
 let itemActual:any;
 
+@Injectable()
 
 @Component({
   selector: 'app-consulta-comprobantes',
@@ -95,8 +99,13 @@ export class ConsultaComprobantesComponent implements OnInit {
               public dialogArt: MatDialog,
               private _compraService:CompraService,
               private _consultaComprobantesServices:ConsultaComprobantesService,
-              private adapter: DateAdapter<any>
+              private adapter: DateAdapter<any>,
+              @Inject(SESSION_STORAGE) private storage: StorageService
               ) {
+
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);
+
     this.loading = true;
 
     this.forma = new FormGroup({
@@ -112,7 +121,7 @@ export class ConsultaComprobantesComponent implements OnInit {
 
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
-      this.token = parametros['token'];
+      //this.token = parametros['token'];
       //this.Controles['proveedor'].setValue(this.id);
       this.buscarProveedor();
 

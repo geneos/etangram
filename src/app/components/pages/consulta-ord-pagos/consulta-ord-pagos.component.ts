@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { CompraService } from "../../../services/i2t/compra.service";
@@ -9,8 +9,15 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MatSnackBarModule, MatSnackBar} from '@angular/material/snack-bar';
 import { ConsultaOrdPagosService } from "../../../services/i2t/consulta-ord-pagos.service";
 import { Router, ActivatedRoute } from "@angular/router";
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+
+// key that is used to access the data in local storage
+const TOKEN = '';
 
 var auxProvData: any;
+
+@Injectable()
+
 @Component({
   selector: 'app-consulta-ord-pagos',
   templateUrl: './consulta-ord-pagos.component.html',
@@ -57,12 +64,16 @@ export class ConsultaOrdPagosComponent implements OnInit {
   filtrada:boolean = false;
 
   constructor( private route:ActivatedRoute,private router: Router,
-              public snackBar: MatSnackBar, 
+              public snackBar: MatSnackBar,
               public dialogArt: MatDialog, private _compraService:CompraService,
               private _ConsultaOrdPagosService: ConsultaOrdPagosService,
-              private _ImpresionCompService: ImpresionCompService) {
-    
-  
+              private _ImpresionCompService: ImpresionCompService,
+              @Inject(SESSION_STORAGE) private storage: StorageService
+          ) {
+
+      console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+      this.token = this.storage.get(TOKEN);
+
     this.forma = new FormGroup({
       'proveedor': new FormControl(this.existeProveedor),
       'razonSocial': new FormControl(),
@@ -73,7 +84,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
     })
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
-      this.token = parametros['token'];
+      //this.token = parametros['token'];
       this.buscarProveedor();
     });
    }
@@ -132,7 +143,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
             if(this.proveedorData.dataset.length>0){
               this.loading = false;
               this.compraProveedor = this.proveedorData.dataset[0]
-              
+
               let icuit = this.compraProveedor.cuit.slice(0,2)
               let mcuit = this.compraProveedor.cuit.slice(2,10)
               let fcuit = this.compraProveedor.cuit.slice(10)
@@ -140,12 +151,12 @@ export class ConsultaOrdPagosComponent implements OnInit {
               this.cuit = icuit + '-' + mcuit + '-' + fcuit;
 
             } else {
-              this.compraProveedor = null; 
+              this.compraProveedor = null;
 
             }
           }
       });
-  } 
+  }
 
   getComprobantes(){
 
@@ -200,7 +211,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
   }
 
   print = (nint: string) => {
-    
+
     this._ImpresionCompService.getBaseDatos( this.token )
     .subscribe ( dataP => {
       console.log(dataP)
@@ -225,7 +236,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
     // let doc = new jsPDF();
     // doc.autoTable({
     //   head: [['Fecha', 'Comprobante', 'Expediente', 'Certificado', 'Importe Total', 'Saldo', 'Estado']]
-  
+
     // })
     // for (let index = 0; index < this.dataSource.data.length; index++) {
     //   // itemActual[index] = dataSource.trim();
@@ -234,17 +245,17 @@ export class ConsultaOrdPagosComponent implements OnInit {
     //     body: [[,this.dataSource.data[index].Fecha, this.dataSource.data[index].Numero_Comprobante,
     //     this.dataSource.data[index].Expediente, this.dataSource.data[index].Certificado, this.dataSource.data[index].Importe_Total,
     //     this.dataSource.data[index].Saldo, this.dataSource.data[index].Estado]]
-  
+
     //   });
     //   console.log(this.dataSource.data[index])
     //   console.log(index);
     // }
-  
+
     // doc.save('table.pdf')
   }
 }
 export interface consultaOrdPago {
-  
+
   Numero_Referente: string,
   Numero_Comprobante: string,
   Referente: string,

@@ -1,8 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { RefContablesService } from "../../../services/i2t/ref-contables.service";
 import { RefContable } from "../../../interfaces/ref-contable.interface";
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+
+// key that is used to access the data in local storage
+const TOKEN = '';
+
+@Injectable()
 
 @Component({
   selector: 'app-abm-ref-contables',
@@ -11,7 +17,7 @@ import { RefContable } from "../../../interfaces/ref-contable.interface";
 })
 export class AbmRefContablesComponent implements OnInit {
 
-  token: string = "a";
+  token: string;
   auxRC:any;
   loginData: any;
   rcData:any;
@@ -26,7 +32,13 @@ export class AbmRefContablesComponent implements OnInit {
 
   selection = new SelectionModel(true, []);
 
-  constructor(private _refContablesService:RefContablesService) {
+  constructor(private _refContablesService:RefContablesService,
+              @Inject(SESSION_STORAGE) private storage: StorageService
+              ) {
+
+                console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+                this.token = this.storage.get(TOKEN);
+
     this.loading = true;
     this.buscarRefContable();
   }
@@ -58,15 +70,16 @@ export class AbmRefContablesComponent implements OnInit {
           if(this.rcData.returnset[0].RCode=="-6003"){
             //token invalido
             this.refContablesAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._refContablesService.login(jsonbody)
-              .subscribe( dataL => {
-                console.log(dataL);
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarRefContable();
-              });
+            console.log("token invalido");
+            //let jsbody = {"usuario":"usuario1","pass":"password1"}
+            //let jsonbody = JSON.stringify(jsbody);
+            //this._refContablesService.login(jsonbody)
+              //.subscribe( dataL => {
+              // console.log(dataL);
+              // this.loginData = dataL;
+              // this.token = this.loginData.dataset[0].jwt;
+              // this.buscarRefContable();
+              //});
             } else {
               if(this.rcData.dataset.length>0){
                 this.refContablesAll = this.rcData.dataset;

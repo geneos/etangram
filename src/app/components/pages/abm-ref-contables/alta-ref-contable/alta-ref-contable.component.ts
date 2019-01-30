@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar,MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -7,7 +7,12 @@ import { RefContable } from '../../../../interfaces/ref-contable.interface';
 import { formatDate } from '@angular/common';
 import { UsuariosService } from '../../../../services/i2t/usuarios.service';
 import { Usuario } from 'src/app/interfaces/usuario.interface';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
+// key that is used to access the data in local storage
+const TOKEN = '';
+
+@Injectable()
 
 @Component({
   selector: 'app-alta-ref-contable',
@@ -42,8 +47,12 @@ export class AltaRefContableComponent implements OnInit {
     private _refContablesService:RefContablesService,
     private _usuariosService:UsuariosService,
     private router: Router,
-    public snackBar: MatSnackBar
+    public snackBar: MatSnackBar,
+    @Inject(SESSION_STORAGE) private storage: StorageService
   ) {
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);
+
     this.loading = true;
 
     this.forma = new FormGroup({
@@ -85,8 +94,9 @@ export class AltaRefContableComponent implements OnInit {
       console.log(this.auxresp);
       if(this.auxresp.returnset[0].RCode=="-6003"){
         //token invalido
+        console.log('token invalido');
         //this.refContable = null;
-        let jsbody = {"usuario":"usuario1","pass":"password1"}
+        /*let jsbody = {"usuario":"usuario1","pass":"password1"}
         let jsonbody = JSON.stringify(jsbody);
         this._refContablesService.login(jsonbody)
           .subscribe( dataL => {
@@ -94,7 +104,7 @@ export class AltaRefContableComponent implements OnInit {
             this.loginData = dataL;
             this.token = this.loginData.dataset[0].jwt;
             this.obtenerIDUsuario();
-          });
+          });*/
         } else {
           if (this.auxresp.returnset[0].RCode=="1"){
             //obtenido ok

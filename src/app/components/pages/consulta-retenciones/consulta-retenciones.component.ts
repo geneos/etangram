@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable,MatTableDataSource, MatDialog, MatPaginator, MatSort, MatSnackBar, MatPaginatorIntl} from '@angular/material';
@@ -8,8 +8,14 @@ import { ConsultaRetencionesService } from 'src/app/services/i2t/consulta-retenc
 import { Router, ActivatedRoute } from "@angular/router";
 import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+
+// key that is used to access the data in local storage
+const TOKEN = '';
 
 var auxProvData: any;
+
+@Injectable()
 @Component({
   selector: 'app-consulta-retenciones',
   templateUrl: './consulta-retenciones.component.html',
@@ -48,7 +54,7 @@ export class ConsultaRetencionesComponent implements OnInit {
   columnsToDisplay  = ['Fecha', 'Comprobante', 'Expediente', 'Impuesto', 'Concepto', 'Importe', 'accion'];
   dataSource = new MatTableDataSource<consultaRetenciones>(this.consultaRetenciones);
 
-  
+
   selection = new SelectionModel(true, []);
   id: any;
   loading: boolean = true;
@@ -56,32 +62,36 @@ export class ConsultaRetencionesComponent implements OnInit {
 
   constructor( @Inject('Window') private window: Window,
               private route:ActivatedRoute,private router: Router,
-              public snackBar: MatSnackBar, 
+              public snackBar: MatSnackBar,
               public dialogArt: MatDialog, private _compraService:CompraService,
-              private _consultaRetenciones:ConsultaRetencionesService, 
-              private _impresionCompService: ImpresionCompService) {
-    
-  
-    this.forma = new FormGroup({
-      'proveedor': new FormControl(),
-      'razonSocial': new FormControl(),
-      'cuit': new FormControl(),
-      'fecdesde': new FormControl(),
-      'fechasta': new FormControl(new Date()),
-      'expediente': new FormControl(''),
-    })
-    this.route.params.subscribe( parametros=>{
-      this.id = parametros['id'];
-      this.token = parametros['token'];
-      this.buscarProveedor();
-    });
-   }
-   
-   
+              private _consultaRetenciones:ConsultaRetencionesService,
+              private _impresionCompService: ImpresionCompService,
+              @Inject(SESSION_STORAGE) private storage: StorageService
+          ) {
+
+          console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+          this.token = this.storage.get(TOKEN);
+
+          this.forma = new FormGroup({
+            'proveedor': new FormControl(),
+            'razonSocial': new FormControl(),
+            'cuit': new FormControl(),
+            'fecdesde': new FormControl(),
+            'fechasta': new FormControl(new Date()),
+            'expediente': new FormControl(''),
+          })
+          this.route.params.subscribe( parametros=>{
+            this.id = parametros['id'];
+            //this.token = parametros['token'];
+            this.buscarProveedor();
+          });
+      }
+
+
   ngOnInit() {
     this.paginator._intl.itemsPerPageLabel = 'Elementos por página:';
     console.log(this.paginator._intl.getRangeLabel);
- 
+
     this.fechaActual.setDate(this.fechaActual.getDate());
     this.fechaActualMasUno.setDate(this.fechaActual.getDate() + 1);
     this.fechaDesde.setDate(this.fechaActual.getDate() - 60);
@@ -139,7 +149,7 @@ export class ConsultaRetencionesComponent implements OnInit {
 
               this.cuit = icuit + '-' + mcuit + '-' + fcuit;
             } else {
-              this.compraProveedor = null; 
+              this.compraProveedor = null;
             }
           }
       });
@@ -198,7 +208,7 @@ export class ConsultaRetencionesComponent implements OnInit {
   }
 
   print(nint: number) {
-    
+
     this._impresionCompService.getBaseDatos( this.token )
     .subscribe ( dataP => {
       console.log(dataP)
@@ -228,9 +238,9 @@ export class ConsultaRetencionesComponent implements OnInit {
       }
     })
   }
-} 
+}
 export interface consultaRetenciones {
-  
+
   Numero_Referente: string,
   Numero_Comprobante: string,
   Referente: string,
@@ -251,5 +261,5 @@ export interface consultaRetenciones {
   Reserva_Presupuestaria: string,
   Certificado: string,
   Estado: string,
-  Saldo: number 
+  Saldo: number
 }

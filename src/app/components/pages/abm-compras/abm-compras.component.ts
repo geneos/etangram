@@ -53,6 +53,8 @@ export class AbmComprasComponent implements OnInit {
   impuestosalicuotas:number = 0;
   totaltotal:number = 0;
 
+  idParam:string = null;
+
   posicionesFiscales: string[] = ["N/D","IVA Responsable Inscripto","IVA Responsable no Inscripto",
 "IVA no Responsable","IVA Sujeto Exento","Consumidor Final","Responsable Monotributo",
 "Sujeto no Categorizado","Proveedor del Exterior","Cliente del Exterior","IVA Liberado - Ley N° 19.640",
@@ -73,9 +75,7 @@ export class AbmComprasComponent implements OnInit {
               @Inject(SESSION_STORAGE) private storage: StorageService
             )
   {
-    //this.route.params.subscribe( parametros=>{
-      //this.token = parametros['token'];
-    //});
+
     console.log(this.storage.get(TOKEN) || 'Local storage is empty');
     this.token = this.storage.get(TOKEN);
 
@@ -111,6 +111,13 @@ export class AbmComprasComponent implements OnInit {
     this.formaArticulos.controls['articulo'].disable();
     this.formaArticulos.controls['unidadMedida'].disable();
     this.formaArticulos.controls['precioUnitario'].disable();
+
+    // si edito un id existente
+    this.route.params.subscribe( parametros=>{
+      this.idParam = parametros['id'];
+    });
+
+    //if id existe
   }
 
   ngOnInit() { }

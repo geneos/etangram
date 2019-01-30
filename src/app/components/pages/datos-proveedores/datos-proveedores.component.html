@@ -142,48 +142,85 @@
   
 </div>
 </mat-expansion-panel>
-<div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
+<form [formGroup]="forma" novalidate="novalidate">
+  <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
+  
     <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%; ">
       <mat-expansion-panel-header>
         <mat-panel-title>
           INFORMACIÓN DE CONTACTO
         </mat-panel-title>
-      </mat-expansion-panel-header>
-    <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
-      <div class="col s6 m3 l4" style="display: inline-block">
-          Direccion de Facturación
-        <mat-form-field appearance="outline" style="width:100%; display: inline-block">
-        
-          <input matInput type="text" readonly disabled placeholder="" value="{{ direccionFac }}">
-        </mat-form-field>
+    </mat-expansion-panel-header>
+
+    <p>Dirección de Facturación</p>
+      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">         
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Calle</mat-label>
+            <input matInput type="text"  placeholder="" formControlName="calleFac" value="{{ datosCabecera[0].Domicilio }}">
+          </mat-form-field>
+        </div>
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Cod. Postal</mat-label>
+            <input matInput type="text"  disabled placeholder="" formControlName="codPostalFac" value="{{ datosCabecera[0].Codigo_Postal }}">
+          </mat-form-field>
+        </div>
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Provincia</mat-label>
+            <input matInput type="text"  disabled placeholder="" formControlName="provinciaFac" value="{{ datosCabecera[0].Ciudad }}">
+          </mat-form-field>
+        </div>
       </div>
-      <div class="col s6 m3 l4" style="display: inline-block">
-          Direccion de Envío
-        <mat-form-field appearance="outline" style="width:100%; display: inline-block">
-         
-          <input matInput type="text" readonly disabled placeholder="" value="{{ direccionEnv }}">
-        </mat-form-field>
+
+    <p>Dirección de Envío</p>
+      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">         
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Calle</mat-label>
+            <input matInput type="text"  placeholder="" formControlName="calleEnv" value="{{ datosCabecera[0].Domicilio_envio }}">
+          </mat-form-field>
+        </div>
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Cod. Postal</mat-label>
+            <input matInput type="text"  placeholder="" formControlName="codPostalEnv" value="{{ datosCabecera[0].Codigo_Postal_envio }}">
+          </mat-form-field>
+        </div>
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Provincia</mat-label>
+            <input matInput type="text"  placeholder="" formControlName="provinciaEnv" value="{{ datosCabecera[0].Ciudad_envio }}">
+          </mat-form-field>
+        </div>
       </div>
-      <div class="col s6 m3 l4" style="display: inline-block">
-          Email
-        <mat-form-field appearance="outline" style="width:100%; display: inline-block">
-       
-          <input matInput type="text" readonly disabled placeholder="" value="{{ datosCabecera[0].Email }}">
-        </mat-form-field>
+    <p>Email</p>
+      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">         
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <!-- <mat-label>Email</mat-label> -->
+            <input matInput type="text"  placeholder="" formControlName="email" value="{{ datosCabecera[0].Email }}">
+          </mat-form-field>
+        </div>
       </div>
-      <div class="col s6 m3 l4" style="display: inline-block">
-          Teléfonos
-        <mat-form-field appearance="outline" style="width:100%; display: inline-block">
-         
-          <input matInput type="text" readonly disabled placeholder="" value="{{ telefonos }}">
-        </mat-form-field>
-      </div>
-     </div>
-    <!-- <p >Direccion de Facturación: {{ direccionFac }}</p><br>
-    <p>Direccion de Envío: {{ direccionEnv }}</p><br>
-    <span>Email: {{ datosCabecera[0].Email }} </span><br>
-    <span>Teléfonos: {{ datosCabecera[0].Telefono_Oficina }}</span><span>{{ datosCabecera[0].Telefono_Movil }}</span> -->
-      </mat-expansion-panel>
+    <p>Teléfonos</p>
+      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">         
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Telefono</mat-label>
+            <input matInput type="text"  placeholder="" formControlName="telefono1" value="{{ datosCabecera[0].Telefono_Oficina }}">
+          </mat-form-field>
+        </div>
+        <div class="col s6 m3 l4" style="display: inline-block">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+              <mat-label>Celular</mat-label>
+              <input matInput type="text"  placeholder="" formControlName="telefono2" value="{{ datosCabecera[0].Telefono_Movil }}">
+            </mat-form-field>
+        </div>
+      </div>    
       <button (click)="modificar()" class="mine-btnbig" mat-flat-button>Modificar</button>
       <button class="mine-btnbig" mat-flat-button>Actualizar</button>
+    </mat-expansion-panel>     
   </div>
+</form>

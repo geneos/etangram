@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DatosProveedorService } from 'src/app/services/i2t/datos-proveedor.service';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource} from '@angular/material';
+import { FormGroup, FormControl } from '@angular/forms';
+import { ValueTransformer } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-datos-proveedores',
@@ -22,18 +24,52 @@ export class DatosProveedoresComponent implements OnInit {
   direccionEnv: string;
   telefonos: string;
   url: string;
+  forma: FormGroup;
 
   dataSource = new MatTableDataSource<datosImpuesto>(this.datosImpuesto);
   dataSource2 = new MatTableDataSource<datosFormularios>(this.datosFormularios);
   columnsToDisplay = ['descripcion', 'presentacion', 'vencimiento'];
-  constructor(private _DatosProveedorService: DatosProveedorService) { }
+  constructor(private _DatosProveedorService: DatosProveedorService) { 
+    this.forma = new FormGroup({
+      'calleFac': new FormControl(),
+      'codPostalFac': new FormControl(),
+      'provinciaFac': new FormControl(),
+      'calleEnv': new FormControl(),
+      'codPostalEnv': new FormControl(),
+      'provinciaEnv': new FormControl(),
+      'telefono1': new FormControl(),
+      'telefono2': new FormControl(),
+      'telefono3': new FormControl(),
+      'email': new FormControl()
+    })
+  }
 
   ngOnInit() {
     this.getCabecera()
+    this.forma.controls['calleFac'].disable();
+    this.forma.controls['codPostalFac'].disable();
+    this.forma.controls['provinciaFac'].disable();
+    this.forma.controls['calleEnv'].disable();
+    this.forma.controls['codPostalEnv'].disable();
+    this.forma.controls['provinciaEnv'].disable();
+    this.forma.controls['telefono1'].disable();
+    this.forma.controls['telefono2'].disable();
+    this.forma.controls['telefono3'].disable();
+    this.forma.controls['email'].disable();
+
   }
 
   modificar(){
-
+    this.forma.controls['calleFac'].disable();
+    this.forma.controls['codPostalFac'].disable();
+    this.forma.controls['provinciaFac'].disable();
+    this.forma.controls['calleEnv'].enable();
+    this.forma.controls['codPostalEnv'].enable();
+    this.forma.controls['provinciaEnv'].enable();
+    this.forma.controls['telefono1'].enable();
+    this.forma.controls['telefono2'].enable();
+    this.forma.controls['telefono3'].enable();
+    this.forma.controls['email'].enable();
   }
 
   getCabecera(){
@@ -64,7 +100,7 @@ export class DatosProveedoresComponent implements OnInit {
                 if(this.datosCabecera[0].Domicilio == null){
                   this.direccionFac = null;
                 } else{
-                  this.direccionFac = this.datosCabecera[0].Domicilio +', '+'('+this.datosCabecera[0].Codigo_Postal+')'+', '+this.datosCabecera[0].Ciudad;
+                  
                 }
                 if(this.datosCabecera[0].Domicilio_envio == "") {
                   this.direccionEnv = null;
@@ -97,6 +133,7 @@ export class DatosProveedoresComponent implements OnInit {
                 this.datosCabecera = null;
 
               }
+            
             }
       });
     
@@ -108,8 +145,8 @@ export interface datosCabecera {
   'Email': string,
   'Estado': string,
   'Estado_Afip': string,
-  'Domicilio': number,
-  'Ciudad': number,
+  'Domicilio': any,
+  'Ciudad': string,
   'Codigo_Postal': string,
   'Domicilio_envio': string,
   'Ciudad_envio': string,

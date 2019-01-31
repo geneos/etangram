@@ -61,6 +61,7 @@ export class AbmComprasComponent implements OnInit {
   tipoComprobante: TipoComprobante[] = [];
   tipoComp: string[] = [];
 
+  existeProv: boolean = false;
   posicionesFiscales: string[] = ["N/D","IVA Responsable Inscripto","IVA Responsable no Inscripto",
 "IVA no Responsable","IVA Sujeto Exento","Consumidor Final","Responsable Monotributo",
 "Sujeto no Categorizado","Proveedor del Exterior","Cliente del Exterior","IVA Liberado - Ley N° 19.640",
@@ -125,6 +126,12 @@ export class AbmComprasComponent implements OnInit {
     });
 
     //if id existe
+    if(this.idParam != null){
+      this.forma.controls['proveedor'].setValue(this.idParam);
+      this.buscarProveedor();
+      this.existeProv = true;
+      this.forma.controls['proveedor'].disable();
+    }
   }
 
   ngOnInit() { 

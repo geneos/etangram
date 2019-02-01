@@ -3,6 +3,7 @@ import { DatosProveedorService } from 'src/app/services/i2t/datos-proveedor.serv
 import { MatTable, MatSort, MatPaginator, MatTableDataSource} from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ValueTransformer } from '@angular/compiler/src/util';
+import { Router, ActivatedRoute } from "@angular/router";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
 // key that is used to access the data in local storage
@@ -32,14 +33,25 @@ export class DatosProveedoresComponent implements OnInit {
   url: string;
   forma: FormGroup;
 
+  idProv:string = null;
+
+  modificando:boolean = false;
+
   dataSource = new MatTableDataSource<datosImpuesto>(this.datosImpuesto);
   dataSource2 = new MatTableDataSource<datosFormularios>(this.datosFormularios);
   columnsToDisplay = ['descripcion', 'presentacion', 'vencimiento'];
-  constructor(private _DatosProveedorService: DatosProveedorService,
-    @Inject(SESSION_STORAGE) private storage: StorageService) {
+  constructor(
+    private _DatosProveedorService: DatosProveedorService,
+    @Inject(SESSION_STORAGE) private storage: StorageService,
+    private route:ActivatedRoute)
+    {
 
       console.log(this.storage.get(TOKEN) || 'Local storage is empty');
       this.token = this.storage.get(TOKEN);
+
+      this.route.params.subscribe( parametros=>{
+        this.idProv = parametros['id'];
+      });
 
     this.forma = new FormGroup({
       'calleFac': new FormControl(),
@@ -71,6 +83,7 @@ export class DatosProveedoresComponent implements OnInit {
   }
 
   modificar(){
+    this.modificando = true;
     this.forma.controls['calleFac'].disable();
     this.forma.controls['codPostalFac'].disable();
     this.forma.controls['provinciaFac'].disable();
@@ -83,9 +96,23 @@ export class DatosProveedoresComponent implements OnInit {
     this.forma.controls['email'].enable();
   }
 
+  actualizar(){
+    this.modificando = false;
+    this.forma.controls['calleFac'].disable();
+    this.forma.controls['codPostalFac'].disable();
+    this.forma.controls['provinciaFac'].disable();
+    this.forma.controls['calleEnv'].disable();
+    this.forma.controls['codPostalEnv'].disable();
+    this.forma.controls['provinciaEnv'].disable();
+    this.forma.controls['telefono1'].disable();
+    this.forma.controls['telefono2'].disable();
+    this.forma.controls['telefono3'].disable();
+    this.forma.controls['email'].disable();
+  }
+
   getCabecera(){
     let jsbodyCab = {
-      "Id_Proveedor": "4081"
+      "Id_Proveedor": this.idProv//"4081"
     }
     let jsonbodyCab= JSON.stringify(jsbodyCab);
 

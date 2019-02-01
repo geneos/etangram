@@ -71,6 +71,15 @@ export class LoginComponent implements OnInit {
   compras(){
     this.routerLinkVariable = '/compra'
   }
+  refContables(){
+    this.routerLinkVariable = '/ref-contables'
+  }
+  planCuentas(){
+    this.routerLinkVariable = '/plan-cuentas'
+  }
+  minContables(){
+    this.routerLinkVariable = '/min-contables'
+  }
 
   login(){
     let jsbody = {

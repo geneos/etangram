@@ -131,7 +131,7 @@ export class ConsultaCrdComponent implements OnInit {
       printWindow.print();
       printWindow.close();*/
     }
-
+  
   consultar(){
  //   console.log(this.Controles.controls['proveedor'].value)
     this._ConsultaCrdService.getProveedorCrd( this.id, this.token )

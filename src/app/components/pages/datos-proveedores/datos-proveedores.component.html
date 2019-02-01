@@ -3,14 +3,14 @@
 <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading">
     <div class="row" style="margin-top:15px;" *ngIf="!loading">
         <div class="col s3 m2 l3">
-          <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Razon Social</p>
+          <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Razón Social</p>
           <p style="margin-top:7px;">{{ datosCabecera[0].Razon_Social }}</p>
           <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%; ">
             <mat-label>Código Proveedor</mat-label>
             <input readonly #codProv matInput placeholder="" value="{{id}}">
           </mat-form-field>-->
         </div>
-  
+
         <div class="col s6 m4 l3">
           <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">CUIT</p>
           <p style="margin-top:7px;">{{ datosCabecera[0].CUIT }}</p>
@@ -20,7 +20,7 @@
           </mat-form-field>-->
         </div>
         <div class="col s3 m4 l3">
-          <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">ESTADO</p>
+          <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Estado</p>
           <p style="margin-top:7px;">{{ datosCabecera[0].Estado }}</p>
           <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>CUIT</mat-label>
@@ -28,19 +28,19 @@
           </mat-form-field>-->
         </div>
         <div class="col s3 m4 l3">
-            <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">ESTADO AFIP</p>
+            <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Estado AFIP</p>
             <p style="margin-top:7px;">{{ datosCabecera[0].Estado_Afip }}</p>
             <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>CUIT</mat-label>
               <input matInput placeholder="" readonly value="{{ compraProveedor?.cuit }}">
             </mat-form-field>-->
           </div>
-  
+
       </div>
-  <mat-expansion-panel-header>    
+  <mat-expansion-panel-header>
       <mat-title-panel>
         PROVEEDOR
-      </mat-title-panel>    
+      </mat-title-panel>
   </mat-expansion-panel-header>
 
   <div class="row" style="margin-top:15px; margin-bottom:20px !important;">
@@ -58,25 +58,25 @@
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" >
         <!-- Fecha Column -->
         <ng-container matColumnDef= "descripcion">
-          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripción </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.name_mode}} </td>
         </ng-container>
 
         <!-- Comprobante Column -->
         <ng-container matColumnDef="situacion">
-          <th mat-header-cell *matHeaderCellDef> Situacion </th>
+          <th mat-header-cell *matHeaderCellDef> Situación </th>
           <td mat-cell *cdkCellDef="let element"> {{ element.situacion }} </td>
         </ng-container>
 
         <!-- Expediente Column -->
         <ng-container matColumnDef="inscripcion">
-          <th mat-header-cell *matHeaderCellDef> Inscripcion </th>
+          <th mat-header-cell *matHeaderCellDef> Inscripción </th>
           <td mat-cell *cdkCellDef="let element"> {{ element.nroinscripcion }} </td>
         </ng-container>
 
         <!-- Impuesto Column -->
         <ng-container matColumnDef="excencion">
-          <th mat-header-cell *matHeaderCellDef> Excencion </th>
+          <th mat-header-cell *matHeaderCellDef> Exención </th>
           <td mat-cell *cdkCellDef="let element"> Desde: {{ element.exen_fechadesde }} </td>
         </ng-container>
 
@@ -90,7 +90,7 @@
 
       <!-- </mat-expansion-panel> -->
     <!-- </div> -->
-  
+
     <!-- <div class="mat-elevation-z8" style="float: left; width:40%;"> -->
     <!-- <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%;">
       <mat-expansion-panel-header>
@@ -98,20 +98,20 @@
           FORMULARIOS
         </mat-panel-title>
       </mat-expansion-panel-header> -->
-    <div class="row" style="margin-top:15px; margin-bottom:20px !important; float: left; width:40%;"> 
+    <div class="row" style="margin-top:15px; margin-bottom:20px !important; float: left; width:40%;">
         <!-- <th style="display:flex !important;
         justify-content:center !important;">FORMULARIOS</th>  -->
       <table mat-table [dataSource]="dataSource2" multiTemplateDataRows class="mat-elevation-z8">
 
         <!-- Fecha Column -->
         <ng-container matColumnDef= "descripcion">
-          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripción </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.name }} </td>
         </ng-container>
 
         <!-- Comprobante Column -->
         <ng-container matColumnDef="presentacion">
-          <th mat-header-cell *matHeaderCellDef> Presentacion </th>
+          <th mat-header-cell *matHeaderCellDef> Presentación </th>
           <td mat-cell *cdkCellDef="let element"> {{ element.fechapresentacion }} </td>
         </ng-container>
 
@@ -123,7 +123,7 @@
 
         <!-- Opciones -->
         <ng-container matColumnDef= "opciones">
-          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:left;">
           <!--  <i (click)="print(element.nint)" class="material-icons" style="cursor: pointer">print</i> -->
           <a href='{{ element.url }}' style="margin-right:5px">Ver</a>
@@ -139,12 +139,12 @@
       <!-- <mat-paginator [pageSizeOptions]="[20]"></mat-paginator> -->
     <!-- </mat-expansion-panel> -->
   <!-- </div> -->
-  
+
 </div>
 </mat-expansion-panel>
 <form [formGroup]="forma" novalidate="novalidate">
   <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
-  
+
     <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading" style="width:100%; ">
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -153,7 +153,7 @@
     </mat-expansion-panel-header>
 
     <p>Dirección de Facturación</p>
-      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">         
+      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
             <mat-label>Calle</mat-label>
@@ -175,7 +175,7 @@
       </div>
 
     <p>Dirección de Envío</p>
-      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">         
+      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
             <mat-label>Calle</mat-label>
@@ -195,8 +195,8 @@
           </mat-form-field>
         </div>
       </div>
-    <p>Email</p>
-      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">         
+    <p>E-mail</p>
+      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
             <!-- <mat-label>Email</mat-label> -->
@@ -205,10 +205,10 @@
         </div>
       </div>
     <p>Teléfonos</p>
-      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">         
+      <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
-            <mat-label>Telefono</mat-label>
+            <mat-label>Teléfono</mat-label>
             <input matInput type="text"  placeholder="" formControlName="telefono1" value="{{ datosCabecera[0].Telefono_Oficina }}">
           </mat-form-field>
         </div>
@@ -218,9 +218,9 @@
               <input matInput type="text"  placeholder="" formControlName="telefono2" value="{{ datosCabecera[0].Telefono_Movil }}">
             </mat-form-field>
         </div>
-      </div>    
-      <button (click)="modificar()" class="mine-btnbig" mat-flat-button>Modificar</button>
-      <button class="mine-btnbig" mat-flat-button>Actualizar</button>
-    </mat-expansion-panel>     
+      </div>
+      <button *ngIf="!modificando" (click)="modificar()" class="mine-btnbig-grey" mat-flat-button>MODIFICAR</button>
+      <button *ngIf="modificando" (click)="actualizar()" class="mine-btnbig" mat-flat-button>ACTUALIZAR</button>
+    </mat-expansion-panel>
   </div>
 </form>

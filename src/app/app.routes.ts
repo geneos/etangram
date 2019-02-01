@@ -23,6 +23,7 @@ import { LoginComponent } from './components/pages/login/login.component';
 const APP_ROUTES: Routes = [
   { path: 'compra', component: AbmComprasComponent },
   { path: 'compra/:id', component: AbmComprasComponent },
+  { path: 'compra/:id/:expediente', component: AbmComprasComponent },
   { path: 'articulos', component: AbmArticulosComponent },
   { path: 'articulos/:id', component: AltaArticuloComponent },
   { path: 'proveedores', component: AbmProveedoresComponent },
@@ -41,7 +42,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta-comprobantes/:id', component: ConsultaComprobantesComponent },
   { path: 'consulta-retenciones/:id', component: ConsultaRetencionesComponent },
   { path: 'consulta-ord-pago/:id', component: ConsultaOrdPagosComponent },
-  { path: 'datos-proveedores', component: DatosProveedoresComponent },
+  { path: 'datos-proveedores/:id', component: DatosProveedoresComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

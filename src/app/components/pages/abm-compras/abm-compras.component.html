@@ -23,14 +23,14 @@
         </mat-form-field>
       </div>
       <div class="col s4 m2 l2" style="margin-top:10px;">
-        <button type="button" class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones&&existeProv" (click)="abrirConsulta('c_proveedores')">
+        <button type="button" class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones && !existeProv" (click)="abrirConsulta('c_proveedores')">
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>
       <div class="col s12 m6 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Razón Social</mat-label>
-          <input matInput placeholder="" formControlName="razonSocial" value="{{ compraProveedor?.razon_social }}">
+          <input matInput placeholder="" formControlName="razonSocial" value="{{ compraProveedor?.name }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -106,10 +106,16 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m12 l12" *ngIf="editingCabecera">
+      <div class="col s12 m10 l10" *ngIf="editingCabecera">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Observaciones</mat-label>
           <textarea matInput placeholder="" formControlName="observaciones"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="col s12 m2 l2" *ngIf="editingCabecera">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Expediente</mat-label>
+          <input matInput placeholder="" formControlName="expediente" value="{{ expedientes.name }}">
         </mat-form-field>
       </div>
     </div>
@@ -216,8 +222,13 @@
         <div class="col s8 m2 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>U. Medida</mat-label>
-            <input matInput placeholder="" formControlName="unidadMedida" style="text-align: right;"
-             value="{{ compraArticulo?.unidad_medida }}">
+            <mat-select placeholder="Elija una opción..." formControlName="unidadMedida">
+              <mat-option *ngFor="let aux of unidadesMedidas" [value]="aux.name">
+                {{aux.name}}
+              </mat-option>
+            </mat-select>
+            <!-- <input matInput placeholder="" formControlName="unidadMedida" style="text-align: right;"
+             value="{{ uMedida?.name }}"> -->
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>

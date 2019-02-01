@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, Injectable } from '@angular/core';
 import { DatosProveedorService } from 'src/app/services/i2t/datos-proveedor.service';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource} from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ValueTransformer } from '@angular/compiler/src/util';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+
+// key that is used to access the data in local storage
+const TOKEN = '';
+
+@Injectable()
 
 @Component({
   selector: 'app-datos-proveedores',
@@ -10,7 +16,7 @@ import { ValueTransformer } from '@angular/compiler/src/util';
   styleUrls: ['./datos-proveedores.component.css']
 })
 export class DatosProveedoresComponent implements OnInit {
-  
+
   respCabecera: any;
   respImpuesto: any;
   respFormulario: any;
@@ -29,7 +35,14 @@ export class DatosProveedoresComponent implements OnInit {
   dataSource = new MatTableDataSource<datosImpuesto>(this.datosImpuesto);
   dataSource2 = new MatTableDataSource<datosFormularios>(this.datosFormularios);
   columnsToDisplay = ['descripcion', 'presentacion', 'vencimiento'];
-  constructor(private _DatosProveedorService: DatosProveedorService) { 
+  constructor(
+    private _DatosProveedorService: DatosProveedorService,
+    @Inject(SESSION_STORAGE) private storage: StorageService
+  ) {
+
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);
+    
     this.forma = new FormGroup({
       'calleFac': new FormControl(),
       'codPostalFac': new FormControl(),
@@ -77,7 +90,7 @@ export class DatosProveedoresComponent implements OnInit {
       "Id_Proveedor": "4081"
     }
     let jsonbodyCab= JSON.stringify(jsbodyCab);
-    
+
     this._DatosProveedorService.datosCabecera( jsonbodyCab, this.token )
       .subscribe( dataP => {
         console.log(dataP);
@@ -100,7 +113,7 @@ export class DatosProveedoresComponent implements OnInit {
                 if(this.datosCabecera[0].Domicilio == null){
                   this.direccionFac = null;
                 } else{
-                  
+
                 }
                 if(this.datosCabecera[0].Domicilio_envio == "") {
                   this.direccionEnv = null;
@@ -133,10 +146,10 @@ export class DatosProveedoresComponent implements OnInit {
                 this.datosCabecera = null;
 
               }
-            
+
             }
       });
-    
+
   }
 }
 export interface datosCabecera {

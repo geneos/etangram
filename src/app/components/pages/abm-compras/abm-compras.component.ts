@@ -5,6 +5,7 @@ import { CompraService } from "../../../services/i2t/compra.service";
 import { TiposComprobanteService } from "../../../services/i2t/tipos-comprobante.service";
 import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.interface";
 import { TipoComprobante } from "../../../interfaces/tipo-comprobante.interface";
+import { Expedientes } from "../../../interfaces/expedientes.interface"
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription, from } from 'rxjs';
@@ -56,12 +57,18 @@ export class AbmComprasComponent implements OnInit {
   totaltotal:number = 0;
 
   idParam:string = null;
+  expParam:string = null;
 
   tcData: any;
   tipoComprobante: TipoComprobante[] = [];
   tipoComp: string[] = [];
 
+  eData: any;
+  expedientes: Expedientes[] = [];
+  expediente: string[] = [];
+
   existeProv: boolean = false;
+
   posicionesFiscales: string[] = ["N/D","IVA Responsable Inscripto","IVA Responsable no Inscripto",
 "IVA no Responsable","IVA Sujeto Exento","Consumidor Final","Responsable Monotributo",
 "Sujeto no Categorizado","Proveedor del Exterior","Cliente del Exterior","IVA Liberado - Ley N° 19.640",
@@ -99,6 +106,7 @@ export class AbmComprasComponent implements OnInit {
       'fechaVto': new FormControl('',Validators.required),
       'totalCabecera': new FormControl('',[Validators.required]),
       'observaciones': new FormControl(),
+      'expediente': new FormControl()
     })
 
     this.forma.controls['razonSocial'].disable();
@@ -123,6 +131,7 @@ export class AbmComprasComponent implements OnInit {
     // si edito un id existente
     this.route.params.subscribe( parametros=>{
       this.idParam = parametros['id'];
+      this.expParam = parametros['expediente'];
     });
 
     //if id existe
@@ -131,6 +140,11 @@ export class AbmComprasComponent implements OnInit {
       this.buscarProveedor();
       this.existeProv = true;
       this.forma.controls['proveedor'].disable();
+    }
+    if(this.expParam != null){
+      this.forma.controls['expediente'].setValue(this.expParam);
+      this.buscarExpediente();
+      this.forma.controls['expediente'].disable();
     }
   }
 
@@ -236,6 +250,19 @@ export class AbmComprasComponent implements OnInit {
       }
     )
     return promesa;
+  }
+
+  buscarExpediente(){
+    this._compraService.getExpediente( this.expParam, this.token)
+      .subscribe( data => {
+        console.log(data);
+          this.eData = data; 
+          if(this.eData.dataset.length>0){
+            this.expedientes = this.eData.dataset[0];
+          } else {
+            this.expedientes = null;
+          }
+        })
   }
 
   abrirConsulta2(consulta: string, control: string){

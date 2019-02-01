@@ -33,7 +33,7 @@ export class CompraService {
       'x-access-token': token
     });
 
-    let query = `api/proveedor?codigo=${ id }`;
+    let query = `api/c_proveedores?codigo=${ id }`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
@@ -107,6 +107,17 @@ export class CompraService {
     let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers });
+  }
+
+  getExpediente(name:string, token:string){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg05_expedientes?name=${ name }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
   }
 
 }

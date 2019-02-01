@@ -23,7 +23,7 @@
         </mat-form-field>
       </div>
       <div class="col s4 m2 l2" style="margin-top:10px;">
-        <button type="button" class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones" (click)="abrirConsulta('c_proveedores')">
+        <button type="button" class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones&&existeProv" (click)="abrirConsulta('c_proveedores')">
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>

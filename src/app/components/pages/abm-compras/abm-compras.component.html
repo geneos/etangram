@@ -222,8 +222,13 @@
         <div class="col s8 m2 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>U. Medida</mat-label>
-            <input matInput placeholder="" formControlName="unidadMedida" style="text-align: right;"
-             value="{{ compraArticulo?.unidad_medida }}">
+            <mat-select placeholder="Elija una opción..." formControlName="unidadMedida">
+              <mat-option *ngFor="let aux of unidadesMedidas" [value]="aux.name">
+                {{aux.name}}
+              </mat-option>
+            </mat-select>
+            <!-- <input matInput placeholder="" formControlName="unidadMedida" style="text-align: right;"
+             value="{{ uMedida?.name }}"> -->
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>

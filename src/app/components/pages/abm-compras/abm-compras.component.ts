@@ -3,9 +3,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { TiposComprobanteService } from "../../../services/i2t/tipos-comprobante.service";
+import { UnidadMedidaService } from "../../../services/i2t/unidad-medida.service";
 import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.interface";
 import { TipoComprobante } from "../../../interfaces/tipo-comprobante.interface";
 import { Expedientes } from "../../../interfaces/expedientes.interface"
+import { UnidadMedida } from "../../../interfaces/unidad-medida.interface"
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription, from } from 'rxjs';
@@ -67,6 +69,8 @@ export class AbmComprasComponent implements OnInit {
   expedientes: Expedientes[] = [];
   expediente: string[] = [];
 
+  uMedida: any;
+  unidadesMedidas: UnidadMedida[] = [];
   existeProv: boolean = false;
 
   posicionesFiscales: string[] = ["N/D","IVA Responsable Inscripto","IVA Responsable no Inscripto",
@@ -84,6 +88,7 @@ export class AbmComprasComponent implements OnInit {
   constructor(public dialogArt: MatDialog,
               private _compraService:CompraService,
               private _tiposComprobante:TiposComprobanteService,
+              private _unidadMedida:UnidadMedidaService,
               private route:ActivatedRoute,
               public ngxSmartModalService: NgxSmartModalService,
               public snackBar: MatSnackBar,
@@ -125,7 +130,7 @@ export class AbmComprasComponent implements OnInit {
 
     this.formaArticulos.controls['total'].disable();
     this.formaArticulos.controls['articulo'].disable();
-    this.formaArticulos.controls['unidadMedida'].disable();
+    this.formaArticulos.controls['unidadMedida'].enable();
     this.formaArticulos.controls['precioUnitario'].disable();
 
     // si edito un id existente
@@ -150,6 +155,7 @@ export class AbmComprasComponent implements OnInit {
 
   ngOnInit() { 
     this.buscarTiposComprobante();
+    this.unidadMedida();
   }
 
   test(){
@@ -594,6 +600,15 @@ export class AbmComprasComponent implements OnInit {
     //console.log(this.compraArticulo);
     this.auxEditingArt=ind;
   };
+
+  unidadMedida(){
+    this._unidadMedida.getUnidadMedida(this.token)
+      .subscribe(dataU => {
+        this.uMedida = dataU;
+        console.log(dataU);
+        this.unidadesMedidas = this.uMedida.dataset;
+      })
+  }
 
   
 

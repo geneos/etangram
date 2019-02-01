@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { formatDate } from '@angular/common';
 import { TiposDocumentoService } from '../../../../services/i2t/tipos-documento.service';
@@ -139,6 +139,7 @@ export class AltaProveedorComponent implements OnInit {
   loginData: any;
 
   constructor(private route:ActivatedRoute, 
+              private FormBuilder: FormBuilder,
               private _tiposDocumentoService:TiposDocumentoService,
               private _localidadesService: LocalidadesService,
               private _afipService: AFIPInternoService,
@@ -154,7 +155,74 @@ export class AltaProveedorComponent implements OnInit {
               private _partidasPresupuestariasService: PartidaPresupuestariaService,
               private _proveedoresService: ProveedoresService,
               public ngxSmartModalService: NgxSmartModalService,
-              public snackBar: MatSnackBar,) {
+              public snackBar: MatSnackBar,) 
+  {
+    this.forma = this.FormBuilder.group({ 
+      tipoReferente: new FormControl('',Validators.required),
+      numero: new FormControl('',Validators.required),
+      razonSocial: new FormControl('',Validators.required),
+      nombreFantasia: new FormControl('',Validators.required),
+      tipoDocumento: new FormControl('',Validators.required),
+      nroDocumento: new FormControl('',Validators.required),
+      facCalle: new FormControl('',Validators.required),
+      facCiudad: new FormControl('',Validators.required),
+      facProvincia: new FormControl('',Validators.required),
+      facCodigoPostal: new FormControl('', Validators.required, this.existeLocalidadFac),
+      facPais: new FormControl('',Validators.required),
+      envCalle: new FormControl(),
+      envCiudad: new FormControl(),
+      envProvincia: new FormControl(),
+      envCodigoPostal: new FormControl(null, [], this.existeLocalidadEnv),
+      envPais: new FormControl(),
+      telefono1: new FormControl('',Validators.required),
+      telefono2: new FormControl(),
+      telefono3: new FormControl(),
+      email: new FormControl('',Validators.required),
+      observaciones: new FormControl(),
+      //RELACION COMERCIAL
+        //categorias
+        catRef: new FormControl(),
+        idZona: new FormControl(),
+        // idZona: new FormControl('', this.existeZona), //19/01/02 10:40=> no hay zonas
+        zonaDesc: new FormControl(),
+        idVendedor: new FormControl(),
+        // idVendedor: new FormControl('', this.existeVendedor), //no hay vendedores
+        vendedorDesc: new FormControl(),
+        // idCobrador: new FormControl('', this.existeCobrador),
+        idCobrador: new FormControl(),
+        cobradorDesc: new FormControl(),
+        limiteCredito: new FormControl(),
+        //parametros
+        idlistaPrecios: new FormControl('', [], this.existeListaPrecios),
+        condComercial: new FormControl('', [], this.existeCondComercial),
+        idPartidaPresupuestaria: new FormControl(),
+        // 'idPartidaPresupuestaria': new FormControl('', this.existePartidaPresupuestaria),
+        refContable: new FormControl('', [], this.existeRefContable),
+        idTipoComprobante: new FormControl('', [], this.existeTipoComprobante),
+          //descripciones de parametros
+          descListaPrecios: new FormControl(),
+          descCondComercial: new FormControl(),
+          descPartidaPresupuestaria: new FormControl(),
+          descRefContable: new FormControl(),
+          descTipoComprobante: new FormControl(),
+        //cuentas: aparte
+        cuentas: this.FormBuilder.array([]),
+      //IMPUESTOS
+      sitIVA: new FormControl(),
+      cuit: new FormControl(),
+      cai: new FormControl(),
+      fechaVtoCai: new FormControl(),
+        //+ formaImpuesto
+        // impuestos: this.FormBuilder.array([]),
+          //excenciones dentro
+        //+ formaFormulario
+        // formularios: this.FormBuilder.array([]),
+      //STOCK
+      // articulos: this.FormBuilder.array([]),
+      }
+    );
+    
+    /*
     this.forma = new FormGroup({
       //FILIATORIOS Y GEOGRÁFICOS
       //'tipoReferente': new FormControl('',Validators.required),
@@ -171,7 +239,7 @@ export class AltaProveedorComponent implements OnInit {
       'envCalle': new FormControl(),
       'envCiudad': new FormControl(),
       'envProvincia': new FormControl(),
-      'envCodigoPostal': new FormControl(null, this.existeLocalidadEnv),
+      'envCodigoPostal': new FormControl(null, [], this.existeLocalidadEnv),
       'envPais': new FormControl(),
       'telefono1': new FormControl('',Validators.required),
       'telefono2': new FormControl(),
@@ -182,22 +250,22 @@ export class AltaProveedorComponent implements OnInit {
         //categorias
         'catRef': new FormControl(),
         'idZona': new FormControl(),
-        // 'idZona': new FormControl('', this.existeZona),
+        // 'idZona': new FormControl('', this.existeZona), //19/01/02 10:40=> no hay zonas
         'zonaDesc': new FormControl(),
         'idVendedor': new FormControl(),
-        // 'idVendedor': new FormControl('', this.existeVendedor),
+        // 'idVendedor': new FormControl('', this.existeVendedor), //no hay vendedores
         'vendedorDesc': new FormControl(),
         // 'idCobrador': new FormControl('', this.existeCobrador),
         'idCobrador': new FormControl(),
         'cobradorDesc': new FormControl(),
         'limiteCredito': new FormControl(),
         //parametros
-        'idlistaPrecios': new FormControl('', this.existeListaPrecios),
-        'condComercial': new FormControl('', this.existeCondComercial),
+        'idlistaPrecios': new FormControl('', [], this.existeListaPrecios),
+        'condComercial': new FormControl('', [], this.existeCondComercial),
         'idPartidaPresupuestaria': new FormControl(),
         // 'idPartidaPresupuestaria': new FormControl('', this.existePartidaPresupuestaria),
-        'refContable': new FormControl('', this.existeRefContable),
-        'idTipoComprobante': new FormControl('', this.existeTipoComprobante),
+        'refContable': new FormControl('', [], this.existeRefContable),
+        'idTipoComprobante': new FormControl('', [], this.existeTipoComprobante),
           //descripciones de parametros
           'descListaPrecios': new FormControl(),
           'descCondComercial': new FormControl(),
@@ -205,6 +273,7 @@ export class AltaProveedorComponent implements OnInit {
           'descRefContable': new FormControl(),
           'descTipoComprobante': new FormControl(),
         //cuentas: aparte
+        
       //IMPUESTOS
       'sitIVA': new FormControl(),
       'cuit': new FormControl(),
@@ -214,7 +283,9 @@ export class AltaProveedorComponent implements OnInit {
         //+ formaFormulario
       //STOCK
     });
+ */
 
+    /*
     this.formaCtaBancaria = new FormGroup({
       'rcCbu': new FormControl('', Validators.required),
       'rcTipo': new FormControl('', Validators.required),
@@ -253,7 +324,7 @@ export class AltaProveedorComponent implements OnInit {
       'barrasArtProv': new FormControl('', Validators.required),
       'moneda': new FormControl('', Validators.required)
     });
-
+    */
     this.forma.controls['facCiudad'].disable();
     this.forma.controls['facProvincia'].disable();
     this.forma.controls['facPais'].disable();
@@ -275,7 +346,7 @@ export class AltaProveedorComponent implements OnInit {
       this.forma.controls['descTipoComprobante'].disable();
 
     //articulos
-    this.formaArticulo.controls['artDesc'].disable();
+    // this.formaArticulo.controls['artDesc'].disable();
 
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
@@ -340,21 +411,23 @@ export class AltaProveedorComponent implements OnInit {
       // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
     });
 
-    this.formaArticulo.controls['artID'].valueChanges.subscribe(() => {
-      // console.clear()
-      setTimeout(() => {
-        console.log('hubo un cambio')
-        // console.log('estado después de timeout ',this['articulo'])  
-        // console.log('Valor de el otro elemento: ', this.forma.controls['razonSocial'].value)
-        this.elArtID.nativeElement.dispatchEvent(new Event('keyup'));
 
-        // this.forma.controls['proveedor'].updateValueAndValidity();
-        // this.ref.detectChanges();
-        // this.forma.updateValueAndValidity();
-        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
-      })
-      // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
-    });
+    //todo agregar suscripción dentro del formarray
+    // this.formaArticulo.controls['artID'].valueChanges.subscribe(() => {
+    //   // console.clear()
+    //   setTimeout(() => {
+    //     console.log('hubo un cambio')
+    //     // console.log('estado después de timeout ',this['articulo'])  
+    //     // console.log('Valor de el otro elemento: ', this.forma.controls['razonSocial'].value)
+    //     this.elArtID.nativeElement.dispatchEvent(new Event('keyup'));
+
+    //     // this.forma.controls['proveedor'].updateValueAndValidity();
+    //     // this.ref.detectChanges();
+    //     // this.forma.updateValueAndValidity();
+    //     // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+    //   })
+    //   // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
+    // });
 
     //descripciones de datos para relaciones comerciales
     this.forma.controls['idZona'].valueChanges.subscribe(() => {
@@ -417,6 +490,52 @@ export class AltaProveedorComponent implements OnInit {
 
   }
 
+  construirCuentaBancaria(){
+    console.log('creando cuenta vacia')
+    return new FormGroup({ 
+      'rcCbu': new FormControl('', Validators.required),
+      'rcTipo': new FormControl('', Validators.required),
+      'rcCuentaBancaria': new FormControl('', Validators.required),
+      'rcCodigoSucursal': new FormControl('', Validators.required)
+    });
+  }
+  construirImpuesto(){
+    return new FormGroup({
+      'tipo': new FormControl('', Validators.required),
+      'modelo': new FormControl(),
+      'situacion': new FormControl('', Validators.required),
+      'codInscripcion': new FormControl('', Validators.required),
+      'fechaInscripcion': new FormControl('', Validators.required),
+      'exenciones': new FormControl()
+    });
+  }
+  construirFormulario(){
+    return new FormGroup({
+      'codForm': new FormControl('', Validators.required),
+      'fechaPres': new FormControl('', Validators.required),
+      'fechaVenc': new FormControl('', Validators.required),
+    });
+  }
+  construirExcencion(){
+    return new FormGroup({
+      'nroExcencion': new FormControl('', Validators.required),
+      'fechaDesde': new FormControl('', Validators.required),
+      'fechaHasta': new FormControl('', Validators.required),
+      'excencionObs': new FormControl('', Validators.required),
+    });
+  }
+  construirArticulo(){
+    return new FormGroup({
+      'artID': new FormControl('', Validators.required, this.existeArticulo),
+        'artDesc': new FormControl(),
+      'ultimaFecha': new FormControl('', Validators.required),
+      'ultimoPrecio': new FormControl(),
+      'codArtProv': new FormControl(),
+      'barrasArtProv': new FormControl('', Validators.required),
+      'moneda': new FormControl('', Validators.required)
+    });
+  }
+
   ngOnInit() {
     /*for(var i = 0; i < this.impuestos[0].exenciones.length; i++){
       console.log(this.impuestos[0].exenciones[i]);
@@ -456,8 +575,23 @@ export class AltaProveedorComponent implements OnInit {
   addArticulosStock(){this.articulosStock.push({'nroArticulosStock':(this.articulosStock.length)});}
   deleteArticulosStock(ind){this.articulosStock.splice(ind, 1);}
 
-  addCuentaBanc(){this.cuentasBanc.push({'nroCuenta':(this.cuentasBanc.length)});}
-  deleteCuentasBanc(ind){this.cuentasBanc.splice(ind, 1);}
+  // addCuentaBanc(){this.cuentasBanc.push({'nroCuenta':(this.cuentasBanc.length)});}
+  // deleteCuentasBanc(ind){this.cuentasBanc.splice(ind, 1);}
+  addCuentaBanc(){
+    console.log('clickeado agregar cuenta');
+    const ctas = this.forma.controls.cuentas as FormArray;
+    // ctas.push(this.construirCuentaBancaria());
+    ctas.push(this.FormBuilder.group({
+        rcCbu: new FormControl('', Validators.required),
+        rcTipo: new FormControl('', Validators.required),
+        rcCuentaBancaria: new FormControl('', Validators.required),
+        rcCodigoSucursal: new FormControl('', Validators.required)
+      })
+    );
+    
+      
+  }
+
 
   //listas desplegables
   buscarTiposDocumento(){
@@ -1080,7 +1214,7 @@ export class AltaProveedorComponent implements OnInit {
   buscarTipoComprobante(){
     console.log('valor de tipo de comprobante al buscar: ', this.forma.controls['idTipoComprobante'].value);
 
-    this._tiposComprobanteService.getTipoComprobante(this.forma.controls['idTipoComprobante'].value, this.token )
+    this._tiposComprobanteService.getTipoOperacionPorIdTipoComprobante(this.forma.controls['idTipoComprobante'].value, this.token )
       .subscribe( data => {
         //console.log(dataRC);
           this.tcData = data;
@@ -1167,9 +1301,9 @@ export class AltaProveedorComponent implements OnInit {
           if( auxLocalidadEnv==0 ){
             resolve( {noExiste:true} )
           }else{
-            console.log('existe localidad fac salio por false: ', auxLocalidadEnv)
-            // resolve( null )
-            resolve ({noExiste:false})
+            console.log('existe localidad env salio por false: ', auxLocalidadEnv)
+            resolve( null )
+            // resolve ({noExiste:false})
           }
         },2000 )
       }
@@ -1397,15 +1531,45 @@ export class AltaProveedorComponent implements OnInit {
         "p_cond_comercializacion": this.forma.controls['condComercial'].value,  //id de consulta dinámica a tabla tg01_condicioncomercial
         "p_partida_pres_default": this.forma.controls['idPartidaPresupuestaria'].value, //id de consulta dinámica a tabla tg05_partidas_presupuestaria
         "p_ref_contable_default": this.forma.controls['refContable'].value, //id de consulta dinámica a tabla tg01_referenciascontables
-        "p_situacion_iva": this.forma.controls['sitIVA'], //"1", //id de consulta dinámica a tabla tg01_categoriasiva
+        "p_situacion_iva": this.forma.controls['sitIVA'].value, //"1", //id de consulta dinámica a tabla tg01_categoriasiva
         "p_cuit_c": this.forma.controls['cuit'].value,
         "p_cai"	: this.forma.controls['cai'].value, //CAI
         "p_fecha_vto_cai" : this.forma.controls['fechaVtoCai'].value,
         "p_cuit_exterior" :"",//todo ver qué es, abajo también
         "p_id_impositivo" :"" //id de consulta dinámica a tabla tg01_impuestos
       }
+      console.log(jsbody);
       let jsonbody= JSON.stringify(jsbody);
+
       console.log('json principal', jsonbody);
+      this._proveedoresService.postCabecera(jsonbody, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.eliminarProveedor();
+              });
+            } else {
+              console.log(this.respData)
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al guardar Proveedor: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                this.openSnackBar('Proveedor guardado con exito, redireccionando.');
+                //todo agregar redirección
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
 
 
 

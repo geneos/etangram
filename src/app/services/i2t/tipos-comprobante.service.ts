@@ -46,12 +46,12 @@ export class TiposComprobanteService {
     return this.http.get( url , { headers });
   }
   
-  getTipoOperacion( id:string, token:string ){
+  getTipoOperacionPorIdTipoComprobante( idtipocomp:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_tipocomprobante/?tg01_tipooperacion_id_c=${ id }`;
+    let query = `api/tg01_tipocomprobante?idtipocomp=eq[${ idtipocomp }]`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });

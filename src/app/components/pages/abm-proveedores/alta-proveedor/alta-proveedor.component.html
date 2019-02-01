@@ -1,16 +1,3 @@
-<!-- DEBUG -->
-<pre>cp: {{forma.controls['facCodigoPostal'].status}}</pre>
-<pre>cp 2:{{forma.controls['envCodigoPostal'].status}}</pre>
-<pre>zona: {{forma.controls['idZona'].status}}</pre>
-<pre>vendedor: {{forma.controls['idVendedor'].status}}</pre>
-<pre>cobrador: {{forma.controls['idCobrador'].status}}</pre>
-<pre>lista: {{forma.controls['idlistaPrecios'].status}}</pre>
-<pre>condicion: {{forma.controls['condComercial'].status}}</pre>
-<pre>partida: {{forma.controls['idPartidaPresupuestaria'].status}}</pre>
-<pre>referencia: {{forma.controls['refContable'].status}}</pre>
-<pre>tipo comprobante: {{forma.controls['idTipoComprobante'].status}}</pre>
-<pre>form: {{forma.status}}</pre>
-<!-- FIN DEBUG -->
 <h2>PROVEEDORES</h2>
 <button [routerLink]="['/proveedores']" class="mine-btnbig-grey" mat-flat-button>
   VOLVER A LISTA
@@ -41,14 +28,11 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Número</mat-label>
           <input matInput placeholder="" type="number" formControlName="numero">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s4 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo Documento</mat-label>
-          <!--<input matInput placeholder="" formControlName="tipoDocumento">
-          <mat-hint>Hint</mat-hint>-->
           <mat-select placeholder="Elija una opción..." formControlName="tipoDocumento">
             <mat-option *ngFor="let aux of tiposDocumentoAll" [value]="aux.id">
               {{aux.name}}
@@ -60,21 +44,18 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>N° Documento</mat-label>
           <input matInput placeholder="" formControlName="nroDocumento">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m6 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Razón Social</mat-label>
           <input matInput placeholder="" formControlName="razonSocial">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m6 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de Fantasía</mat-label>
           <input matInput placeholder="" formControlName="nombreFantasia">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
     <!--</div>-->
@@ -87,7 +68,6 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Calle</mat-label>
           <input matInput placeholder="" formControlName="facCalle">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s10 m10 l4">
@@ -111,21 +91,18 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Ciudad</mat-label>
           <input matInput placeholder="" formControlName="facCiudad" value="{{ localidadFac?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Provincia</mat-label>
           <input matInput placeholder="" formControlName="facProvincia" value="{{ provinciaFac?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>País</mat-label>
           <input matInput placeholder="" formControlName="facPais" value="{{ paisFac?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
     </div>
@@ -142,7 +119,6 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Calle</mat-label>
           <input matInput placeholder="" formControlName="envCalle">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s10 m10 l4">
@@ -166,21 +142,18 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Ciudad</mat-label>
           <input matInput placeholder="" formControlName="envCiudad" value="{{ localidadEnv?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Provincia</mat-label>
           <input matInput placeholder="" formControlName="envProvincia" value="{{ provinciaEnv?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>País</mat-label>
           <input matInput placeholder="" formControlName="envPais" value="{{ paisEnv?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
     </div>
@@ -190,35 +163,30 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Teléfono 1</mat-label>
           <input  matInput placeholder="" type="number" formControlName="telefono1">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Teléfono 2</mat-label>
           <input  matInput placeholder="" type="number" formControlName="telefono2">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Teléfono 3</mat-label>
           <input  matInput placeholder="" type="number" formControlName="telefono3">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>E-mail</mat-label>
           <input  matInput placeholder="" type="text" formControlName="email">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m12 l12">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Observaciones</mat-label>
           <textarea matInput placeholder="" formControlName="observaciones"></textarea>
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
     </div>
@@ -240,7 +208,6 @@
               {{aux.name}}
             </mat-option>
           </mat-select>
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
 
@@ -265,7 +232,6 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de Zona</mat-label>
           <input matInput placeholder="" formControlName="zonaDesc" value="{{ zona?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
 
@@ -290,7 +256,6 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de Vendedor</mat-label>
           <input matInput placeholder="" formControlName="vendedorDesc" value="{{ vendedor?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
 
@@ -315,7 +280,6 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de Cobrador</mat-label>
           <input matInput placeholder="" formControlName="cobradorDesc" value="{{ cobrador?.name }}">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
 
@@ -450,7 +414,7 @@
     </div>
 
 <!-- relacion cuentas bancarias -->
-    <form [formGroup]="formaCtaBancaria" novalidate="novalidate">
+    <!-- <form [formGroup]="formaCtaBancaria" novalidate="novalidate"> -->
       <div class="row" style="margin-top:0px; margin-bottom:0px !important;">
         <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
           <span style="display:flex;">
@@ -461,12 +425,23 @@
           </span>
         </div>
       </div>
-        <div class="row" *ngFor="let item of cuentasBanc; let in = index" style="margin:5px !important;">
+      <!-- linea siguiente -->
+        <div formArrayName="cuentas" *ngFor="let ctas of forma.controls.cuentas?.value; let i = index">
+        <ng-container [formGroupName]="i">
+            <input matInput placeholder="" type="number" formControlName="rcCbu">
+            <mat-select placeholder="Elija una opción" formControlName="rcTipo">
+              <mat-option value="1">Cuenta corriente</mat-option>
+              <mat-option value="2">Caja de ahorro</mat-option>
+            </mat-select>            
+            <input matInput placeholder="" type="number" formControlName="rcCuentaBancaria">
+            <input matInput placeholder="" type="number" formControlName="rcCodigoSucursal">
+
+        <!-- <div class="row" style="margin:5px !important;">
+
           <div class="col s12 m12 l5">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>CBU</mat-label>
               <input matInput placeholder="" type="number" formControlName="rcCbu">
-              <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
           <div class="col s12 m3 l2">
@@ -476,30 +451,29 @@
                 <mat-option value="1">Cuenta corriente</mat-option>
                 <mat-option value="2">Caja de ahorro</mat-option>
               </mat-select>
-              <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
           <div class="col s6 m4 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Cuenta bancaria</mat-label>
               <input matInput placeholder="" type="number" formControlName="rcCuentaBancaria">
-              <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
           <div class="col s3 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Código de sucursal</mat-label>
               <input matInput placeholder="" type="number" formControlName="rcCodigoSucursal">
-              <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
-          </div>
+          </div> -->
           <div class="col s3 m2 l1">
-            <a (click)="deleteCuentasBanc(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+            <!-- <a (click)="deleteCuentasBanc(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
               -
-            </a>
+            </a> -->
           </div>
-        </div>
-      </form>
+        <!-- </div> -->
+        </ng-container>
+      </div>
+      <!-- </form> -->
     <!-- fin relacion -->
 
     <div class="row" style="margin-top:25px; margin-bottom:0px !important;">
@@ -512,14 +486,12 @@
             <mat-option value="3">Inactivo</mat-option>
             <mat-option value="4">Baja</mat-option>
           </mat-select>
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Categoría de Bloqueo</mat-label>
           <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
     </div>
@@ -534,33 +506,23 @@
       <div class="col s10 m5 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Situación IVA</mat-label>
-          <!-- <input matInput placeholder="" formControlName="sitIVA"> -->
           <mat-select placeholder="Elija una opción..." formControlName="sitIVA">
             <mat-option *ngFor="let aux of catIVAAll" [value]="aux.id">
               {{aux.name}}
             </mat-option>
           </mat-select>
-         <!--<mat-hint>Hint</mat-hint>-->
        </mat-form-field>
      </div>
-     <!-- cambiado por lista desplegable -->
-     <!-- <div class="col s2 m1 l1" style="margin-top:10px;">
-       <button class="mine-btnforms" mat-flat-button (click)="abrirConsulta('tg01_categoriasiva', 'sitIVA')">
-         <i class="material-icons" style="font-size:20px;">more_horiz</i>
-       </button>
-     </div> -->
      <div class="col s12 m6 l4">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>CUIT</mat-label>
          <input matInput placeholder="" formControlName="cuit">
-         <!--<mat-hint>Hint</mat-hint>-->
        </mat-form-field>
      </div>
      <div class="col s12 m12 l4">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>Estado según AFIP</mat-label>
          <input matInput placeholder="">
-         <!--<mat-hint>Hint</mat-hint>-->
        </mat-form-field>
      </div>
      <div class="col s12 m6 l6">
@@ -575,22 +537,23 @@
          <input matInput placeholder="" formControlName="fechaVtoCai">
        </mat-form-field>
      </div>
-     <!--
+     
      <div class="col s12 m6 l6">
-       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-         <mat-label>CUIT del Exterior</mat-label>
-         <input matInput placeholder="">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>CUIT del Exterior</mat-label>
+          <input matInput placeholder="">
+        </mat-form-field>
      </div>
      <div class="col s12 m6 l6">
-       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-         <mat-label>Id Impositivo</mat-label>
-         <input matInput placeholder="">
-       </mat-form-field>
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Impositivo</mat-label>
+          <input matInput placeholder="">
+        </mat-form-field>
      </div>
-     -->
+    
 
     <!-- relacion lista de impuestos -->
-    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+    <!-- <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
       <span style="display:flex;">
         <h6>Lista de Impuestos:</h6>
         <a (click)="addImpuesto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
@@ -603,7 +566,6 @@
       <div class="col s10 m2 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo</mat-label>
-          <!-- <input matInput placeholder="" formControlName="tipo" disabled> -->
           <mat-select placeholder="Elija una opción..." formControlName="tipo">
             <mat-option *ngFor="let aux of impuestosAll" [value]="aux.id">
               {{aux.name}}
@@ -611,16 +573,9 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <!-- <div class="col s2 m1 l1" style="margin-top:10px;">
-        <a class="mine-btnforms" mat-flat-button>
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </a>
-      </div> -->
       <div class="col s10 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Modelo</mat-label>
-          <!-- <input matInput placeholder="" formControlName="modelo" value="" disabled> -->
-          <!--<mat-hint>Hint</mat-hint>-->
           <mat-select placeholder="Elija una opción..." formControlName="modelo">
             <mat-option *ngFor="let aux of modelosImpAll" [value]="aux.id">
               {{aux.name}}
@@ -628,11 +583,6 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <!-- <div class="col s2 m1 l1" style="margin-top:10px;">
-        <a class="mine-btnforms" mat-flat-button>
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </a>
-      </div> -->
       <div class="col s12 m4 l4">
       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
         <mat-label>Situación</mat-label>
@@ -641,7 +591,6 @@
           <mat-option value="2">Inscripto</mat-option>
           <mat-option value="3">No inscripto</mat-option>
         </mat-select>
-        <!--<mat-hint>Hint</mat-hint>-->
       </mat-form-field>
     </div>
       <div class="col s12 m2 l2">
@@ -649,7 +598,6 @@
           <mat-label>Código inscripción</mat-label>
           <input matInput placeholder="" formControlName="codInscripcion" style="text-align: right;"
            value="">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m3 l3">
@@ -667,10 +615,10 @@
         <a (click)="deleteImpuesto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
           -
         </a>
-      </div>
+      </div> -->
       
       <!-- relacion impuestos exenciones -->
-      <form [formGroup]="formaExenciones" novalidate="novalidate">
+      <!-- <form [formGroup]="formaExenciones" novalidate="novalidate">
         <div class="col s12 m12 l12" style="margin-top:0px !important; margin-bottom: 15px !important; margin-left: 30px !important;" *ngIf="poseeExenc.checked">
           <span style="display:flex;">
             <h6>Exenciones:</h6>
@@ -717,11 +665,11 @@
           </div>
         </div>
       </form>
-    </div>
+    </div> -->
     <!--fin relacion-->
-  </form>
+  <!-- </form> -->
     <!-- relacion formularios -->
-  <form [formGroup]="formaFormulario" novalidate="novalidate">
+  <!-- <form [formGroup]="formaFormulario" novalidate="novalidate">
     <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
       <span style="display:flex;">
         <h6>Lista de Formularios/Documentos:</h6>
@@ -760,7 +708,7 @@
         </a>
       </div>
     </div>
-  </form>
+  </form> -->
     <!--fin relacion-->
 
    </div>
@@ -772,7 +720,7 @@
    </mat-expansion-panel-header>
 
     <!-- relacion stock -->
-    <form [formGroup]="formaArticulo" novalidate="novalidate">
+    <!-- <form [formGroup]="formaArticulo" novalidate="novalidate">
       <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
         <span style="display:flex;">
           <h6>Artículos en Stock:</h6>
@@ -804,7 +752,6 @@
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Descripción Artículo</mat-label>
             <input matInput placeholder="" value="" disabled formControlName="artDesc" value="{{articulo?.descripcion}}">
-            <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s5 m3 l3">
@@ -819,7 +766,6 @@
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Precio última compra</mat-label>
             <input matInput placeholder="" type="number" formControlName="ultimoPrecio" value="">
-            <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s5 m4 l3">
@@ -830,7 +776,6 @@
                 {{aux.name}}
               </mat-option>
             </mat-select>
-            <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s5 m4 l2">
@@ -838,7 +783,6 @@
             <mat-label>Código artículo proveedor</mat-label>
             <input matInput placeholder="" type="number" style="text-align: right;" formControlName="codArtProv"
             value="">
-            <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s10 m6 l2">
@@ -846,7 +790,6 @@
             <mat-label>Código barra proveedor</mat-label>
             <input matInput placeholder="" style="text-align: right;" formControlName="barrasArtProv"
             value="">
-            <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s2 m2 l1">
@@ -855,14 +798,14 @@
           </a>
         </div>
       </div>
-    </form>
+    </form> -->
     <!--fin relacion-->
 
  </mat-expansion-panel>
 
   <div class="row" style="margin-top:25px;">
     <div class="col s12" style="text-align: right;">
-      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
+      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" >
         GUARDAR
       </button>
       <button type="reset" class="mine-btnbig-grey" mat-flat-button>

@@ -35,14 +35,44 @@
   <form [formGroup]="formaFormulario" novalidate="novalidate">
 
     <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
-      <div class="col s12 m12 l12">
-        <h2><small><b>CON TOKEN OCULTO: </b></small></h2>
-      </div>
       <div class="col s12 m4 l3">
         <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Compras: </p>
       </div>
       <div class="col s6 m3 l1">
         <button (click)="compras()" [routerLink]="[routerLinkVariable]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Referencias Contables: </p>
+      </div>
+      <div class="col s6 m3 l1">
+        <button (click)="refContables()" [routerLink]="[routerLinkVariable]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Plan de Cuentas: </p>
+      </div>
+      <div class="col s6 m3 l1">
+        <button (click)="planCuentas()" [routerLink]="[routerLinkVariable]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Minutas Contables: </p>
+      </div>
+      <div class="col s6 m3 l1">
+        <button (click)="minContables()" [routerLink]="[routerLinkVariable]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
           IR
         </button>
       </div>

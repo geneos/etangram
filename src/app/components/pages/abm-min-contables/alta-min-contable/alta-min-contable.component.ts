@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MatPaginator, MatSort } from '@angular/material';
 import { MonedasService } from 'src/app/services/i2t/monedas.service';
@@ -19,9 +19,14 @@ import { CentrosCostosService } from 'src/app/services/i2t/cen-costos.service';
 import { MinContablesService } from 'src/app/services/i2t/min-contables.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkRowDef } from '@angular/cdk/table';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
+// key that is used to access the data in local storage
+const TOKEN = '';
 
 var auxRefConData,auxCCostoData:any;
+
+@Injectable()
 
 @Component({
   selector: 'app-alta-min-contable',
@@ -188,7 +193,12 @@ datos =
               private _cajasService: CajasService,
               private route:ActivatedRoute,
               private router: Router,
-              public snackBar: MatSnackBar) {
+              public snackBar: MatSnackBar,
+              @Inject(SESSION_STORAGE) private storage: StorageService) {
+
+                console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+                this.token = this.storage.get(TOKEN);
+                
     this.forma = new FormGroup({
       'fecha': new FormControl('',Validators.required),
       'tipo': new FormControl(),

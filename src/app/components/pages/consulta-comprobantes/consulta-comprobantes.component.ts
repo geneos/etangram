@@ -198,7 +198,7 @@ export class ConsultaComprobantesComponent implements OnInit {
               let fcuit = this.compraProveedor.cuit.slice(10)
 
               this.cuit = icuit + '-' + mcuit + '-' + fcuit;
-              this.razonSocial = this.compraProveedor.razon_social
+              this.razonSocial = this.compraProveedor.name
             } else {
               this.compraProveedor = null;
             }

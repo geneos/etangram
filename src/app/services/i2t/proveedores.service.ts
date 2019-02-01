@@ -39,6 +39,8 @@ export class ProveedoresService {
     return this.http.get( url , { headers });
   }
 
+
+  /*
   postCabecera( body:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,
@@ -50,7 +52,190 @@ export class ProveedoresService {
 
     return this.http.post( url, body, { headers });
   }
+  */
+  postCabecera( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
 
+    let query = "api/proc/proveedores_INS_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  postRelComercial( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_relacioncomercial_INS_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  postImpuesto( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_impuesto_INS_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  postArticulo( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_articulo_INS_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  postAFIP( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_afip_INS_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  //
+  deleteCabecera( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_DEL_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  deleteRelComercial( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_relacioncomercial_DEL_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  deleteImpuesto( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_impuesto_DEL_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  deleteArticulo( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_articulo_DEL_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  deleteAFIP( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_afip_DEL_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  //
+  updateCabecera( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_relacioncomercial_UDP_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  updateRelComercial( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_relacioncomercial_UDP_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  updateImpuesto( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_impuesto_UDP_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  updateArticulo( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_articulo_UDP_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  updateAFIP( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_afip_UDP_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  //
   getArticulo( id:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
@@ -73,7 +258,7 @@ export class ProveedoresService {
     return this.http.get( url , { headers });
   }
 
-  postArticulo( body:string, token:string ){
+  /* postArticulo( body:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,
       'Content-Type': 'application/json'
@@ -83,7 +268,7 @@ export class ProveedoresService {
     let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers });
-  }
+  } */
 
   editArticulo( body:string, token:string ){
     const headers = new HttpHeaders({
@@ -96,7 +281,7 @@ export class ProveedoresService {
 
     return this.http.post( url, body, { headers });
   }
-
+/* 
   deleteArticulo( body:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,
@@ -107,6 +292,6 @@ export class ProveedoresService {
     let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers });
-  }
+  } */
 
 }

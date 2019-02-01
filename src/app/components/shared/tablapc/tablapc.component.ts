@@ -27,7 +27,7 @@ export class TablapcComponent implements OnInit {
 
   expandedElement: PlanCuenta | null;
 
-  @Input() token: string = "a";
+  token: string = "a";
   auxRC:any;
   loginData: any;
   pcData:any;
@@ -45,8 +45,11 @@ export class TablapcComponent implements OnInit {
 
   selection = new SelectionModel(false, []);
 
-  constructor(private _planCuentasService:PlanCuentasService) {
+  constructor(private _planCuentasService:PlanCuentasService,
+    @Inject(SESSION_STORAGE) private storage: StorageService) {
     this.loading = true;
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);
     this.buscarPlanCuentas();
   }
 

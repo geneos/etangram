@@ -86,7 +86,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   @ViewChild('tablaDatos') tablaDatos: ElementRef;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estado', 'accion'];
+  columnsToDisplay  = ['Fecha', 'Tipo_Comprobante', 'Expediente', 'Certificado', 'Importe_Total', 'Saldo', 'Estados', 'Estado', 'accion'];
   dataSource = new MatTableDataSource<consultaComprobantes>(this.consultaComprobantes);
   expandedElement: consultaComprobantes | null;
 
@@ -193,11 +193,16 @@ export class ConsultaComprobantesComponent implements OnInit {
             if(this.proveedorData.dataset.length>0){
               this.compraProveedor = this.proveedorData.dataset[0];
               this.loading = false;
-              let icuit = this.compraProveedor.cuit.slice(0,2)
-              let mcuit = this.compraProveedor.cuit.slice(2,10)
-              let fcuit = this.compraProveedor.cuit.slice(10)
+              let icuit,mcuit,fcuit;
+              if(this.compraProveedor.cuit!=null){
+                icuit = this.compraProveedor.cuit.slice(0,2);
+                mcuit = this.compraProveedor.cuit.slice(2,10);
+                fcuit = this.compraProveedor.cuit.slice(10);
+                this.cuit = icuit + '-' + mcuit + '-' + fcuit;
+              } else {
+                this.cuit = ' ';
+              }
 
-              this.cuit = icuit + '-' + mcuit + '-' + fcuit;
               this.razonSocial = this.compraProveedor.name
             } else {
               this.compraProveedor = null;

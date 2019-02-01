@@ -1,3 +1,16 @@
+<!-- DEBUG -->
+<pre>cp: {{forma.controls['facCodigoPostal'].status}}</pre>
+<pre>cp 2:{{forma.controls['envCodigoPostal'].status}}</pre>
+<pre>zona: {{forma.controls['idZona'].status}}</pre>
+<pre>vendedor: {{forma.controls['idVendedor'].status}}</pre>
+<pre>cobrador: {{forma.controls['idCobrador'].status}}</pre>
+<pre>lista: {{forma.controls['idlistaPrecios'].status}}</pre>
+<pre>condicion: {{forma.controls['condComercial'].status}}</pre>
+<pre>partida: {{forma.controls['idPartidaPresupuestaria'].status}}</pre>
+<pre>referencia: {{forma.controls['refContable'].status}}</pre>
+<pre>tipo comprobante: {{forma.controls['idTipoComprobante'].status}}</pre>
+<pre>form: {{forma.status}}</pre>
+<!-- FIN DEBUG -->
 <h2>PROVEEDORES</h2>
 <button [routerLink]="['/proveedores']" class="mine-btnbig-grey" mat-flat-button>
   VOLVER A LISTA
@@ -81,7 +94,7 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código Postal</mat-label>
           <input matInput (keyup)="buscarCPostalFac()" placeholder="" #facCodigoPostal formControlName="facCodigoPostal" >
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <mat-hint *ngIf="forma.controls['facCodigoPostal'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
           <mat-hint *ngIf="forma.controls['facCodigoPostal'].errors?.noExiste">
@@ -136,7 +149,7 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código Postal</mat-label>
           <input matInput (keyup)="buscarCPostalEnv()" placeholder="" #envCodigoPostal formControlName="envCodigoPostal">
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <mat-hint *ngIf="forma.controls['envCodigoPostal'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
           <mat-hint *ngIf="forma.controls['envCodigoPostal'].errors?.noExiste">
@@ -236,7 +249,7 @@
           <mat-label>Zona</mat-label>
           <input matInput (keyup)="buscarZona()" placeholder="" type="number" #idZona formControlName="idZona" >
         </mat-form-field>
-        <mat-hint *ngIf="forma.status=='PENDING'">
+        <mat-hint *ngIf="forma.controls['idZona'].status == 'PENDING'">
           Buscando código...
         </mat-hint>
         <mat-hint *ngIf="forma.controls['idZona'].errors?.noExiste">
@@ -261,7 +274,7 @@
           <mat-label>Vendedor</mat-label>
           <input matInput (keyup)="buscarVendedor()" placeholder="" #idVendedor formControlName="idVendedor">
         </mat-form-field>
-        <mat-hint *ngIf="forma.status=='PENDING'">
+        <mat-hint *ngIf="forma.controls['idVendedor'].status == 'PENDING'">
           Buscando código...
         </mat-hint>
         <mat-hint *ngIf="forma.controls['idVendedor'].errors?.noExiste">
@@ -286,7 +299,7 @@
           <mat-label>Cobrador</mat-label>
           <input matInput (keyup)="buscarCobrador()" placeholder="" #idCobrador formControlName="idCobrador" >
         </mat-form-field>
-        <mat-hint *ngIf="forma.status=='PENDING'">
+        <mat-hint *ngIf="forma.controls['idCobrador'].status == 'PENDING'">
           Buscando código...
         </mat-hint>
         <mat-hint *ngIf="forma.controls['idCobrador'].errors?.noExiste">
@@ -317,8 +330,8 @@
       <div class="col s5 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Lista de precios</mat-label>
-          <input matInput (keyup)="buscarListaPrecios()" placeholder="" #listaPrecios formControlName="idlistaPrecios" >
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <input matInput (keyup)="buscarListaPrecios()" placeholder="" #idListaPrecios formControlName="idlistaPrecios" >
+          <mat-hint *ngIf="forma.controls['idlistaPrecios'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
           <mat-hint *ngIf="forma.controls['idlistaPrecios'].errors?.noExiste">
@@ -342,7 +355,7 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Condición Comercialización</mat-label>
           <input matInput (keyup)="buscarCondComercial()" placeholder="" #condComercial formControlName="condComercial" >
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <mat-hint *ngIf="forma.controls['condComercial'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
           <mat-hint *ngIf="forma.controls['condComercial'].errors?.noExiste">
@@ -366,16 +379,16 @@
       <div class="col s5 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Partida Presupuestaria</mat-label>
-          <input matInput (keyup)="buscarPartidaPresupuestaria()" placeholder="" #partidaPresupuestaria formControlName="partidaPresupuestaria" >
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <input matInput (keyup)="buscarPartidaPresupuestaria()" placeholder="" #idPartidaPresupuestaria formControlName="idPartidaPresupuestaria" >
+          <mat-hint *ngIf="forma.controls['idPartidaPresupuestaria'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
-          <mat-hint *ngIf="forma.controls['partidaPresupuestaria'].errors?.noExiste">
+          <mat-hint *ngIf="forma.controls['idPartidaPresupuestaria'].errors?.noExiste">
             La Partida no existe
           </mat-hint>
         </mat-form-field>
       </div>
-      <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_partidaspresupuestarias', 'partidaPresupuestaria')">
+      <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_partidaspresupuestarias', 'idPartidaPresupuestaria')">
         <a class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </a>
@@ -391,7 +404,7 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Referencia Contable</mat-label>
           <input matInput (keyup)="buscarRefContable()" placeholder="" #refContable formControlName="refContable" >
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <mat-hint *ngIf="forma.controls['refContable'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
           <mat-hint *ngIf="forma.controls['refContable'].errors?.noExiste">
@@ -414,16 +427,16 @@
       <div class="col s5 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo de Comprobante</mat-label>
-          <input matInput (keyup)="buscarTipoComprobante()" placeholder="" #tipoComprobante formControlName="tipoComprobante" >
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <input matInput (keyup)="buscarTipoComprobante()" placeholder="" #idTipoComprobante formControlName="idTipoComprobante" >
+          <mat-hint *ngIf="forma.controls['idTipoComprobante'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
-          <mat-hint *ngIf="forma.controls['tipoComprobante'].errors?.noExiste">
+          <mat-hint *ngIf="forma.controls['idTipoComprobante'].errors?.noExiste">
             El Tipo de Comprobante no existe
           </mat-hint>
         </mat-form-field>
       </div>
-      <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_tipocomprobante', 'tipoComprobante')">
+      <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_tipocomprobante', 'idTipoComprobante')">
         <a class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </a>
@@ -774,7 +787,7 @@
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>ID Artículo</mat-label>
             <input matInput (keyup)="buscarArticulo()" placeholder="" #artID type="number" formControlName="artID">
-            <mat-hint *ngIf="formaArticulo.status=='PENDING'">
+            <mat-hint *ngIf="formaArticulo.controls['artID'].status == 'PENDING'">
               Buscando código...
             </mat-hint>
             <mat-hint *ngIf="formaArticulo.controls['artID'].errors?.noExiste">
@@ -797,7 +810,7 @@
         <div class="col s5 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha última compra</mat-label>
-          <input matInput [matDatepicker]="picker" placeholder="">
+          <input matInput [matDatepicker]="picker" placeholder="" formControlName="ultimaFecha">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
@@ -805,7 +818,7 @@
         <div class="col s5 m3 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Precio última compra</mat-label>
-            <input matInput placeholder="" type="number" value="">
+            <input matInput placeholder="" type="number" formControlName="ultimoPrecio" value="">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
@@ -823,7 +836,7 @@
         <div class="col s5 m4 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Código artículo proveedor</mat-label>
-            <input matInput placeholder="" type="number" style="text-align: right;"
+            <input matInput placeholder="" type="number" style="text-align: right;" formControlName="codArtProv"
             value="">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
@@ -831,7 +844,7 @@
         <div class="col s10 m6 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Código barra proveedor</mat-label>
-            <input matInput placeholder="" style="text-align: right;"
+            <input matInput placeholder="" style="text-align: right;" formControlName="barrasArtProv"
             value="">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>

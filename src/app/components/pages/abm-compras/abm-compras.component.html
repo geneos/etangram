@@ -82,6 +82,16 @@
         </mat-form-field>
       </div>
       <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always"  style="width:100%;">
+          <mat-label>Modalidad de Comprobante</mat-label>
+            <mat-select placeholder="Elija una opción..." formControlName="cbtemodo">
+              <mat-option [value]="CAI">CAI</mat-option>
+              <mat-option [value]="CAE">CAE</mat-option>
+              <mat-option [value]="CAEA">CAEA</mat-option>
+            </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>CAI/CAE/CAEA</mat-label>
           <input matInput placeholder="" formControlName="caicae">
@@ -90,23 +100,23 @@
           </mat-hint>
         </mat-form-field>
       </div>
-      <div class="col s6 m3 l2">
+      <!--<div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha Vencimiento</mat-label>
           <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fechaVto">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
-      </div>
+      </div>-->
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Total</mat-label>
+          <mat-label>Importe Total</mat-label>
           <input matInput placeholder="" style="text-align:right;" type="number" formControlName="totalCabecera">
           <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m10 l10" *ngIf="editingCabecera">
+      <div class="col s9 m8 l9" *ngIf="editingCabecera">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Observaciones</mat-label>
           <textarea matInput placeholder="" formControlName="observaciones"></textarea>
@@ -117,6 +127,11 @@
           <mat-label>Expediente</mat-label>
           <input matInput placeholder="" formControlName="expediente" value="{{ expedientes.name }}">
         </mat-form-field>
+      </div>
+      <div class="col s3 m2 l1" style="margin-top:10px;">
+        <button type="button" class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones && !existeExp" (click)="abrirConsulta('c_proveedores')">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
     </div>
 

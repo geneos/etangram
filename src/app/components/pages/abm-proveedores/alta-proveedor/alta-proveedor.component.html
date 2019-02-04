@@ -426,51 +426,47 @@
         </div>
       </div>
       <!-- linea siguiente -->
-        <div formArrayName="cuentas" *ngFor="let ctas of forma.controls.cuentas?.value; let i = index">
+        <!-- <div formArrayName="cuentas" *ngFor="let ctas of forma.controls.cuentas?.value; let i = index"> -->
+      <div formArrayName="cuentas" *ngFor="let ctas of forma.controls.cuentas?.controls; let i = index">
         <ng-container [formGroupName]="i">
-            <input matInput placeholder="" type="number" formControlName="rcCbu">
-            <mat-select placeholder="Elija una opción" formControlName="rcTipo">
-              <mat-option value="1">Cuenta corriente</mat-option>
-              <mat-option value="2">Caja de ahorro</mat-option>
-            </mat-select>            
-            <input matInput placeholder="" type="number" formControlName="rcCuentaBancaria">
-            <input matInput placeholder="" type="number" formControlName="rcCodigoSucursal">
+          <div class="row" style="margin:5px !important;">
 
-        <!-- <div class="row" style="margin:5px !important;">
+            <div class="col s12 m12 l5">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>CBU</mat-label>
+                <input matInput placeholder="" type="number" formControlName="rcCbu">
+              </mat-form-field>
+            </div>
+            <div class="col s12 m3 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Tipo de cuenta</mat-label>
+                <mat-select placeholder="Elija una opción" formControlName="rcTipo">
+                  <mat-option value="1">Cuenta corriente</mat-option>
+                  <mat-option value="2">Caja de ahorro</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col s6 m4 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Cuenta bancaria</mat-label>
+                <input matInput placeholder="" type="number" formControlName="rcCuentaBancaria">
+              </mat-form-field>
+            </div>
+            <div class="col s3 m3 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Código de sucursal</mat-label>
+                <input matInput placeholder="" type="number" formControlName="rcCodigoSucursal">
+              </mat-form-field>
+            </div>
+            <div class="col s3 m2 l1">
+              <a (click)="deleteCuentasBanc(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+                -
+              </a>
+              <!-- <a (click)="forma.get('items').removeAt(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">-</a> -->
+              <!-- <a (click)="forma.controls.cuentas?.removeAt(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">-</a> -->
 
-          <div class="col s12 m12 l5">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>CBU</mat-label>
-              <input matInput placeholder="" type="number" formControlName="rcCbu">
-            </mat-form-field>
+            </div>
           </div>
-          <div class="col s12 m3 l2">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Tipo de cuenta</mat-label>
-              <mat-select placeholder="Elija una opción" formControlName="rcTipo">
-                <mat-option value="1">Cuenta corriente</mat-option>
-                <mat-option value="2">Caja de ahorro</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-          <div class="col s6 m4 l2">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Cuenta bancaria</mat-label>
-              <input matInput placeholder="" type="number" formControlName="rcCuentaBancaria">
-            </mat-form-field>
-          </div>
-          <div class="col s3 m3 l2">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Código de sucursal</mat-label>
-              <input matInput placeholder="" type="number" formControlName="rcCodigoSucursal">
-            </mat-form-field>
-          </div> -->
-          <div class="col s3 m2 l1">
-            <!-- <a (click)="deleteCuentasBanc(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-              -
-            </a> -->
-          </div>
-        <!-- </div> -->
         </ng-container>
       </div>
       <!-- </form> -->
@@ -552,256 +548,266 @@
      </div>
     
 
-    <!-- relacion lista de impuestos -->
-    <!-- <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
-      <span style="display:flex;">
-        <h6>Lista de Impuestos:</h6>
-        <a (click)="addImpuesto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
-          +
-        </a>
-      </span>
-    </div>
-    <form [formGroup]="formaImpuesto" novalidate="novalidate">
-    <div class="row" *ngFor="let item of impuestos; let in = index" style="margin:5px !important;">
-      <div class="col s10 m2 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Tipo</mat-label>
-          <mat-select placeholder="Elija una opción..." formControlName="tipo">
-            <mat-option *ngFor="let aux of impuestosAll" [value]="aux.id">
-              {{aux.name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col s10 m4 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Modelo</mat-label>
-          <mat-select placeholder="Elija una opción..." formControlName="modelo">
-            <mat-option *ngFor="let aux of modelosImpAll" [value]="aux.id">
-              {{aux.name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l4">
-      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-        <mat-label>Situación</mat-label>
-        <mat-select placeholder="Elija una opción" formControlName="situacion">
-          <mat-option value="1">Exento</mat-option>
-          <mat-option value="2">Inscripto</mat-option>
-          <mat-option value="3">No inscripto</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-      <div class="col s12 m2 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Código inscripción</mat-label>
-          <input matInput placeholder="" formControlName="codInscripcion" style="text-align: right;"
-           value="">
-        </mat-form-field>
-      </div>
-      <div class="col s12 m3 l3">
-      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-        <mat-label>Fecha Inscripción</mat-label>
-        <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaInscripcion">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      </div>
-      <div class="col s6 m4 l4" style="margin-top:12px;">
-          <mat-checkbox #poseeExenc formControlName="exenciones">¿Posee exenciones?</mat-checkbox>
-      </div>
-      <div class="col s6 m3 l3">
-        <a (click)="deleteImpuesto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-          -
-        </a>
-      </div> -->
-      
-      <!-- relacion impuestos exenciones -->
-      <!-- <form [formGroup]="formaExenciones" novalidate="novalidate">
-        <div class="col s12 m12 l12" style="margin-top:0px !important; margin-bottom: 15px !important; margin-left: 30px !important;" *ngIf="poseeExenc.checked">
-          <span style="display:flex;">
-            <h6>Exenciones:</h6>
-            <a (click)="addExencion(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
-              +
-            </a>
-          </span>
-        </div>
-        <div *ngIf="poseeExenc.checked">
-          <div class="row" *ngFor="let item of impuestos[in].exenciones; let in2 = index" style="margin:5px !important; margin-left: 30px !important;">
-            <div class="col s12 m2 l1">
-              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-                <mat-label>Número </mat-label>
-                <input matInput placeholder="" formControlName="nroExcencion">
-              </mat-form-field>
-            </div>
-            <div class="col s6 m3 l3">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Fecha Desde</mat-label>
-              <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fechaDesde">
-              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-              <mat-datepicker #picker1></mat-datepicker>
-            </mat-form-field>
-            </div>
-            <div class="col s6 m3 l3">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Fecha Hasta</mat-label>
-              <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechaHasta">
-              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-              <mat-datepicker #picker2></mat-datepicker>
-            </mat-form-field>
-            </div>
-            <div class="col s9 m3 l4">
-              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-                <mat-label>Observaciones </mat-label>
-                <input matInput placeholder="" formControlName="excencionObs">
-              </mat-form-field>
-            </div>
-            <div class="col s3 m1 l1">
-              <a (click)="deleteExencion(in,in2)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-                -
-              </a>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div> -->
-    <!--fin relacion-->
-  <!-- </form> -->
-    <!-- relacion formularios -->
-  <!-- <form [formGroup]="formaFormulario" novalidate="novalidate">
-    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
-      <span style="display:flex;">
-        <h6>Lista de Formularios/Documentos:</h6>
-        <a (click)="addFormulario()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
-          +
-        </a>
-      </span>
-    </div>
-   
-    <div class="row" *ngFor="let item of formularios; let in = index" style="margin:5px !important;">
-      <div class="col s12 m3 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Código Formulario</mat-label>
-          <input matInput placeholder="" formControlName="codForm">
-        </mat-form-field>
-      </div>
-      <div class="col s12 m3 l3">
-      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-        <mat-label>Fecha de Presentación</mat-label>
-        <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaPres">
-        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-      </mat-form-field>
-      </div>
-      <div class="col s12 m3 l3">
-      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-        <mat-label>Fecha de Vencimiento</mat-label>
-        <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaVenc">
-        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
-        <mat-datepicker #picker3></mat-datepicker>
-      </mat-form-field>
-      </div>
-      <div class="col s6 m3 l3">
-        <a (click)="deleteFormulario(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-          -
-        </a>
-      </div>
-    </div>
-  </form> -->
-    <!--fin relacion-->
-
-   </div>
- </mat-expansion-panel>
-
- <mat-expansion-panel [expanded]=false [disabled]=false style="margin-top:0px;">
-   <mat-expansion-panel-header>
-     <mat-panel-title>DATOS DE STOCK</mat-panel-title>
-   </mat-expansion-panel-header>
-
-    <!-- relacion stock -->
-    <!-- <form [formGroup]="formaArticulo" novalidate="novalidate">
+      <!-- relacion lista de impuestos -->
       <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
         <span style="display:flex;">
-          <h6>Artículos en Stock:</h6>
-          <a (click)="addArticulosStock()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+          <h6>Lista de Impuestos:</h6>
+          <a (click)="addImpuesto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
             +
           </a>
         </span>
       </div>
+      <!-- <form [formGroup]="formaImpuesto" novalidate="novalidate"> -->
+      <div formArrayName="impuestos" *ngFor="let imps of forma.controls.impuestos?.controls; let i = index">
+        <ng-container [formGroupName]="i">
+          <div class="row" style="margin:5px !important;">
+            <div class="col s10 m2 l3">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Tipo</mat-label>
+                <mat-select placeholder="Elija una opción..." formControlName="tipo">
+                  <mat-option *ngFor="let aux of impuestosAll" [value]="aux.id">
+                    {{aux.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col s10 m4 l3">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Modelo</mat-label>
+                <mat-select placeholder="Elija una opción..." formControlName="modelo">
+                  <mat-option *ngFor="let aux of modelosImpAll" [value]="aux.id">
+                    {{aux.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col s12 m4 l4">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Situación</mat-label>
+                <mat-select placeholder="Elija una opción" formControlName="situacion">
+                  <mat-option value="1">Exento</mat-option>
+                  <mat-option value="2">Inscripto</mat-option>
+                  <mat-option value="3">No inscripto</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col s12 m2 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Código inscripción</mat-label>
+                <input matInput placeholder="" formControlName="codInscripcion" style="text-align: right;"
+                value="">
+              </mat-form-field>
+            </div>
+            <div class="col s12 m3 l3">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Fecha Inscripción</mat-label>
+                <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaInscripcion">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col s6 m4 l4" style="margin-top:12px;">
+                <mat-checkbox #poseeExenc formControlName="exenciones">¿Posee exenciones?</mat-checkbox>
+            </div>
+            <div class="col s6 m3 l3">
+              <a (click)="deleteImpuesto(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+                -
+              </a>
+            </div>
+            
+            <!-- relacion impuestos exenciones -->
+            <!-- <form [formGroup]="formaExenciones" novalidate="novalidate">
+              <div class="col s12 m12 l12" style="margin-top:0px !important; margin-bottom: 15px !important; margin-left: 30px !important;" *ngIf="poseeExenc.checked">
+                <span style="display:flex;">
+                  <h6>Exenciones:</h6>
+                  <a (click)="addExencion(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+                    +
+                  </a>
+                </span>
+              </div>
+              <div *ngIf="poseeExenc.checked">
+                <div class="row" *ngFor="let item of impuestos[in].exenciones; let in2 = index" style="margin:5px !important; margin-left: 30px !important;">
+                  <div class="col s12 m2 l1">
+                    <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                      <mat-label>Número </mat-label>
+                      <input matInput placeholder="" formControlName="nroExcencion">
+                    </mat-form-field>
+                  </div>
+                  <div class="col s6 m3 l3">
+                  <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                    <mat-label>Fecha Desde</mat-label>
+                    <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fechaDesde">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                  </mat-form-field>
+                  </div>
+                  <div class="col s6 m3 l3">
+                  <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                    <mat-label>Fecha Hasta</mat-label>
+                    <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechaHasta">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker>
+                  </mat-form-field>
+                  </div>
+                  <div class="col s9 m3 l4">
+                    <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                      <mat-label>Observaciones </mat-label>
+                      <input matInput placeholder="" formControlName="excencionObs">
+                    </mat-form-field>
+                  </div>
+                  <div class="col s3 m1 l1">
+                    <a (click)="deleteExencion(in,in2)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+                      -
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div> -->
+          <!--fin relacion-->
+        <!-- </form> -->
+          <!-- relacion formularios -->
+        <!-- <form [formGroup]="formaFormulario" novalidate="novalidate">
+          <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+            <span style="display:flex;">
+              <h6>Lista de Formularios/Documentos:</h6>
+              <a (click)="addFormulario()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+                +
+              </a>
+            </span>
+          </div>
+        
+          <div class="row" *ngFor="let item of formularios; let in = index" style="margin:5px !important;">
+            <div class="col s12 m3 l3">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Código Formulario</mat-label>
+                <input matInput placeholder="" formControlName="codForm">
+              </mat-form-field>
+            </div>
+            <div class="col s12 m3 l3">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Fecha de Presentación</mat-label>
+              <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaPres">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+            </div>
+            <div class="col s12 m3 l3">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Fecha de Vencimiento</mat-label>
+              <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaVenc">
+              <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+              <mat-datepicker #picker3></mat-datepicker>
+            </mat-form-field>
+            </div>
+            <div class="col s6 m3 l3">
+              <a (click)="deleteFormulario(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+                -
+              </a>
+            </div>
+          </div>
+        </form> -->
+          <!--fin relacion-->
 
-      <div class="row" *ngFor="let item of articulosStock; let in = index" style="margin:5px !important;">
-        <div class="col s3 m2 l2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>ID Artículo</mat-label>
-            <input matInput (keyup)="buscarArticulo()" placeholder="" #artID type="number" formControlName="artID">
-            <mat-hint *ngIf="formaArticulo.controls['artID'].status == 'PENDING'">
-              Buscando código...
-            </mat-hint>
-            <mat-hint *ngIf="formaArticulo.controls['artID'].errors?.noExiste">
-              El artículo no existe
-            </mat-hint>
-          </mat-form-field>
-        </div>
-        <div class="col s1 m1 l1" style="margin-top:10px;">
-          <button class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artID')">
-            <i class="material-icons" style="font-size:20px;">more_horiz</i>
-          </button>
-        </div>
-        <div class="col s5 m6 l4">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Descripción Artículo</mat-label>
-            <input matInput placeholder="" value="" disabled formControlName="artDesc" value="{{articulo?.descripcion}}">
-          </mat-form-field>
-        </div>
-        <div class="col s5 m3 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Fecha última compra</mat-label>
-          <input matInput [matDatepicker]="picker" placeholder="" formControlName="ultimaFecha">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-        </div>
-        <div class="col s5 m3 l3">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Precio última compra</mat-label>
-            <input matInput placeholder="" type="number" formControlName="ultimoPrecio" value="">
-          </mat-form-field>
-        </div>
-        <div class="col s5 m4 l3">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Moneda</mat-label>
-            <mat-select placeholder="Elija una opción..." formControlName="moneda">
-              <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
-                {{aux.name}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col s5 m4 l2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Código artículo proveedor</mat-label>
-            <input matInput placeholder="" type="number" style="text-align: right;" formControlName="codArtProv"
-            value="">
-          </mat-form-field>
-        </div>
-        <div class="col s10 m6 l2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Código barra proveedor</mat-label>
-            <input matInput placeholder="" style="text-align: right;" formControlName="barrasArtProv"
-            value="">
-          </mat-form-field>
-        </div>
-        <div class="col s2 m2 l1">
-          <a (click)="deleteArticulosStock(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-            -
-          </a>
-        </div>
+          </div>
+        </ng-container>
       </div>
-    </form> -->
-    <!--fin relacion-->
+    </div>
+  </mat-expansion-panel>
 
- </mat-expansion-panel>
+  <mat-expansion-panel [expanded]=false [disabled]=false style="margin-top:0px;">
+    <mat-expansion-panel-header>
+      <mat-panel-title>DATOS DE STOCK</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <!-- relacion stock -->
+    <!-- <form [formGroup]="formaArticulo" novalidate="novalidate"> -->
+    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
+      <span style="display:flex;">
+        <h6>Artículos en Stock:</h6>
+        <a (click)="addArticulosStock()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+          +
+        </a>
+      </span>
+    </div>
+
+    <div formArrayName="articulos" *ngFor="let art of forma.controls.articulos?.controls; let i = index">
+      <ng-container [formGroupName]="i">
+        <div class="row" style="margin:5px !important;">
+          <div class="col s3 m2 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>ID Artículo</mat-label>
+              <input matInput (keyup)="buscarArticulo(i)" placeholder="" #artId type="number" formControlName="artID">
+              <!-- <mat-hint *ngIf="forma.controls.articulos[i].controls['artID'].status == 'PENDING'"> -->
+              <!-- <mat-hint *ngIf="forma.controls.articulos.value[i]['artID'].status == 'PENDING'"> -->
+              <mat-hint *ngIf="art.controls['artID'].status == 'PENDING'">
+                Buscando código...
+              </mat-hint>
+              <mat-hint *ngIf="art.controls['artID'].errors?.noExiste">
+                El artículo no existe
+              </mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="col s1 m1 l1" style="margin-top:10px;">
+            <button class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artID')">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button>
+          </div>
+          <div class="col s5 m6 l4">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Descripción Artículo</mat-label>
+              <input matInput placeholder="" value="" disabled formControlName="artDesc" value="{{articulo?.descripcion}}">
+            </mat-form-field>
+          </div>
+          <div class="col s5 m3 l3">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Fecha última compra</mat-label>
+            <input matInput [matDatepicker]="picker" placeholder="" formControlName="ultimaFecha">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          </div>
+          <div class="col s5 m3 l3">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Precio última compra</mat-label>
+              <input matInput placeholder="" type="number" formControlName="ultimoPrecio" value="">
+            </mat-form-field>
+          </div>
+          <div class="col s5 m4 l3">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Moneda</mat-label>
+              <mat-select placeholder="Elija una opción..." formControlName="moneda">
+                <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
+                  {{aux.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col s5 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Código artículo proveedor</mat-label>
+              <input matInput placeholder="" type="number" style="text-align: right;" formControlName="codArtProv"
+              value="">
+            </mat-form-field>
+          </div>
+          <div class="col s10 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Código barra proveedor</mat-label>
+              <input matInput placeholder="" style="text-align: right;" formControlName="barrasArtProv"
+              value="">
+            </mat-form-field>
+          </div>
+          <div class="col s2 m2 l1">
+            <a (click)="deleteArticulosStock(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+              -
+            </a>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <!-- </form> -->
+    <!--fin relacion-->
+  </mat-expansion-panel>
 
   <div class="row" style="margin-top:25px;">
     <div class="col s12" style="text-align: right;">

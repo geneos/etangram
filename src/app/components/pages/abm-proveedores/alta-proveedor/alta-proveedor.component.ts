@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
@@ -213,12 +213,12 @@ export class AltaProveedorComponent implements OnInit {
       cai: new FormControl(),
       fechaVtoCai: new FormControl(),
         //+ formaImpuesto
-        // impuestos: this.FormBuilder.array([]),
+        impuestos: this.FormBuilder.array([]),
           //excenciones dentro
         //+ formaFormulario
-        // formularios: this.FormBuilder.array([]),
+        formularios: this.FormBuilder.array([]),
       //STOCK
-      // articulos: this.FormBuilder.array([]),
+      articulos: this.FormBuilder.array([]),
       }
     );
     
@@ -412,7 +412,7 @@ export class AltaProveedorComponent implements OnInit {
     });
 
 
-    //todo agregar suscripción dentro del formarray
+    //movido adentro del agregado de items al array ==> movido adentro del buscarArticulo
     // this.formaArticulo.controls['artID'].valueChanges.subscribe(() => {
     //   // console.clear()
     //   setTimeout(() => {
@@ -525,7 +525,17 @@ export class AltaProveedorComponent implements OnInit {
     });
   }
   construirArticulo(){
-    return new FormGroup({
+    /* return new FormGroup({
+      'artID': new FormControl('', Validators.required, this.existeArticulo),
+        'artDesc': new FormControl(),
+      'ultimaFecha': new FormControl('', Validators.required),
+      'ultimoPrecio': new FormControl(),
+      'codArtProv': new FormControl(),
+      'barrasArtProv': new FormControl('', Validators.required),
+      'moneda': new FormControl('', Validators.required)
+    }); */
+
+    let articulo = new FormGroup({
       'artID': new FormControl('', Validators.required, this.existeArticulo),
         'artDesc': new FormControl(),
       'ultimaFecha': new FormControl('', Validators.required),
@@ -534,6 +544,8 @@ export class AltaProveedorComponent implements OnInit {
       'barrasArtProv': new FormControl('', Validators.required),
       'moneda': new FormControl('', Validators.required)
     });
+    articulo.controls['artDesc'].disable();
+    return articulo;
   }
 
   ngOnInit() {
@@ -556,11 +568,24 @@ export class AltaProveedorComponent implements OnInit {
   }
 
 //impuestos:any[]=[{'nroImpuesto':0,'exenciones':[{'nroExencion':0},]},];
-  addImpuesto(){
+  /* addImpuesto(){
     this.impuestos.push({'nroImpuesto':(this.impuestos.length),'exenciones':[{'nroExencion':0},]});
     console.log(this.impuestos)
   }
-  deleteImpuesto(ind){this.impuestos.splice(ind, 1);}
+  deleteImpuesto(ind){this.impuestos.splice(ind, 1);} */
+
+  addImpuesto(){
+    // this.impuestos.push({'nroImpuesto':(this.impuestos.length),'exenciones':[{'nroExencion':0},]});
+    // console.log(this.impuestos)
+
+    console.log('clickeado agregar impuesto');
+    const imps = this.forma.controls.impuestos as FormArray;
+    imps.push(this.construirImpuesto());
+  }
+  deleteImpuesto(indice: number){
+    const imps = this.forma.controls.impuestos as FormArray;
+    imps.removeAt(indice);
+  }
 
   addExencion(ind){
     this.impuestos[ind].exenciones.push({'nroExencion':this.impuestos[ind].exenciones.length});
@@ -572,15 +597,34 @@ export class AltaProveedorComponent implements OnInit {
   addFormulario(){this.formularios.push({'nroFormulario':(this.formularios.length)});}
   deleteFormulario(ind){this.formularios.splice(ind, 1);}
 
-  addArticulosStock(){this.articulosStock.push({'nroArticulosStock':(this.articulosStock.length)});}
-  deleteArticulosStock(ind){this.articulosStock.splice(ind, 1);}
+/*   addArticulosStock(){this.articulosStock.push({'nroArticulosStock':(this.articulosStock.length)});}
+  deleteArticulosStock(ind){this.articulosStock.splice(ind, 1);} */
 
+  addArticulosStock(){
+    // console.log('clickeado agregar articulo a ', this.forma.controls.articulos as FormArray);
+    // console.log('clickeado agregar articulo 2 a ', this.forma.controls.articulos as FormControl);
+    const arts = this.forma.controls.articulos as FormArray;
+    // console.log('arts: ', arts)
+    arts.push(this.construirArticulo());
+
+    console.log('agregado');
+
+  }
+  deleteArticulosStock(indice: number){
+    const arts = this.forma.controls.articulos as FormArray;
+    arts.removeAt(indice);
+  }
+
+  deleteCuentasBanc(indice: number){
+    // this.cuentasBanc.splice(ind, 1);
+    const ctas = this.forma.controls.cuentas as FormArray;
+    ctas.removeAt(indice);
+  }
   // addCuentaBanc(){this.cuentasBanc.push({'nroCuenta':(this.cuentasBanc.length)});}
-  // deleteCuentasBanc(ind){this.cuentasBanc.splice(ind, 1);}
   addCuentaBanc(){
+    // ctas.push(this.construirCuentaBancaria());
     console.log('clickeado agregar cuenta');
     const ctas = this.forma.controls.cuentas as FormArray;
-    // ctas.push(this.construirCuentaBancaria());
     ctas.push(this.FormBuilder.group({
         rcCbu: new FormControl('', Validators.required),
         rcTipo: new FormControl('', Validators.required),
@@ -1244,8 +1288,12 @@ export class AltaProveedorComponent implements OnInit {
             //console.log(this.refContablesAll);
       });
   }
-  buscarArticulo(){
-    this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
+  buscarArticulo(indice: number){
+    const arts = this.forma.controls.articulos as FormArray;
+    let id = arts.controls[indice].value['artID'];
+    // this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
+    console.log('buscando articulo con: ', id);
+    this._articulosService.getArticulo(id , this.token )
       .subscribe( data => {
         //console.log(dataRC);
           this.aData = data;
@@ -1260,16 +1308,27 @@ export class AltaProveedorComponent implements OnInit {
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarArticulo();
+                this.buscarArticulo(indice);
               });
             } else {
               if(this.aData.dataset.length>0){
                 this.articulo = this.aData.dataset[0];
                 console.log('articulo encontrada: ', this.articulo);
-                console.log('nombre de ref: ', this.articulo.descripcion)
+                console.log('nombre de ref: ', this.articulo.descripcion);
+                
+                //rellenar descripcion
+                ((this.forma.controls.articulos as FormArray).
+                  controls[indice] as FormGroup).
+                    controls['artDesc'].setValue(this.articulo.descripcion);
                 //this.loading = false;
               } else {
                 this.articulo = null;
+                console.log('no se encontro el articulo ' + id);
+                
+                //vaciar descripcion
+                ((this.forma.controls.articulos as FormArray).
+                  controls[indice] as FormGroup).
+                    controls['artDesc'].setValue('');
               }
             }
             //console.log(this.refContablesAll);

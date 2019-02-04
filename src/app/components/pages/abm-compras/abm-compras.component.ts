@@ -163,7 +163,7 @@ export class AbmComprasComponent implements OnInit {
   }
  
   buscarTiposComprobante(){
-    this._tiposComprobante.getTipoOperacion( "225170a7-747b-679b-9550-5adfa5718844", this.token )
+    this._tiposComprobante.getTipoOperacionPorIdTipoComprobante( "225170a7-747b-679b-9550-5adfa5718844", this.token )
       .subscribe( data => {
         //console.log(dataRC);
           this.tcData = data;

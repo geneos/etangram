@@ -72,6 +72,7 @@ export class AbmComprasComponent implements OnInit {
   uMedida: any;
   unidadesMedidas: UnidadMedida[] = [];
   existeProv: boolean = false;
+  existeExp: boolean = false;
 
   posicionesFiscales: string[] = ["N/D","IVA Responsable Inscripto","IVA Responsable no Inscripto",
 "IVA no Responsable","IVA Sujeto Exento","Consumidor Final","Responsable Monotributo",
@@ -107,8 +108,9 @@ export class AbmComprasComponent implements OnInit {
       'tipoComprobante': new FormControl('',Validators.required),
       'nroComprobante': new FormControl('',[Validators.required,Validators.pattern("^([a-z]|[A-Z]{1})([0-9]{4,5})-([0-9]{8})$")]),
       'fecha': new FormControl('',Validators.required),
+      'cbtemodo': new FormControl('',Validators.required),
       'caicae': new FormControl('',[Validators.required,Validators.pattern("^([0-9]{14})$")]),
-      'fechaVto': new FormControl('',Validators.required),
+      //'fechaVto': new FormControl('',Validators.required),
       'totalCabecera': new FormControl('',[Validators.required]),
       'observaciones': new FormControl(),
       'expediente': new FormControl()
@@ -149,11 +151,12 @@ export class AbmComprasComponent implements OnInit {
     if(this.expParam != null){
       this.forma.controls['expediente'].setValue(this.expParam);
       this.buscarExpediente();
-      this.forma.controls['expediente'].disable();
+      //this.existeExp = true;
+      //this.forma.controls['expediente'].disable();
     }
   }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.buscarTiposComprobante();
     this.unidadMedida();
   }
@@ -161,16 +164,16 @@ export class AbmComprasComponent implements OnInit {
   test(){
     //console.log(this.forma.controls['caicae'].errors)
   }
- 
+
   buscarTiposComprobante(){
-    this._tiposComprobante.getTipoOperacion( "225170a7-747b-679b-9550-5adfa5718844", this.token )
+    this._tiposComprobante.getTipoOperacionPorIdTipoComprobante( "225170a7-747b-679b-9550-5adfa5718844", this.token )
       .subscribe( data => {
         //console.log(dataRC);
           this.tcData = data;
           //auxProvData = this.proveedorData.dataset.length;
           if(this.tcData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.tipoComprobante = null;
+            /*this.tipoComprobante = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._tiposComprobante.login(jsonbody)
@@ -179,7 +182,8 @@ export class AbmComprasComponent implements OnInit {
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarTiposComprobante();
-              });
+              });*/
+              console.log("token invalido");
             } else {
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset;
@@ -262,9 +266,11 @@ export class AbmComprasComponent implements OnInit {
     this._compraService.getExpediente( this.expParam, this.token)
       .subscribe( data => {
         console.log(data);
-          this.eData = data; 
+          this.eData = data;
           if(this.eData.dataset.length>0){
             this.expedientes = this.eData.dataset[0];
+            this.existeExp = true;
+            this.forma.controls['expediente'].disable();
           } else {
             this.expedientes = null;
           }
@@ -287,7 +293,7 @@ export class AbmComprasComponent implements OnInit {
       selection: null,
       modal: 'consDinModal'
     }
-    
+
     let atributoAUsar: string;
     switch (consulta) {
       case 'c_proveedores':
@@ -301,12 +307,12 @@ export class AbmComprasComponent implements OnInit {
 
     console.log('enviando datosModal: ');
     console.log(datosModal);
-    
+
     // datosModal.columnSelection = this.columnSelection;
     console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
     this.ngxSmartModalService.resetModalData(datosModal.modal);
     this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
-    
+
     this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
       console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
 
@@ -321,22 +327,22 @@ export class AbmComprasComponent implements OnInit {
           this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
           // this['proveedor'] = null;
           this[control] = respuesta.selection[0];
-          
-          //todo 
+
+          //todo
           //disparar detección de cambios, cada parte es un intento distinto
           // this.proveedor = respuesta.selection[0];
-          
+
           // setTimeout(() => this.ref.detectChanges(), 1000);
           // this.ref.markForCheck();
-        
+
           // this.forma.controls['artDeProveedor'].updateValueAndValidity();
 
-         
+
         });
 
         // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
         // this.buscarProveedor();
-        
+
       }
       // this.establecerColumnas();
       // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
@@ -610,6 +616,6 @@ export class AbmComprasComponent implements OnInit {
       })
   }
 
-  
+
 
 }

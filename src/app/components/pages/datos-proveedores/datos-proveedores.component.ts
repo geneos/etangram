@@ -1,8 +1,10 @@
 import { Component, OnInit, Injectable, Inject } from '@angular/core';
 import { DatosProveedorService } from 'src/app/services/i2t/datos-proveedor.service';
-import { MatTable, MatSort, MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
+import { MatTable, MatHint, MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ValueTransformer } from '@angular/compiler/src/util';
+import { LocalidadesService } from 'src/app/services/i2t/localidades.service';
+import { Localidad } from 'src/app/interfaces/localidades.interface';
 import { Router, ActivatedRoute } from "@angular/router";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { UsuariosService } from 'src/app/services/i2t/usuarios.service';
@@ -10,7 +12,7 @@ import { Usuario } from 'src/app/interfaces/usuario.interface';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
-
+var auxLocData: any;
 @Injectable()
 
 @Component({
@@ -27,6 +29,7 @@ export class DatosProveedoresComponent implements OnInit {
   datosCabecera: datosCabecera[] = [];
   datosImpuesto : datosImpuesto[] = [];
   datosFormularios: datosFormularios[] = [];
+  localidades: Localidad[] = [];
   token: string = 'a';
   loginData: any;
   loading: boolean = true;
@@ -40,7 +43,8 @@ export class DatosProveedoresComponent implements OnInit {
   auxUserId: any;
   auxresp: any;
   idProv:string = null;
-
+  respLocalidad: any;
+  idLocalidad: any;
   modificando:boolean = false;
 
   dataSource = new MatTableDataSource<datosImpuesto>(this.datosImpuesto);
@@ -49,6 +53,7 @@ export class DatosProveedoresComponent implements OnInit {
   constructor(
     private _DatosProveedorService: DatosProveedorService,
     private _usuariosService: UsuariosService,
+    private _localidadesService: LocalidadesService,
     @Inject(SESSION_STORAGE) private storage: StorageService,
     private route:ActivatedRoute,
     public snackBar: MatSnackBar)
@@ -66,7 +71,7 @@ export class DatosProveedoresComponent implements OnInit {
       'codPostalFac': new FormControl(),
       'provinciaFac': new FormControl(),
       'calleEnv': new FormControl(),
-      'codPostalEnv': new FormControl(),
+      'codPostalEnv': new FormControl(this.existeLocalidad),
       'provinciaEnv': new FormControl(),
       'telefono1': new FormControl(),
       'telefono2': new FormControl(),
@@ -79,6 +84,20 @@ export class DatosProveedoresComponent implements OnInit {
       duration: 3000,
     });
   }
+
+  existeLocalidad( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxLocData==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
   ngOnInit() {
     this.getCabecera()
     this.forma.controls['calleFac'].disable();
@@ -93,7 +112,22 @@ export class DatosProveedoresComponent implements OnInit {
     this.forma.controls['email'].disable();
     this.obtenerIDUsuario();
   }
-
+  
+  buscarLocalidad(){
+    this._localidadesService.getLocalidades(this.forma.controls['codPostalEnv'].value, this.token)
+     .subscribe(dataL => {
+      console.log(dataL);
+      this.respLocalidad = dataL;
+      auxLocData = this.respLocalidad.dataset.length;
+       if(this.respLocalidad.dataset.length>0){
+        this.localidades = this.respLocalidad.dataset;
+        this.idLocalidad = this.localidades[0].id;
+        this.forma.controls['provinciaEnv'].setValue(this.localidades[0].name)       
+       } else {
+        this.localidades = null;
+       }
+     })
+  }
   modificar(){
     
     this.modificando = true;
@@ -106,10 +140,13 @@ export class DatosProveedoresComponent implements OnInit {
     this.forma.controls['telefono1'].enable();
     this.forma.controls['telefono2'].enable();
     this.forma.controls['telefono3'].enable();
-    
     this.forma.controls['email'].enable();
+
+    this.getCabecera()
     this.forma.controls['email'].setValue(this.datosCabecera[0].Email);
     this.forma.controls['calleEnv'].setValue(this.datosCabecera[0].Domicilio_envio);
+    this.forma.controls['codPostalEnv'].setValue(this.datosCabecera[0].Codigo_Postal_envio);
+    this.forma.controls['provinciaEnv'].setValue(this.datosCabecera[0].Ciudad_envio);
     this.forma.controls['telefono1'].setValue(this.datosCabecera[0].Telefono_Oficina);
     this.forma.controls['telefono2'].setValue(this.datosCabecera[0].Telefono_Movil);
     this.forma.controls['telefono3'].setValue(this.datosCabecera[0].Telefono_Fax);
@@ -125,7 +162,7 @@ export class DatosProveedoresComponent implements OnInit {
       "ID_User": this.auxUserId,        
       "Email": this.forma.controls['email'].value,        
       "Domicilio_envio":this.forma.controls['calleEnv'].value,       
-      "ID_Localidad_envio": this.datosCabecera[0].ID_Localidad,       
+      "ID_Localidad_envio": this.idLocalidad,       
       "Telefono_Oficina":this.forma.controls['telefono1'].value,       
       "Telefono_Alternativo":this.forma.controls['telefono2'].value,       
       "Telefono_Fax":this.forma.controls['telefono3'].value

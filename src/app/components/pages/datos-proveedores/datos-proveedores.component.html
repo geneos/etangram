@@ -51,9 +51,9 @@
               IMPUESTOS
             </mat-panel-title>
           </mat-expansion-panel-header> -->
-
-    <div class="row" style="margin-top:15px; margin-bottom:20px !important; float: left; width:60%;">
-      <!-- <th style="display:flex !important;
+       
+    <div class="row" style="margin-top:15px; margin-bottom:20px; margin-left:5px !important; float: left; width:55%;">
+     <div><p style="text-align:center !important;">IMPUESTOS</p></div> <!-- <th style="display:flex !important;
       justify-content:center!important;">IMPUESTOS</th> -->
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" >
         <!-- Fecha Column -->
@@ -98,8 +98,8 @@
           FORMULARIOS
         </mat-panel-title>
       </mat-expansion-panel-header> -->
-    <div class="row" style="margin-top:15px; margin-bottom:20px !important; float: left; width:40%;">
-        <!-- <th style="display:flex !important;
+    <div class="row" style="margin-top:15px; margin-bottom:20px; margin-left:15px !important; float: left; width:40%;">
+      <div><p style="text-align:center !important;">FORMULARIOS</p></div><!-- <th style="display:flex !important;
         justify-content:center !important;">FORMULARIOS</th>  -->
       <table mat-table [dataSource]="dataSource2" multiTemplateDataRows class="mat-elevation-z8">
 
@@ -125,9 +125,8 @@
         <ng-container matColumnDef= "opciones">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:left;">
-          <!--  <i (click)="print(element.nint)" class="material-icons" style="cursor: pointer">print</i> -->
-          <a href='{{ element.Url }}' style="margin-right:5px">Ver</a>
-          <a href='#'>Upd</a>
+            <a href='{{ element.Url }}'><i class="material-icons" style="cursor:pointer">visibility</i></a>
+            <a href='#'><i class="material-icons" style="cursor:pointer; margin-left: 10px;">edit</i></a>
           </td>
         </ng-container>
 
@@ -185,7 +184,13 @@
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
             <mat-label>Cod. Postal</mat-label>
-            <input matInput type="text"  placeholder="" formControlName="codPostalEnv" value="{{ datosCabecera[0].Codigo_Postal_envio }}">
+            <input (keyup)="buscarLocalidad()" matInput type="text"  placeholder="" formControlName="codPostalEnv" value="{{ datosCabecera[0].Codigo_Postal_envio }}">
+            <mat-hint *ngIf="forma.status=='PENDING'">
+              Buscando código...
+            </mat-hint>
+            <mat-hint *ngIf="forma.controls['codPostalEnv'].errors?.noExiste">
+              Localidad Inexistente
+            </mat-hint>
           </mat-form-field>
         </div>
         <div class="col s6 m3 l4" style="display: inline-block">

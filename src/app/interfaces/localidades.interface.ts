@@ -1,5 +1,6 @@
 export interface Localidad{
   id: string;
+  name: string;
   cpostal: number;
   subcpostal: number;
   cpostala: number;

@@ -28,6 +28,8 @@ import { ListaPrecios } from 'src/app/interfaces/lista-precios.interface';
 import { PartidaPresupuestariaService } from 'src/app/services/i2t/part-presupuestaria.service';
 import { ProveedoresService } from 'src/app/services/i2t/proveedores.service';
 import { resolveTimingValue } from '@angular/animations/browser/src/util';
+import { identifierName } from '@angular/compiler';
+import { ProveedorCabecera } from 'src/app/interfaces/proveedor.interface';
 
 const PROVEEDORES:any[] = [
   {'numero':0,'razonSocial':'Deux IT SRL','cuit':'30-123456789-9','posicionFiscal':'IVA Responsable Inscripto'},
@@ -38,6 +40,15 @@ const PROVEEDORES:any[] = [
 var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
     auxListaPrecios,auxCondComercial,auxPartidaPresupuestaria,auxRefContable,auxTipoComprobante: any;
 
+const catsBloqueoAll:any[]= [
+  { id: 1, name: 'cat test 1'},
+  { id: 2, name: 'cat test 2'}
+]
+const formsAll:any[]= [
+  { id: 1, name: 'form test 1'},
+  { id: 2, name: 'form test 2'}
+]
+
 @Component({
   selector: 'app-alta-proveedor',
   templateUrl: './alta-proveedor.component.html',
@@ -46,6 +57,7 @@ var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
 export class AltaProveedorComponent implements OnInit {
 
   token: string = "a";
+  loading: boolean;
 
   tipoReferente: string;
 
@@ -113,6 +125,7 @@ export class AltaProveedorComponent implements OnInit {
   tcData:any;//tipo de comprobante
   aData:any;//articulo
   respData:any; //respuestas de servicio proveedores
+  provData:any; //respuesta cabecera de proveedor
 
   tiposDocumentoAll:any[];
   catsReferenteAll:any[];
@@ -120,6 +133,7 @@ export class AltaProveedorComponent implements OnInit {
   monedasAll:any[];
   impuestosAll:any[];
   modelosImpAll:any[];
+  //catsBloqueoAll:any[];
   localidadFac: Localidad;
   localidadEnv: Localidad;
   provinciaFac: Provincia;
@@ -135,6 +149,8 @@ export class AltaProveedorComponent implements OnInit {
   referenciaContable: RefContable;
   tipoComprobante: TipoComprobante;
   articulo: Articulo;
+  provCabecera: ProveedorCabecera;
+
 
   loginData: any;
 
@@ -157,6 +173,7 @@ export class AltaProveedorComponent implements OnInit {
               public ngxSmartModalService: NgxSmartModalService,
               public snackBar: MatSnackBar,) 
   {
+    this.loading = true;
     this.forma = this.FormBuilder.group({ 
       tipoReferente: new FormControl('',Validators.required),
       numero: new FormControl('',Validators.required),
@@ -207,6 +224,7 @@ export class AltaProveedorComponent implements OnInit {
           descTipoComprobante: new FormControl(),
         //cuentas: aparte
         cuentas: this.FormBuilder.array([]),
+      catBloq: new FormControl(),
       //IMPUESTOS
       sitIVA: new FormControl(),
       cuit: new FormControl(),
@@ -353,7 +371,7 @@ export class AltaProveedorComponent implements OnInit {
       this.existe = false;
 
       if( this.id !== "nuevo" ){
-        for( let aux in this.constProveedores ){
+        /* for( let aux in this.constProveedores ){
           if (this.id == aux){
             this.existe=true;
             this.forma.controls['numero'].setValue(this.id);
@@ -361,7 +379,9 @@ export class AltaProveedorComponent implements OnInit {
             this.forma.controls['cuit'].setValue(this.constProveedores[this.id].cuit);
             this.forma.controls['posicionFiscal'].setValue(this.constProveedores[this.id].posicionFiscal);
           }
-        }
+        } */
+        this.obtenerProveedor();
+
         if (this.existe == false){
           console.log('no existe este id!');
           this.forma.controls['numero'].disable();
@@ -506,7 +526,8 @@ export class AltaProveedorComponent implements OnInit {
       'situacion': new FormControl('', Validators.required),
       'codInscripcion': new FormControl('', Validators.required),
       'fechaInscripcion': new FormControl('', Validators.required),
-      'exenciones': new FormControl()
+      'poseeExenciones': new FormControl(false),
+      'exenciones': new FormArray([])
     });
   }
   construirFormulario(){
@@ -560,6 +581,7 @@ export class AltaProveedorComponent implements OnInit {
     this.buscarModelosImp();
 
     this.tipoReferente = 'P';
+    this.loading = false;
   }
 
   copiarDireccion(){
@@ -587,15 +609,57 @@ export class AltaProveedorComponent implements OnInit {
     imps.removeAt(indice);
   }
 
-  addExencion(ind){
-    this.impuestos[ind].exenciones.push({'nroExencion':this.impuestos[ind].exenciones.length});
+  addExencion(ind: number){
+    // this.impuestos[ind].exenciones.push({'nroExencion':this.impuestos[ind].exenciones.length});
     //for(var i = 0; i < this.impuestos[0].exenciones.length; i++){console.log(this.impuestos[0].exenciones[i]);}
     //console.log(this.impuestos[ind].exenciones)
-  }
-  deleteExencion(indi,inde){this.impuestos[indi].exenciones.splice(inde, 1);}
+    console.log(ind, this.forma.controls)
+    const impuestos = this.forma.controls.impuestos as FormArray;
+    console.log('impuestos: ', impuestos)
+    console.log('impuesto ind: ', impuestos.controls[ind])
+    console.log('sintaxis rara: ', this.forma.get(['impuestos',ind,'exenciones']));
+    console.log('impuesto ind: ', impuestos.controls[ind]['exenciones'])
 
-  addFormulario(){this.formularios.push({'nroFormulario':(this.formularios.length)});}
-  deleteFormulario(ind){this.formularios.splice(ind, 1);}
+    console.log('intento de listar exenciones nro 1',
+      this.forma.controls.impuestos[ind])
+    /* console.log('intento de listar exenciones nro 2',
+      this.forma.controls.impuestos[ind].excenciones)
+    console.log('intento de listar exenciones nro 3',
+      this.forma.controls.impuestos[ind].excenciones.controls)
+    console.log('intento de listar exenciones nro 4',
+      this.forma.controls.impuestos[ind].excenciones[0].controls) */
+    // const exes = this.forma.controls.impuestos[ind].controls.exenciones as FormArray;
+    const exes= <FormArray>this.forma.get(['impuestos',ind,'exenciones']);
+    console.log('Lista de exenciones para impuesto ', ind, exes.length, exes);
+    exes.push(this.construirExcencion());
+    console.log('Nueva lista de exenciones para impuesto ', ind, exes.length, exes);
+  }
+  // deleteExencion(indi,inde){this.impuestos[indi].exenciones.splice(inde, 1);}
+  deleteExencion(i: number,j: number){
+    console.log('Borrando de la lista de exenciones para impuesto ', i, j);
+    // const exes = this.forma.controls.impuestos[i].controls.exenciones as FormArray;
+    const exes= <FormArray>this.forma.get(['impuestos',i,'exenciones']);
+    console.log('Lista de exenciones para impuesto ', i, exes);
+    exes.removeAt(j);
+    console.log('Nueva lista de exenciones para impuesto ', i, exes);
+  }
+
+  //todo agregar en html y cambiar metodos
+  /* addFormulario(){this.formularios.push({'nroFormulario':(this.formularios.length)});}
+  deleteFormulario(ind){this.formularios.splice(ind, 1);} */
+  
+  addFormulario(){
+    const forms= <FormArray>this.forma.get(['formularios']);
+    console.log('Lista de formularios ', forms.length, forms);
+    forms.push(this.construirFormulario());
+    console.log('Lista de formularios ', forms.length, forms);
+  }
+  deleteFormulario(ind: number){
+    const forms= <FormArray>this.forma.get(['formularios']);
+    console.log('Lista de formularios ', forms.length, forms);
+    forms.removeAt(ind);
+    console.log('Lista de formularios ', forms.length, forms);
+  }
 
 /*   addArticulosStock(){this.articulosStock.push({'nroArticulosStock':(this.articulosStock.length)});}
   deleteArticulosStock(ind){this.articulosStock.splice(ind, 1);} */
@@ -1334,6 +1398,42 @@ export class AltaProveedorComponent implements OnInit {
             //console.log(this.refContablesAll);
       });
   }
+  //
+  obtenerProveedor(){
+    // this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
+    console.log('buscando proveedor con: ', this.id);
+    this._proveedoresService.getCabeceraProveedor(this.id , this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.provData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.provData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.provCabecera = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.obtenerProveedor();
+              });
+            } else {
+              if(this.provData.dataset.length>0){
+                this.provCabecera = this.provData.dataset[0];
+                console.log('proveedor encontrado: ', this.provCabecera);
+                //this.loading = false;
+              } else {
+                this.provCabecera = null;
+                console.log('no se encontro el proveedor ' + this.id);
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
+  //carga de datos
+
 
   //validadores
   existeLocalidadFac( control: FormControl ): Promise<any>{
@@ -1615,7 +1715,7 @@ export class AltaProveedorComponent implements OnInit {
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.eliminarProveedor();
+                this.guardarProveedor();
               });
             } else {
               console.log(this.respData)
@@ -1623,40 +1723,123 @@ export class AltaProveedorComponent implements OnInit {
                 this.openSnackBar('Error al guardar Proveedor: ' + this.respData.returnset[0].RTxt);
               }
               else{
-                this.openSnackBar('Proveedor guardado con exito, redireccionando.');
+                this.openSnackBar('Cabecera de proveedor guardada con exito, continuando.');
+                this.guardarDatosProveedor(this.respData.Rid);
+                // this.openSnackBar('Proveedor guardado con exito, redireccionando.');
+
                 //todo agregar redirección
               }
             }
             //console.log(this.refContablesAll);
       });
+    }
+  }
 
+  guardarDatosProveedor(idProveedor: string){
+    //RELACION COMERCIAL
+    (<FormArray>this.forma.controls.cuentas).controls.forEach( cuenta => {
+       
+      console.log(cuenta);
+      let cuentaActual: FormGroup = <FormGroup>cuenta;
+      console.log(cuentaActual.controls['rcCbu'].value, 
+                  cuentaActual.controls['rcCuentaBancaria'].value, 
+                  cuentaActual.controls['rcCodigoSucursal'].value);
 
-
-      //RELACION COMERCIAL
       let jsbodyRC = {
-        "prov_codigo": auxRid, //Rid devuelto en el alta de proveedor
-        "p_cbu": this.forma.controls['rcCbu'].value,
-        "p_cuentabancaria": this.forma.controls['rcCuentaBancaria'].value,
-        "p_codigo_sucursal": this.forma.controls['rcCodigoSucursal'].value
+        "prov_codigo": idProveedor, //Rid devuelto en el alta de proveedor
+        "p_cbu": cuentaActual.controls['rcCbu'].value, //this.forma.controls['rcCbu'].value,
+        "p_cuentabancaria": cuentaActual.controls['rcCuentaBancaria'].value, //this.forma.controls['rcCuentaBancaria'].value,
+        "p_codigo_sucursal": cuentaActual.controls['rcCodigoSucursal'].value //this.forma.controls['rcCodigoSucursal'].value
       }
       let jsonbodyRC= JSON.stringify(jsbodyRC);
       console.log('json relacion', jsonbodyRC);
 
-      //IMPUESTOS
+      this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          console.log('respuesta postrelcomercial: ', this.respData);
+          // auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                // this.eliminarProveedor();
+                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+              }); */
+              this.openSnackBar('Token invalido posteando relacion comercial')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al guardar Relación Comercial: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+    });// fin foreach relación comercial
+
+    
+    //IMPUESTOS
+    (<FormArray>this.forma.controls.impuestos).controls.forEach( impuesto => {
+      let impuestoActual: FormGroup = <FormGroup>impuesto;
       let jsbodyImp = {
-        "Id_Proveedor": auxRid, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-        "p_imp_tipo" : this.formaImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
-        "p_imp_modelo" : this.formaImpuesto.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
-        "p_imp_situacion" : this.formaImpuesto.controls['situacion'].value,
-        "p_imp_codigo" : this.formaImpuesto.controls['codInscripcion'].value,//"1",
-        "p_imp_fecha_insc" : this.formaImpuesto.controls['fechaInscripcion'].value,//"1997-05-05",
-        "p_imp_excenciones" : this.formaImpuesto.controls['exenciones'].value,//"false",
-        "p_imp_fecha_comienzo_excencion" : this.formaImpuesto.controls['fechaDesde'].value, // → si es true
-        "p_imp_fecha_caducidad_excencion" : this.formaImpuesto.controls['fechaHasta'].value,//  → si es true
-        "p_imp_obs" :this.formaImpuesto.controls['excencionObs'].value
+        "Id_Proveedor": idProveedor, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        "p_imp_tipo" : impuestoActual.controls['tipo'].value, // id de tabla tg01_impuestos
+        "p_imp_modelo" : impuestoActual.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
+        "p_imp_situacion" : impuestoActual.controls['situacion'].value,
+        "p_imp_codigo" : impuestoActual.controls['codInscripcion'].value,//"1",
+        "p_imp_fecha_insc" : impuestoActual.controls['fechaInscripcion'].value,//"1997-05-05",
+        "p_imp_excenciones" : impuestoActual.controls['exenciones'].value,//"false",
+        "p_imp_fecha_comienzo_excencion" : impuestoActual.controls['fechaDesde'].value, // → si es true
+        "p_imp_fecha_caducidad_excencion" : impuestoActual.controls['fechaHasta'].value,//  → si es true
+        "p_imp_obs" :impuestoActual.controls['excencionObs'].value
       }
       let jsonbodyImp = JSON.stringify(jsbodyImp);
       console.log('json impuesto', jsonbodyImp);
+
+      this._proveedoresService.postImpuesto(jsonbodyImp, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          console.log('respuesta postimpuesto: ', this.respData);
+          // auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                // this.eliminarProveedor();
+                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+              }); */
+              this.openSnackBar('Token invalido posteando impuesto')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al guardar Impuesto: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+    });// fin foreach impuestos
+    /*
+      
+      
+
+      //IMPUESTOS
+      
 
       //FORMULARIOS
       let jsbodyForm = {
@@ -1701,8 +1884,8 @@ console.log('json form', jsonbodyForm);
     }else{
       //actualizando
     }
+    */
   }
-
 
 
   /*addImpuesto(){

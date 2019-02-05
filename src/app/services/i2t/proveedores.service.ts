@@ -39,7 +39,20 @@ export class ProveedoresService {
     return this.http.get( url , { headers });
   }
 
+  getCabeceraProveedor(idProveedor:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
 
+    let jsbody = {"Id_Proveedor": idProveedor}; //"ff413af6-ee5c-11e8-ab85-d050990fe081"
+    let body = JSON.stringify(jsbody);
+
+    let query = "api/proc/proveedores_GET_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
   /*
   postCabecera( body:string, token:string ){
     const headers = new HttpHeaders({

@@ -125,6 +125,8 @@ export class DatosProveedoresComponent implements OnInit {
         this.forma.controls['provinciaEnv'].setValue(this.localidades[0].name)       
        } else {
         this.localidades = null;
+        this.idLocalidad = null;
+        this.forma.controls['provinciaEnv'].setValue(null)  
        }
      })
   }
@@ -136,7 +138,7 @@ export class DatosProveedoresComponent implements OnInit {
     this.forma.controls['provinciaFac'].disable();
     this.forma.controls['calleEnv'].enable();
     this.forma.controls['codPostalEnv'].enable();
-    this.forma.controls['provinciaEnv'].enable();
+    this.forma.controls['provinciaEnv'].disable();
     this.forma.controls['telefono1'].enable();
     this.forma.controls['telefono2'].enable();
     this.forma.controls['telefono3'].enable();

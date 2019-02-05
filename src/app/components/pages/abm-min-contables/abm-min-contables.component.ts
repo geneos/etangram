@@ -143,7 +143,7 @@ export class AbmMinContablesComponent implements OnInit {
         "Id_Cliente":"",
         "Fecha_desde":"",
         "Fecha_hasta":"",
-        "param_limite":"1000",
+        "param_limite":"10000",
         "param_offset":"0"
     };
     let jsonbody= JSON.stringify(jsbody);
@@ -172,8 +172,8 @@ export class AbmMinContablesComponent implements OnInit {
                 console.log(this.minContablesAll);
                 this.loading = false;
                 //todo cambiar cuando se pueda traer sólo minutas con el servicio
-                this.constMinContables = new MatTableDataSource(this.minContablesAll);
-                //this.constMinContables = new MatTableDataSource(this.minContablesAll.filter(minuta => minuta.tipooperacion === '43966f4a-4fc8-11e8-b1a0-d050990fe081'));
+                //this.constMinContables = new MatTableDataSource(this.minContablesAll);
+                this.constMinContables = new MatTableDataSource(this.minContablesAll.filter(minuta => minuta.tipooperacion === '5d73571b-dbb1-a045-cce3-5adfa5f59c9c'));
 
                 this.constMinContables.sort = this.sort;
                 this.constMinContables.paginator = this.paginator;

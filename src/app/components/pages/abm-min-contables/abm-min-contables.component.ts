@@ -1,8 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
 import { MinContablesService } from 'src/app/services/i2t/min-contables.service';
 import { MinContable } from 'src/app/interfaces/min-contable.interface';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+
+// key that is used to access the data in local storage
+const TOKEN = '';
+
+@Injectable()
 
 @Component({
   selector: 'app-abm-min-contables',
@@ -54,7 +60,7 @@ export class AbmMinContablesComponent implements OnInit {
             fecha: '01/12/2018',
             tg01_cajas_id_c: 'd336b046-ee63-11e8-ab85-d050990fe081'
 
-        }, 
+        },
         {
           id: '2',
           name: 'Test 2',
@@ -70,7 +76,7 @@ export class AbmMinContablesComponent implements OnInit {
           fecha: '02/12/2018',
           tg01_cajas_id_c: 'd50a0d5c-c723-88d6-85df-5bf882d33847'
 
-      }, 
+      },
       {
         id: '3',
         name: 'Test 3',
@@ -87,11 +93,16 @@ export class AbmMinContablesComponent implements OnInit {
         tg01_cajas_id_c: 'd336b046-ee63-11e8-ab85-d050990fe081'
       }
     ]
-  } */ 
+  } */
   // todo borrar
 
+  constructor(
+    private _minContablesService:MinContablesService,
+    @Inject(SESSION_STORAGE) private storage: StorageService
+  ) {
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);
 
-  constructor(private _minContablesService:MinContablesService) {
     this.loading = true;
     this.buscarMinContable();
   }
@@ -126,21 +137,14 @@ export class AbmMinContablesComponent implements OnInit {
 
 
     /////
-    
-    let jsbody = {
 
+    let jsbody = {
         "ID_Comprobante":"",
-        
         "Id_Cliente":"",
-        
         "Fecha_desde":"",
-        
         "Fecha_hasta":"",
-        
-        "param_limite":"1000000",
-        
+        "param_limite":"10000",
         "param_offset":"0"
-        
     };
     let jsonbody= JSON.stringify(jsbody);
 
@@ -151,7 +155,7 @@ export class AbmMinContablesComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.mcData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.minContablesAll = null;
+            /*this.minContablesAll = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._minContablesService.login(jsonbody)
@@ -160,15 +164,16 @@ export class AbmMinContablesComponent implements OnInit {
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarMinContable();
-              });
+              });*/
+              console.log('token invalido')
             } else {
               if(this.mcData.dataset.length>0){
                 this.minContablesAll = this.mcData.dataset;
                 console.log(this.minContablesAll);
                 this.loading = false;
                 //todo cambiar cuando se pueda traer sólo minutas con el servicio
-                // this.constMinContables = new MatTableDataSource(this.minContablesAll);
-                this.constMinContables = new MatTableDataSource(this.minContablesAll.filter(minuta => minuta.tipooperacion === '43966f4a-4fc8-11e8-b1a0-d050990fe081'));
+                //this.constMinContables = new MatTableDataSource(this.minContablesAll);
+                this.constMinContables = new MatTableDataSource(this.minContablesAll.filter(minuta => minuta.tipooperacion === '5d73571b-dbb1-a045-cce3-5adfa5f59c9c'));
 
                 this.constMinContables.sort = this.sort;
                 this.constMinContables.paginator = this.paginator;
@@ -182,7 +187,7 @@ export class AbmMinContablesComponent implements OnInit {
             }
             //console.log(this.minContablesAll);
       });
-   
+
   }
 
   }

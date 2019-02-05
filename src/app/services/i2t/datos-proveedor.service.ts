@@ -59,4 +59,16 @@ export class DatosProveedorService {
 
     return this.http.post( url, body, { headers } );
   }
+
+  updCabecera( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'x-access-token': token
+    });
+
+    let query = "api/proc/datosproveedor_UPD_SP/"
+    let url = this.urlProveedor + query;
+
+    return this.http.post( url, body, { headers } );
+  }
 }

@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
       'idCompCpa': new FormControl(''),
       'idCrd': new FormControl(''),
       'idOrdPagos': new FormControl(''),
+      'idMCont': new FormControl(''),
       'idRet': new FormControl('')
     })
    }
@@ -68,7 +69,11 @@ export class LoginComponent implements OnInit {
     this.routerLinkVariable = '/consulta-retenciones'
     this.dynamicParameter = this.formaFormulario.controls['idRet'].value;
   }
-  compras(){
+  minCont(){
+    //this.routerLinkVariable = '/consulta-retenciones'
+    this.dynamicParameter = this.formaFormulario.controls['idMCont'].value;
+  }
+  /*compras(){
     this.routerLinkVariable = '/compra'
   }
   refContables(){
@@ -79,7 +84,7 @@ export class LoginComponent implements OnInit {
   }
   minContables(){
     this.routerLinkVariable = '/min-contables'
-  }
+  }*/
 
   login(){
     let jsbody = {

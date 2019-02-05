@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
     this.routerLinkVariable = '/consulta-retenciones'
     this.dynamicParameter = this.formaFormulario.controls['idRet'].value;
   }
-  compras(){
+  /*compras(){
     this.routerLinkVariable = '/compra'
   }
   refContables(){
@@ -79,7 +79,7 @@ export class LoginComponent implements OnInit {
   }
   minContables(){
     this.routerLinkVariable = '/min-contables'
-  }
+  }*/
 
   login(){
     let jsbody = {

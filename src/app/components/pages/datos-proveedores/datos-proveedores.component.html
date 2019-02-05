@@ -59,25 +59,25 @@
         <!-- Fecha Column -->
         <ng-container matColumnDef= "descripcion">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripción </th>
-          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.name_mode}} </td>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Impuesto}} </td>
         </ng-container>
 
         <!-- Comprobante Column -->
         <ng-container matColumnDef="situacion">
           <th mat-header-cell *matHeaderCellDef> Situación </th>
-          <td mat-cell *cdkCellDef="let element"> {{ element.situacion }} </td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Situacion }} </td>
         </ng-container>
 
         <!-- Expediente Column -->
         <ng-container matColumnDef="inscripcion">
           <th mat-header-cell *matHeaderCellDef> Inscripción </th>
-          <td mat-cell *cdkCellDef="let element"> {{ element.nroinscripcion }} </td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_inscripcion }} </td>
         </ng-container>
 
         <!-- Impuesto Column -->
         <ng-container matColumnDef="excencion">
           <th mat-header-cell *matHeaderCellDef> Exención </th>
-          <td mat-cell *cdkCellDef="let element"> Desde: {{ element.exen_fechadesde }} </td>
+          <td mat-cell *cdkCellDef="let element"> Desde: {{ element.Fecha_Desde_Exenciones }} Hasta: {{ element.Fecha_Hasta_Exenciones }}</td>
         </ng-container>
 
 
@@ -106,19 +106,19 @@
         <!-- Fecha Column -->
         <ng-container matColumnDef= "descripcion">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripción </th>
-          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.name }} </td>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Descripcion }} </td>
         </ng-container>
 
         <!-- Comprobante Column -->
         <ng-container matColumnDef="presentacion">
           <th mat-header-cell *matHeaderCellDef> Presentación </th>
-          <td mat-cell *cdkCellDef="let element"> {{ element.fechapresentacion }} </td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_presentacion }} </td>
         </ng-container>
 
         <!-- Expediente Column -->
         <ng-container matColumnDef="vencimiento">
           <th mat-header-cell *matHeaderCellDef> Vencimiento </th>
-          <td mat-cell *cdkCellDef="let element"> {{ element.fechavencimiento }} </td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_vencimiento }} </td>
         </ng-container>
 
         <!-- Opciones -->
@@ -126,7 +126,7 @@
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:left;">
           <!--  <i (click)="print(element.nint)" class="material-icons" style="cursor: pointer">print</i> -->
-          <a href='{{ element.url }}' style="margin-right:5px">Ver</a>
+          <a href='{{ element.Url }}' style="margin-right:5px">Ver</a>
           <a href='#'>Upd</a>
           </td>
         </ng-container>
@@ -157,7 +157,7 @@
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
             <mat-label>Calle</mat-label>
-            <input matInput type="text"  placeholder="" formControlName="calleFac" value="{{ datosCabecera[0].Domicilio }}">
+            <input matInput type="text"  placeholder="" formControlName="calleFac" value="{{ datosCabecera[0].Domicilio }}" >
           </mat-form-field>
         </div>
         <div class="col s6 m3 l4" style="display: inline-block">
@@ -168,7 +168,7 @@
         </div>
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
-            <mat-label>Provincia</mat-label>
+            <mat-label>Ciudad</mat-label>
             <input matInput type="text"  disabled placeholder="" formControlName="provinciaFac" value="{{ datosCabecera[0].Ciudad }}">
           </mat-form-field>
         </div>
@@ -190,7 +190,7 @@
         </div>
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
-            <mat-label>Provincia</mat-label>
+            <mat-label>Ciudad</mat-label>
             <input matInput type="text"  placeholder="" formControlName="provinciaEnv" value="{{ datosCabecera[0].Ciudad_envio }}">
           </mat-form-field>
         </div>
@@ -208,7 +208,7 @@
       <div class="row" style="margin-top:15px; margin-bottom:20px; width: 100% !important;">
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
-            <mat-label>Teléfono</mat-label>
+            <mat-label>Teléfono Oficina</mat-label>
             <input matInput type="text"  placeholder="" formControlName="telefono1" value="{{ datosCabecera[0].Telefono_Oficina }}">
           </mat-form-field>
         </div>
@@ -218,6 +218,12 @@
               <input matInput type="text"  placeholder="" formControlName="telefono2" value="{{ datosCabecera[0].Telefono_Movil }}">
             </mat-form-field>
         </div>
+        <div class="col s6 m3 l4" style="display: inline-block">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Fax</mat-label>
+            <input matInput type="text"  placeholder="" formControlName="telefono3" value="{{ datosCabecera[0].Telefono_Fax }}">
+          </mat-form-field>
+       </div>
       </div>
       <button *ngIf="!modificando" (click)="modificar()" class="mine-btnbig-grey" mat-flat-button>MODIFICAR</button>
       <button *ngIf="modificando" (click)="actualizar()" class="mine-btnbig" mat-flat-button>ACTUALIZAR</button>

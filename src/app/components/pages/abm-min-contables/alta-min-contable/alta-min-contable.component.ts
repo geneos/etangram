@@ -198,7 +198,7 @@ datos =
 
                 console.log(this.storage.get(TOKEN) || 'Local storage is empty');
                 this.token = this.storage.get(TOKEN);
-                
+
     this.forma = new FormGroup({
       'fecha': new FormControl('',Validators.required),
       'tipo': new FormControl(),
@@ -324,7 +324,7 @@ datos =
           //auxRefConData = this.mcData.dataset.length;
           if(this.tcData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.tipoComprobante = null;
+            /*this.tipoComprobante = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._parametrosService.login(jsonbody)
@@ -333,7 +333,8 @@ datos =
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarTipoComprobante(auxid);
-              });
+              });*/
+              console.log('token invalido')
             } else {
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset[0];
@@ -489,7 +490,7 @@ console.log('json armado: ');
           //auxRefConData = this.mcData.dataset.length;
           if(this.mcData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.minutaContable = null;
+            /*this.minutaContable = null;
             let jsbodyl = {"usuario":"usuario1","pass":"password1"}
             let jsonbodyl = JSON.stringify(jsbodyl);
             this._minContableService.login(  jsonbodyl )
@@ -499,7 +500,8 @@ console.log('json armado: ');
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarMinutasContables(auxid);
-              });
+              });*/
+              console.log('token invalido')
             } else {
               if(this.mcData.dataset.length>0){
                 this.minutaContable = this.mcData.dataset[0];
@@ -977,10 +979,7 @@ console.log('json armado: ');
           importe = 0+ this.formaReferencias.controls['haber'].value
         }
         let jsbody = {
-          // "ID_ComprobanteCab": this.cabeceraId,
-          "ID_ComprobanteDet": this.editingID, //ID_Item
-          // "ID_CentroCosto": refContableDet.centroDeCosto,
-          // "P_TipoImputacion": tipo,
+          "ID_ComprobanteDet": this.editingID,
           "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080', //morecchia //todo cambiar por uno real
           "P_Importe": importe
         }
@@ -993,7 +992,7 @@ console.log('json armado: ');
           if(this.respRenglon.returnset[0].RCode=="-6003"){
             //token invalido
             // this.refContable = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            /*let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._minContableService.login(jsonbody)
               .subscribe( dataL => {
@@ -1001,7 +1000,8 @@ console.log('json armado: ');
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this._minContableService.postMinContablesDet(jsonbody, this.token);//todo comprobar
-              });
+              });*/
+              console.log('token invalido')
           }
           else{
             console.log('respuesta del put detalle >>');
@@ -1010,7 +1010,7 @@ console.log('json armado: ');
             if (this.respRenglon.returnset[0].RCode == 1){
               // this.renglonId = this.respRenglon.returnset[0].RId;
               console.log(this.renglonId);
-              this.openSnackBar('Modificado el renglon de Minuta Contable');
+              this.openSnackBar('Datos guardados');
               // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
 
               // this.forma.controls['numero'].setValue(this.cabeceraId);
@@ -1020,8 +1020,6 @@ console.log('json armado: ');
             }
 
           }
-
-            this.openSnackBar('Datos guardados');
           });
         //actualizar lista
         //todo todo
@@ -1091,7 +1089,7 @@ console.log('json armado: ');
         if(this.respRenglon.returnset[0].RCode=="-6003"){
           //token invalido
           // this.refContable = null;
-          let jsbody = {"usuario":"usuario1","pass":"password1"}
+          /*let jsbody = {"usuario":"usuario1","pass":"password1"}
           let jsonbody = JSON.stringify(jsbody);
           this._minContableService.login(jsonbody)
             .subscribe( dataL => {
@@ -1099,7 +1097,8 @@ console.log('json armado: ');
               this.loginData = dataL;
               this.token = this.loginData.dataset[0].jwt;
               this._minContableService.postMinContablesDet(jsonbody, this.token);//todo comprobar
-            });
+            });*/
+            console.log('token invalido');
         }
         else{
           console.log('respuesta del post detalle >>');
@@ -1110,6 +1109,22 @@ console.log('json armado: ');
             console.log(this.renglonId);
             // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
 
+            this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
+            nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value,
+            centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
+            debe: this.formaReferencias.controls['debe'].value,
+            haber: this.formaReferencias.controls['haber'].value,
+            idEnMinuta: this.renglonId });
+
+            this.dataSource = new MatTableDataSource(this.refContableItemData)
+            this.table.renderRows();
+            console.log(this.dataSource);
+            this.totaldebe = Number(this.totaldebe) + Number(this.formaReferencias.controls['debe'].value);
+            this.totalhaber = Number(this.totalhaber) + Number(this.formaReferencias.controls['haber'].value);
+            this.addingReferencia = false;
+            this.editingAI = false;
+
+            this.openSnackBar('Datos guardados');
             // this.forma.controls['numero'].setValue(this.cabeceraId);
           }
           else{
@@ -1118,23 +1133,9 @@ console.log('json armado: ');
 
         }
 
-          this.openSnackBar('Datos guardados');
+
         })
 
-      this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
-      nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value,
-      centroDeCosto: this.formaReferencias.controls['centroDeCosto'].value,
-      debe: this.formaReferencias.controls['debe'].value,
-      haber: this.formaReferencias.controls['haber'].value,
-      idEnMinuta: this.renglonId });
-
-      this.dataSource = new MatTableDataSource(this.refContableItemData)
-      this.table.renderRows();
-      console.log(this.dataSource);
-      this.totaldebe = Number(this.totaldebe) + Number(this.formaReferencias.controls['debe'].value);
-      this.totalhaber = Number(this.totalhaber) + Number(this.formaReferencias.controls['haber'].value);
-      this.addingReferencia = false;
-      this.editingAI = false;
     }
    }
    else {
@@ -1167,7 +1168,7 @@ console.log('json armado: ');
       if(this.respRenglon.returnset[0].RCode=="-6003"){
         //token invalido
         // this.refContable = null;
-        let jsbody = {"usuario":"usuario1","pass":"password1"}
+        /*let jsbody = {"usuario":"usuario1","pass":"password1"}
         let jsonbody = JSON.stringify(jsbody);
         this._minContableService.login(jsonbody)
           .subscribe( dataL => {
@@ -1175,7 +1176,8 @@ console.log('json armado: ');
             this.loginData = dataL;
             this.token = this.loginData.dataset[0].jwt;
             this._minContableService.postMinContablesDet(jsonbody, this.token);//todo comprobar
-          });
+          });*/
+          console.log('token invalido');
       }
       else{
         console.log('respuesta del delete detalle >>');
@@ -1204,7 +1206,7 @@ console.log('json armado: ');
     console.log('editando referencia');
     this.editingAI = true;
     //this.compraArticulo = this.referenciasData[ind];
-
+    console.log(this.refContableItemData[ind]);
     this.formaReferencias.controls['refContable'].setValue(this.refContableItemData[ind].refContable);
     this.formaReferencias.controls['nombreRefContable'].setValue(this.refContableItemData[ind].nombreRefContable);
     this.formaReferencias.controls['centroDeCosto'].setValue(this.refContableItemData[ind].centroDeCosto);
@@ -1325,7 +1327,7 @@ console.log('json armado: ');
         this.respCabecera = resp;
         if(this.respCabecera.returnset[0].RCode=="-6003"){
           //token invalido
-          this.refContable = null;
+          /*this.refContable = null;
           let jsbody = {"usuario":"usuario1","pass":"password1"}
           let jsonbody = JSON.stringify(jsbody);
           this._minContableService.login(jsonbody)
@@ -1334,12 +1336,14 @@ console.log('json armado: ');
               this.loginData = dataL;
               this.token = this.loginData.dataset[0].jwt;
               this.guardarCabecera();
-            });
+            });*/
+            console.log('token invalido');
         }
         else{
           if (this.respCabecera.returnset[0].RId != null){
-            if (this.respCabecera.returnset[0].Rid === 0){
+            if (this.respCabecera.returnset[0].RId == "0"){
               this.openSnackBar(this.respCabecera.returnset[0].RTxt);
+              //this.router.navigate(['/min-contables', 'nuevo']);
             }
             else{
               this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
@@ -1349,6 +1353,12 @@ console.log('json armado: ');
               console.log(this.respCabecera);
               console.log(this.cabeceraId);
               console.log('<< respuesta del post');
+              this.forma.controls['fecha'].disable();
+              this.forma.controls['tipo'].disable();
+              this.forma.controls['numero'].disable();
+              this.forma.controls['organizacion'].disable();
+              this.forma.controls['moneda'].disable();
+              this.forma.controls['caja'].disable();
               setTimeout(() => {
                 // this.router.navigate(['nextRoute']);
                 this.editingCabecera = false;
@@ -1366,12 +1376,7 @@ console.log('json armado: ');
 
       });
 
-    this.forma.controls['fecha'].disable();
-    this.forma.controls['tipo'].disable();
-    this.forma.controls['numero'].disable();
-    this.forma.controls['organizacion'].disable();
-    this.forma.controls['moneda'].disable();
-    this.forma.controls['caja'].disable();
+
   }
 
   confirmar(  ){
@@ -1385,7 +1390,8 @@ console.log('json armado: ');
         "P_Total": Number(this.totalhaber) - Number(this.totaldebe),
         "P_Obs": this.minutaContable.description, //todo revisar
         "Id_Cliente": this.parametrosSistema.account_id1_c,
-        "P_Estado": 1
+        "P_Estado": 1,
+        "P_UpdImp":"S"
       };
       console.log('stringifeando');
       let jsonbody= JSON.stringify(jsbody);
@@ -1397,7 +1403,7 @@ console.log('json armado: ');
         if(this.respCabecera.returnset[0].RCode=="-6003"){
           //token invalido
           // this.refContable = null;
-          let jsbody = {"usuario":"usuario1","pass":"password1"}
+          /*let jsbody = {"usuario":"usuario1","pass":"password1"}
           let jsonbody = JSON.stringify(jsbody);
           this._minContableService.login(jsonbody)
             .subscribe( dataL => {
@@ -1405,7 +1411,8 @@ console.log('json armado: ');
               this.loginData = dataL;
               this.token = this.loginData.dataset[0].jwt;
               this.confirmar();
-            });
+            });*/
+            console.log('token invalido')
         }
         else{
           console.log(this.respCabecera);

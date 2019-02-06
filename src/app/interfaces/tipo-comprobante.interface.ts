@@ -28,3 +28,10 @@ export interface TipoComprobante{
     impuestos: number;
     activo: number;
 }
+export interface TipoComprobanteAfip{
+    tcom: string,
+    descripcion: string,
+    letra: string,
+    descripcion_afip: string,
+    codigo_afip: number
+} 

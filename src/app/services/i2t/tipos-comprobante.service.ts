@@ -57,4 +57,14 @@ export class TiposComprobanteService {
     return this.http.get( url , { headers });
   }
 
+  getTipoComprobanteAfip(idtipocomp:string, letra:string, token:string){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/c_tipocomprobanteafip?tcom=${ idtipocomp }&letra=${ letra }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
 }

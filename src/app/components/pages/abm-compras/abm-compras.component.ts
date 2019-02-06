@@ -5,13 +5,14 @@ import { CompraService } from "../../../services/i2t/compra.service";
 import { TiposComprobanteService } from "../../../services/i2t/tipos-comprobante.service";
 import { UnidadMedidaService } from "../../../services/i2t/unidad-medida.service";
 import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.interface";
-import { TipoComprobante } from "../../../interfaces/tipo-comprobante.interface";
+import { TipoComprobante, TipoComprobanteAfip } from "../../../interfaces/tipo-comprobante.interface";
 import { Expedientes } from "../../../interfaces/expedientes.interface"
 import { UnidadMedida } from "../../../interfaces/unidad-medida.interface"
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription, from } from 'rxjs';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { SlicePipe } from '@angular/common';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -63,7 +64,10 @@ export class AbmComprasComponent implements OnInit {
 
   tcData: any;
   tipoComprobante: TipoComprobante[] = [];
+  dataAfip: any;
+  datosCompAfip: TipoComprobanteAfip[] = [];
   tipoComp: string[] = [];
+  idCompAfip: any;
 
   eData: any;
   expedientes: Expedientes[] = [];
@@ -188,6 +192,7 @@ export class AbmComprasComponent implements OnInit {
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset;
                 console.log(this.tipoComprobante);
+                
                 //this.loading = false;
               } else {
                 this.tipoComprobante = null;
@@ -196,7 +201,7 @@ export class AbmComprasComponent implements OnInit {
             //console.log(this.refContablesAll);
       });
   }
-
+  
   abrirConsulta(consulta: string){
     console.clear();
     let datosModal : {
@@ -431,8 +436,16 @@ export class AbmComprasComponent implements OnInit {
   }
 
   guardarCabecera(){
+    
     this.editingCabecera = false;
-
+    let letra = (this.forma.controls['nroComprobante'].value.slice(0,1))
+    console.log(letra);
+    this._tiposComprobante.getTipoComprobanteAfip(this.forma.controls['tipoComprobante'].value, letra, this.token)
+      .subscribe( respAfip => {
+        this.dataAfip = respAfip
+        this.datosCompAfip = this.dataAfip
+        this.idCompAfip = this.datosCompAfip[0].codigo_afip
+      })
     let ano = this.forma.controls['fecha'].value.getFullYear().toString();
     let mes = (this.forma.controls['fecha'].value.getMonth()+1).toString();
     if(mes.length==1){mes="0"+mes};

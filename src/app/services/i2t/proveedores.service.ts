@@ -102,6 +102,18 @@ export class ProveedoresService {
     return this.http.post( url, body, { headers });
   }
 
+  postFormulario( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_formulario_INS_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
   postArticulo( body:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,

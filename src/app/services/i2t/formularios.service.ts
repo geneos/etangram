@@ -6,7 +6,7 @@ import { PreUrl } from './url';
 @Injectable({
   providedIn: 'root'
 })
-export class ListasPreciosService {
+export class FormulariosService {
 
   //compraProveedores:any [] = [];
   //preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
@@ -25,25 +25,25 @@ export class ListasPreciosService {
     return this.http.post( url, body, { headers } );
   }
 
-  getListas( token:string ){
+  getFormularios( token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tglp_tg_listasprecios`;
+    let query = `api/tg10_formularios`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
   }
 
-  getLista( id:string, token:string ){
+  getFormulario( id:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tglp_tg_listasprecios/${ id }`;
+    let query = `api/tg10_formularios/${ id }`;
     let url = this.preUrl + query;
-    console.log('buscado lista con url: ', url)
+
     return this.http.get( url , { headers });
   }
 

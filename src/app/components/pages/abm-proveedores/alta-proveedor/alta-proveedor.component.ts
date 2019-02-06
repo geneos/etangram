@@ -17,7 +17,7 @@ import { RefContable } from 'src/app/interfaces/ref-contable.interface';
 import { TipoComprobante } from 'src/app/interfaces/tipo-comprobante.interface';
 import { RefContablesService } from 'src/app/services/i2t/ref-contables.service';
 import { TiposComprobanteService } from 'src/app/services/i2t/tipos-comprobante.service';
-import { Articulo } from 'src/app/interfaces/articulo.interface';
+import { Articulo, cArticulo } from 'src/app/interfaces/articulo.interface';
 import { ArticulosService } from 'src/app/services/i2t/articulos.service';
 import { Zona } from 'src/app/interfaces/zona.interface';
 import { Vendedor } from 'src/app/interfaces/vendedor.interface';
@@ -25,11 +25,13 @@ import { ZonasService } from 'src/app/services/i2t/zonas.service';
 import { VendedoresService } from 'src/app/services/i2t/vendedores.service';
 import { ListasPreciosService } from 'src/app/services/i2t/listas-precios.service';
 import { ListaPrecios } from 'src/app/interfaces/lista-precios.interface';
-import { PartidaPresupuestariaService } from 'src/app/services/i2t/part-presupuestaria.service';
 import { ProveedoresService } from 'src/app/services/i2t/proveedores.service';
 import { resolveTimingValue } from '@angular/animations/browser/src/util';
 import { identifierName } from '@angular/compiler';
 import { ProveedorCabecera } from 'src/app/interfaces/proveedor.interface';
+import { CategoriasBloqueoService } from 'src/app/services/i2t/cat-bloqueo.service';
+import { FormulariosService } from 'src/app/services/i2t/formularios.service';
+import { PartidasPresupuestariasService } from 'src/app/services/i2t/part-presupuestaria.service';
 
 const PROVEEDORES:any[] = [
   {'numero':0,'razonSocial':'Deux IT SRL','cuit':'30-123456789-9','posicionFiscal':'IVA Responsable Inscripto'},
@@ -39,15 +41,6 @@ const PROVEEDORES:any[] = [
 
 var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
     auxListaPrecios,auxCondComercial,auxPartidaPresupuestaria,auxRefContable,auxTipoComprobante: any;
-
-const catsBloqueoAll:any[]= [
-  { id: 1, name: 'cat test 1'},
-  { id: 2, name: 'cat test 2'}
-]
-const formsAll:any[]= [
-  { id: 1, name: 'form test 1'},
-  { id: 2, name: 'form test 2'}
-]
 
 @Component({
   selector: 'app-alta-proveedor',
@@ -126,6 +119,8 @@ export class AltaProveedorComponent implements OnInit {
   aData:any;//articulo
   respData:any; //respuestas de servicio proveedores
   provData:any; //respuesta cabecera de proveedor
+  cbData:any; //categorias bloqueo
+  fData:any; //formularios/documentos
 
   tiposDocumentoAll:any[];
   catsReferenteAll:any[];
@@ -133,7 +128,8 @@ export class AltaProveedorComponent implements OnInit {
   monedasAll:any[];
   impuestosAll:any[];
   modelosImpAll:any[];
-  //catsBloqueoAll:any[];
+  catsBloqueoAll:any[];
+  formulariosAll:any[];
   localidadFac: Localidad;
   localidadEnv: Localidad;
   provinciaFac: Provincia;
@@ -149,6 +145,7 @@ export class AltaProveedorComponent implements OnInit {
   referenciaContable: RefContable;
   tipoComprobante: TipoComprobante;
   articulo: Articulo;
+  carticulo: cArticulo;
   provCabecera: ProveedorCabecera;
 
 
@@ -168,8 +165,10 @@ export class AltaProveedorComponent implements OnInit {
               private _zonasService: ZonasService,
               private _vendedoresService: VendedoresService,
               private _listasPreciosService: ListasPreciosService,
-              private _partidasPresupuestariasService: PartidaPresupuestariaService,
               private _proveedoresService: ProveedoresService,
+              private _categoriasBloqueoService: CategoriasBloqueoService,
+              private _formulariosService: FormulariosService,
+              private _partidasPresupuestariasService: PartidasPresupuestariasService,
               public ngxSmartModalService: NgxSmartModalService,
               public snackBar: MatSnackBar,) 
   {
@@ -199,21 +198,21 @@ export class AltaProveedorComponent implements OnInit {
       //RELACION COMERCIAL
         //categorias
         catRef: new FormControl(),
-        idZona: new FormControl(),
-        // idZona: new FormControl('', this.existeZona), //19/01/02 10:40=> no hay zonas
+        // idZona: new FormControl(),
+        idZona: new FormControl('', [], this.existeZona), //19/01/02 10:40=> no hay zonas
         zonaDesc: new FormControl(),
-        idVendedor: new FormControl(),
-        // idVendedor: new FormControl('', this.existeVendedor), //no hay vendedores
+        // idVendedor: new FormControl(),
+        idVendedor: new FormControl('', [], this.existeVendedor), //no hay vendedores
         vendedorDesc: new FormControl(),
-        // idCobrador: new FormControl('', this.existeCobrador),
-        idCobrador: new FormControl(),
+        // idCobrador: new FormControl(),
+        idCobrador: new FormControl('', [], this.existeCobrador),
         cobradorDesc: new FormControl(),
         limiteCredito: new FormControl(),
         //parametros
         idlistaPrecios: new FormControl('', [], this.existeListaPrecios),
         condComercial: new FormControl('', [], this.existeCondComercial),
-        idPartidaPresupuestaria: new FormControl(),
-        // 'idPartidaPresupuestaria': new FormControl('', this.existePartidaPresupuestaria),
+        // idPartidaPresupuestaria: new FormControl(),
+        idPartidaPresupuestaria: new FormControl('', [], this.existePartidaPresupuestaria),
         refContable: new FormControl('', [], this.existeRefContable),
         idTipoComprobante: new FormControl('', [], this.existeTipoComprobante),
           //descripciones de parametros
@@ -230,6 +229,8 @@ export class AltaProveedorComponent implements OnInit {
       cuit: new FormControl(),
       cai: new FormControl(),
       fechaVtoCai: new FormControl(),
+      cuitExterior: new FormControl(),
+      idImpositivo: new FormControl(),
         //+ formaImpuesto
         impuestos: this.FormBuilder.array([]),
           //excenciones dentro
@@ -384,10 +385,11 @@ export class AltaProveedorComponent implements OnInit {
 
         if (this.existe == false){
           console.log('no existe este id!');
-          this.forma.controls['numero'].disable();
+          this.forma.disable();
+          /* this.forma.controls['numero'].disable();
           this.forma.controls['razonSocial'].disable();
           this.forma.controls['cuit'].disable();
-          this.forma.controls['posicionFiscal'].disable();
+          this.forma.controls['posicionFiscal'].disable(); */
         }
       }
 
@@ -579,6 +581,8 @@ export class AltaProveedorComponent implements OnInit {
     this.buscarMonedas();
     this.buscarImpuestos();
     this.buscarModelosImp();
+    this.buscarCategoriasBloqueo();
+    this.buscarFormularios();
 
     this.tipoReferente = 'P';
     this.loading = false;
@@ -644,7 +648,6 @@ export class AltaProveedorComponent implements OnInit {
     console.log('Nueva lista de exenciones para impuesto ', i, exes);
   }
 
-  //todo agregar en html y cambiar metodos
   /* addFormulario(){this.formularios.push({'nroFormulario':(this.formularios.length)});}
   deleteFormulario(ind){this.formularios.splice(ind, 1);} */
   
@@ -892,6 +895,71 @@ export class AltaProveedorComponent implements OnInit {
 
       });
   }
+
+  buscarCategoriasBloqueo(){
+    // this._categoriasBloqueoService.getCategorias( this.token )
+    this._categoriasBloqueoService.getCategoriasDeUnTipo(this.tipoReferente, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.cbData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.cbData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.catsBloqueoAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._tiposDocumentoService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarCategoriasBloqueo();
+              });
+            } else {
+              if(this.cbData.dataset.length>0){
+                this.catsBloqueoAll = this.cbData.dataset;
+                console.log('obtenidos bloqueos', this.catsBloqueoAll);
+                //this.loading = false;
+
+              } else {
+                this.catsBloqueoAll = null;
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
+
+  buscarFormularios(){
+    this._formulariosService.getFormularios( this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.fData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.fData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.formulariosAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._tiposDocumentoService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarFormularios();
+              });
+            } else {
+              if(this.fData.dataset.length>0){
+                this.formulariosAll = this.fData.dataset;
+                console.log('obtenidos formularios', this.formulariosAll);
+                //this.loading = false;
+
+              } else {
+                this.formulariosAll = null;
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+  }
   //fin listas desplegables
 
   //autocompletado
@@ -1036,8 +1104,8 @@ export class AltaProveedorComponent implements OnInit {
   }
 
   buscarPaisFac(){
-    //todo cambiar hardcodeado por lo que viene en localidades
-    this._localidadesService.getPaises("e5dc7f36-31ba-acbf-8c72-5ba4042eec36", this.token )
+    //"e5dc7f36-31ba-acbf-8c72-5ba4042eec36"
+    this._localidadesService.getPaises(this.provinciaFac.tg01_paises_id_c, this.token )
       .subscribe( data => {
         //console.log(dataRC);
           this.pData = data;
@@ -1069,8 +1137,7 @@ export class AltaProveedorComponent implements OnInit {
   }
 
   buscarPaisEnv(){
-    //todo cambiar hardcodeado por lo que viene en localidades
-    this._localidadesService.getPaises("e5dc7f36-31ba-acbf-8c72-5ba4042eec36", this.token )
+    this._localidadesService.getPaises(this.provinciaEnv.tg01_paises_id_c, this.token )
       .subscribe( data => {
         //console.log(dataRC);
           this.pData = data;
@@ -1247,7 +1314,8 @@ export class AltaProveedorComponent implements OnInit {
                 this.buscarListaPrecios();
               });
             } else {
-              if(this.lpData.dataset.length>0){
+              console.log('respuesta lista de precios: ', this.lpData)
+              if(this.lpData.dataset.length==1){
                 this.listaPrecios = this.lpData.dataset[0];
                 console.log('listaPrecios encontrada: ', this.listaPrecios);
                 //this.loading = false;
@@ -1259,6 +1327,7 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
   buscarPartidaPresupuestaria(){
+    console.log('buscando partida con id:')
     this._partidasPresupuestariasService.getPartida(this.forma.controls['idPartidaPresupuestaria'].value, this.token )
       .subscribe( data => {
         //console.log(dataRC);
@@ -1277,6 +1346,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.buscarPartidaPresupuestaria();
               });
             } else {
+              console.log('resultado consulta partida: ', this.ppData)
               if(this.ppData.dataset.length>0){
                 this.partidaPresupuestaria = this.ppData.dataset[0];
                 console.log('partida encontrada: ', this.partidaPresupuestaria);
@@ -1340,6 +1410,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.buscarTipoComprobante();
               });
             } else {
+              console.log('resultado consulta partida: ', this.tcData)
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset[0];
                 console.log('tipo de comp encontrado: ', this.tipoComprobante);
@@ -1357,14 +1428,16 @@ export class AltaProveedorComponent implements OnInit {
     let id = arts.controls[indice].value['artID'];
     // this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
     console.log('buscando articulo con: ', id);
-    this._articulosService.getArticulo(id , this.token )
+    // this._articulosService.getArticulo(id , this.token )
+    this._articulosService.getcArticulo(id , this.token )
       .subscribe( data => {
         //console.log(dataRC);
           this.aData = data;
           auxArticulo = this.aData.dataset.length;
           if(this.aData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.articulo = null;
+            // this.articulo = null;
+            this.carticulo = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
@@ -1376,17 +1449,19 @@ export class AltaProveedorComponent implements OnInit {
               });
             } else {
               if(this.aData.dataset.length>0){
-                this.articulo = this.aData.dataset[0];
+                // this.articulo = this.aData.dataset[0];
+                this.carticulo = this.aData.dataset[0];
                 console.log('articulo encontrada: ', this.articulo);
                 console.log('nombre de ref: ', this.articulo.descripcion);
                 
                 //rellenar descripcion
                 ((this.forma.controls.articulos as FormArray).
                   controls[indice] as FormGroup).
-                    controls['artDesc'].setValue(this.articulo.descripcion);
+                    controls['artDesc'].setValue(this.carticulo.name);
                 //this.loading = false;
               } else {
-                this.articulo = null;
+                // this.articulo = null;
+                this.carticulo = null;
                 console.log('no se encontro el articulo ' + id);
                 
                 //vaciar descripcion
@@ -1399,6 +1474,8 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
   //
+
+  //todo cargar datos y buscar relacionados
   obtenerProveedor(){
     // this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
     console.log('buscando proveedor con: ', this.id);
@@ -1694,8 +1771,8 @@ export class AltaProveedorComponent implements OnInit {
         "p_cuit_c": this.forma.controls['cuit'].value,
         "p_cai"	: this.forma.controls['cai'].value, //CAI
         "p_fecha_vto_cai" : this.forma.controls['fechaVtoCai'].value,
-        "p_cuit_exterior" :"",//todo ver qué es, abajo también
-        "p_id_impositivo" :"" //id de consulta dinámica a tabla tg01_impuestos
+        "p_cuit_exterior" : this.forma.controls['cuitExterior'].value,//todo ver qué es, abajo también
+        "p_id_impositivo" : this.forma.controls['idImpositivo'].value //id de consulta dinámica a tabla tg01_impuestos
       }
       console.log(jsbody);
       let jsonbody= JSON.stringify(jsbody);
@@ -1796,9 +1873,9 @@ export class AltaProveedorComponent implements OnInit {
         "p_imp_situacion" : impuestoActual.controls['situacion'].value,
         "p_imp_codigo" : impuestoActual.controls['codInscripcion'].value,//"1",
         "p_imp_fecha_insc" : impuestoActual.controls['fechaInscripcion'].value,//"1997-05-05",
-        "p_imp_excenciones" : impuestoActual.controls['exenciones'].value,//"false",
-        "p_imp_fecha_comienzo_excencion" : impuestoActual.controls['fechaDesde'].value, // → si es true
-        "p_imp_fecha_caducidad_excencion" : impuestoActual.controls['fechaHasta'].value,//  → si es true
+        "p_imp_excenciones" : impuestoActual.controls['poseeExenciones'].value,//"false",
+        "p_imp_fecha_comienzo_excencion" : "",//impuestoActual.controls['fechaDesde'].value, // → si es true
+        "p_imp_fecha_caducidad_excencion" : "",//impuestoActual.controls['fechaHasta'].value,//  → si es true
         "p_imp_obs" :impuestoActual.controls['excencionObs'].value
       }
       let jsonbodyImp = JSON.stringify(jsbodyImp);
@@ -1834,57 +1911,152 @@ export class AltaProveedorComponent implements OnInit {
             //console.log(this.refContablesAll);
       });
     });// fin foreach impuestos
-    /*
-      
-      
+    
+    //FORMULARIOS
+    (<FormArray>this.forma.controls.formularios).controls.forEach( formulario => {
+      let formularioActual: FormGroup = <FormGroup>formulario;
 
-      //IMPUESTOS
-      
-
-      //FORMULARIOS
       let jsbodyForm = {
-        "Id_Proveedor": auxRid, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-        "p_form_codigo" : this.formaFormulario.controls['codForm'].value,
-        "p_form_fecha_pres" : this.formaFormulario.controls['fechaPres'].value,//"1997-05-05",
-        "p_form_fecha_vto" : this.formaFormulario.controls['fechaVenc'].value,//"1997-05-05"
+        "Id_Proveedor": idProveedor, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        "p_form_codigo" : formularioActual.controls['codForm'].value,
+        "p_form_fecha_pres" : formularioActual.controls['fechaPres'].value,//"1997-05-05",
+        "p_form_fecha_vto" : formularioActual.controls['fechaVenc'].value,//"1997-05-05"
       }
       let jsonbodyForm = JSON.stringify(jsbodyForm);
-console.log('json form', jsonbodyForm);
-      //ARTICULOS
+      console.log('json form', jsonbodyForm);
+
+      this._proveedoresService.postFormulario(jsonbodyForm, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          console.log('respuesta postformulario: ', this.respData);
+          // auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                // this.eliminarProveedor();
+                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+              }); */
+              this.openSnackBar('Token invalido posteando formulario')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al guardar Formulario: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+    });// fin foreach formularios
+
+    //ARTICULOS
+    (<FormArray>this.forma.controls.articulos).controls.forEach( articulo => {
+      let articuloActual: FormGroup = <FormGroup>articulo;
+
       let jsbodyArticulo = {
-        "prov_codigo": auxRid, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-        "p_stock_id_art": this.formaArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
-        "p_stock_fecha_ult_compra": this.formaArticulo.controls['ultimaFecha'].value, //"1997-05-05",
-        "p_stock_moneda": this.formaArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
-        "p_stock_codigo_barra_prov": this.formaArticulo.controls['barrasArtProv'].value, //Código de barra
+        "prov_codigo": idProveedor, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        "p_stock_id_art": articuloActual.controls['artID'].value, //id de consulta dinámica a tabla articulos
+        "p_stock_fecha_ult_compra": articuloActual.controls['ultimaFecha'].value, //"1997-05-05",
+        "p_stock_moneda": articuloActual.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
+        "p_stock_codigo_barra_prov": articuloActual.controls['barrasArtProv'].value, //Código de barra
         //ultimoPrecio
         //codArtProv
       }
       let jsonbodyArticulo = JSON.stringify(jsbodyArticulo);
       console.log('json form', jsonbodyArticulo);
 
-      //AFIP
-      //todo terminar
-      let jsbodyAFIP = {
-        "prov_codigo": auxRid, //"10029227-fd3e-11e8-9532-d050990fe081", Rid devuelto en el alta de proveedor
-        "p_afip_estado":"1", //Campo “Estado según AFIP”
-        "p_afip_dom":"1", //Domicilio
-        "p_afip_cp":"1", //CP
-        "p_afip_loc":"1", //id Localidad 
-        "p_afip_id_provincia":"1", //Provincia
-        "p_afip_apellido":"", //Apellido
-        "p_afip_nombre":"", //Nombre
-        "p_afip_razon_social"	:"1", //Razón Social
-        "p_afip_tipo_persona":"", //Tipo Persona
-        "p_afip_tipo_doc":"", //Tipo documento
-        "p_afip_nro_doc":65198 //Documento
-        }
-      let jsonbodyAFIP = JSON.stringify(jsbodyAFIP);
-      console.log('json afip', jsonbodyAFIP);
-    }else{
+      this._proveedoresService.postArticulo(jsonbodyArticulo, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          console.log('respuesta postarticulo: ', this.respData);
+          // auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                // this.eliminarProveedor();
+                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+              }); */
+              this.openSnackBar('Token invalido posteando articulo')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al guardar Articulo: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+    });// fin foreach articulos
+
+    //AFIP
+    //todo terminar
+    let jsbodyAFIP = {
+      "prov_codigo": idProveedor, //"10029227-fd3e-11e8-9532-d050990fe081", Rid devuelto en el alta de proveedor
+      "p_afip_estado":"1", //Campo “Estado según AFIP”
+      "p_afip_dom":"1", //Domicilio
+      "p_afip_cp":"1", //CP
+      "p_afip_loc":"1", //id Localidad 
+      "p_afip_id_provincia":"1", //Provincia
+      "p_afip_apellido":"", //Apellido
+      "p_afip_nombre":"", //Nombre
+      "p_afip_razon_social"	:"1", //Razón Social
+      "p_afip_tipo_persona":"", //Tipo Persona
+      "p_afip_tipo_doc":"", //Tipo documento
+      "p_afip_nro_doc":65198 //Documento
+      }
+    let jsonbodyAFIP = JSON.stringify(jsbodyAFIP);
+    console.log('json afip', jsonbodyAFIP);
+
+    this._proveedoresService.postImpuesto(jsonbodyAFIP, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+        this.respData = data;
+        console.log('respuesta postafip: ', this.respData);
+        // auxProvData = this.proveedorData.dataset.length;
+        if(this.respData.returnset[0].RCode=="-6003"){
+          //token invalido
+          /* let jsbody = {"usuario":"usuario1","pass":"password1"}
+          let jsonbody = JSON.stringify(jsbody);
+          this._localidadesService.login(jsonbody)
+            .subscribe( dataL => {
+              console.log(dataL);
+              this.loginData = dataL;
+              this.token = this.loginData.dataset[0].jwt;
+              // this.eliminarProveedor();
+              this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+            }); */
+            this.openSnackBar('Token invalido posteando afip')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al guardar Datos de AFIP: ' + this.respData.returnset[0].RTxt);
+            }
+            else{
+              // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+            }
+          }
+          //console.log(this.refContablesAll);
+    });
+    
+    
+    /* else{
       //actualizando
-    }
-    */
+    } */
+    
   }
 
 
@@ -1941,8 +2113,8 @@ console.log('json form', jsonbodyForm);
       "p_cuit_c": this.forma.controls['cuit'].value,
       "p_cai"	: this.forma.controls['cai'].value, //CAI
       "p_fecha_vto_cai" : this.forma.controls['fechaVtoCai'].value,
-      "p_cuit_exterior" :"",//todo ver qué es, abajo también
-      "p_id_impositivo" :"" //id de consulta dinámica a tabla tg01_impuestos
+      "p_cuit_exterior" :this.forma.controls['cuitExterior'].value,//todo ver qué es, abajo también
+      "p_id_impositivo" :this.forma.controls['idImpositivo'].value //id de consulta dinámica a tabla tg01_impuestos
     }
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);

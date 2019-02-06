@@ -6,7 +6,7 @@ import { PreUrl } from './url';
 @Injectable({
   providedIn: 'root'
 })
-export class PartidaPresupuestariaService {
+export class PartidasPresupuestariasService {
 
   //compraProveedores:any [] = [];
   //preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
@@ -30,20 +30,20 @@ export class PartidaPresupuestariaService {
       'x-access-token': token
     });
 
-    let query = `api/tg01_partidaspresupuestarias`;
+    let query = `api/tg05_partidas_presupuestaria`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
   }
 
-  getPartida( id:string, token:string ){
+  getPartida( id:number, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tg01_partidaspresupuestarias/${ id }`;
+    let query = `api/tg05_partidas_presupuestaria?codigo_partida=eq[${ id }]`;
     let url = this.preUrl + query;
-
+    console.log('url consulta partida: ' + url)
     return this.http.get( url , { headers });
   }
 

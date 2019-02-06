@@ -217,13 +217,13 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Zona</mat-label>
           <input matInput (keyup)="buscarZona()" placeholder="" type="number" #idZona formControlName="idZona" >
+          <mat-hint *ngIf="forma.controls['idZona'].status == 'PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['idZona'].errors?.noExiste">
+            La Zona no existe
+          </mat-hint>
         </mat-form-field>
-        <mat-hint *ngIf="forma.controls['idZona'].status == 'PENDING'">
-          Buscando código...
-        </mat-hint>
-        <mat-hint *ngIf="forma.controls['idZona'].errors?.noExiste">
-          La Zona no existe
-        </mat-hint>
       </div>
       <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_zonas', 'idZona')">
         <a class="mine-btnforms" mat-flat-button>
@@ -241,13 +241,13 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Vendedor</mat-label>
           <input matInput (keyup)="buscarVendedor()" placeholder="" #idVendedor formControlName="idVendedor">
+          <mat-hint *ngIf="forma.controls['idVendedor'].status == 'PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['idVendedor'].errors?.noExiste">
+            El Vendedor no existe
+          </mat-hint>
         </mat-form-field>
-        <mat-hint *ngIf="forma.controls['idVendedor'].status == 'PENDING'">
-          Buscando código...
-        </mat-hint>
-        <mat-hint *ngIf="forma.controls['idVendedor'].errors?.noExiste">
-          El Vendedor no existe
-        </mat-hint>
       </div>
       <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_vendedores', 'idVendedor')">
         <a class="mine-btnforms" mat-flat-button>
@@ -265,13 +265,13 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cobrador</mat-label>
           <input matInput (keyup)="buscarCobrador()" placeholder="" #idCobrador formControlName="idCobrador" >
+          <mat-hint *ngIf="forma.controls['idCobrador'].status == 'PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['idCobrador'].errors?.noExiste">
+            El Cobrador no existe
+          </mat-hint>
         </mat-form-field>
-        <mat-hint *ngIf="forma.controls['idCobrador'].status == 'PENDING'">
-          Buscando código...
-        </mat-hint>
-        <mat-hint *ngIf="forma.controls['idCobrador'].errors?.noExiste">
-          El Cobrador no existe
-        </mat-hint>
       </div> 
       <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_vendedores', 'idCobrador')">
         <a class="mine-btnforms" mat-flat-button>
@@ -355,7 +355,7 @@
       <div class="col s6 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Desc. Partida Presupuestaria</mat-label>
-          <input matInput placeholder="" formControlName="descPartidaPresupuestaria" value="{{partidaPresupuestaria?.name}}">
+          <input matInput placeholder="" formControlName="descPartidaPresupuestaria" value="{{partidaPresupuestaria?.NAME}}">
         </mat-form-field>
       </div>
 
@@ -492,7 +492,7 @@
           <mat-label>Categoría de Bloqueo</mat-label>
           <mat-select placeholder="Elija una opción..." formControlName="catBloq">
             <mat-option *ngFor="let aux of catsBloqueoAll" [value]="aux.id">
-              {{aux.name}}
+              {{aux.codigo}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -544,17 +544,16 @@
      <div class="col s12 m6 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>CUIT del Exterior</mat-label>
-          <input matInput placeholder="">
+          <input matInput placeholder="" formControlName="cuitExterior">
         </mat-form-field>
      </div>
      <div class="col s12 m6 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Id Impositivo</mat-label>
-          <input matInput placeholder="">
+          <input matInput placeholder="" formControlName="idImpositivo">
         </mat-form-field>
      </div>
     
-
       <!-- relacion lista de impuestos -->
       <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
         <span style="display:flex;">
@@ -694,7 +693,7 @@
           <div class="row" style="margin:5px !important;">
             <div class="col s12 m3 l3">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-                <mat-label>Categoría de Bloqueo</mat-label>
+                <mat-label>Formulario</mat-label>
                 <mat-select placeholder="Elija una opción..." formControlName="codForm">
                   <mat-option *ngFor="let aux of formsAll" [value]="aux.id">
                     {{aux.name}}

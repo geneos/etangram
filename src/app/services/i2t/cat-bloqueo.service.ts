@@ -6,7 +6,7 @@ import { PreUrl } from './url';
 @Injectable({
   providedIn: 'root'
 })
-export class ListasPreciosService {
+export class CategoriasBloqueoService {
 
   //compraProveedores:any [] = [];
   //preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
@@ -25,26 +25,47 @@ export class ListasPreciosService {
     return this.http.post( url, body, { headers } );
   }
 
-  getListas( token:string ){
+  getCategorias( token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tglp_tg_listasprecios`;
+    let query = `api/tg01_categoriabloqueo`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
   }
 
-  getLista( id:string, token:string ){
+  getCategoria( id:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
-    let query = `api/tglp_tg_listasprecios/${ id }`;
+    let query = `api/tg01_categoriabloqueo/${ id }`;
     let url = this.preUrl + query;
-    console.log('buscado lista con url: ', url)
+
     return this.http.get( url , { headers });
   }
 
+  getCategoriasDeUnTipo(tipo:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_categoriabloqueo?tipo=eq[${ tipo }]`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+/* 
+  getCategoriaDeUnTipo(tipo:string, id:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_categoriabloqueo/${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  } */
 }

@@ -47,4 +47,25 @@ export class ArticulosService {
     return this.http.get( url , { headers });
   }
 
+  getcArticulos( token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/c_articulos`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getcArticulo( id:number, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/c_articulos/${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
 }

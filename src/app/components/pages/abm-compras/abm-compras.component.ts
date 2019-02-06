@@ -67,7 +67,7 @@ export class AbmComprasComponent implements OnInit {
   dataAfip: any;
   datosCompAfip: TipoComprobanteAfip[] = [];
   tipoComp: string[] = [];
-  idCompAfip: any;
+  idCompAfip: number;
 
   eData: any;
   expedientes: Expedientes[] = [];
@@ -442,8 +442,9 @@ export class AbmComprasComponent implements OnInit {
     console.log(letra);
     this._tiposComprobante.getTipoComprobanteAfip(this.forma.controls['tipoComprobante'].value, letra, this.token)
       .subscribe( respAfip => {
+        console.log(respAfip)
         this.dataAfip = respAfip
-        this.datosCompAfip = this.dataAfip
+        this.datosCompAfip = this.dataAfip.dataset
         this.idCompAfip = this.datosCompAfip[0].codigo_afip
       })
     let ano = this.forma.controls['fecha'].value.getFullYear().toString();
@@ -489,8 +490,9 @@ export class AbmComprasComponent implements OnInit {
     this.forma.controls['nroComprobante'].disable();
     this.forma.controls['fecha'].disable();
     this.forma.controls['caicae'].disable();
-    this.forma.controls['fechaVto'].disable();
+    this.forma.controls['cbtemodo'].disable();
     this.forma.controls['totalCabecera'].disable();
+    this.forma.controls['expediente'].disable();
   }
 
   guardarArticulo(){

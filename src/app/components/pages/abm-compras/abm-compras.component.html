@@ -122,13 +122,13 @@
           <textarea matInput placeholder="" formControlName="observaciones"></textarea>
         </mat-form-field>
       </div>
-      <div class="col s12 m2 l2" *ngIf="editingCabecera">
+      <div class="col s12 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Expediente</mat-label>
           <input matInput placeholder="" formControlName="expediente" value="{{ expedientes.name }}">
         </mat-form-field>
       </div>
-      <div class="col s3 m2 l1" style="margin-top:10px;">
+      <div class="col s3 m2 l1"  *ngIf="editingCabecera" style="margin-top:10px;">
         <button type="button" class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones && !existeExp" (click)="abrirConsulta('c_proveedores')">
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>

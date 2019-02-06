@@ -71,6 +71,7 @@ import { CdTablaN2Component } from './components/shared/modals/cd-tabla-n2/cd-ta
 import { from } from 'rxjs';
 import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
 import { LoginComponent } from './components/pages/login/login.component';
+import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicidad/ordenes-publicidad.component';
 
 
 
@@ -118,7 +119,8 @@ import { LoginComponent } from './components/pages/login/login.component';
     CdFiltrosN2Component,
     CdTablaN2Component,
     DatosProveedoresComponent,
-    LoginComponent
+    LoginComponent,
+    OrdenesPublicidadComponent
   ],
   imports: [
     BrowserModule,

@@ -17,7 +17,7 @@ import { SlicePipe } from '@angular/common';
 // key that is used to access the data in local storage
 const TOKEN = '';
 
-var auxProvData,auxArtiData:any;
+var auxProvData,auxArtiData,auxExpData:any;
 
 @Injectable()
 
@@ -117,7 +117,7 @@ export class AbmComprasComponent implements OnInit {
       //'fechaVto': new FormControl('',Validators.required),
       'totalCabecera': new FormControl('',[Validators.required]),
       'observaciones': new FormControl(),
-      'expediente': new FormControl()
+      'expediente': new FormControl('',[],this.existeExpediente)
     })
 
     this.forma.controls['razonSocial'].disable();
@@ -267,7 +267,24 @@ export class AbmComprasComponent implements OnInit {
     return promesa;
   }
 
+  existeExpediente( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxExpData==0 ){
+            resolve( {noExiste:true })
+          } else{resolve( null )}
+        }, 2000)
+      }
+    )
+    return promesa
+  }
   buscarExpediente(){
+    if(this.expParam != null){
+      this.expParam = this.forma.controls['expediente'].value
+    } else{
+      this.expParam = this.expParam;
+    }
     this._compraService.getExpediente( this.expParam, this.token)
       .subscribe( data => {
         console.log(data);

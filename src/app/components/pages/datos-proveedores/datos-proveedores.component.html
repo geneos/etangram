@@ -181,10 +181,10 @@
             <input matInput type="text"  placeholder="" formControlName="calleEnv" value="{{ datosCabecera[0].Domicilio_envio }}">
           </mat-form-field>
         </div>
-        <div class="col s6 m3 l4" style="display: inline-block">
+        <div class="col s6 m3 l3" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
             <mat-label>Cod. Postal</mat-label>
-            <input (keyup)="buscarLocalidad()" matInput type="text"  placeholder="" formControlName="codPostalEnv" value="{{ datosCabecera[0].Codigo_Postal_envio }}">
+            <input (keyup)="buscarLocalidad()" #envCodPostal matInput type="text"  placeholder="" formControlName="codPostalEnv" value="{{ datosCabecera[0].Codigo_Postal_envio }}">
             <mat-hint *ngIf="forma.status=='PENDING'">
               Buscando código...
             </mat-hint>
@@ -192,6 +192,11 @@
               Localidad Inexistente
             </mat-hint>
           </mat-form-field>
+        </div>
+        <div class="col s2 m2 l1" *ngIf="modificando" style="margin-top:10px;" (click)="abrirConsulta('tg01_localidades', 'codPostalEnv')">
+          <a class="mine-btnforms" mat-flat-button>
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </a>
         </div>
         <div class="col s6 m3 l4" style="display: inline-block">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
@@ -235,3 +240,4 @@
     </mat-expansion-panel>
   </div>
 </form>
+<app-cons-din></app-cons-din>

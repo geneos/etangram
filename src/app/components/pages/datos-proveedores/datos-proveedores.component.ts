@@ -1,7 +1,8 @@
-import { Component, OnInit, Injectable, Inject } from '@angular/core';
+import { Component, OnInit, Injectable, Inject, ViewChild } from '@angular/core';
 import { DatosProveedorService } from 'src/app/services/i2t/datos-proveedor.service';
 import { MatTable, MatHint, MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
 import { FormGroup, FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { ValueTransformer } from '@angular/compiler/src/util';
 import { LocalidadesService } from 'src/app/services/i2t/localidades.service';
 import { Localidad } from 'src/app/interfaces/localidades.interface';
@@ -9,6 +10,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { UsuariosService } from 'src/app/services/i2t/usuarios.service';
 import { Usuario } from 'src/app/interfaces/usuario.interface';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -21,6 +23,10 @@ var auxLocData: any;
   styleUrls: ['./datos-proveedores.component.css']
 })
 export class DatosProveedoresComponent implements OnInit {
+
+  suscripcionConsDin: Subscription;
+  itemDeConsulta: any;
+  @ViewChild('envCodPostal') elEnvCodigoPostal: any;
 
   respCabecera: any;
   respUpdCabecera: any;
@@ -56,6 +62,7 @@ export class DatosProveedoresComponent implements OnInit {
     private _localidadesService: LocalidadesService,
     @Inject(SESSION_STORAGE) private storage: StorageService,
     private route:ActivatedRoute,
+    public ngxSmartModalService: NgxSmartModalService,
     public snackBar: MatSnackBar)
     {
 
@@ -71,13 +78,22 @@ export class DatosProveedoresComponent implements OnInit {
       'codPostalFac': new FormControl(),
       'provinciaFac': new FormControl(),
       'calleEnv': new FormControl(),
-      'codPostalEnv': new FormControl(this.existeLocalidad),
+      'codPostalEnv': new FormControl('',[],this.existeLocalidad),
       'provinciaEnv': new FormControl(),
       'telefono1': new FormControl(),
       'telefono2': new FormControl(),
       'telefono3': new FormControl(),
       'email': new FormControl()
     })
+
+    this.forma.controls['codPostalEnv'].valueChanges.subscribe(() => {
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['provinciaEnv'])  
+        this.elEnvCodigoPostal.nativeElement.dispatchEvent(new Event('keyup'));
+      })
+    });
+
   }
   openSnackBar(message: string) {
     this.snackBar.open(message,"Cerrar", {
@@ -112,6 +128,8 @@ export class DatosProveedoresComponent implements OnInit {
     this.forma.controls['email'].disable();
     this.obtenerIDUsuario();
   }
+
+  
   
   buscarLocalidad(){
     this._localidadesService.getLocalidades(this.forma.controls['codPostalEnv'].value, this.token)
@@ -130,6 +148,69 @@ export class DatosProveedoresComponent implements OnInit {
        }
      })
   }
+
+  abrirConsulta(consulta: string, control: string){
+    this.itemDeConsulta = null;
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'consDinModal'
+    }
+    
+    let atributoAUsar: string;
+    switch (consulta) {
+      case 'tg01_localidades':
+        atributoAUsar = 'cpostal';
+        break;
+      case 'tg01_categoriasiva':
+        atributoAUsar = 'idcategoria';
+      default:
+        break;
+    }
+
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+        this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+        this.itemDeConsulta = respuesta.selection[0];
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionConsDin.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
+  }
+
+  
+
   modificar(){
     
     this.modificando = true;
@@ -176,6 +257,7 @@ export class DatosProveedoresComponent implements OnInit {
      .subscribe( dataP => {
      console.log(dataP);
      this.respUpdCabecera = dataP;
+     this.openSnackBar('Datos Actualizados');
     })
 
     this.forma.controls['calleFac'].disable();

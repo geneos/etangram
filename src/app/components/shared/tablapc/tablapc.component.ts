@@ -50,15 +50,17 @@ export class TablapcComponent implements OnInit {
     this.loading = true;
     console.log(this.storage.get(TOKEN) || 'Local storage is empty');
     this.token = this.storage.get(TOKEN);
-    this.buscarPlanCuentas();
+    console.log('constructor: '+this.padreId);
+    //this.buscarPlanCuentas();
   }
 
   ngOnInit() {
-    console.log(this.padreId);
+    console.log('ngoninit: '+this.padreId);
+    this.buscarPlanCuentas();
   }
 
   buscarPlanCuentas(){
-
+      console.log('viene padre id?: '+this.padreId);
     this._planCuentasService.getPlanesDeCuentasPadre( this.token,this.padreId )
       .subscribe( dataPC => {
         //console.log(dataPC);
@@ -66,7 +68,7 @@ export class TablapcComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.pcData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.planesDeCuotasAll = null;
+            /*this.planesDeCuotasAll = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._planCuentasService.login(jsonbody)
@@ -75,14 +77,18 @@ export class TablapcComponent implements OnInit {
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarPlanCuentas();
-              });
+              });*/
+              console.log('token invalido');
             } else {
               if(this.pcData.dataset.length>0){
                 this.planesDeCuotasAll = this.pcData.dataset;
                 console.log(this.planesDeCuotasAll);
                 this.loading = false;
-
-                this.constPlanesCuentas = new MatTableDataSource(this.planesDeCuotasAll);
+                if(this.padreId.length<1){
+                  this.constPlanesCuentas = new MatTableDataSource(this.planesDeCuotasAll.filter(aa => aa.nomencladorpadre === ''));
+                } else {
+                  this.constPlanesCuentas = new MatTableDataSource(this.planesDeCuotasAll);
+                }
 
                 //this.table.renderRows();
                 //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';

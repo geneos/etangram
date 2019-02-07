@@ -19,6 +19,7 @@ import { ConsultaRetencionesComponent } from './components/pages/consulta-retenc
 import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos/consulta-ord-pagos.component';
 import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
 import { LoginComponent } from './components/pages/login/login.component';
+import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicidad/ordenes-publicidad.component';
 
 const APP_ROUTES: Routes = [
   { path: 'compra', component: AbmComprasComponent },
@@ -43,6 +44,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta-retenciones/:id', component: ConsultaRetencionesComponent },
   { path: 'consulta-ord-pago/:id', component: ConsultaOrdPagosComponent },
   { path: 'datos-proveedores/:id', component: DatosProveedoresComponent },
+  { path: 'ordenes-publicidad', component: OrdenesPublicidadComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

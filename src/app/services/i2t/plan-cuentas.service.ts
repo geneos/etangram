@@ -59,9 +59,12 @@ export class PlanCuentasService {
     });
 
     var query;
+    console.log('dentro del servicio:'+padre);
 
     if(padre==""){
       query = `api/tg01_cuentascontables/?deleted=eq[0]&_orderby=nomencladorpadre&_limit=9`;
+      //var auxvacia:string = "";
+      //query = `api/tg01_cuentascontables/?deleted=eq[0]&_orderby=nomencladorpadre&nomencladorpadre=eq[isnull]`;
     } else {
       query = `api/tg01_cuentascontables/?deleted=eq[0]&nomencladorpadre=lk[${ padre }]`;
     }

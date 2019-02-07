@@ -44,7 +44,7 @@
       <div class="example-element-detail"
            [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
            <app-tablapc #compHija *ngIf="element == expandedElement && element.imputable == 0" [padreId]="element.nomenclador"
-              [token]="token" style="width:100%; border-left: 2px solid #000; margin-left:20px;">
+              style="width:100%; border-left: 2px solid #000; margin-left:20px;">
            </app-tablapc>
       </div>
     </td>

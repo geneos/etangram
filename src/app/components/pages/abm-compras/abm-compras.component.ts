@@ -87,6 +87,7 @@ export class AbmComprasComponent implements OnInit {
   suscripcionConsDin: Subscription;
 
   @ViewChild('tableArticulos') table: MatTable<any>;
+  @ViewChild('exp') expSelect: any
   user: string;
   pass: string;
 
@@ -158,6 +159,14 @@ export class AbmComprasComponent implements OnInit {
       //this.existeExp = true;
       //this.forma.controls['expediente'].disable();
     }
+
+    this.forma.controls['expediente'].valueChanges.subscribe(() => {
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['expediente'])  
+        this.expSelect.nativeElement.dispatchEvent(new Event('keyup'));
+      })
+    });
   }
 
   ngOnInit() {
@@ -268,7 +277,7 @@ export class AbmComprasComponent implements OnInit {
   }
 
   existeExpediente( control: FormControl ): Promise<any>{
-    let promesa = new Promise(
+    let promesaExp = new Promise(
       ( resolve, reject )=>{
         setTimeout( ()=>{
           if( auxExpData==0 ){
@@ -277,18 +286,16 @@ export class AbmComprasComponent implements OnInit {
         }, 2000)
       }
     )
-    return promesa
+    return promesaExp
   }
+
+
   buscarExpediente(){
-    if(this.expParam != null){
-      this.expParam = this.forma.controls['expediente'].value
-    } else{
-      this.expParam = this.expParam;
-    }
-    this._compraService.getExpediente( this.expParam, this.token)
+    this._compraService.getExpediente( this.forma.controls['expediente'].value, this.token)
       .subscribe( data => {
         console.log(data);
           this.eData = data;
+          auxExpData = this.eData.dataset.length;
           if(this.eData.dataset.length>0){
             this.expedientes = this.eData.dataset[0];
             this.existeExp = true;
@@ -325,6 +332,9 @@ export class AbmComprasComponent implements OnInit {
         atributoAUsar = 'idcategoria';
       default:
         break;
+      case 'tg05_expedientes':
+        atributoAUsar = "name";
+        break;  
     }
 
     console.log('enviando datosModal: ');

@@ -14,7 +14,7 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Proveedor</mat-label>
           <input (keyup)="buscarProveedor()" #codProv matInput placeholder="" formControlName="proveedor">
-          <mat-hint *ngIf="forma.status=='PENDING'">
+          <mat-hint *ngIf="forma.controls['proveedor'].status=='PENDING'">
             Buscando código...
           </mat-hint>
           <mat-hint *ngIf="forma.controls['proveedor'].errors?.noExiste">
@@ -125,11 +125,14 @@
       <div class="col s12 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Expediente</mat-label>
-          <input (keyup)="buscarExpediente()" matInput placeholder="" formControlName="expediente" value="{{ expedientes.name }}">
+          <input #exp (keyup)="buscarExpediente()" matInput placeholder="" formControlName="expediente">
+          <mat-hint *ngIf="forma.controls['expediente'].errors?.noExiste">
+            El expediente no existe
+          </mat-hint>
         </mat-form-field>
       </div>
       <div class="col s3 m2 l1"  *ngIf="editingCabecera" style="margin-top:10px;">
-        <button type="button" class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones && !existeExp" (click)="abrirConsulta('c_proveedores')">
+        <button type="button" class="mine-btnforms" mat-flat-button *ngIf="!editingRenglones && !existeExp" (click)="abrirConsulta2('tg05_expedientes', 'expediente')">
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>

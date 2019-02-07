@@ -156,8 +156,8 @@ export class AbmComprasComponent implements OnInit {
     if(this.expParam != null){
       this.forma.controls['expediente'].setValue(this.expParam);
       this.buscarExpediente();
-      //this.existeExp = true;
-      //this.forma.controls['expediente'].disable();
+      this.existeExp = true;
+      this.forma.controls['expediente'].disable();
     }
 
     this.forma.controls['expediente'].valueChanges.subscribe(() => {
@@ -298,8 +298,7 @@ export class AbmComprasComponent implements OnInit {
           auxExpData = this.eData.dataset.length;
           if(this.eData.dataset.length>0){
             this.expedientes = this.eData.dataset[0];
-            this.existeExp = true;
-            this.forma.controls['expediente'].disable();
+           // this.forma.controls['expediente'].disable();
           } else {
             this.expedientes = null;
           }

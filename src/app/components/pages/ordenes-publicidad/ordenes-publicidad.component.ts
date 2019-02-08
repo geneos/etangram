@@ -3,6 +3,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { MatTable, MatSort, MatPaginator } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
+import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
+import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { Router, ActivatedRoute } from "@angular/router";
 
@@ -22,6 +24,13 @@ export class OrdenesPublicidadComponent implements OnInit {
   forma: FormGroup;
   @ViewChild(MatSort) sort: MatSort;
 
+  //datos para impresion
+  baseDatos: any;
+  informes: informes[] = [];
+  urlBaseDatos: string;
+  urlInforme: any;
+  baseUrl: ImpresionBase[] = [];
+  //
   compraProveedor: CompraProveedor;
   proveedorData: any;
   id: any;
@@ -32,6 +41,7 @@ export class OrdenesPublicidadComponent implements OnInit {
 
   constructor(private route:ActivatedRoute,private router: Router,
               private _compraService: CompraService,
+              private _ImpresionCompService:ImpresionCompService,
               @Inject(SESSION_STORAGE) private storage: StorageService) {
     this.forma = new FormGroup({
       'proveedor': new FormControl(),
@@ -40,17 +50,17 @@ export class OrdenesPublicidadComponent implements OnInit {
    })
    this.token = this.storage.get(TOKEN);
 
+   this.loading = true;
    this.route.params.subscribe( parametros=>{
     this.id = parametros['id'];
     //this.token = parametros['token'];
     //this.Controles['proveedor'].setValue(this.id);
-   // this.buscarProveedor();
+    this.buscarProveedor();
 
     });
 
     
   } 
-  
   
   ngOnInit() {
   }
@@ -110,4 +120,27 @@ export class OrdenesPublicidadComponent implements OnInit {
       });
   }
 
+  print(nint: number) {
+    // window.open('http://devjasper.i2tsa.com.ar/Ejecutar_Reportes2.php?ruta_reporte=/E_Tangram/Reports/Compras/ET_ReferenciasContables&formato=PDF&param_param_nint=213334');
+     this._ImpresionCompService.getBaseDatos( this.token )
+     .subscribe ( dataP => {
+       console.log(dataP)
+       this.proveedorData = dataP;
+       this.baseUrl = this.proveedorData.dataset
+       this.urlBaseDatos = this.baseUrl[0].jasperserver + this.baseUrl[0].app
+       if(this.proveedorData.dataset.length>0){
+         this._ImpresionCompService.getInfromes('ETG_retencion_crd', this.token)
+         .subscribe ( dataP => {
+           console.log(dataP)
+           this.proveedorData = dataP;
+           this.informes = this.proveedorData.dataset
+           this.urlInforme = this.urlBaseDatos + this.informes[0].url
+           console.log(this.urlInforme)
+           if(this.proveedorData.dataset.length>0){
+             window.open(this.urlInforme + nint)
+           }
+         })
+       }
+     })
+   }
 }

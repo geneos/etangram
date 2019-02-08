@@ -46,7 +46,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta-retenciones/:id', component: ConsultaRetencionesComponent },
   { path: 'consulta-ord-pago/:id', component: ConsultaOrdPagosComponent },
   { path: 'datos-proveedores/:id', component: DatosProveedoresComponent },
-  { path: 'ordenes-publicidad', component: OrdenesPublicidadComponent },
+  { path: 'ordenes-publicidad/:id', component: OrdenesPublicidadComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

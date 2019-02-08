@@ -39,7 +39,8 @@ export class LoginComponent implements OnInit {
       'idCrd': new FormControl(''),
       'idOrdPagos': new FormControl(''),
       'idMCont': new FormControl(''),
-      'idRet': new FormControl('')
+      'idRet': new FormControl(''),
+      'idPortal': new FormControl('')
     })
    }
 
@@ -68,6 +69,10 @@ export class LoginComponent implements OnInit {
   consRet(){
     this.routerLinkVariable = '/consulta-retenciones'
     this.dynamicParameter = this.formaFormulario.controls['idRet'].value;
+  }
+  portal(){
+    this.routerLinkVariable = '/datos-proveedores'
+    this.dynamicParameter = this.formaFormulario.controls['idPortal'].value;
   }
   minCont(){
     //this.routerLinkVariable = '/consulta-retenciones'

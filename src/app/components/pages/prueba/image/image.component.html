@@ -1,0 +1,4 @@
+<p><input type="file" #attachment name="attachment" (change)="cargar(attachment)" id="attachment"></p>
+<p><button class="mine-btnbig" mat-flat-button (click)="subirFoto()">SUBIR ARCHIVO</button></p>
+<p>{{ urlImagen }}</p>
+<p>{{ auximagen.value+' '+auximagen.files[0].type }}</p>

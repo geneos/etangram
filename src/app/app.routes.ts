@@ -20,8 +20,10 @@ import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos
 import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicidad/ordenes-publicidad.component';
+import { ImageComponent } from './components/pages/prueba/image/image.component';
 
 const APP_ROUTES: Routes = [
+  { path: 'test', component: ImageComponent },
   { path: 'compra', component: AbmComprasComponent },
   { path: 'compra/:id', component: AbmComprasComponent },
   { path: 'compra/:id/:expediente', component: AbmComprasComponent },

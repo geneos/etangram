@@ -1,10 +1,13 @@
-import { Component, OnInit, ViewChild, Injectable } from '@angular/core';
+import { Component, OnInit, ViewChild,  ElementRef, Inject, Injectable } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatTable, MatSort, MatPaginator } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { Router, ActivatedRoute } from "@angular/router";
 
+// key that is used to access the data in local storage
+const TOKEN = '';
 var auxProvData: any;
 
 @Injectable()
@@ -25,15 +28,30 @@ export class OrdenesPublicidadComponent implements OnInit {
   token: string;
   cuit: any;
   loginData: any;
+  razonSocial: string;
 
-  constructor(private _compraService: CompraService) {
+  constructor(private route:ActivatedRoute,private router: Router,
+              private _compraService: CompraService,
+              @Inject(SESSION_STORAGE) private storage: StorageService) {
     this.forma = new FormGroup({
       'proveedor': new FormControl(),
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
    })
-  } 
+   this.token = this.storage.get(TOKEN);
 
+   this.route.params.subscribe( parametros=>{
+    this.id = parametros['id'];
+    //this.token = parametros['token'];
+    //this.Controles['proveedor'].setValue(this.id);
+   // this.buscarProveedor();
+
+    });
+
+    
+  } 
+  
+  
   ngOnInit() {
   }
 
@@ -51,7 +69,8 @@ export class OrdenesPublicidadComponent implements OnInit {
   }
 
   buscarProveedor(){
-    this._compraService.getProveedor(this.forma.controls['proveedor'].value, this.token )
+    this._compraService.getProveedor( this.id, this.token )
+    //this._compraService.getProveedores()
       .subscribe( dataP => {
         console.log(dataP);
           this.proveedorData = dataP;
@@ -83,10 +102,12 @@ export class OrdenesPublicidadComponent implements OnInit {
                 this.cuit = ' ';
               }
 
+              this.razonSocial = this.compraProveedor.name
             } else {
               this.compraProveedor = null;
             }
           }
       });
   }
+
 }

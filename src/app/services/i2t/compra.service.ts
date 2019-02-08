@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
 
-//const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTQwNDQyMDY0LCJleHAiOjE1NDA0NjAwNjR9.OZ0MRo_fNuVpXx-9SJCUBRud_bR3wNSfNAJUfn9O1i8';
-
 @Injectable({
   providedIn: 'root'
 })

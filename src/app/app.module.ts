@@ -72,6 +72,7 @@ import { from } from 'rxjs';
 import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicidad/ordenes-publicidad.component';
+import { ImageComponent } from './components/pages/prueba/image/image.component';
 
 
 
@@ -120,7 +121,8 @@ import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicida
     CdTablaN2Component,
     DatosProveedoresComponent,
     LoginComponent,
-    OrdenesPublicidadComponent
+    OrdenesPublicidadComponent,
+    ImageComponent
   ],
   imports: [
     BrowserModule,

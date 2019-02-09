@@ -537,7 +537,9 @@
      <div class="col s12 m6 l6">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>Fecha Vencimiento CAI</mat-label>
-         <input matInput placeholder="" formControlName="fechaVtoCai">
+         <input matInput readonly [matDatepicker]="pickerCai" placeholder="" formControlName="fechaVtoCai">
+         <mat-datepicker-toggle matSuffix [for]="pickerCai"></mat-datepicker-toggle>
+         <mat-datepicker #pickerCai></mat-datepicker>
        </mat-form-field>
      </div>
      
@@ -567,7 +569,7 @@
       <div formArrayName="impuestos" *ngFor="let imps of forma.controls.impuestos?.controls; let i = index">
         <ng-container [formGroupName]="i">
           <div class="row" style="margin:5px !important;">
-            <div class="col s10 m2 l3">
+            <div class="col s6 m4 l3">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Tipo</mat-label>
                 <mat-select placeholder="Elija una opción..." formControlName="tipo">
@@ -577,7 +579,7 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="col s10 m4 l3">
+            <div class="col s6 m4 l3">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Modelo</mat-label>
                 <mat-select placeholder="Elija una opción..." formControlName="modelo">
@@ -587,7 +589,7 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="col s12 m4 l4">
+            <div class="col s6 m4 l3">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Situación</mat-label>
                 <mat-select placeholder="Elija una opción" formControlName="situacion">
@@ -597,23 +599,27 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="col s12 m2 l2">
+            <div class="col s6 m4 l3">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Código inscripción</mat-label>
                 <input matInput placeholder="" formControlName="codInscripcion" style="text-align: right;"
                 value="">
               </mat-form-field>
             </div>
-            <div class="col s12 m3 l3">
+            <div class="col s4 m2 l3">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Fecha Inscripción</mat-label>
-                <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaInscripcion">
+                <input matInput readonly [matDatepicker]="picker" placeholder="" formControlName="fechaInscripcion">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col s6 m4 l4" style="margin-top:12px;">
-                <mat-checkbox #poseeExenc formControlName="poseeExenciones">¿Posee exenciones?</mat-checkbox>
+            
+            <div class="col s9 m3 l4">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Observaciones </mat-label>
+                <input matInput placeholder="" formControlName="observaciones">
+              </mat-form-field>
             </div>
             <div class="col s1 m1 l1">
               <a (click)="deleteImpuesto(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
@@ -621,17 +627,44 @@
               </a>
             </div>
             
-            <!-- relacion impuestos exenciones -->
-            <div class="col s12 m12 l12" style="margin-top:0px !important; margin-bottom: 15px !important; margin-left: 30px !important;"
-                 *ngIf="this.forma.controls.impuestos.controls[i].value['poseeExenciones']">
-              <span style="display:flex;">
-                <h6>Exenciones:</h6>
-                <a (click)="addExencion(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
-                  +
-                </a>
-              </span>
-              <!-- <div formArrayName="exenciones" *ngFor="let exe of forma.controls.impuestos[i].controls.exenciones?.controls; let j = index"> -->
-              <div formArrayName="exenciones" *ngFor="let exe of forma.get(['impuestos',i,'exenciones']).controls; let j = index">
+            <div class="row">
+              <div class="col s4 m2 l2" *ngIf="this.forma.controls.impuestos.controls[i].value['poseeExenciones']">
+                <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                  <mat-label>Fecha Desde</mat-label>
+                  <input matInput readonly [matDatepicker]="picker1" placeholder="" formControlName="fechaDesde">
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col s4 m2 l2" *ngIf="this.forma.controls.impuestos.controls[i].value['poseeExenciones']">
+                <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                  <mat-label>Fecha Hasta</mat-label>
+                  <input matInput readonly [matDatepicker]="picker2" placeholder="" formControlName="fechaHasta">
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+            <!-- <div class="col s6 m4 l4" style="margin-top:12px;"> -->
+            <div class="col s6 m4 l4">
+              <!-- <mat-form-field appearance="outline" floatLabel="always" style="width:100%;"> -->
+                <mat-checkbox style="margin-top:12px !important;" #poseeExenc formControlName="poseeExenciones">¿Posee exenciones?</mat-checkbox>
+              <!-- </mat-form-field> -->
+            </div>
+                <!-- <span style="display:flex;">
+                  <h6>Exenciones:</h6>
+                  <a (click)="addExencion(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+                    +
+                  </a>
+                </span> -->
+                
+                <!-- relacion impuestos exenciones -->
+                <!-- <div class="col s12 m12 l12" style="margin-top:0px !important; margin-bottom: 15px !important; margin-left: 30px !important;"
+                     *ngIf="this.forma.controls.impuestos.controls[i].value['poseeExenciones']"> -->
+
+              <!-- exenciones (array dentro de array) comentado, no era necesario y se deja como ejemplo -->
+
+              <!-- <div formArrayName="exenciones" *ngFor="let exe of forma.get(['impuestos',i,'exenciones']).controls; let j = index">
               
                 <ng-container [formGroupName]="j">
                   <div class="row" style="margin:5px !important;">
@@ -660,7 +693,7 @@
                     <div class="col s9 m3 l4">
                       <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                         <mat-label>Observaciones </mat-label>
-                        <input matInput placeholder="" formControlName="excencionObs">
+                        <input matInput placeholder="" formControlName="observaciones">
                       </mat-form-field>
                     </div>
                     <div class="col s3 m1 l1">
@@ -670,8 +703,14 @@
                     </div>
                   </div>
                 </ng-container>
-              </div>
-            </div>
+              </div> -->
+
+            <!-- </div> -->
+            <!-- <div class="col s1 m1 l1">
+              <a (click)="deleteImpuesto(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+                -
+              </a>
+            </div> -->
           </div>
         </ng-container>
       </div>
@@ -695,7 +734,7 @@
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Formulario</mat-label>
                 <mat-select placeholder="Elija una opción..." formControlName="codForm">
-                  <mat-option *ngFor="let aux of formsAll" [value]="aux.id">
+                  <mat-option *ngFor="let aux of formulariosAll" [value]="aux.id">
                     {{aux.name}}
                   </mat-option>
                 </mat-select>
@@ -704,7 +743,7 @@
             <div class="col s12 m3 l3">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Fecha de Presentación</mat-label>
-                <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaPres">
+                <input matInput readonly [matDatepicker]="picker2" placeholder="" formControlName="fechaPres">
                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
                 <mat-datepicker #picker2></mat-datepicker>
               </mat-form-field>
@@ -712,7 +751,7 @@
             <div class="col s12 m3 l3">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Fecha de Vencimiento</mat-label>
-                <input matInput [matDatepicker]="picker" placeholder="" formControlName="fechaVenc">
+                <input matInput readonly [matDatepicker]="picker3" placeholder="" formControlName="fechaVenc">
                 <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
                 <mat-datepicker #picker3></mat-datepicker>
               </mat-form-field>
@@ -752,7 +791,7 @@
           <div class="col s3 m2 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>ID Artículo</mat-label>
-              <input matInput (keyup)="buscarArticulo(i)" placeholder="" #artId type="number" formControlName="artID">
+              <input matInput (keyup)="buscarArticulo(i)" placeholder="" #artId formControlName="artID">
               <!-- <mat-hint *ngIf="forma.controls.articulos[i].controls['artID'].status == 'PENDING'"> -->
               <!-- <mat-hint *ngIf="forma.controls.articulos.value[i]['artID'].status == 'PENDING'"> -->
               <mat-hint *ngIf="art.controls['artID'].status == 'PENDING'">
@@ -764,20 +803,21 @@
             </mat-form-field>
           </div>
           <div class="col s1 m1 l1" style="margin-top:10px;">
-            <button class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artID')">
+            <a class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artID')">
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
-            </button>
+            </a>
           </div>
           <div class="col s5 m6 l4">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Descripción Artículo</mat-label>
-              <input matInput placeholder="" value="" disabled formControlName="artDesc" value="{{articulo?.descripcion}}">
+              <!-- <input matInput placeholder="" disabled formControlName="artDesc" value="{{articulo?.descripcion}}"> -->
+              <input matInput placeholder="" disabled formControlName="artDesc" value="">
             </mat-form-field>
           </div>
           <div class="col s5 m3 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Fecha última compra</mat-label>
-            <input matInput [matDatepicker]="picker" placeholder="" formControlName="ultimaFecha">
+            <input matInput readonly [matDatepicker]="picker" placeholder="" formControlName="ultimaFecha">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
@@ -832,7 +872,7 @@
       <button type="reset" class="mine-btnbig-grey" mat-flat-button>
         CANCELAR
       </button>
-      <a (click)="guardarDatosProveedor('testID')" class="mine-btnbig-grey" mat-flat-button>
+      <a (click)="testFechas()" class="mine-btnbig-grey" mat-flat-button>
         explorar
       </a>
     </div>

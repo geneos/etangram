@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ImageService } from "../../../../services/i2t/image.service";
 
 @Component({
   selector: 'app-image',
@@ -10,17 +11,21 @@ export class ImageComponent implements OnInit {
   urlImagen:string = "url vacia aun";
   adjunto: any;
 
-  constructor() { }
+  constructor( private _imageService:ImageService ) { }
 
   ngOnInit() {
   }
 
   subirFoto(){
     console.clear();
-    this.urlImagen = "url sigue vacia"
-     let formData:FormData = new FormData();
-    formData.append('file', this.adjunto, this.adjunto.name);
-    console.log(formData.getAll('file'));
+    //this.urlImagen = "url sigue vacia"
+     //console.log(formData.getAll('file'));
+     //console.log(formData);
+     this._imageService.postImage( this.adjunto )
+       .subscribe( resp => {
+         console.log(resp);
+         this.urlImagen = resp.toString();
+       });
    }
 
   cargar(attachment){

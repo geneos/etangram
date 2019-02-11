@@ -18,19 +18,13 @@ export class ImageComponent implements OnInit {
   subirFoto(){
     console.clear();
     this.urlImagen = "url sigue vacia"
+     let formData:FormData = new FormData();
+    formData.append('file', this.adjunto, this.adjunto.name);
+    console.log(formData.getAll('file'));
    }
 
   cargar(attachment){
     this.adjunto = attachment.files[0];
   }
-
-  // newAttachment(attachment) {
-  //   let formData:FormData = new FormData();
-  //   formData.append('file', this.adjunto, this.adjunto.name);
-  //   console.log(formData);
-  
-    
-   // return this.http.post(this.endpoint + '/cards/' + idCard + '/attachments?' + this.credentials, formData);
-//}
 
 }

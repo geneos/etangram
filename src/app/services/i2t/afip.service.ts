@@ -68,4 +68,15 @@ export class AFIPInternoService {
 
     return this.http.get( url , { headers });
   }
+  constatarComprobantes( token:string, body:string){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/afip/wscdc/ComprobanteConstatar`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers } );
+  }
 }

@@ -11,7 +11,9 @@ import { UnidadMedida } from "../../../interfaces/unidad-medida.interface"
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription, from } from 'rxjs';
+import { ConstatacionCbte, Observaciones } from "../../../interfaces/afip.interface";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { AFIPInternoService } from "../../../services/i2t/afip.service";
 import { SlicePipe } from '@angular/common';
 
 // key that is used to access the data in local storage
@@ -66,6 +68,11 @@ export class AbmComprasComponent implements OnInit {
   tipoComprobante: TipoComprobante[] = [];
   dataAfip: any;
   datosCompAfip: TipoComprobanteAfip[] = [];
+  datosCbteAfip: any;
+  constCbteAfip: ConstatacionCbte[] = [];
+  resultado: any;
+  obsMsg: string = '';
+
   tipoComp: string[] = [];
   idCompAfip: number;
 
@@ -95,6 +102,7 @@ export class AbmComprasComponent implements OnInit {
               private _compraService:CompraService,
               private _tiposComprobante:TiposComprobanteService,
               private _unidadMedida:UnidadMedidaService,
+              private _afipInternoService: AFIPInternoService,
               private route:ActivatedRoute,
               public ngxSmartModalService: NgxSmartModalService,
               public snackBar: MatSnackBar,
@@ -461,9 +469,8 @@ export class AbmComprasComponent implements OnInit {
     this.addingItem = true;
   }
 
-  guardarCabecera(){
-    
-    this.editingCabecera = false;
+
+  idCbteAfip(){
     let letra = (this.forma.controls['nroComprobante'].value.slice(0,1))
     console.log(letra);
     this._tiposComprobante.getTipoComprobanteAfip(this.forma.controls['tipoComprobante'].value, letra, this.token)
@@ -472,7 +479,53 @@ export class AbmComprasComponent implements OnInit {
         this.dataAfip = respAfip
         this.datosCompAfip = this.dataAfip.dataset
         this.idCompAfip = this.datosCompAfip[0].codigo_afip
-      })
+        console.log(this.idCbteAfip);
+      })    
+  }
+  guardarCabecera(){
+  
+    this.idCbteAfip()
+  // CONSTATACION COMPROBANTE AFIP
+   let jsbodyafip = {
+      "Auth": 
+      {
+             "Token": "Token",
+             "Sign": "Sign",
+             "Cuit": 30709041483
+         },
+      "CmpReq": {
+             "CbteModo": "CAE",
+             "CuitEmisor": "20383763887",
+             "PtoVta": "00002",
+             "CbteTipo": "11",
+             "CbteNro": "00000012",
+             "CbteFch": "20190116",
+             "ImpTotal": "2500",
+             "CodAutorizacion": "69037657353253",
+             "DocTipoReceptor": "80",
+             "DocNroReceptor": "30715514539"
+         }
+      }
+      let jsonbodyafip= JSON.stringify(jsbodyafip);
+      this._afipInternoService.constatarComprobantes(this.token, jsonbodyafip)
+        .subscribe( af =>{
+          console.log(af)
+          this.datosCbteAfip = af;
+          this.constCbteAfip = this.datosCbteAfip.ComprobanteConstatarResult;
+
+          this.resultado = this.datosCbteAfip.ComprobanteConstatarResult.Resultado;
+          this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Observaciones.Obs[0].Msg;
+          this.openSnackBar(this.obsMsg);
+        })
+
+  if(this.resultado = 'R'){
+  
+  this.editingCabecera = true;
+   // FIN CONSTATACION COMPROBANTE AFIP
+
+  } else {
+    this.editingCabecera = false;
+    
     let ano = this.forma.controls['fecha'].value.getFullYear().toString();
     let mes = (this.forma.controls['fecha'].value.getMonth()+1).toString();
     if(mes.length==1){mes="0"+mes};
@@ -500,7 +553,9 @@ export class AbmComprasComponent implements OnInit {
       "FechaContable":auxfecha,
       "idcaja":"1",//hardcoded
       "idUsuario":"99",//hardcoded
-      "Observaciones":this.forma.controls['observaciones'].value
+      "Observaciones":this.forma.controls['observaciones'].value,
+      "EstadoComprobante":"1",
+      "ID_Expediente":this.forma.controls['expediente'].value
     };
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
@@ -520,7 +575,7 @@ export class AbmComprasComponent implements OnInit {
     this.forma.controls['totalCabecera'].disable();
     this.forma.controls['expediente'].disable();
   }
-
+}
   guardarArticulo(){
     this.compraArticulo.cantidad = this.formaArticulos.controls['cantidad'].value;
     this.compraArticulo.descuento = this.formaArticulos.controls['descuento'].value;

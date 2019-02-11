@@ -1,4 +1,4 @@
-<!-- <app-loading *ngIf="loading"></app-loading> -->
+<app-loading *ngIf="loading"></app-loading>
 <!-- <div [ngStyle]="{'display':loading ? 'none' : 'block' }"> -->
 <h2>ÓRDENES DE PUBLICIDAD</h2>
 
@@ -9,80 +9,194 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
-  <form [formGroup]="forma" novalidate="novalidate">
-    <div class="row" style="margin-top:15px;">
-        <div class="col s3 m2 l1">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%; ">
-            <mat-label>Código Proveedor</mat-label>
-            <input (keyup)="buscarProveedor()" #codProv matInput placeholder="" formControlName="proveedor">
-          </mat-form-field>
-        </div>
+    <div class="row" style="margin-top:15px;" *ngIf="!loading">
+      <div class="col s3 m2 l1">
+        <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Código</p>
+        <p style="margin-top:7px;">{{ id }}</p>
+        <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%; ">
+          <mat-label>Código Proveedor</mat-label>
+          <input readonly #codProv matInput placeholder="" value="{{id}}">
+        </mat-form-field>-->
+      </div>
 
-        <div class="col s6 m4 l3">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Razón Social</mat-label>
-            <input matInput placeholder="" formControlName="razonSocial" readonly>
-          </mat-form-field>
-        </div>
-        <div class="col s3 m4 l3">        
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>CUIT</mat-label>
-            <input matInput placeholder="" readonly formControlName="cuit" >
-          </mat-form-field>
-        </div>
+      <div class="col s6 m4 l3">
+        <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Razón Social</p>
+        <p style="margin-top:7px;">{{ razonSocial }}</p>
+        <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Razón Social</mat-label>
+          <input matInput placeholder="" readonly value="{{ compraProveedor?.razon_social }}">
+        </mat-form-field>-->
+      </div>
+      <div class="col s3 m4 l3">
+        <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">CUIT</p>
+        <p style="margin-top:7px;">{{ cuit }}</p>
+        <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>CUIT</mat-label>
+          <input matInput placeholder="" readonly value="{{ compraProveedor?.cuit }}">
+        </mat-form-field>-->
+      </div>
+    </div>
+</mat-expansion-panel>
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      A EJECUTAR
+    </mat-panel-title>
+  </mat-expansion-panel-header>
 
-    </div>     
-</form>
-<div class="mat-elevation-z8">
+  <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading">
 
-  <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
-    <mat-expansion-panel [expanded]=true [disabled]=true>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          PROVEEDOR
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      </mat-expansion-panel>
-    <!-- fecha Column -->
-    <ng-container matColumnDef="numero">
-      <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Numero </th>
-      <td mat-cell *cdkCellDef="let element" style="text-align:left;">  </td>
-    </ng-container>
-
-    <!-- comprobante Column -->
-    <ng-container matColumnDef="mes">
-      <th mat-header-cell *matHeaderCellDef> Mes</th>
-      <td mat-cell *cdkCellDef="let element">  </td>
-    </ng-container>
-
-    <!-- expediente Column -->
-    <ng-container matColumnDef="medio">
-      <th mat-header-cell *matHeaderCellDef> Medio </th>
-      <td mat-cell *cdkCellDef="let element">  </td>
-    </ng-container>
-
-    <!-- observaciones Column -->
-    <ng-container matColumnDef="expediente">
-      <th mat-header-cell *matHeaderCellDef> Expediente</th>
-      <td mat-cell *cdkCellDef="let element">  </td>
-    </ng-container>
-
-    <!-- importe Column -->
-    <ng-container matColumnDef="importe">
-      <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
-      <td mat-cell *cdkCellDef="let element" style="text-align:right;">  </td>
-    </ng-container>
-
-     <!-- accion Column -->
-    <ng-container matColumnDef="acciones">
-      <th mat-header-cell *matHeaderCellDef> Acciones </th>
-      <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>
-    </ng-container>
-
-    <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
-    <tr mat-row *cdkRowDef="let row; columns: ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];"></tr>
-  </table>
+    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    
+      <!-- fecha Column -->
+      <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Numero </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;">  </td>
+      </ng-container>
   
-</div>
+      <!-- comprobante Column -->
+      <ng-container matColumnDef="mes">
+        <th mat-header-cell *matHeaderCellDef> Mes</th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- expediente Column -->
+      <ng-container matColumnDef="medio">
+        <th mat-header-cell *matHeaderCellDef> Medio </th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- observaciones Column -->
+      <ng-container matColumnDef="expediente">
+        <th mat-header-cell *matHeaderCellDef> Expediente</th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- importe Column -->
+      <ng-container matColumnDef="importe">
+        <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:right;">  </td>
+      </ng-container>
+  
+       <!-- accion Column -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>
+      </ng-container>
+  
+      <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
+      <tr mat-row *cdkRowDef="let row; columns: ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];"></tr>
+    </table>
+    
+  </div>
+</mat-expansion-panel>
 
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      PENDIENTE DE RENDICIÓN
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  
+  <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading">
+
+    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    
+      <!-- fecha Column -->
+      <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Numero </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;">  </td>
+      </ng-container>
+  
+      <!-- comprobante Column -->
+      <ng-container matColumnDef="mes">
+        <th mat-header-cell *matHeaderCellDef> Mes</th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- expediente Column -->
+      <ng-container matColumnDef="medio">
+        <th mat-header-cell *matHeaderCellDef> Medio </th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- observaciones Column -->
+      <ng-container matColumnDef="expediente">
+        <th mat-header-cell *matHeaderCellDef> Expediente</th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- importe Column -->
+      <ng-container matColumnDef="importe">
+        <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:right;">  </td>
+      </ng-container>
+  
+       <!-- accion Column -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>
+      </ng-container>
+  
+      <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
+      <tr mat-row *cdkRowDef="let row; columns: ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];"></tr>
+    </table>
+    
+  </div>
+</mat-expansion-panel>
+
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      EN PROCESO DE LIQUIDACIÓN
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading">
+
+    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    
+      <!-- fecha Column -->
+      <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Numero </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;">  </td>
+      </ng-container>
+  
+      <!-- comprobante Column -->
+      <ng-container matColumnDef="mes">
+        <th mat-header-cell *matHeaderCellDef> Mes</th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- expediente Column -->
+      <ng-container matColumnDef="medio">
+        <th mat-header-cell *matHeaderCellDef> Medio </th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- observaciones Column -->
+      <ng-container matColumnDef="expediente">
+        <th mat-header-cell *matHeaderCellDef> Expediente</th>
+        <td mat-cell *cdkCellDef="let element">  </td>
+      </ng-container>
+  
+      <!-- importe Column -->
+      <ng-container matColumnDef="importe">
+        <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:right;">  </td>
+      </ng-container>
+  
+       <!-- accion Column -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <td mat-cell *cdkCellDef="let element">
+           <a href="#"> D </a>
+           <a href="#"> I </a>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
+      <tr mat-row *cdkRowDef="let row; columns: ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];"></tr>
+    </table>
+    
+  </div>
 </mat-expansion-panel>

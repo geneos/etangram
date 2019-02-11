@@ -120,17 +120,7 @@ export class ConsultaCrdComponent implements OnInit {
         })
       }
     })
-  /* const content = document.getElementById('tableCrd').innerHTML;
-   const content2 = 'Proovedor: ' + this.nroProveedor + ' - ' + this.RazonSocial;
-   const printWindow = window.open('', 'Print', 'height=745,width=1024');
-    printWindow.document.write(content2);
-    printWindow.document.write(content);
-
-    printWindow.document.close();
-      printWindow.focus();
-      printWindow.print();
-      printWindow.close();*/
-    }
+  }
   
   consultar(){
  //   console.log(this.Controles.controls['proveedor'].value)

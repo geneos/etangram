@@ -11,7 +11,7 @@ import { UnidadMedida } from "../../../interfaces/unidad-medida.interface"
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription, from } from 'rxjs';
-import { ConstatacionCbte, Observaciones } from "../../../interfaces/afip.interface";
+import { ConstatacionCbte } from "../../../interfaces/afip.interface";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { AFIPInternoService } from "../../../services/i2t/afip.service";
 import { SlicePipe } from '@angular/common';
@@ -19,7 +19,7 @@ import { SlicePipe } from '@angular/common';
 // key that is used to access the data in local storage
 const TOKEN = '';
 
-var auxProvData,auxArtiData,auxExpData:any;
+var auxProvData,auxArtiData,auxExpData,auxFechaAfip,auxfecha:any;
 
 @Injectable()
 
@@ -74,7 +74,7 @@ export class AbmComprasComponent implements OnInit {
   obsMsg: string = '';
 
   tipoComp: string[] = [];
-  idCompAfip: number;
+  idCompAfip: any;
 
   eData: any;
   expedientes: Expedientes[] = [];
@@ -470,21 +470,34 @@ export class AbmComprasComponent implements OnInit {
   }
 
 
-  idCbteAfip(){
+  buscaIdCbteAfip(){
+    
+  }
+  guardarCabecera(){
+    
+    let ano = this.forma.controls['fecha'].value.getFullYear().toString();
+    let mes = (this.forma.controls['fecha'].value.getMonth()+1).toString();
+    if(mes.length==1){mes="0"+mes};
+    let dia = this.forma.controls['fecha'].value.getDate().toString();
+    if(dia.length==1){dia="0"+dia};
+
+    auxfecha = ano+"-"+mes+"-"+dia;
+    auxFechaAfip = ano+mes+dia;
+
     let letra = (this.forma.controls['nroComprobante'].value.slice(0,1))
     console.log(letra);
     this._tiposComprobante.getTipoComprobanteAfip(this.forma.controls['tipoComprobante'].value, letra, this.token)
       .subscribe( respAfip => {
         console.log(respAfip)
         this.dataAfip = respAfip
-        this.datosCompAfip = this.dataAfip.dataset
-        this.idCompAfip = this.datosCompAfip[0].codigo_afip
-        console.log(this.idCbteAfip);
+        this.datosCompAfip = this.dataAfip.dataset;
+        this.idCompAfip = this.datosCompAfip[0].codigo_afip;
+        
       })    
-  }
-  guardarCabecera(){
-  
-    this.idCbteAfip()
+
+    let ptoventa = this.forma.controls['nroComprobante'].value.slice(1,5);
+    let nrocbte = this.forma.controls['nroComprobante'].value.slice(6,14);
+    console.log(nrocbte);
   // CONSTATACION COMPROBANTE AFIP
    let jsbodyafip = {
       "Auth": 
@@ -494,16 +507,16 @@ export class AbmComprasComponent implements OnInit {
              "Cuit": 30709041483
          },
       "CmpReq": {
-             "CbteModo": "CAE",
+             "CbteModo": this.forma.controls['cbtemodo'].value,
              "CuitEmisor": "20383763887",
-             "PtoVta": "00002",
-             "CbteTipo": "11",
-             "CbteNro": "00000012",
-             "CbteFch": "20190116",
-             "ImpTotal": "2500",
-             "CodAutorizacion": "69037657353253",
+             "PtoVta": ptoventa,
+             "CbteTipo": this.idCompAfip,
+             "CbteNro": nrocbte,
+             "CbteFch": auxFechaAfip,// this.forma.controls['fecha'].value,
+             "ImpTotal": this.forma.controls['totalCabecera'].value,
+             "CodAutorizacion": this.forma.controls['caicae'].value,
              "DocTipoReceptor": "80",
-             "DocNroReceptor": "30715514539"
+             "DocNroReceptor": this.compraProveedor.cuit // this.forma.controls['cuit'].value
          }
       }
       let jsonbodyafip= JSON.stringify(jsbodyafip);
@@ -512,9 +525,34 @@ export class AbmComprasComponent implements OnInit {
           console.log(af)
           this.datosCbteAfip = af;
           this.constCbteAfip = this.datosCbteAfip.ComprobanteConstatarResult;
-
           this.resultado = this.datosCbteAfip.ComprobanteConstatarResult.Resultado;
+          
+          if(this.datosCbteAfip.statusCode){
+            switch (this.datosCbteAfip.statusCode) {
+              case 500:
+              this.obsMsg = "Error interno de aplicación."
+                  break;
+              case 501:
+              this.obsMsg = "Error interno de base de datos"
+                  break;
+              case 502:
+              this.obsMsg = "Transacción Activa"
+                  break;
+              case 503:
+              this.obsMsg = "No existen datos en nuestros registros"
+                  break;
+              default:
+  
+          }
+          }
+          
+
+          if(this.datosCbteAfip.ComprobanteConstatarResult.Errors){
+            this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Errors.Err[0].Msg
+          }
+          if(this.datosCbteAfip.ComprobanteConstatarResult.Observaciones) {
           this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Observaciones.Obs[0].Msg;
+          }
           this.openSnackBar(this.obsMsg);
         })
 
@@ -525,14 +563,6 @@ export class AbmComprasComponent implements OnInit {
 
   } else {
     this.editingCabecera = false;
-    
-    let ano = this.forma.controls['fecha'].value.getFullYear().toString();
-    let mes = (this.forma.controls['fecha'].value.getMonth()+1).toString();
-    if(mes.length==1){mes="0"+mes};
-    let dia = this.forma.controls['fecha'].value.getDate().toString();
-    if(dia.length==1){dia="0"+dia};
-
-    let auxfecha = ano+"-"+mes+"-"+dia;
 
     let jsbody = {
       "Tipocbte":this.forma.controls['tipoComprobante'].value,
@@ -594,6 +624,7 @@ export class AbmComprasComponent implements OnInit {
         "TipoRenglon":this.compraArticulo.tipoRenglon,
         "idusuario":"1",//hardcoded
       };
+
       let jsonbody= JSON.stringify(jsbody);
       console.log(jsonbody);
       this._compraService.editArticulo( jsonbody, this.token )

@@ -46,28 +46,28 @@ export interface ConstatacionCbte{
     },
     Resultado: string,
     Observaciones: {
-        Obs: [
+        Obs:
             {
                 Code: number,
                 Msg: string
             }
-        ]
+        
     },
     FchProceso: string,
     Events: {
-        Evt: [
+        Evt: 
             {
                 Code: number
             }
-        ]
-    }
+        
+    },
+    Errors: {
+      Err: 
+          {
+              Code: number,
+              Msg: string
+          }
+      
   }
-}
-export interface Observaciones{
-  Obs: [
-    {
-        Code: number,
-        Msg: string
-    }
-]
+  }
 }

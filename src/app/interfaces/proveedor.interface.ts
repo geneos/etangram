@@ -60,3 +60,10 @@ export interface ProveedorCabecera{
   cuit_exterior: string;
   idimpositivo: string;
 }
+
+export interface RelacionComercial{
+  ID_Relacion_Comercial: string;
+  CBU: string;
+  Numero_Cuenta: string;
+  Sucursal: string;
+}//proveedores_relacioncomercial_GET_SP

@@ -573,7 +573,8 @@
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Tipo</mat-label>
                 <mat-select placeholder="Elija una opción..." formControlName="tipo">
-                  <mat-option *ngFor="let aux of impuestosAll" [value]="aux.id">
+                  <!-- <mat-option *ngFor="let aux of impuestosAll" [value]="aux.id"> -->
+                  <mat-option *ngFor="let aux of impuestosAll" [value]="aux.idtipoimpuesto">
                     {{aux.name}}
                   </mat-option>
                 </mat-select>
@@ -872,9 +873,6 @@
       <button type="reset" class="mine-btnbig-grey" mat-flat-button>
         CANCELAR
       </button>
-      <a (click)="testFechas()" class="mine-btnbig-grey" mat-flat-button>
-        explorar
-      </a>
     </div>
   </div>
 

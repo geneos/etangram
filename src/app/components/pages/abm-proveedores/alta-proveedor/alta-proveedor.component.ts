@@ -198,7 +198,7 @@ export class AltaProveedorComponent implements OnInit {
       observaciones: new FormControl(),
       //RELACION COMERCIAL
         //categorias
-        catRef: new FormControl(),
+        catRef: new FormControl('', Validators.required),
         // idZona: new FormControl(),
         idZona: new FormControl('', [], this.existeZona), //19/01/02 10:40=> no hay zonas
         zonaDesc: new FormControl(),
@@ -1381,7 +1381,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.buscarRefContable();
               });
             } else {
-              if(this.rcData.dataset.length>0){
+              if(this.rcData.dataset.length==1){
                 this.referenciaContable = this.rcData.dataset[0];
                 console.log('referencia encontrada: ', this.referenciaContable);
                 console.log('nombre de ref: ', this.referenciaContable.name)
@@ -1829,7 +1829,7 @@ export class AltaProveedorComponent implements OnInit {
                   cuentaActual.controls['rcCodigoSucursal'].value);
 
       let jsbodyRC = {
-        "prov_codigo": idProveedor, //Rid devuelto en el alta de proveedor
+        "Id_Proveedor": idProveedor, //Rid devuelto en el alta de proveedor
         "p_cbu": cuentaActual.controls['rcCbu'].value, //this.forma.controls['rcCbu'].value,
         "p_cuentabancaria": cuentaActual.controls['rcCuentaBancaria'].value, //this.forma.controls['rcCuentaBancaria'].value,
         "p_codigo_sucursal": cuentaActual.controls['rcCodigoSucursal'].value //this.forma.controls['rcCodigoSucursal'].value
@@ -1874,7 +1874,7 @@ export class AltaProveedorComponent implements OnInit {
     (<FormArray>this.forma.controls.impuestos).controls.forEach( impuesto => {
       let impuestoActual: FormGroup = <FormGroup>impuesto;
 
-      let auxDesde, auxHasta;
+      let auxDesde, auxHasta, auxInsc;
       /* if (impuestoActual.controls['fechaDesde'].value != null){
         let ano = impuestoActual.controls['fechaDesde'].value.getFullYear().toString();
         let mes = (impuestoActual.controls['fechaDesde'].value.getMonth()+1).toString();
@@ -1893,15 +1893,17 @@ export class AltaProveedorComponent implements OnInit {
       } */
       auxDesde = this.extraerFecha(<FormControl>impuestoActual.controls['fechaDesde']);
       auxHasta = this.extraerFecha(<FormControl>impuestoActual.controls['fechaHasta']);
+      auxInsc  = this.extraerFecha(<FormControl>impuestoActual.controls['fechaInscripcion']);
 
       let jsbodyImp = {
         "Id_Proveedor": idProveedor, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        // "p_imp_tipo" : impuestoActual.controls['tipo'].value, // id de tabla tg01_impuestos
         "p_imp_tipo" : impuestoActual.controls['tipo'].value, // id de tabla tg01_impuestos
         "p_imp_modelo" : impuestoActual.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
         "p_imp_situacion" : impuestoActual.controls['situacion'].value,
         "p_imp_codigo" : impuestoActual.controls['codInscripcion'].value,//"1",
-        "p_imp_fecha_insc" : impuestoActual.controls['fechaInscripcion'].value,//"1997-05-05",
-        "p_imp_excenciones" : impuestoActual.controls['poseeExenciones'].value,//"false",
+        "p_imp_fecha_insc" : auxInsc, //impuestoActual.controls['fechaInscripcion'].value,//"1997-05-05",
+        "p_imp_excenciones" : impuestoActual.controls['poseeExenciones'].value.toString(),//"false",
         // "p_imp_fecha_comienzo_excencion" : "",//impuestoActual.controls['fechaDesde'].value, // → si es true
         "p_imp_fecha_comienzo_excencion": (impuestoActual.controls['poseeExenciones'].value == true ? auxDesde : ""),
         // "p_imp_fecha_caducidad_excencion" : "",//impuestoActual.controls['fechaHasta'].value,//  → si es true
@@ -1995,7 +1997,7 @@ export class AltaProveedorComponent implements OnInit {
       let articuloActual: FormGroup = <FormGroup>articulo;
 
       let jsbodyArticulo = {
-        "prov_codigo": idProveedor, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        "Id_Proveedor": idProveedor, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
         "p_stock_id_art": articuloActual.controls['artID'].value, //id de consulta dinámica a tabla articulos
         "p_stock_fecha_ult_compra": this.extraerFecha(<FormControl>articuloActual.controls['ultimaFecha']), //"1997-05-05",
         "p_stock_moneda": articuloActual.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
@@ -2041,7 +2043,7 @@ export class AltaProveedorComponent implements OnInit {
     //AFIP
     //todo terminar
     let jsbodyAFIP = {
-      "prov_codigo": idProveedor, //"10029227-fd3e-11e8-9532-d050990fe081", Rid devuelto en el alta de proveedor
+      "Id_Proveedor": idProveedor, //"10029227-fd3e-11e8-9532-d050990fe081", Rid devuelto en el alta de proveedor
       "p_afip_estado":"1", //Campo “Estado según AFIP”
       "p_afip_dom":"1", //Domicilio
       "p_afip_cp":"1", //CP
@@ -2159,7 +2161,7 @@ export class AltaProveedorComponent implements OnInit {
   modificarRelacion(){
     //RELACION COMERCIAL
     let jsbodyRC = {
-      "prov_codigo": this.id, //Rid devuelto en el alta de proveedor
+      "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
       "p_cbu": this.forma.controls['rcCbu'].value,
       "p_cuentabancaria": this.forma.controls['rcCuentaBancaria'].value,
       "p_codigo_sucursal": this.forma.controls['rcCodigoSucursal'].value
@@ -2177,7 +2179,7 @@ export class AltaProveedorComponent implements OnInit {
       "p_imp_situacion" : this.formaImpuesto.controls['situacion'].value,
       "p_imp_codigo" : this.formaImpuesto.controls['codInscripcion'].value,//"1",
       "p_imp_fecha_insc" : this.formaImpuesto.controls['fechaInscripcion'].value,//"1997-05-05",
-      "p_imp_excenciones" : this.formaImpuesto.controls['exenciones'].value,//"false",
+      "p_imp_excenciones" : this.formaImpuesto.controls['exenciones'].value.toString(),//"false",
       "p_imp_fecha_comienzo_excencion" : this.formaImpuesto.controls['fechaDesde'].value, // → si es true
       "p_imp_fecha_caducidad_excencion" : this.formaImpuesto.controls['fechaHasta'].value,//  → si es true
       "p_imp_obs" :this.formaImpuesto.controls['observaciones'].value
@@ -2202,7 +2204,7 @@ export class AltaProveedorComponent implements OnInit {
   modificarArticulo(){
     //ARTICULOS
     let jsbodyArticulo = {
-      "prov_codigo": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+      "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
       "p_stock_id_art": this.formaArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
       "p_stock_fecha_ult_compra": this.formaArticulo.controls['ultimaFecha'].value, //"1997-05-05",
       "p_stock_moneda": this.formaArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
@@ -2218,7 +2220,7 @@ export class AltaProveedorComponent implements OnInit {
     //AFIP
     //todo terminar
     let jsbodyAFIP = {
-      "prov_codigo": this.id, //"10029227-fd3e-11e8-9532-d050990fe081", Rid devuelto en el alta de proveedor
+      "Id_Proveedor": this.id, //"10029227-fd3e-11e8-9532-d050990fe081", Rid devuelto en el alta de proveedor
       "p_afip_estado":"1", //Campo “Estado según AFIP”
       "p_afip_dom":"1", //Domicilio
       "p_afip_cp":"1", //CP
@@ -2430,85 +2432,6 @@ export class AltaProveedorComponent implements OnInit {
     this.impuestosData.splice(ind, 1);
     this.table.renderRows();
   };*/
-
-  testFechas(){
-    (<FormArray>this.forma.controls.impuestos).controls.forEach( impuesto => {
-      let impuestoActual: FormGroup = <FormGroup>impuesto;
-
-      let auxDesde, auxHasta,auxInsc;
-      if (impuestoActual.controls['fechaDesde'].value != null){
-        let ano = impuestoActual.controls['fechaDesde'].value.getFullYear().toString();
-        let mes = (impuestoActual.controls['fechaDesde'].value.getMonth()+1).toString();
-        if(mes.length==1){mes="0"+mes};
-        let dia = impuestoActual.controls['fechaDesde'].value.getDate().toString();
-        if(dia.length==1){dia="0"+dia};
-        auxDesde = ano+"-"+mes+"-"+dia;
-      }
-      if (impuestoActual.controls['fechaHasta'].value != null){
-        let ano = impuestoActual.controls['fechaHasta'].value.getFullYear().toString();
-        let mes = (impuestoActual.controls['fechaHasta'].value.getMonth()+1).toString();
-        if(mes.length==1){mes="0"+mes};
-        let dia = impuestoActual.controls['fechaHasta'].value.getDate().toString();
-        if(dia.length==1){dia="0"+dia};
-        auxHasta = ano+"-"+mes+"-"+dia;
-      }
-      if (impuestoActual.controls['fechaInscripcion'].value != null){
-        let ano = impuestoActual.controls['fechaInscripcion'].value.getFullYear().toString();
-        let mes = (impuestoActual.controls['fechaInscripcion'].value.getMonth()+1).toString();
-        if(mes.length==1){mes="0"+mes};
-        let dia = impuestoActual.controls['fechaInscripcion'].value.getDate().toString();
-        if(dia.length==1){dia="0"+dia};
-        auxInsc = ano+"-"+mes+"-"+dia;
-      }
-      
-      console.log('Fecha desde: '+ auxDesde);
-      console.log('Fecha hasta: '+ auxHasta);
-      console.log('Fecha inscripcion: '+ auxInsc);
-    });
-
-    //FORMULARIOS
-    (<FormArray>this.forma.controls.formularios).controls.forEach( formulario => {
-      let formularioActual: FormGroup = <FormGroup>formulario;
-
-      let auxDesde, auxHasta;
-      if (formularioActual.controls['fechaPres'].value != null){
-        let ano = formularioActual.controls['fechaPres'].value.getFullYear().toString();
-        let mes = (formularioActual.controls['fechaPres'].value.getMonth()+1).toString();
-        if(mes.length==1){mes="0"+mes};
-        let dia = formularioActual.controls['fechaPres'].value.getDate().toString();
-        if(dia.length==1){dia="0"+dia};
-        auxDesde = ano+"-"+mes+"-"+dia;
-      }
-      if (formularioActual.controls['fechaVenc'].value != null){
-        let ano = formularioActual.controls['fechaVenc'].value.getFullYear().toString();
-        let mes = (formularioActual.controls['fechaVenc'].value.getMonth()+1).toString();
-        if(mes.length==1){mes="0"+mes};
-        let dia = formularioActual.controls['fechaVenc'].value.getDate().toString();
-        if(dia.length==1){dia="0"+dia};
-        auxHasta = ano+"-"+mes+"-"+dia;
-      }
-      console.log('Fecha desde: '+ auxDesde);
-      console.log('Fecha hasta: '+ auxHasta);
-    });
-
-    //ARTICULOS
-    (<FormArray>this.forma.controls.articulos).controls.forEach( articulo => {
-      let articuloActual: FormGroup = <FormGroup>articulo;
-      
-      /* let auxUlti;
-      if (articuloActual.controls['ultimaFecha'].value != null){
-        let ano = articuloActual.controls['ultimaFecha'].value.getFullYear().toString();
-        let mes = (articuloActual.controls['ultimaFecha'].value.getMonth()+1).toString();
-        if(mes.length==1){mes="0"+mes};
-        let dia = articuloActual.controls['ultimaFecha'].value.getDate().toString();
-        if(dia.length==1){dia="0"+dia};
-        auxUlti = ano+"-"+mes+"-"+dia;
-      } */
-
-      let fecha: string = this.extraerFecha(<FormControl>articuloActual.controls['ultimaFecha']);
-      console.log('ultima fecha de articulo: '+ fecha);
-    });
-  }
 
   extraerFecha(control: FormControl){
     let auxFecha: string;

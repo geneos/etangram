@@ -1,0 +1,19 @@
+<ngx-smart-modal #consDinModal 
+                 customClass="overlay-evidencias" 
+                 [identifier]="'evidenciasModal'"
+                 [closable]="false"
+                 [dismissable]="false"
+                 [escapable]="false"
+                 >
+
+  <div class="modal-body"  style="max-width: 2000px !important;">
+    <app-registro-evidencia></app-registro-evidencia>
+  </div>
+
+  <div style="margin-top: 10px; width: 100%; text-align: right;">
+      <button mat-flat-button class="mine-btnbig" (click)="aplicar()">APLICAR</button>
+      <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
+  </div>
+</ngx-smart-modal>
+
+

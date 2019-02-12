@@ -67,14 +67,14 @@ export class AbmComprasComponent implements OnInit {
   tcData: any;
   tipoComprobante: TipoComprobante[] = [];
   dataAfip: any;
-  datosCompAfip: TipoComprobanteAfip[] = [];
+  datosCompAfip: TipoComprobanteAfip;
   datosCbteAfip: any;
   constCbteAfip: ConstatacionCbte[] = [];
   resultado: any;
   obsMsg: string = '';
 
   tipoComp: string[] = [];
-  idCompAfip: any;
+  idCompAfip: number;
 
   eData: any;
   expedientes: Expedientes[] = [];
@@ -468,10 +468,18 @@ export class AbmComprasComponent implements OnInit {
   addItem(){
     this.addingItem = true;
   }
-
-
-  buscaIdCbteAfip(){
-    
+  buscaCbteAfip(){
+    let letra = (this.forma.controls['nroComprobante'].value.slice(0,1))
+    console.log(letra);
+    this._tiposComprobante.getTipoComprobanteAfip(this.forma.controls['tipoComprobante'].value, letra, this.token)
+      .subscribe( respAfip => {
+        console.log(respAfip)
+        this.dataAfip = respAfip
+        this.datosCompAfip = this.dataAfip.dataset;
+        this.idCompAfip = this.dataAfip.dataset[0].codigo_afip;
+        console.log('codigo afip: '+ this.idCompAfip);
+        this.guardarCabecera();
+      })
   }
   guardarCabecera(){
     
@@ -484,20 +492,16 @@ export class AbmComprasComponent implements OnInit {
     auxfecha = ano+"-"+mes+"-"+dia;
     auxFechaAfip = ano+mes+dia;
 
-    let letra = (this.forma.controls['nroComprobante'].value.slice(0,1))
-    console.log(letra);
-    this._tiposComprobante.getTipoComprobanteAfip(this.forma.controls['tipoComprobante'].value, letra, this.token)
-      .subscribe( respAfip => {
-        console.log(respAfip)
-        this.dataAfip = respAfip
-        this.datosCompAfip = this.dataAfip.dataset;
-        this.idCompAfip = this.datosCompAfip[0].codigo_afip;
-        
-      })    
+    
+    
 
     let ptoventa = this.forma.controls['nroComprobante'].value.slice(1,5);
     let nrocbte = this.forma.controls['nroComprobante'].value.slice(6,14);
+    //this.idCompAfip = this.datosCompAfip[0].codigo_afip;
+   
     console.log(nrocbte);
+    console.log('codigo afip: '+ this.idCompAfip)
+        
   // CONSTATACION COMPROBANTE AFIP
    let jsbodyafip = {
       "Auth": 

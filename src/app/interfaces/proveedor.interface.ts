@@ -67,3 +67,40 @@ export interface RelacionComercial{
   Numero_Cuenta: string;
   Sucursal: string;
 }//proveedores_relacioncomercial_GET_SP
+
+export interface Impuesto{
+  Impuesto: number;
+  ID_Modelo_impuestos: string;
+  Situacion: string;
+  ID_Impuestos: string;
+  Fecha_inscripcion: string;
+  Exenciones: number;
+  Fecha_Desde_Exenciones: string;
+  Fecha_Hasta_Exenciones: string;
+}//proveedores_impuesto_GET_SP
+
+export interface Formulario{
+  ID_Form_Proveedor: string;
+  ID_Formulario: string;
+  Fecha_presentacion: string;
+  Fecha_vencimiento: string;
+  Url: string;
+  Descripcion: string;
+}//proveedores_formulario_GET_SP
+
+export interface ArticuloProv{
+  id_prov: string;
+  id_art: string;
+  fecha_ultima_compra: string;
+  id_moneda: string;
+  codigobarra: string;
+  fecha_creacion: string;
+  fecha_ult_modificacion: string;
+  id_usuario_creador: string;
+  id_usuario_modificador: string;
+}//proveedores_articulo_GET_SP
+
+/* 
+export interface AFIPProv{
+
+}//proveedores_afip_GET_SP */

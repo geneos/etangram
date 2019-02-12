@@ -28,10 +28,11 @@ import { ListaPrecios } from 'src/app/interfaces/lista-precios.interface';
 import { ProveedoresService } from 'src/app/services/i2t/proveedores.service';
 import { resolveTimingValue } from '@angular/animations/browser/src/util';
 import { identifierName } from '@angular/compiler';
-import { ProveedorCabecera } from 'src/app/interfaces/proveedor.interface';
+import { ProveedorCabecera, RelacionComercial, Impuesto, Formulario, ArticuloProv } from 'src/app/interfaces/proveedor.interface';
 import { CategoriasBloqueoService } from 'src/app/services/i2t/cat-bloqueo.service';
 import { FormulariosService } from 'src/app/services/i2t/formularios.service';
 import { PartidasPresupuestariasService } from 'src/app/services/i2t/part-presupuestaria.service';
+import { isUndefined, isNullOrUndefined } from 'util';
 
 const PROVEEDORES:any[] = [
   {'numero':0,'razonSocial':'Deux IT SRL','cuit':'30-123456789-9','posicionFiscal':'IVA Responsable Inscripto'},
@@ -131,6 +132,14 @@ export class AltaProveedorComponent implements OnInit {
   modelosImpAll:any[];
   catsBloqueoAll:any[];
   formulariosAll:any[];
+
+  //datos de FormArray
+  cuentasProvAll:RelacionComercial[];
+  impuestosProvAll:Impuesto[];
+  formulariosProvAll:Formulario[];
+  articulosProvAll:ArticuloProv[];
+  datosAFIP:any;
+
   localidadFac: Localidad;
   localidadEnv: Localidad;
   provinciaFac: Provincia;
@@ -148,7 +157,6 @@ export class AltaProveedorComponent implements OnInit {
   articulo: Articulo;
   carticulo: cArticulo;
   provCabecera: ProveedorCabecera;
-
 
   loginData: any;
 
@@ -198,21 +206,18 @@ export class AltaProveedorComponent implements OnInit {
       observaciones: new FormControl(),
       //RELACION COMERCIAL
         //categorias
-        catRef: new FormControl('', Validators.required),
-        // idZona: new FormControl(),
-        idZona: new FormControl('', [], this.existeZona), //19/01/02 10:40=> no hay zonas
+        catRef: new FormControl('', Validators.required),//requerido al menos en proveedor
+        idZona: new FormControl('', [], this.existeZona), 
         zonaDesc: new FormControl(),
-        // idVendedor: new FormControl(),
-        idVendedor: new FormControl('', [], this.existeVendedor), //no hay vendedores
+        // idVendedor: new FormControl('', [], this.existeVendedor), 
+        idVendedor: new FormControl('', [Validators.required], this.existeVendedor), 
         vendedorDesc: new FormControl(),
-        // idCobrador: new FormControl(),
         idCobrador: new FormControl('', [], this.existeCobrador),
         cobradorDesc: new FormControl(),
         limiteCredito: new FormControl(),
         //parametros
         idlistaPrecios: new FormControl('', [], this.existeListaPrecios),
         condComercial: new FormControl('', [], this.existeCondComercial),
-        // idPartidaPresupuestaria: new FormControl(),
         idPartidaPresupuestaria: new FormControl('', [], this.existePartidaPresupuestaria),
         refContable: new FormControl('', [], this.existeRefContable),
         idTipoComprobante: new FormControl('', [], this.existeTipoComprobante),
@@ -222,7 +227,6 @@ export class AltaProveedorComponent implements OnInit {
           descPartidaPresupuestaria: new FormControl(),
           descRefContable: new FormControl(),
           descTipoComprobante: new FormControl(),
-        //cuentas: aparte
         cuentas: this.FormBuilder.array([]),
       catBloq: new FormControl(),
       //IMPUESTOS
@@ -232,10 +236,8 @@ export class AltaProveedorComponent implements OnInit {
       fechaVtoCai: new FormControl(),
       cuitExterior: new FormControl(),
       idImpositivo: new FormControl(),
-        //+ formaImpuesto
         impuestos: this.FormBuilder.array([]),
           //excenciones dentro
-        //+ formaFormulario
         formularios: this.FormBuilder.array([]),
       //STOCK
       articulos: this.FormBuilder.array([]),
@@ -383,17 +385,7 @@ export class AltaProveedorComponent implements OnInit {
           }
         } */
         this.obtenerProveedor();
-
-        if (this.existe == false){
-          console.log('no existe este id!');
-          this.forma.disable();
-          /* this.forma.controls['numero'].disable();
-          this.forma.controls['razonSocial'].disable();
-          this.forma.controls['cuit'].disable();
-          this.forma.controls['posicionFiscal'].disable(); */
-        }
       }
-
     });
 
     //suscripciones para rellenar datos después 
@@ -453,27 +445,29 @@ export class AltaProveedorComponent implements OnInit {
     // });
 
     //descripciones de datos para relaciones comerciales
-    this.forma.controls['idZona'].valueChanges.subscribe(() => {
-      setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['zona'])  
-        this.elIDZona.nativeElement.dispatchEvent(new Event('keyup'));
-      })
-    });
-    this.forma.controls['idVendedor'].valueChanges.subscribe(() => {
-      setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['vendedor'])  
-        this.elIDVendedor.nativeElement.dispatchEvent(new Event('keyup'));
-      })
-    });
-    this.forma.controls['idCobrador'].valueChanges.subscribe(() => {
-      setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['cobrador'])  
-        this.elIDCobrador.nativeElement.dispatchEvent(new Event('keyup'));
-      })
-    });
+    if (this.tipoReferente == 'C'){
+      this.forma.controls['idZona'].valueChanges.subscribe(() => {
+        setTimeout(() => {
+          console.log('hubo un cambio')
+          console.log('estado después de timeout ',this['zona'])  
+          this.elIDZona.nativeElement.dispatchEvent(new Event('keyup'));
+        })
+      });
+      this.forma.controls['idVendedor'].valueChanges.subscribe(() => {
+        setTimeout(() => {
+          console.log('hubo un cambio')
+          console.log('estado después de timeout ',this['vendedor'])  
+          this.elIDVendedor.nativeElement.dispatchEvent(new Event('keyup'));
+        })
+      });
+      this.forma.controls['idCobrador'].valueChanges.subscribe(() => {
+        setTimeout(() => {
+          console.log('hubo un cambio')
+          console.log('estado después de timeout ',this['cobrador'])  
+          this.elIDCobrador.nativeElement.dispatchEvent(new Event('keyup'));
+        })
+      });
+    }
     //descripciones de parametros
     this.forma.controls['condComercial'].valueChanges.subscribe(() => {
       setTimeout(() => {
@@ -522,6 +516,32 @@ export class AltaProveedorComponent implements OnInit {
       'rcCodigoSucursal': new FormControl('', Validators.required)
     });
   }
+  /* construirCuentaBancaria(cuenta: RelacionComercial){
+    console.log('construyendo cuenta bancaria con ', cuenta);
+    let cbu, tipo, cta, suc;
+    if (isNullOrUndefined(cuenta)){
+      console.log('creando cuenta vacia')
+      cbu = '';
+      tipo = '';
+      cta = '';
+      suc = '';
+    }
+    else { 
+      console.log('creando cuenta con valores: ', cuenta);
+      cbu = (isNullOrUndefined(cuenta.CBU) ? cuenta.CBU : '');
+      // tipo = (isNullOrUndefined(cuenta.tipo) ? cuenta.tipo : '');
+      tipo = '';
+      cta = (isNullOrUndefined(cuenta.Numero_Cuenta) ? cuenta.Numero_Cuenta : '');
+      suc = (isNullOrUndefined(cuenta.Sucursal) ? cuenta.Sucursal : '');
+    }
+    //impuestoActual.controls['poseeExenciones'].value == true ? auxDesde : ""
+    return new FormGroup({ 
+      'rcCbu': new FormControl(cbu, Validators.required),
+      'rcTipo': new FormControl(tipo, Validators.required),
+      'rcCuentaBancaria': new FormControl(cta, Validators.required),
+      'rcCodigoSucursal': new FormControl(suc, Validators.required)
+    });
+  } */
   construirImpuesto(){
     return new FormGroup({
       'tipo': new FormControl('', Validators.required),
@@ -589,6 +609,8 @@ export class AltaProveedorComponent implements OnInit {
     this.buscarFormularios();
 
     this.tipoReferente = 'P';
+    this.forma.controls['tipoReferente'].setValue(this.tipoReferente);
+    this.configurarFormulario();
     this.loading = false;
   }
 
@@ -691,22 +713,11 @@ export class AltaProveedorComponent implements OnInit {
     const ctas = this.forma.controls.cuentas as FormArray;
     ctas.removeAt(indice);
   }
-  // addCuentaBanc(){this.cuentasBanc.push({'nroCuenta':(this.cuentasBanc.length)});}
-  addCuentaBanc(){
-    // ctas.push(this.construirCuentaBancaria());
+    addCuentaBanc(){
     console.log('clickeado agregar cuenta');
     const ctas = this.forma.controls.cuentas as FormArray;
-    ctas.push(this.FormBuilder.group({
-        rcCbu: new FormControl('', Validators.required),
-        rcTipo: new FormControl('', Validators.required),
-        rcCuentaBancaria: new FormControl('', Validators.required),
-        rcCodigoSucursal: new FormControl('', Validators.required)
-      })
-    );
-    
-      
+    ctas.push(this.construirCuentaBancaria());      
   }
-
 
   //listas desplegables
   buscarTiposDocumento(){
@@ -1493,7 +1504,7 @@ export class AltaProveedorComponent implements OnInit {
             this.provCabecera = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
+            this._proveedoresService.login(jsonbody)
               .subscribe( dataL => {
                 console.log(dataL);
                 this.loginData = dataL;
@@ -1503,17 +1514,366 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.provData.dataset.length>0){
                 this.provCabecera = this.provData.dataset[0];
+                this.existe = true;
+                this.idCabecera = this.id;
                 console.log('proveedor encontrado: ', this.provCabecera);
+
+                //mostrar datos
+                this.forma.controls['tipoReferente'].setValue(this.provCabecera.tiporeferente);
+                this.forma.controls['numero'].setValue(this.provCabecera.codigo_prov);
+                  //deshabilitado por [readonly]... en html
+                this.forma.controls['razonSocial'].setValue(this.provCabecera.nombre);
+                this.forma.controls['nombreFantasia'].setValue(this.provCabecera.nombre_fantasia);
+                this.forma.controls['tipoDocumento'].setValue(this.provCabecera.tipo_documento);
+                this.forma.controls['nroDocumento'].setValue(this.provCabecera.nro_documento);
+                this.forma.controls['facCalle'].setValue(this.provCabecera.direccion_compra);
+                this.forma.controls['facCiudad'].setValue(this.provCabecera.ciudad_compra);
+                this.forma.controls['facProvincia'].setValue(this.provCabecera.provincia_compra);
+                this.forma.controls['facCodigoPostal'].setValue(this.provCabecera.codigopostal_compra);
+                this.forma.controls['facPais'].setValue(this.provCabecera.pais_compra);
+                this.forma.controls['envCalle'].setValue(this.provCabecera.direccion_envio);
+                this.forma.controls['envCiudad'].setValue(this.provCabecera.ciudad_envio);
+                this.forma.controls['envProvincia'].setValue(this.provCabecera.provincia_envio);
+                this.forma.controls['envCodigoPostal'].setValue(this.provCabecera.codigopostal_envio);
+                this.forma.controls['envPais'].setValue(this.provCabecera.pais_envio);
+                this.forma.controls['telefono1'].setValue(this.provCabecera.telefono);
+                this.forma.controls['telefono2'].setValue(this.provCabecera.telefono_alternativo);
+                this.forma.controls['telefono3'].setValue(this.provCabecera.fax);
+                this.forma.controls['email'].setValue(this.provCabecera.email);
+                this.forma.controls['observaciones'].setValue(this.provCabecera.descripcion);
+
+                this.forma.controls['catRef'].setValue(this.provCabecera.categoriareferente);
+                console.log('zona ', this.provCabecera.id_zona);
+                if (this.provCabecera.id_zona != null){ 
+                  this.forma.controls['idZona'].setValue(this.provCabecera.id_zona);
+                }
+                this.forma.controls['idVendedor'].setValue(this.provCabecera.id_vendedor);
+                this.forma.controls['idCobrador'].setValue(this.provCabecera.id_cobrador);
+                this.forma.controls['limiteCredito'].setValue(this.provCabecera.limitecredito);
+                //las busquedas no hacen falta porque están las suscripciones
+                if (this.provCabecera.listaprecios != null){
+                  this.forma.controls['idlistaPrecios'].setValue(this.provCabecera.listaprecios);
+                  // this.buscarListaPrecios();
+                }
+                if (this.provCabecera.condicion_comercial != null){
+                  this.forma.controls['condComercial'].setValue(this.provCabecera.condicion_comercial);
+                  // this.buscarCondComercial();
+                }
+                if (this.provCabecera.partidas_presupuestarias != null){
+                  this.forma.controls['idPartidaPresupuestaria'].setValue(this.provCabecera.partidas_presupuestarias);
+                  // this.buscarPartidaPresupuestaria();
+                }
+                if (this.provCabecera.referencias_contables != null){
+                  this.forma.controls['refContable'].setValue(this.provCabecera.referencias_contables);
+                  // this.buscarRefContable();
+                }
+                //todo ver cómo se guarda
+                /* if (this.provCabecera != null){
+                  this.forma.controls['idTipoComprobante'].setValue(this.provCabecera.ti);
+                  this.busca
+                } */
+                // todo ver como se  guarda
+                // this.forma.controls['catBloq'].setValue(this.provCabecera.);
+                
+                this.forma.controls['sitIVA'].setValue(this.provCabecera.categoria_iva);
+                this.forma.controls['cuit'].setValue(this.provCabecera.cuit);
+                this.forma.controls['cai'].setValue(this.provCabecera.cai);
+                this.forma.controls['fechaVtoCai'].setValue(this.provCabecera.fecha_vto_cai);
+                console.log('fecha real cai: ', this.provCabecera.fecha_vto_cai);
+                this.forma.controls['cuitExterior'].setValue(this.provCabecera.cuit_exterior);
+                this.forma.controls['idImpositivo'].setValue(this.provCabecera.idimpositivo);
+
+                this.obtenerDatosArrays();
+
                 //this.loading = false;
               } else {
                 this.provCabecera = null;
+                this.existe = false;
                 console.log('no se encontro el proveedor ' + this.id);
+              }
+
+              if (this.existe == false){
+                console.log('no existe este id!');
+                this.forma.disable();
+                /* this.forma.controls['numero'].disable();
+                this.forma.controls['razonSocial'].disable();
+                this.forma.controls['cuit'].disable();
+                this.forma.controls['posicionFiscal'].disable(); */
               }
             }
             //console.log(this.refContablesAll);
       });
   }
-  //carga de datos
+
+  obtenerDatosArrays(){
+    console.log('buscando datos para los arrays')
+    let jsbodyID = {"Id_Proveedor": this.idCabecera}
+    let jsonbodyID = JSON.stringify(jsbodyID);
+    this.forma.controls.cuentas.reset();
+    this.forma.controls.impuestos.reset();
+    this.forma.controls.formularios.reset();
+    this.forma.controls.articulos.reset();
+
+    this._proveedoresService.getRelComerciales(jsonbodyID , this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.cuentasProvAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._proveedoresService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.obtenerDatosArrays();
+              });
+          } else {
+            console.log('respuesta consulta de cuentas asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.cuentasProvAll = this.respData.dataset;
+              let index = 0;
+              console.log('cuentas recuperadas: ', this.cuentasProvAll)
+              this.cuentasProvAll.forEach(cuenta => {
+                console.log('se va a armar el formgroup para: ', cuenta)
+                this.addCuentaBanc();
+                // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
+                // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
+                console.log('cuenta: ' ,this.forma.get(['cuentas', index]));
+                console.log('cbu: ',(this.forma.get(['cuentas', index])).value['rcCbu']);
+                console.log('cbu como formgroup: ', <FormGroup>this.forma.get(['cuentas', index]))
+                let cCuenta: FormGroup = <FormGroup>this.forma.get(['cuentas', index]);
+                cCuenta.controls['rcCbu'].setValue(cuenta.CBU) ;
+                cCuenta.controls['rcCuentaBancaria'].setValue(cuenta.Numero_Cuenta) ;
+                cCuenta.controls['rcCodigoSucursal'].setValue(cuenta.Sucursal) ;
+                // cCuenta.controls['rcTipo'].setValue(cuenta.) ;
+                
+                //todo borrar intentos fallidos
+                /* this.forma.controls.cuentas.value[0];
+                (<FormGroup>this.forma.controls.cuentas[0]).controls['rcCbu'].setValue(cuenta.CBU);
+                this.forma.controls.cuentas[index].controls['rcCbu'].setValue(cuenta.CBU); */
+                // this.forma.controls.cuentas[index].controls['rcTipo'].setValue(cuenta.);
+                // this.forma.controls.cuentas[index].controls['rcTipo'].setValue();
+                // this.forma.controls.cuentas[index].controls['rcCuentaBancaria'].setValue(cuenta.Numero_Cuenta);
+                // this.forma.controls.cuentas[index].controls['rcCodigoSucursal'].setValue(cuenta.Sucursal);
+
+                index = index +1;
+              });
+            }
+
+          }
+    });
+
+    this._proveedoresService.getImpuestos(jsonbodyID , this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.impuestosProvAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._proveedoresService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.obtenerDatosArrays();
+              });
+          } else {
+            console.log('respuesta consulta de impuestos asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.impuestosProvAll = this.respData.dataset;
+              let index = 0;
+              console.log('impuestos recuperadas: ', this.impuestosProvAll)
+              this.impuestosProvAll.forEach(impuesto => {
+                console.log('se va a armar el formgroup para: ', impuesto)
+                this.addImpuesto();
+                // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
+                // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
+                console.log('impuesto: ' ,this.forma.get(['impuestos', index]));
+                let cImpuesto: FormGroup = <FormGroup>this.forma.get(['impuestos', index]);
+                //todo agregar lo que falta cuando esté en la api
+                // cImpuesto.controls['tipo'].setValue(impuesto.) ;
+                cImpuesto.controls['modelo'].setValue(impuesto.ID_Modelo_impuestos) ;
+                cImpuesto.controls['situacion'].setValue(impuesto.Situacion) ;
+                // cImpuesto.controls['codInscripcion'].setValue(impuesto.) ;
+                cImpuesto.controls['fechaInscripcion'].setValue(impuesto.Fecha_inscripcion) ;
+                // cImpuesto.controls['observaciones'].setValue(impuesto) ;
+                cImpuesto.controls['poseeExenciones'].setValue((impuesto.Exenciones == 1 ? true : false)) ;
+                if (impuesto.Exenciones == 1) {
+                  cImpuesto.controls['fechaDesde'].setValue(impuesto.Fecha_Desde_Exenciones) ;
+                  cImpuesto.controls['fechaHasta'].setValue(impuesto.Fecha_Hasta_Exenciones) ;
+                }
+                
+                index = index +1;
+              });
+            }
+
+          }
+    });
+
+    this._proveedoresService.getFormularios(jsonbodyID , this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.formulariosProvAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._proveedoresService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.obtenerDatosArrays();
+              });
+          } else {
+            console.log('respuesta consulta de formulario asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.formulariosProvAll = this.respData.dataset;
+              let index = 0;
+              console.log('formulario recuperadas: ', this.formulariosProvAll)
+              this.formulariosProvAll.forEach(formulario => {
+                console.log('se va a armar el formgroup para: ', formulario)
+                this.addFormulario();
+                // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
+                // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
+                console.log('impuesto: ' ,this.forma.get(['impuestos', index]));
+                let cFormulario: FormGroup = <FormGroup>this.forma.get(['impuestos', index]);
+                //todo agregar lo que falta cuando esté en la api
+                // cImpuesto.controls['tipo'].setValue(impuesto.) ;
+                cFormulario.controls['codForm'].setValue(formulario.ID_Formulario) ;
+                //todo corregir mostrado de fecha
+                cFormulario.controls['fechaPres'].setValue(formulario.Fecha_presentacion) ;
+                cFormulario.controls['fechaVenc'].setValue(formulario.Fecha_vencimiento) ;
+                /* cFormulario.controls[''].setValue(formulario.ID_Form_Proveedor) ;//id proveedor
+                cFormulario.controls[''].setValue(formulario.Url) ;
+                cFormulario.controls[''].setValue(formulario.Descripcion) ; */
+                
+                index = index +1;
+              });
+            }
+
+          }
+    });
+
+    //todo probar cuando lo permita la api
+    this._proveedoresService.getArticulos(jsonbodyID , this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.articulosProvAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._proveedoresService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.obtenerDatosArrays();
+              });
+          } else {
+            console.log('respuesta consulta de articulo asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.articulosProvAll = this.respData.dataset;
+              let index = 0;
+              console.log('articulo recuperadas: ', this.articulosProvAll)
+              this.articulosProvAll.forEach(articulo => {
+                console.log('se va a armar el formgroup para: ', articulo)
+                this.addArticulosStock();
+                // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
+                // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
+                console.log('articulo: ' ,this.forma.get(['impuestos', index]));
+                let cArticulo: FormGroup = <FormGroup>this.forma.get(['impuestos', index]);
+                //todo agregar lo que falta cuando esté en la api
+                // cImpuesto.controls['tipo'].setValue(impuesto.) ;
+                cArticulo.controls['artID'].setValue(articulo.id_art);
+                //todo verificar funcionamiento de busqueda
+                this.buscarArticulo(index);
+                // cArticulo.controls['artDesc'].setValue(articulo);
+                cArticulo.controls['ultimaFecha'].setValue(articulo.fecha_ultima_compra);
+                // cArticulo.controls['ultimoPrecio'].setValue(articulo.);
+                // cArticulo.controls['codArtProv'].setValue(articulo.id_prov);//id de proveedor
+                cArticulo.controls['barrasArtProv'].setValue(articulo.codigobarra);
+                cArticulo.controls['moneda'].setValue(articulo.id_moneda);
+                /* cArticulo.controls[''].setValue(articulo.fecha_creacion);
+                cArticulo.controls[''].setValue(articulo.fecha_ult_modificacion);
+                cArticulo.controls[''].setValue(articulo.id_usuario_creador);
+                cArticulo.controls[''].setValue(articulo.id_usuario_modificador); */
+
+                index = index +1;
+              });
+            }
+
+          }
+    });
+
+    this._proveedoresService.getAFIP(jsonbodyID , this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.datosAFIP = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._proveedoresService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.obtenerDatosArrays();
+              });
+          } else {
+            console.log('respuesta consulta de afip asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.datosAFIP = this.respData.dataset[0];
+              let index = 0;
+              console.log('afip recuperadas: ', this.datosAFIP);
+              // todo completar
+              /*
+              this.articulosProvAll.forEach(articulo => {
+                console.log('se va a armar el formgroup para: ', articulo)
+                this.addArticulosStock();
+                // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
+                // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
+                console.log('articulo: ' ,this.forma.get(['impuestos', index]));
+                let cArticulo: FormGroup = <FormGroup>this.forma.get(['impuestos', index]);
+                //todo agregar lo que falta cuando esté en la api
+                // cImpuesto.controls['tipo'].setValue(impuesto.) ;
+                cArticulo.controls['artID'].setValue(articulo.id_art);
+                //todo verificar funcionamiento de busqueda
+                this.buscarArticulo(index);
+                // cArticulo.controls['artDesc'].setValue(articulo);
+                cArticulo.controls['ultimaFecha'].setValue(articulo.fecha_ultima_compra);
+                // cArticulo.controls['ultimoPrecio'].setValue(articulo.);
+                // cArticulo.controls['codArtProv'].setValue(articulo.id_prov);//id de proveedor
+                cArticulo.controls['barrasArtProv'].setValue(articulo.codigobarra);
+                cArticulo.controls['moneda'].setValue(articulo.id_moneda);
+                /* cArticulo.controls[''].setValue(articulo.fecha_creacion);
+                cArticulo.controls[''].setValue(articulo.fecha_ult_modificacion);
+                cArticulo.controls[''].setValue(articulo.id_usuario_creador);
+                cArticulo.controls[''].setValue(articulo.id_usuario_modificador); */
+
+                index = index +1;
+              // });
+            }
+
+          }
+    });
+  }
+  //fin carga de datos
 
 
   //validadores
@@ -2432,7 +2792,6 @@ export class AltaProveedorComponent implements OnInit {
     this.impuestosData.splice(ind, 1);
     this.table.renderRows();
   };*/
-
   extraerFecha(control: FormControl){
     let auxFecha: string;
     if (control.value != null){
@@ -2448,6 +2807,41 @@ export class AltaProveedorComponent implements OnInit {
     else{
       // console.log('control de fecha vacio o invalido: ', control);
       return null;
+    }
+  }
+
+  testValidez(){
+    for (const field in this.forma.controls) { // 'field' is a string
+
+      const control = this.forma.get(field); // 'control' is a FormControl
+      console.log('Control: ' + field, control.status, control.valid, control.enabled, control.value)
+    }
+
+    
+    
+  }
+
+  configurarFormulario(){
+    switch (this.tipoReferente) {
+      case 'C':
+        this.forma.controls['cai'].disable();
+        this.forma.controls['fechaVtoCai'].disable();
+        //todo ver que pasa con excenciones
+        //formularios, articulos: innecesario, vacío es válido
+        break;
+      case 'P':
+        this.forma.controls['cuitExterior'].disable();
+        this.forma.controls['idImpositivo'].disable();
+        this.forma.controls['idZona'].disable();
+        this.forma.controls['zonaDesc'].disable();
+        this.forma.controls['idVendedor'].disable();
+        this.forma.controls['vendedorDesc'].disable();
+        this.forma.controls['idCobrador'].disable();
+        this.forma.controls['cobradorDesc'].disable();
+        this.forma.controls['limiteCredito'].disable();
+        break;
+      default:
+        break;
     }
   }
 }

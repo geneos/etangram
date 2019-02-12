@@ -53,6 +53,66 @@ export class ProveedoresService {
 
     return this.http.post( url, body, { headers });
   }
+
+  getRelComerciales( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_relacioncomercial_GET_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  getFormularios( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_formulario_GET_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  getImpuestos( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_impuesto_GET_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  getArticulos( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_articulo_GET_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+
+  getAFIP( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_afip_GET_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
   /*
   postCabecera( body:string, token:string ){
     const headers = new HttpHeaders({
@@ -261,7 +321,7 @@ export class ProveedoresService {
   }
 
   //
-  getArticulo( id:string, token:string ){
+/*   getArticulo( id:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
@@ -270,7 +330,7 @@ export class ProveedoresService {
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });
-  }
+  } */
 
   getItem( id:string, token:string ){
     const headers = new HttpHeaders({

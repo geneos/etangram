@@ -29,3 +29,45 @@ export interface Impuestos{
   regimenimpuestoafip: number;
 }
 //tg01_impuestos
+
+export interface ConstatacionCbte{
+  ComprobanteConstatarResult:{
+    CmpResp: {
+        CbteModo: string,
+        CuitEmisor: string,
+        PtoVta: number,
+        CbteTipo: number,
+        CbteNro: string,
+        CbteFch: string,
+        ImpTotal: string,
+        CodAutorizacion: string,
+        DocTipoReceptor: string,
+        DocNroReceptor: string
+    },
+    Resultado: string,
+    Observaciones: {
+        Obs:
+            {
+                Code: number,
+                Msg: string
+            }
+        
+    },
+    FchProceso: string,
+    Events: {
+        Evt: 
+            {
+                Code: number
+            }
+        
+    },
+    Errors: {
+      Err: 
+          {
+              Code: number,
+              Msg: string
+          }
+      
+  }
+  }
+}

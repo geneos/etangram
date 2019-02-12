@@ -11,13 +11,15 @@ import { UnidadMedida } from "../../../interfaces/unidad-medida.interface"
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription, from } from 'rxjs';
+import { ConstatacionCbte } from "../../../interfaces/afip.interface";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { AFIPInternoService } from "../../../services/i2t/afip.service";
 import { SlicePipe } from '@angular/common';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
 
-var auxProvData,auxArtiData,auxExpData:any;
+var auxProvData,auxArtiData,auxExpData,auxFechaAfip,auxfecha:any;
 
 @Injectable()
 
@@ -65,7 +67,12 @@ export class AbmComprasComponent implements OnInit {
   tcData: any;
   tipoComprobante: TipoComprobante[] = [];
   dataAfip: any;
-  datosCompAfip: TipoComprobanteAfip[] = [];
+  datosCompAfip: TipoComprobanteAfip;
+  datosCbteAfip: any;
+  constCbteAfip: ConstatacionCbte[] = [];
+  resultado: any;
+  obsMsg: string = '';
+
   tipoComp: string[] = [];
   idCompAfip: number;
 
@@ -95,6 +102,7 @@ export class AbmComprasComponent implements OnInit {
               private _compraService:CompraService,
               private _tiposComprobante:TiposComprobanteService,
               private _unidadMedida:UnidadMedidaService,
+              private _afipInternoService: AFIPInternoService,
               private route:ActivatedRoute,
               public ngxSmartModalService: NgxSmartModalService,
               public snackBar: MatSnackBar,
@@ -460,26 +468,105 @@ export class AbmComprasComponent implements OnInit {
   addItem(){
     this.addingItem = true;
   }
-
-  guardarCabecera(){
-    
-    this.editingCabecera = false;
+  buscaCbteAfip(){
     let letra = (this.forma.controls['nroComprobante'].value.slice(0,1))
     console.log(letra);
     this._tiposComprobante.getTipoComprobanteAfip(this.forma.controls['tipoComprobante'].value, letra, this.token)
       .subscribe( respAfip => {
         console.log(respAfip)
         this.dataAfip = respAfip
-        this.datosCompAfip = this.dataAfip.dataset
-        this.idCompAfip = this.datosCompAfip[0].codigo_afip
+        this.datosCompAfip = this.dataAfip.dataset;
+        this.idCompAfip = this.dataAfip.dataset[0].codigo_afip;
+        console.log('codigo afip: '+ this.idCompAfip);
+        this.guardarCabecera();
       })
+  }
+  guardarCabecera(){
+    
     let ano = this.forma.controls['fecha'].value.getFullYear().toString();
     let mes = (this.forma.controls['fecha'].value.getMonth()+1).toString();
     if(mes.length==1){mes="0"+mes};
     let dia = this.forma.controls['fecha'].value.getDate().toString();
     if(dia.length==1){dia="0"+dia};
 
-    let auxfecha = ano+"-"+mes+"-"+dia;
+    auxfecha = ano+"-"+mes+"-"+dia;
+    auxFechaAfip = ano+mes+dia;
+
+    
+    
+
+    let ptoventa = this.forma.controls['nroComprobante'].value.slice(1,5);
+    let nrocbte = this.forma.controls['nroComprobante'].value.slice(6,14);
+    //this.idCompAfip = this.datosCompAfip[0].codigo_afip;
+   
+    console.log(nrocbte);
+    console.log('codigo afip: '+ this.idCompAfip)
+        
+  // CONSTATACION COMPROBANTE AFIP
+   let jsbodyafip = {
+      "Auth": 
+      {
+             "Token": "Token",
+             "Sign": "Sign",
+             "Cuit": 30709041483
+         },
+      "CmpReq": {
+             "CbteModo": this.forma.controls['cbtemodo'].value,
+             "CuitEmisor": "20383763887",
+             "PtoVta": ptoventa,
+             "CbteTipo": this.idCompAfip,
+             "CbteNro": nrocbte,
+             "CbteFch": auxFechaAfip,// this.forma.controls['fecha'].value,
+             "ImpTotal": this.forma.controls['totalCabecera'].value,
+             "CodAutorizacion": this.forma.controls['caicae'].value,
+             "DocTipoReceptor": "80",
+             "DocNroReceptor": this.compraProveedor.cuit // this.forma.controls['cuit'].value
+         }
+      }
+      let jsonbodyafip= JSON.stringify(jsbodyafip);
+      this._afipInternoService.constatarComprobantes(this.token, jsonbodyafip)
+        .subscribe( af =>{
+          console.log(af)
+          this.datosCbteAfip = af;
+          this.constCbteAfip = this.datosCbteAfip.ComprobanteConstatarResult;
+          this.resultado = this.datosCbteAfip.ComprobanteConstatarResult.Resultado;
+          
+          if(this.datosCbteAfip.statusCode){
+            switch (this.datosCbteAfip.statusCode) {
+              case 500:
+              this.obsMsg = "Error interno de aplicación."
+                  break;
+              case 501:
+              this.obsMsg = "Error interno de base de datos"
+                  break;
+              case 502:
+              this.obsMsg = "Transacción Activa"
+                  break;
+              case 503:
+              this.obsMsg = "No existen datos en nuestros registros"
+                  break;
+              default:
+  
+          }
+          }
+          
+
+          if(this.datosCbteAfip.ComprobanteConstatarResult.Errors){
+            this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Errors.Err[0].Msg
+          }
+          if(this.datosCbteAfip.ComprobanteConstatarResult.Observaciones) {
+          this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Observaciones.Obs[0].Msg;
+          }
+          this.openSnackBar(this.obsMsg);
+        })
+
+  if(this.resultado = 'R'){
+  
+  this.editingCabecera = true;
+   // FIN CONSTATACION COMPROBANTE AFIP
+
+  } else {
+    this.editingCabecera = false;
 
     let jsbody = {
       "Tipocbte":this.forma.controls['tipoComprobante'].value,
@@ -500,7 +587,9 @@ export class AbmComprasComponent implements OnInit {
       "FechaContable":auxfecha,
       "idcaja":"1",//hardcoded
       "idUsuario":"99",//hardcoded
-      "Observaciones":this.forma.controls['observaciones'].value
+      "Observaciones":this.forma.controls['observaciones'].value,
+      "EstadoComprobante":"1",
+      "ID_Expediente":this.forma.controls['expediente'].value
     };
     let jsonbody= JSON.stringify(jsbody);
     console.log(jsonbody);
@@ -520,7 +609,7 @@ export class AbmComprasComponent implements OnInit {
     this.forma.controls['totalCabecera'].disable();
     this.forma.controls['expediente'].disable();
   }
-
+}
   guardarArticulo(){
     this.compraArticulo.cantidad = this.formaArticulos.controls['cantidad'].value;
     this.compraArticulo.descuento = this.formaArticulos.controls['descuento'].value;
@@ -539,6 +628,7 @@ export class AbmComprasComponent implements OnInit {
         "TipoRenglon":this.compraArticulo.tipoRenglon,
         "idusuario":"1",//hardcoded
       };
+
       let jsonbody= JSON.stringify(jsbody);
       console.log(jsonbody);
       this._compraService.editArticulo( jsonbody, this.token )

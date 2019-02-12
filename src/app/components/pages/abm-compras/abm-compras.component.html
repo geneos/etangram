@@ -1,6 +1,6 @@
 <h2>COMPRAS</h2>
 
-<form [formGroup]="forma" (ngSubmit)="guardarCabecera()" novalidate="novalidate">
+<form [formGroup]="forma" (ngSubmit)="buscaCbteAfip()" novalidate="novalidate">
 
 <mat-expansion-panel [expanded]=true [disabled]=true>
   <mat-expansion-panel-header>
@@ -51,7 +51,7 @@
       <div class="col s6 m3 l2">
         <mat-form-field appearance="outline" floatLabel="always"  style="width:100%;">
           <mat-label>Tipo Comprobante</mat-label>
-            <mat-select placeholder="Elija una opción..." formControlName="tipoComprobante">
+            <mat-select  placeholder="Elija una opción..." formControlName="tipoComprobante">
               <mat-option *ngFor="let aux of tipoComprobante" [value]="aux.idtipocomp">
                 {{aux.idtipocomp}}
               </mat-option>

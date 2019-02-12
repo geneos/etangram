@@ -73,6 +73,8 @@ import { DatosProveedoresComponent } from './components/pages/datos-proveedores/
 import { LoginComponent } from './components/pages/login/login.component';
 import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicidad/ordenes-publicidad.component';
 import { ImageComponent } from './components/pages/prueba/image/image.component';
+import { EvidenciasComponent } from './components/shared/modals/evidencias/evidencias.component';
+import { RegistroEvidenciaComponent } from './components/pages/registro-evidencia/registro-evidencia.component';
 
 
 
@@ -122,7 +124,9 @@ import { ImageComponent } from './components/pages/prueba/image/image.component'
     DatosProveedoresComponent,
     LoginComponent,
     OrdenesPublicidadComponent,
-    ImageComponent
+    ImageComponent,
+    EvidenciasComponent,
+    RegistroEvidenciaComponent
   ],
   imports: [
     BrowserModule,

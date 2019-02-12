@@ -29,9 +29,9 @@ export interface TipoComprobante{
     activo: number;
 }
 export interface TipoComprobanteAfip{
-    tcom: string,
-    descripcion: string,
-    letra: string,
-    descripcion_afip: string,
-    codigo_afip: number
+    tcom: string;
+    descripcion: string;
+    letra: string;
+    descripcion_afip: string;
+    codigo_afip: number;
 } 

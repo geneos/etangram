@@ -87,7 +87,7 @@ export class AltaRefContableComponent implements OnInit {
 
   obtenerIDUsuario(){
     //todo: traer usuario de login, ahora no tienen relación en la base
-    this._usuariosService.getUsuarioPorUsername('morecchia', this.token)
+    this._usuariosService.getUsuarioPorUsername('usuario1', this.token)
     .subscribe( resp => {
       //console.log(resp);
       this.auxresp = resp;
@@ -142,7 +142,7 @@ export class AltaRefContableComponent implements OnInit {
   }
 
   buscarRefContable(auxid:string){
-    this._refContablesService.getRefContable( auxid, this.token )
+    this._refContablesService.getRefContable( this.id, this.token )
     //this._compraService.getProveedores()
       .subscribe( dataRC => {
         console.log(dataRC);
@@ -150,16 +150,16 @@ export class AltaRefContableComponent implements OnInit {
           //auxProvData = this.rcData.dataset.length;
           if(this.rcData.returnset[0].RCode=="-6003"){
             //token invalido
-            this.refContable = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._refContablesService.login(jsonbody)
-              .subscribe( dataL => {
-                console.log(dataL);
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarRefContable(auxid);
-              });
+            // this.refContable = null;
+            // let jsbody = {"usuario":"usuario1","pass":"password1"}
+            // let jsonbody = JSON.stringify(jsbody);
+            // this._refContablesService.login(jsonbody)
+            //   .subscribe( dataL => {
+            //     console.log(dataL);
+            //     this.loginData = dataL;
+            //     this.token = this.loginData.dataset[0].jwt;
+            //     this.buscarRefContable(auxid);
+            //   });
             } else {
               if(this.rcData.dataset.length>0){
                 this.refContable = this.rcData.dataset[0];

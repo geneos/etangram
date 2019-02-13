@@ -21,14 +21,15 @@ export class OrdPublicidadService {
     return this.http.post( url, body, { headers } );
   }
 
-  getBaseDatos( idProv:string, op:string, token:string ){
+  postDatos( body:string, token:string ){
     const headers = new HttpHeaders({
-      'x-access-token': token
+      'x-access-token': token,
+      'Content-Type': 'application/json'
     });
 
-    let query = `api/PRENSA_Proveedor?id_prov=${idProv}&opcion=${op}`;
+    let query = `api/proc/PRENSA_Proveedor`;
     let url = this.urlProveedor + query;
 
-    return this.http.get( url , { headers });
+    return this.http.post( url, body, { headers } );
   }
 }

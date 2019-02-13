@@ -4,9 +4,11 @@ import { MatTable, MatSort, MatPaginator } from '@angular/material';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
 import { ImpresionCompService } from "../../../services/i2t/impresion-comp.service";
+import { OrdPublicidadService } from "../../../services/i2t/ord-publicidad.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { Router, ActivatedRoute } from "@angular/router";
+import { supportsScrollBehavior } from '@angular/cdk/platform';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -42,6 +44,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   constructor(private route:ActivatedRoute,private router: Router,
               private _compraService: CompraService,
               private _ImpresionCompService:ImpresionCompService,
+              private _ordPublicidadService: OrdPublicidadService,
               @Inject(SESSION_STORAGE) private storage: StorageService) {
     this.forma = new FormGroup({
       'proveedor': new FormControl(),
@@ -63,6 +66,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   } 
   
   ngOnInit() {
+    this.mostrarDatos();
   }
 
   existeProveedor( control: FormControl ): Promise<any>{
@@ -142,5 +146,18 @@ export class OrdenesPublicidadComponent implements OnInit {
          })
        }
      })
+   }
+
+   mostrarDatos(){
+     let jsbodydatos = {
+      "Id_Prov": this.id,
+      "opc": 10
+     }
+     let jsonbodydatos = JSON.stringify(jsbodydatos);
+
+     this._ordPublicidadService.postDatos(jsonbodydatos, this.token)
+      .subscribe ( dataD => {
+        console.log(dataD);
+      })
    }
 }

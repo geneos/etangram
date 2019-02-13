@@ -145,7 +145,7 @@ export class ConsultaDinamicaService {
       'x-access-token': token
     });
 
-    let query = `api/tg06_tg_reportes?name=eq${name}`;
+    let query = `api/tg06_tg_reportes?name=eq[${name}]`;
     let url = this.preUrl + query;
 
     return this.http.get( url , { headers });

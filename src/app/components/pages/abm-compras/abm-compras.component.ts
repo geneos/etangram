@@ -8,6 +8,7 @@ import { CompraArticulo,CompraProveedor } from "../../../interfaces/compra.inter
 import { TipoComprobante, TipoComprobanteAfip } from "../../../interfaces/tipo-comprobante.interface";
 import { Expedientes } from "../../../interfaces/expedientes.interface"
 import { UnidadMedida } from "../../../interfaces/unidad-medida.interface"
+import { ParametrosService } from "../../../services/i2t/parametros.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription, from } from 'rxjs';
@@ -15,6 +16,7 @@ import { ConstatacionCbte } from "../../../interfaces/afip.interface";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { AFIPInternoService } from "../../../services/i2t/afip.service";
 import { SlicePipe } from '@angular/common';
+import { Parametros } from 'src/app/interfaces/parametros.interface';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -73,6 +75,9 @@ export class AbmComprasComponent implements OnInit {
   resultado: any;
   obsMsg: string = '';
 
+  cuitEmisor: any;
+  dataParametros: any;
+
   tipoComp: string[] = [];
   idCompAfip: number;
 
@@ -104,6 +109,7 @@ export class AbmComprasComponent implements OnInit {
               private _unidadMedida:UnidadMedidaService,
               private _afipInternoService: AFIPInternoService,
               private route:ActivatedRoute,
+              private _parametrosService: ParametrosService,
               public ngxSmartModalService: NgxSmartModalService,
               public snackBar: MatSnackBar,
               @Inject(SESSION_STORAGE) private storage: StorageService
@@ -180,6 +186,14 @@ export class AbmComprasComponent implements OnInit {
   ngOnInit() {
     this.buscarTiposComprobante();
     this.unidadMedida();
+    this._parametrosService.getParametros(this.token)
+      .subscribe( dataP => {
+        console.log(dataP)
+        this.dataParametros = dataP
+        console.log(this.dataParametros.dataset)
+        this.cuitEmisor = this.dataParametros.dataset[0].cuit
+        console.log(this.cuitEmisor)
+      })
   }
 
   test(){
@@ -481,7 +495,11 @@ export class AbmComprasComponent implements OnInit {
         this.guardarCabecera();
       })
   }
+
+  
+
   guardarCabecera(){
+    
     
     let ano = this.forma.controls['fecha'].value.getFullYear().toString();
     let mes = (this.forma.controls['fecha'].value.getMonth()+1).toString();
@@ -512,7 +530,7 @@ export class AbmComprasComponent implements OnInit {
          },
       "CmpReq": {
              "CbteModo": this.forma.controls['cbtemodo'].value,
-             "CuitEmisor": "20383763887",
+             "CuitEmisor": this.cuitEmisor,
              "PtoVta": ptoventa,
              "CbteTipo": this.idCompAfip,
              "CbteNro": nrocbte,

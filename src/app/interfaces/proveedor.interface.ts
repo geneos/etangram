@@ -66,6 +66,7 @@ export interface RelacionComercial{
   CBU: string;
   Numero_Cuenta: string;
   Sucursal: string;
+  Tipo_Cuenta: string;
 }//proveedores_relacioncomercial_GET_SP
 
 export interface Impuesto{
@@ -90,7 +91,8 @@ export interface Formulario{
 
 export interface ArticuloProv{
   id_prov: string;
-  id_art: string;
+  // id_art: string;
+  NAME: string;
   fecha_ultima_compra: string;
   id_moneda: string;
   codigobarra: string;
@@ -99,7 +101,15 @@ export interface ArticuloProv{
   id_usuario_creador: string;
   id_usuario_modificador: string;
 }//proveedores_articulo_GET_SP
-
+/* "id_prov": "7319e575-2e21-11e9-bbe8-d050990fe081",
+"NAME": null,
+"fecha_ultima_compra": "1997-05-05",
+"id_moneda": "1",
+"codigobarra": "",
+"fecha_creacion": "2019-02-15 09:49:54",
+"fecha_ult_modificacion": "2019-02-15 09:49:54",
+"id_usuario_creador": "7319e575-2e21-11e9-bbe8-d050990fe081",
+"id_usuario_modificador": "7319e575-2e21-11e9-bbe8-d050990fe081" */
 
 /* 
 export interface AFIPProv{

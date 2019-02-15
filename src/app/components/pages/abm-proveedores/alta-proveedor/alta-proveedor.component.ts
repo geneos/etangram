@@ -1523,7 +1523,7 @@ export class AltaProveedorComponent implements OnInit {
                 cCuenta.controls['rcCuentaBancaria'].setValue(cuenta.Numero_Cuenta) ;
                 cCuenta.controls['rcCodigoSucursal'].setValue(cuenta.Sucursal) ;
                 cCuenta.controls['ID_Relacion_Comercial'].setValue(cuenta.ID_Relacion_Comercial) ;
-                // cCuenta.controls['rcTipo'].setValue(cuenta.) ;
+                cCuenta.controls['rcTipo'].setValue(cuenta.Tipo_Cuenta) ;
                 index = index +1;
               });
             }
@@ -1660,7 +1660,7 @@ export class AltaProveedorComponent implements OnInit {
                 let cArticulo: FormGroup = <FormGroup>this.forma.get(['articulos', index]);
                 //todo agregar lo que falta cuando esté en la api
                 // cImpuesto.controls['tipo'].setValue(impuesto.) ;
-                cArticulo.controls['artID'].setValue(articulo.id_art);
+                // cArticulo.controls['artID'].setValue(articulo.id_art);
                 //todo verificar funcionamiento de busqueda, cuando funcione la api
                 this.buscarArticulo(index);
                 // cArticulo.controls['artDesc'].setValue(articulo);
@@ -2343,8 +2343,8 @@ export class AltaProveedorComponent implements OnInit {
   }*/
 
   actualizarDatos(){
-    this.modificarProveedor();
-    this.actualizarRelComerciales();
+    // this.modificarProveedor();
+    this.guardarRelComerciales();
   }
 
   modificarProveedor(){
@@ -2427,7 +2427,7 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
 
-  actualizarRelComerciales(){
+  guardarRelComerciales(){
     //separar en nuevos y modificados 
     /* this.estadosCuentas = {nuevos: [],
       modificados: [],
@@ -2459,6 +2459,7 @@ export class AltaProveedorComponent implements OnInit {
     this.estadosCuentas.nuevos.forEach(formCuenta => {
       // this.modificarRelacion(formCuenta);
       console.log('se agregará cuenta: ', formCuenta);
+      this.guardarRelacion(formCuenta);
     });
 
     this.estadosCuentas.modificados.forEach(formCuenta => {
@@ -2473,15 +2474,6 @@ export class AltaProveedorComponent implements OnInit {
       // );
       this.eliminarRelacion(cuentaEliminada);
     });
-    
-
-
-    //todo ver si es necesario revisar que no haya eliminados en la lista de modificados
-
-
-    //llamar a modificarRelaciones(lista de modificadas), reemplazar modificarRelacion y recorrer la lista parcial adentro
-    //idem eliminarRelaciones
-    //idem crearRelaciones, que va a pder recibir la lista entera o solo los nuevos cuando es actualizacion
 
     //reiniciar listas
     this.estadosCuentas ={nuevos: [],
@@ -2491,14 +2483,88 @@ export class AltaProveedorComponent implements OnInit {
 
   armarJSONRelacionComercial(cuenta: any){
     let formGroupCuenta = <FormGroup>cuenta;
-    let jsbodyRC = {
-      "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
-      "p_cbu": formGroupCuenta.controls['rcCbu'].value,
-      "p_cuentabancaria": formGroupCuenta.controls['rcCuentaBancaria'].value,
-      "p_codigo_sucursal": formGroupCuenta.controls['rcCodigoSucursal'].value
+    let jsonbodyRC, jsbodyRC;
+    console.log('control de cuenta a usar: ', formGroupCuenta)
+    if (formGroupCuenta.controls['ID_Relacion_Comercial'].value == null){
+      jsbodyRC = {
+        "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
+        // "Id_RelComercial": formGroupCuenta.controls['ID_Relacion_Comercial'].value,
+        "p_cbu": formGroupCuenta.controls['rcCbu'].value,
+        "p_cuentabancaria": formGroupCuenta.controls['rcCuentaBancaria'].value,
+        "p_codigo_sucursal": formGroupCuenta.controls['rcCodigoSucursal'].value,
+        "p_tipo_cuenta": formGroupCuenta.controls['rcTipo'].value,
+      }
     }
-    let jsonbodyRC= JSON.stringify(jsbodyRC);
+    else{
+      jsbodyRC = {
+        "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
+        "Id_RelComercial": formGroupCuenta.controls['ID_Relacion_Comercial'].value,
+        "p_cbu": formGroupCuenta.controls['rcCbu'].value,
+        "p_cuentabancaria": formGroupCuenta.controls['rcCuentaBancaria'].value,
+        "p_codigo_sucursal": formGroupCuenta.controls['rcCodigoSucursal'].value,
+        "p_tipo_cuenta": formGroupCuenta.controls['rcTipo'].value,
+      }
+    }
+    
+    jsonbodyRC= JSON.stringify(jsbodyRC);
     return jsonbodyRC;
+  }
+
+  armarJSONArticulo(articulo: any){
+    let jsbodyArticulo = {
+      "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+      "p_stock_id_art": this.formaArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
+      "p_stock_fecha_ult_compra": this.formaArticulo.controls['ultimaFecha'].value, //"1997-05-05",
+      "p_stock_moneda": this.formaArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
+      "p_stock_codigo_barra_prov": this.formaArticulo.controls['barrasArtProv'].value, //Código de barra
+      //ultimoPrecio
+      //codArtProv
+    }
+    let jsonbodyArticulo = JSON.stringify(jsbodyArticulo);
+  }
+
+  guardarRelacion(cuenta: any){
+    //RELACION COMERCIAL
+
+    /* let jsbodyRC = {
+      "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
+      "p_cbu": this.forma.controls['rcCbu'].value,
+      "p_cuentabancaria": this.forma.controls['rcCuentaBancaria'].value,
+      "p_codigo_sucursal": this.forma.controls['rcCodigoSucursal'].value
+    }
+    let jsonbodyRC= JSON.stringify(jsbodyRC); */
+    let jsonbodyRC = this.armarJSONRelacionComercial(cuenta);
+    console.log('body modificacion de relacion: ', jsonbodyRC);
+
+    this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          console.log('respuesta insert relacion: ', this.respData);
+          // auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                // this.eliminarProveedor();
+                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+              }); */
+              this.openSnackBar('Token invalido insertando relacion comercial')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al agregar Relación Comercial: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+                console.log('Relacion Comercial ID (insert): ' + this.respData.returnset[0].RId);
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
   }
 
   modificarRelacion(cuenta: any){
@@ -2650,9 +2716,10 @@ export class AltaProveedorComponent implements OnInit {
     let jsbody = {
       // "prov_codigo": this.id, 
       "Id_Proveedor": this.id, 
+      "Id_RelComercial": idRelacion
       }
     let jsonbody = JSON.stringify(jsbody);
-
+    console.log('json para eliminar relacion: ', jsonbody);
     this._proveedoresService.deleteRelComercial(jsonbody, this.token )
       .subscribe( data => {
           this.respData = data;

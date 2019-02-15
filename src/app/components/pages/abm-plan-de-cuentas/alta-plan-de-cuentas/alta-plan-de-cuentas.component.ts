@@ -105,6 +105,17 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     return formatDate(this.today, 'yyyy-MM-dd HH:mm:ss', 'en-US', '-0300');
   }
 
+  reiniciar(){
+    //this.forma.controls['cuentacontable'].setValue(this.planDeCuentas.cuentacontable);
+    this.forma.controls['name'].reset();
+    //this.forma.controls['nomenclador'].setValue(this.planDeCuentas.nomenclador);
+    //this.forma.controls['nomencladorpadre'].setValue(this.planDeCuentas.nomencladorpadre);
+    //this.forma.controls['orden'].setValue(this.planDeCuentas.orden);
+    this.forma.controls['imputable'].reset();
+    this.forma.controls['patrimonial'].reset();
+    this.forma.controls['estado'].reset();
+  }
+
   /** Whether the number of selected elements matches the total number of rows. */
 /*  isAllSelected() {
     const numSelected = this.selection.selected.length;

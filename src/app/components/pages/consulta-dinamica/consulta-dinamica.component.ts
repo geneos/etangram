@@ -483,7 +483,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     });
     console.log(this.reportesAll[this.reporteSeleccionado]);
   }
-
+ 
   buscarReportes(){
     this._consultaDinamicaService.getReportes(this.token)
       .subscribe( dataR => {

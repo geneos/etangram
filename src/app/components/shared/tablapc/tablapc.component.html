@@ -1,6 +1,10 @@
 <app-loading *ngIf="loading"></app-loading>
 
-<table #tablePlanesCuentas mat-table [dataSource]="constPlanesCuentas" class="mat-elevation-z1"
+<div *ngIf="!loading && noTieneHijas" style="text-align:left; color:grey; margin:15px; font-family: 'Lato', sans-serif !important; font-style: italic;">
+  Esta cuenta no tiene ninguna cuenta hija cargada aún.
+</div>
+
+<table *ngIf="!loading && !noTieneHijas" #tablePlanesCuentas mat-table [dataSource]="constPlanesCuentas" class="mat-elevation-z1"
   style="font-family: 'Lato', sans-serif !important;" multiTemplateDataRows>
 
   <!-- columna select -->

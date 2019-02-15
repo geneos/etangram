@@ -240,9 +240,9 @@
       <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
         GUARDAR
       </button>
-      <button type="reset" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+      <a (click)="reiniciar()" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
         REINICIAR VALORES
-      </button>
+      </a>
     </div>
   </div>
 

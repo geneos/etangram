@@ -32,6 +32,8 @@ export class TablapcComponent implements OnInit {
   loginData: any;
   pcData:any;
 
+  noTieneHijas:boolean = false;
+
   planesDeCuotasAll:PlanCuenta[];
   loading:boolean;
 
@@ -57,6 +59,11 @@ export class TablapcComponent implements OnInit {
   ngOnInit() {
     console.log('ngoninit: '+this.padreId);
     this.buscarPlanCuentas();
+  }
+
+  mostrarCartelVacio(){
+    this.noTieneHijas = true;
+    this.loading = false;
   }
 
   buscarPlanCuentas(){
@@ -95,6 +102,7 @@ export class TablapcComponent implements OnInit {
 
               } else {
                 this.planesDeCuotasAll = null;
+                this.mostrarCartelVacio();
               }
             }
             //console.log(this.planesDeCuotasAll);

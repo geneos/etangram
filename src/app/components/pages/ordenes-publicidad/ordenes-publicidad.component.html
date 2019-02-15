@@ -46,44 +46,47 @@
 
   <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading">
 
-    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    <table mat-table [dataSource]="aEjecutar" multiTemplateDataRows class="mat-elevation-z1">
     
       <!-- fecha Column -->
       <ng-container matColumnDef="numero">
         <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Numero </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;">  </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.num_operacion }} </td>
       </ng-container>
   
       <!-- comprobante Column -->
       <ng-container matColumnDef="mes">
         <th mat-header-cell *matHeaderCellDef> Mes</th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.mes_pactado }} </td>
       </ng-container>
   
       <!-- expediente Column -->
       <ng-container matColumnDef="medio">
         <th mat-header-cell *matHeaderCellDef> Medio </th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.nombre_medio }} </td>
       </ng-container>
   
       <!-- observaciones Column -->
       <ng-container matColumnDef="expediente">
         <th mat-header-cell *matHeaderCellDef> Expediente</th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.expediente_nombre }} </td>
       </ng-container>
   
       <!-- importe Column -->
       <ng-container matColumnDef="importe">
         <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:right;">  </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:right;"> {{ element.importe }} </td>
       </ng-container>
   
        <!-- accion Column -->
       <ng-container matColumnDef="acciones">
-        <th mat-header-cell *matHeaderCellDef> Acciones </th>
-        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>
+        <th mat-header-cell *matHeaderCellDef style="text-align:center;"> Acciones </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:center;">
+            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" > D </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)=print(element.id_op_url)> I </span>
+        </td>
       </ng-container>
-  
+      
       <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
       <tr mat-row *cdkRowDef="let row; columns: ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];"></tr>
     </table>
@@ -100,42 +103,47 @@
   
   <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading">
 
-    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    <table  mat-table [dataSource]="pendienteRendicion" matSort class="mat-elevation-z1">
     
       <!-- fecha Column -->
       <ng-container matColumnDef="numero">
         <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Numero </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;">  </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.num_operacion }} </td>
       </ng-container>
   
       <!-- comprobante Column -->
       <ng-container matColumnDef="mes">
         <th mat-header-cell *matHeaderCellDef> Mes</th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.mes_pactado }} </td>
       </ng-container>
   
       <!-- expediente Column -->
       <ng-container matColumnDef="medio">
         <th mat-header-cell *matHeaderCellDef> Medio </th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.nombre_medio }} </td>
       </ng-container>
   
       <!-- observaciones Column -->
       <ng-container matColumnDef="expediente">
         <th mat-header-cell *matHeaderCellDef> Expediente</th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.expediente_nombre }} </td>
       </ng-container>
   
       <!-- importe Column -->
       <ng-container matColumnDef="importe">
         <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:right;">  </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:right;"> {{ element.importe }} </td>
       </ng-container>
   
        <!-- accion Column -->
       <ng-container matColumnDef="acciones">
-        <th mat-header-cell *matHeaderCellDef> Acciones </th>
-        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>
+        <th mat-header-cell *matHeaderCellDef style="text-align:center;"> Acciones </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:center;">
+            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" > D </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)=print(element.id_op_url)> I </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" > E </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)=print(element.id_op_url)> F </span>
+        </td>
       </ng-container>
   
       <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
@@ -153,44 +161,44 @@
   </mat-expansion-panel-header>
   <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading">
 
-    <table  #tableConsultaCrd mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1">
+    <table  #tableConsultaCrd mat-table [dataSource]="enProcesoLiquidacion" matSort class="mat-elevation-z1">
     
       <!-- fecha Column -->
       <ng-container matColumnDef="numero">
         <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Numero </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;">  </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.num_operacion }} </td>
       </ng-container>
   
       <!-- comprobante Column -->
       <ng-container matColumnDef="mes">
         <th mat-header-cell *matHeaderCellDef> Mes</th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.mes_pactado }} </td>
       </ng-container>
   
       <!-- expediente Column -->
       <ng-container matColumnDef="medio">
         <th mat-header-cell *matHeaderCellDef> Medio </th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.nombre_medio }} </td>
       </ng-container>
   
       <!-- observaciones Column -->
       <ng-container matColumnDef="expediente">
         <th mat-header-cell *matHeaderCellDef> Expediente</th>
-        <td mat-cell *cdkCellDef="let element">  </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.expediente_nombre }} </td>
       </ng-container>
   
       <!-- importe Column -->
       <ng-container matColumnDef="importe">
         <th mat-header-cell *matHeaderCellDef style="text-align:right;"> Importe </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:right;">  </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:right;"> {{ element.importe }} </td>
       </ng-container>
   
        <!-- accion Column -->
       <ng-container matColumnDef="acciones">
-        <th mat-header-cell *matHeaderCellDef> Acciones </th>
-        <td mat-cell *cdkCellDef="let element">
-           <a href="#"> D </a>
-           <a href="#"> I </a>
+        <th mat-header-cell *matHeaderCellDef style="text-align:center;"> Acciones </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:center;">
+            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" > D </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)=print(element.id_op_url)> I </span>
         </td>
       </ng-container>
   

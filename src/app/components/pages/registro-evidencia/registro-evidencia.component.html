@@ -1,3 +1,35 @@
-<p>
-  registro-evidencia works!
-</p>
+<mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      EVIDENCIAS
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <div class="row" style="margin-top:15px;" *ngIf="!loading">
+    <div class="col s3 m2 l1">
+      <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Código</p>
+      <p style="margin-top:7px;">{{ id }}</p>
+      <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%; ">
+        <mat-label>Código Proveedor</mat-label>
+        <input readonly #codProv matInput placeholder="" value="{{id}}">
+      </mat-form-field>-->
+    </div>
+
+    <div class="col s6 m4 l3">
+      <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">Razón Social</p>
+      <p style="margin-top:7px;">{{ razonSocial }}</p>
+      <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Razón Social</mat-label>
+        <input matInput placeholder="" readonly value="{{ compraProveedor?.razon_social }}">
+      </mat-form-field>-->
+    </div>
+    <div class="col s3 m4 l3">
+      <p style="font-size:11px;margin-top:0px;margin-bottom:0px;color:#666">CUIT</p>
+      <p style="margin-top:7px;">{{ cuit }}</p>
+      <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>CUIT</mat-label>
+        <input matInput placeholder="" readonly value="{{ compraProveedor?.cuit }}">
+      </mat-form-field>-->
+    </div>
+  </div>
+</mat-expansion-panel>

@@ -51,6 +51,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   aEjecutar: OrdPublicidad[] = [];
   pendienteRendicion: OrdPublicidad[] = [];
   enProcesoLiquidacion: OrdPublicidad[] = [];
+  
   expandedElement: OrdPublicidad | null;
   columnsToDisplay  = ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];
 

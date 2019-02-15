@@ -1,5 +1,5 @@
 <h2>REFERENCIAS CONTABLES</h2>
-<button [routerLink]="['/ref-contables','nuevo']" class="mine-btnbig" mat-flat-button *ngIf="permiso_crear">
+<button [routerLink]="['/ref-contables','nuevo']" class="mine-btnbig" mat-flat-button *ngIf="!permiso_crear">
   NUEVO
 </button>
 

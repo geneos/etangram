@@ -20,6 +20,7 @@ import { ConsultaOrdPagosComponent } from './components/pages/consulta-ord-pagos
 import { DatosProveedoresComponent } from './components/pages/datos-proveedores/datos-proveedores.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicidad/ordenes-publicidad.component';
+import { RegistroEvidenciaComponent } from './components/pages/registro-evidencia/registro-evidencia.component';
 import { ImageComponent } from './components/pages/prueba/image/image.component';
 
 const APP_ROUTES: Routes = [
@@ -47,6 +48,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta-ord-pago/:id', component: ConsultaOrdPagosComponent },
   { path: 'datos-proveedores/:id', component: DatosProveedoresComponent },
   { path: 'ordenes-publicidad/:id', component: OrdenesPublicidadComponent },
+  { path: 'registo-evidencia', component: RegistroEvidenciaComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

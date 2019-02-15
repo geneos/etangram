@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild,  ElementRef, Inject, Injectable } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatTable, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { CompraService } from "../../../services/i2t/compra.service";
 import { CompraProveedor } from "../../../interfaces/compra.interface";
@@ -9,6 +9,8 @@ import { ImpresionCompService } from "../../../services/i2t/impresion-comp.servi
 import { OrdPublicidadService } from "../../../services/i2t/ord-publicidad.service";
 import { ImpresionBase, informes } from "../../../interfaces/impresion.interface";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from "@angular/router";
 import { supportsScrollBehavior } from '@angular/cdk/platform';
 
@@ -34,6 +36,8 @@ export class OrdenesPublicidadComponent implements OnInit {
   loading: boolean = true;
   forma: FormGroup;
   @ViewChild(MatSort) sort: MatSort;
+  suscripcionEvidencias: Subscription;
+  itemDeConsulta: any;
 
   //datos para impresion
   baseDatos: any;
@@ -47,6 +51,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   aEjecutar: OrdPublicidad[] = [];
   pendienteRendicion: OrdPublicidad[] = [];
   enProcesoLiquidacion: OrdPublicidad[] = [];
+  
   expandedElement: OrdPublicidad | null;
   columnsToDisplay  = ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];
 
@@ -62,7 +67,9 @@ export class OrdenesPublicidadComponent implements OnInit {
               private _compraService: CompraService,
               private _ImpresionCompService:ImpresionCompService,
               private _ordPublicidadService: OrdPublicidadService,
-              @Inject(SESSION_STORAGE) private storage: StorageService) {
+              @Inject(SESSION_STORAGE) private storage: StorageService,
+              public ngxSmartModalService: NgxSmartModalService,
+              public snackBar: MatSnackBar) {
     this.forma = new FormGroup({
       'proveedor': new FormControl(),
       'razonSocial': new FormControl(),
@@ -84,6 +91,12 @@ export class OrdenesPublicidadComponent implements OnInit {
   
   ngOnInit() {
     this.mostrarDatos();
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
   }
 
   existeProveedor( control: FormControl ): Promise<any>{
@@ -211,4 +224,53 @@ export class OrdenesPublicidadComponent implements OnInit {
           // console.log(this.aEjecutar);
         }) 
    }
+
+   abrirConsulta(consulta){
+    this.itemDeConsulta = null;
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'evidenciasModal'
+    }
+    
+
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionEvidencias = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+        this.itemDeConsulta = respuesta.selection[0];
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionEvidencias.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
+  }   
 }

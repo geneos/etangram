@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
-import { formatDate } from '@angular/common';
 import { TiposDocumentoService } from '../../../../services/i2t/tipos-documento.service';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription } from 'rxjs';
@@ -135,6 +134,14 @@ export class AltaProveedorComponent implements OnInit {
 
   //datos de FormArray
   cuentasProvAll:RelacionComercial[];
+  // estadosCuentas:Map<string,any>;
+  estadosCuentas:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};
   impuestosProvAll:Impuesto[];
   formulariosProvAll:Formulario[];
   articulosProvAll:ArticuloProv[];
@@ -150,7 +157,7 @@ export class AltaProveedorComponent implements OnInit {
   vendedor:Vendedor;
   cobrador:Vendedor;
   condicionComercial: CondicionComercial;
-  listaPrecios: ListaPrecios; //todo revisar hasta espacio
+  listaPrecios: ListaPrecios; 
   partidaPresupuestaria: any;
   referenciaContable: RefContable;
   tipoComprobante: TipoComprobante;
@@ -389,41 +396,22 @@ export class AltaProveedorComponent implements OnInit {
     });
 
     //suscripciones para rellenar datos después 
+    //#region suscripciones
     this.forma.controls['facCodigoPostal'].valueChanges.subscribe(() => {
-      // console.clear()
       setTimeout(() => {
-        console.log('hubo un cambio')
+        /* console.log('hubo un cambio')
         console.log('estado después de timeout ',this['facCodigoPostal'])  
-        console.log('Objeto recibido: ', this.itemDeConsulta)
+        console.log('Objeto recibido: ', this.itemDeConsulta) */
         this.elFacCodigoPostal.nativeElement.dispatchEvent(new Event('keyup'));
-        // if (this.itemDeConsulta != null){
-        //   this.forma.controls['']
-        // }
-
-
-
-        // this.forma.controls['facCodigoPostal'].updateValueAndValidity();
-        // this.ref.detectChanges();
-        // this.forma.updateValueAndValidity();
-        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
       })
-      // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
     });
 
     this.forma.controls['envCodigoPostal'].valueChanges.subscribe(() => {
-      // console.clear()
       setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['envCodigoPostal'])  
-        // console.log('Valor de el otro elemento: ', this.forma.controls['razonSocial'].value)
+        /* console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['envCodigoPostal'])   */
         this.elEnvCodigoPostal.nativeElement.dispatchEvent(new Event('keyup'));
-
-        // this.forma.controls['proveedor'].updateValueAndValidity();
-        // this.ref.detectChanges();
-        // this.forma.updateValueAndValidity();
-        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
       })
-      // console.log('estado fuera de timeout ',this['proveedor'], this.proveedor)
     });
 
 
@@ -448,22 +436,22 @@ export class AltaProveedorComponent implements OnInit {
     if (this.tipoReferente == 'C'){
       this.forma.controls['idZona'].valueChanges.subscribe(() => {
         setTimeout(() => {
-          console.log('hubo un cambio')
-          console.log('estado después de timeout ',this['zona'])  
+          /* console.log('hubo un cambio')
+          console.log('estado después de timeout ',this['zona'])   */
           this.elIDZona.nativeElement.dispatchEvent(new Event('keyup'));
         })
       });
       this.forma.controls['idVendedor'].valueChanges.subscribe(() => {
         setTimeout(() => {
-          console.log('hubo un cambio')
-          console.log('estado después de timeout ',this['vendedor'])  
+          /* console.log('hubo un cambio')
+          console.log('estado después de timeout ',this['vendedor'])   */
           this.elIDVendedor.nativeElement.dispatchEvent(new Event('keyup'));
         })
       });
       this.forma.controls['idCobrador'].valueChanges.subscribe(() => {
         setTimeout(() => {
-          console.log('hubo un cambio')
-          console.log('estado después de timeout ',this['cobrador'])  
+        /*   console.log('hubo un cambio')
+          console.log('estado después de timeout ',this['cobrador'])   */
           this.elIDCobrador.nativeElement.dispatchEvent(new Event('keyup'));
         })
       });
@@ -471,79 +459,55 @@ export class AltaProveedorComponent implements OnInit {
     //descripciones de parametros
     this.forma.controls['condComercial'].valueChanges.subscribe(() => {
       setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['condComercial'])  
+        /* console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['condComercial']) */  
         this.elCondComercial.nativeElement.dispatchEvent(new Event('keyup'));
       })
     });
     this.forma.controls['idlistaPrecios'].valueChanges.subscribe(() => {
       setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['listaPrecios'])  
+        /* console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['listaPrecios'])   */
         this.elListaPrecios.nativeElement.dispatchEvent(new Event('keyup'));
       })
     });
     this.forma.controls['idPartidaPresupuestaria'].valueChanges.subscribe(() => {
       setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['partidaPresupuestaria'])  
+        /* console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['partidaPresupuestaria']) */  
         this.elPartidaPresupuestaria.nativeElement.dispatchEvent(new Event('keyup'));
       })
     });
     this.forma.controls['refContable'].valueChanges.subscribe(() => {
       setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['refContable'])  
+        /* console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['refContable'])  */ 
         this.elRefContable.nativeElement.dispatchEvent(new Event('keyup'));
       })
     });
     this.forma.controls['idTipoComprobante'].valueChanges.subscribe(() => {
       setTimeout(() => {
-        console.log('hubo un cambio')
-        console.log('estado después de timeout ',this['tipoComprobante'])  
+        /* console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['tipoComprobante'])  */ 
         this.elTipoComprobante.nativeElement.dispatchEvent(new Event('keyup'));
       })
     });
-
+    //#endregion suscripciones
   }
 
+  //#region constructoresFormGroups
   construirCuentaBancaria(){
-    console.log('creando cuenta vacia')
     return new FormGroup({ 
       'rcCbu': new FormControl('', Validators.required),
       'rcTipo': new FormControl('', Validators.required),
       'rcCuentaBancaria': new FormControl('', Validators.required),
-      'rcCodigoSucursal': new FormControl('', Validators.required)
+      'rcCodigoSucursal': new FormControl('', Validators.required),
+      'ID_Relacion_Comercial': new FormControl()
     });
   }
-  /* construirCuentaBancaria(cuenta: RelacionComercial){
-    console.log('construyendo cuenta bancaria con ', cuenta);
-    let cbu, tipo, cta, suc;
-    if (isNullOrUndefined(cuenta)){
-      console.log('creando cuenta vacia')
-      cbu = '';
-      tipo = '';
-      cta = '';
-      suc = '';
-    }
-    else { 
-      console.log('creando cuenta con valores: ', cuenta);
-      cbu = (isNullOrUndefined(cuenta.CBU) ? cuenta.CBU : '');
-      // tipo = (isNullOrUndefined(cuenta.tipo) ? cuenta.tipo : '');
-      tipo = '';
-      cta = (isNullOrUndefined(cuenta.Numero_Cuenta) ? cuenta.Numero_Cuenta : '');
-      suc = (isNullOrUndefined(cuenta.Sucursal) ? cuenta.Sucursal : '');
-    }
-    //impuestoActual.controls['poseeExenciones'].value == true ? auxDesde : ""
-    return new FormGroup({ 
-      'rcCbu': new FormControl(cbu, Validators.required),
-      'rcTipo': new FormControl(tipo, Validators.required),
-      'rcCuentaBancaria': new FormControl(cta, Validators.required),
-      'rcCodigoSucursal': new FormControl(suc, Validators.required)
-    });
-  } */
   construirImpuesto(){
     return new FormGroup({
+      'impuesto': new FormControl(),
       'tipo': new FormControl('', Validators.required),
       'modelo': new FormControl(),
       'situacion': new FormControl('', Validators.required),
@@ -558,6 +522,7 @@ export class AltaProveedorComponent implements OnInit {
   }
   construirFormulario(){
     return new FormGroup({
+      'ID_Form_Proveedor': new FormControl(),
       'codForm': new FormControl('', Validators.required),
       'fechaPres': new FormControl('', Validators.required),
       'fechaVenc': new FormControl('', Validators.required),
@@ -572,16 +537,6 @@ export class AltaProveedorComponent implements OnInit {
     });
   } */
   construirArticulo(){
-    /* return new FormGroup({
-      'artID': new FormControl('', Validators.required, this.existeArticulo),
-        'artDesc': new FormControl(),
-      'ultimaFecha': new FormControl('', Validators.required),
-      'ultimoPrecio': new FormControl(),
-      'codArtProv': new FormControl(),
-      'barrasArtProv': new FormControl('', Validators.required),
-      'moneda': new FormControl('', Validators.required)
-    }); */
-
     let articulo = new FormGroup({
       'artID': new FormControl('', Validators.required, this.existeArticulo),
         'artDesc': new FormControl(),
@@ -594,11 +549,9 @@ export class AltaProveedorComponent implements OnInit {
     articulo.controls['artDesc'].disable();
     return articulo;
   }
+  //#endregion constructoresFormGroups
 
   ngOnInit() {
-    /*for(var i = 0; i < this.impuestos[0].exenciones.length; i++){
-      console.log(this.impuestos[0].exenciones[i]);
-    }*/
     this.buscarTiposDocumento();
     this.buscarCategoriasIVA();
     this.buscarCategoriasRef();
@@ -619,7 +572,8 @@ export class AltaProveedorComponent implements OnInit {
     this.forma.controls['envCodigoPostal'].setValue(this.forma.controls['facCodigoPostal'].value);
   }
 
-//impuestos:any[]=[{'nroImpuesto':0,'exenciones':[{'nroExencion':0},]},];
+  //#region botonesEnArrays
+  //impuestos:any[]=[{'nroImpuesto':0,'exenciones':[{'nroExencion':0},]},];
   /* addImpuesto(){
     this.impuestos.push({'nroImpuesto':(this.impuestos.length),'exenciones':[{'nroExencion':0},]});
     console.log(this.impuestos)
@@ -630,7 +584,6 @@ export class AltaProveedorComponent implements OnInit {
     // this.impuestos.push({'nroImpuesto':(this.impuestos.length),'exenciones':[{'nroExencion':0},]});
     // console.log(this.impuestos)
 
-    console.log('clickeado agregar impuesto');
     const imps = this.forma.controls.impuestos as FormArray;
     imps.push(this.construirImpuesto());
   }
@@ -679,28 +632,25 @@ export class AltaProveedorComponent implements OnInit {
   
   addFormulario(){
     const forms= <FormArray>this.forma.get(['formularios']);
-    console.log('Lista de formularios ', forms.length, forms);
+    // console.log('Lista de formularios ', forms.length, forms);
     forms.push(this.construirFormulario());
-    console.log('Lista de formularios ', forms.length, forms);
+    // console.log('Lista de formularios ', forms.length, forms);
   }
   deleteFormulario(ind: number){
     const forms= <FormArray>this.forma.get(['formularios']);
-    console.log('Lista de formularios ', forms.length, forms);
+    // console.log('Lista de formularios ', forms.length, forms);
     forms.removeAt(ind);
-    console.log('Lista de formularios ', forms.length, forms);
+    // console.log('Lista de formularios ', forms.length, forms);
   }
 
 /*   addArticulosStock(){this.articulosStock.push({'nroArticulosStock':(this.articulosStock.length)});}
   deleteArticulosStock(ind){this.articulosStock.splice(ind, 1);} */
 
   addArticulosStock(){
-    // console.log('clickeado agregar articulo a ', this.forma.controls.articulos as FormArray);
-    // console.log('clickeado agregar articulo 2 a ', this.forma.controls.articulos as FormControl);
     const arts = this.forma.controls.articulos as FormArray;
     // console.log('arts: ', arts)
     arts.push(this.construirArticulo());
 
-    console.log('agregado');
 
   }
   deleteArticulosStock(indice: number){
@@ -711,14 +661,28 @@ export class AltaProveedorComponent implements OnInit {
   deleteCuentasBanc(indice: number){
     // this.cuentasBanc.splice(ind, 1);
     const ctas = this.forma.controls.cuentas as FormArray;
+    // console.log(ctas.controls);
+    // console.log(ctas.controls[indice])
+    let cta= <FormGroup>ctas.controls[indice];
+    // console.log('cuenta: ', cta, <FormGroup>ctas.controls[indice]);
+    // console.log(cta.controls['rcCbu'].value)
+    // console.log(<FormGroup>ctas.controls[indice])
+
+    // console.log(ctas.controls[indice].controls)
+    // this.estadosCuentas.eliminados.push((<FormGroup>ctas[indice]).controls['rcCbu'].value);
+    if (cta.controls['ID_Relacion_Comercial'].value != null){
+      this.estadosCuentas.eliminados.push(cta.controls['ID_Relacion_Comercial'].value);
+    }
     ctas.removeAt(indice);
   }
-    addCuentaBanc(){
-    console.log('clickeado agregar cuenta');
+  addCuentaBanc(){
+    // console.log('clickeado agregar cuenta');
     const ctas = this.forma.controls.cuentas as FormArray;
     ctas.push(this.construirCuentaBancaria());      
   }
+  //#endregion botonesEnArrays
 
+  //#region datosCombos
   //listas desplegables
   buscarTiposDocumento(){
     this._tiposDocumentoService.getTiposDocumento( this.token )
@@ -733,7 +697,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._tiposDocumentoService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarTiposDocumento();
@@ -741,7 +704,7 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.tdData.dataset.length>0){
                 this.tiposDocumentoAll = this.tdData.dataset;
-                console.log(this.tiposDocumentoAll);
+                // console.log('Tipos de documento para lista desp: ', this.tiposDocumentoAll);
                 //this.loading = false;
 
               } else {
@@ -764,7 +727,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._afipService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarCategoriasIVA();
@@ -772,7 +734,7 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.civaData.dataset.length>0){
                 this.catIVAAll = this.civaData.dataset;
-                console.log(this.catIVAAll);
+                // console.log('Categorias para lista desp: ',this.catIVAAll);
                 //this.loading = false;
 
               } else {
@@ -796,7 +758,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._tiposDocumentoService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarCategoriasRef();
@@ -804,7 +765,7 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.crefData.dataset.length>0){
                 this.catsReferenteAll = this.crefData.dataset;
-                console.log(this.catsReferenteAll);
+                // console.log('Cat. de referente para lista desp: ',this.catsReferenteAll);
                 //this.loading = false;
 
               } else {
@@ -819,7 +780,7 @@ export class AltaProveedorComponent implements OnInit {
     this._monedaService.getMonedas(this.token )
     //this._refContableService.getProveedores()
       .subscribe( dataM => {
-        console.log(dataM);
+        // console.log(dataM);
           this.mData = dataM;
           //auxRefConData = this.mcData.dataset.length;
           if(this.mData.returnset[0].RCode=="-6003"){
@@ -829,7 +790,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._monedaService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarMonedas();
@@ -851,7 +811,7 @@ export class AltaProveedorComponent implements OnInit {
     this._afipService.getImpuestos(this.token )
     //this._refContableService.getProveedores()
       .subscribe( dataM => {
-        console.log(dataM);
+        // console.log(dataM);
           this.impData = dataM;
           //auxRefConData = this.mcData.dataset.length;
           if(this.impData.returnset[0].RCode=="-6003"){
@@ -861,7 +821,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._monedaService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarImpuestos();
@@ -883,7 +842,7 @@ export class AltaProveedorComponent implements OnInit {
     this._afipService.getModelosImpuesto(this.token )
     //this._refContableService.getProveedores()
       .subscribe( dataM => {
-        console.log(dataM);
+        // console.log(dataM);
           this.mimpdata = dataM;
           //auxRefConData = this.mcData.dataset.length;
           if(this.mimpdata.returnset[0].RCode=="-6003"){
@@ -893,7 +852,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._monedaService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarModelosImp();
@@ -925,7 +883,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._tiposDocumentoService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarCategoriasBloqueo();
@@ -933,7 +890,7 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.cbData.dataset.length>0){
                 this.catsBloqueoAll = this.cbData.dataset;
-                console.log('obtenidos bloqueos', this.catsBloqueoAll);
+                // console.log('obtenidos bloqueos', this.catsBloqueoAll);
                 //this.loading = false;
 
               } else {
@@ -957,7 +914,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._tiposDocumentoService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarFormularios();
@@ -965,19 +921,19 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.fData.dataset.length>0){
                 this.formulariosAll = this.fData.dataset;
-                console.log('obtenidos formularios', this.formulariosAll);
+                // console.log('obtenidos formularios', this.formulariosAll);
                 //this.loading = false;
 
               } else {
                 this.formulariosAll = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   //fin listas desplegables
+  //#endregion datosCombos
 
-  //autocompletado
+  //#region autocompletado
   buscarCPostalFac(){
     console.log('buscando codigo postal: ', this.forma.controls['facCodigoPostal'].value)
     this._localidadesService.getLocalidades(this.forma.controls['facCodigoPostal'].value, this.token )
@@ -992,7 +948,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarCPostalFac();
@@ -1000,18 +955,14 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.fcpData.dataset.length>0){
                 this.localidadFac = this.fcpData.dataset[0];
-                console.log('Localidad de facturacion: ', this.localidadFac);
                 //this.loading = false;
                 // this.buscarProvinciaFac(this.localidadFac.tg01_provincias_id_c, this.token)
                 this.buscarProvinciaFac();
 
               } else {
                 this.localidadFac = null;
-                console.log(this.fcpData)
-
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   
@@ -1029,7 +980,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarCPostalEnv();
@@ -1037,16 +987,13 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.fcpData.dataset.length>0){
                 this.localidadEnv = this.fcpData.dataset[0];
-                console.log('Localidad de envio: ', this.localidadEnv);
                 //this.loading = false;
                 this.buscarProvinciaEnv();
 
               } else {
-                console.log(this.fcpData)
                 this.localidadEnv = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
@@ -1063,33 +1010,26 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarCPostalFac();
+                this.buscarProvinciaFac();
               });
             } else {
               if(this.fpData.dataset.length>0){
                 this.provinciaFac = this.fpData.dataset[0];
-                // console.log(this.provinciaFac);
-                console.log('provincia de fact: ', this.provinciaFac);
                 //this.loading = false;
                 this.buscarPaisFac();
 
               } else {
                 this.provinciaFac = null;
-                // console.log(this.fcpData)
-
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
   buscarProvinciaEnv(){
     this._localidadesService.getProvincias(this.localidadEnv.tg01_provincias_id_c, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.fpData = data;
           //auxProvData = this.proveedorData.dataset.length;
           if(this.fpData.returnset[0].RCode=="-6003"){
@@ -1099,22 +1039,19 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarCPostalFac();
+                this.buscarProvinciaEnv();
               });
             } else {
               if(this.fpData.dataset.length>0){
                 this.provinciaEnv = this.fpData.dataset[0];
-                console.log('provincia de env: ', this.provinciaEnv);
                 //this.loading = false;
                 this.buscarPaisEnv();
               } else {
                 this.provinciaEnv = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
@@ -1122,7 +1059,6 @@ export class AltaProveedorComponent implements OnInit {
     //"e5dc7f36-31ba-acbf-8c72-5ba4042eec36"
     this._localidadesService.getPaises(this.provinciaFac.tg01_paises_id_c, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.pData = data;
           //auxProvData = this.proveedorData.dataset.length;
           if(this.pData.returnset[0].RCode=="-6003"){
@@ -1132,7 +1068,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarPaisFac();
@@ -1140,21 +1075,17 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.pData.dataset.length>0){
                 this.paisFac = this.pData.dataset[0];
-                console.log('pais de fac: ', this.paisFac);
                 //this.loading = false;
-
               } else {
                 this.paisFac = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
   buscarPaisEnv(){
     this._localidadesService.getPaises(this.provinciaEnv.tg01_paises_id_c, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.pData = data;
           //auxProvData = this.proveedorData.dataset.length;
           if(this.pData.returnset[0].RCode=="-6003"){
@@ -1164,7 +1095,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarPaisEnv();
@@ -1172,25 +1102,17 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.pData.dataset.length>0){
                 this.paisEnv = this.pData.dataset[0];
-                console.log('pais de env: ', this.paisEnv);
                 //this.loading = false;
-
               } else {
                 this.paisEnv = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
-  /*getdatetime(){
-    this.today = new Date();
-    return formatDate(this.today, 'yyyy-MM-dd HH:mm:ss', 'en-US', '-0300');
-  }*/
   
   buscarZona(){
     this._zonasService.getZonaPorIDZona(this.forma.controls['idZona'].value, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.zData = data;
           auxZona = this.zData.dataset.length;
           if(this.zData.returnset[0].RCode=="-6003"){
@@ -1200,7 +1122,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarZona();
@@ -1208,19 +1129,16 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.zData.dataset.length>0){
                 this.zona = this.zData.dataset[0];
-                console.log('zona encontrada: ', this.zona);
                 //this.loading = false;
               } else {
                 this.zona = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   buscarVendedor(){
     this._vendedoresService.getVendedorPorCodigo(this.forma.controls['idVendedor'].value, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.vData = data;
           auxVendedor = this.vData.dataset.length;
           if(this.vData.returnset[0].RCode=="-6003"){
@@ -1230,7 +1148,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarVendedor();
@@ -1238,19 +1155,16 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.vData.dataset.length>0){
                 this.vendedor = this.vData.dataset[0];
-                console.log('vendedor encontrada: ', this.vendedor);
                 //this.loading = false;
               } else {
                 this.vendedor = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   buscarCobrador(){
     this._vendedoresService.getVendedorPorCodigo(this.forma.controls['idCobrador'].value, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.cData = data;
           auxCobrador = this.cData.dataset.length;
           if(this.cData.returnset[0].RCode=="-6003"){
@@ -1260,7 +1174,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarCobrador();
@@ -1268,20 +1181,17 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.cData.dataset.length>0){
                 this.cobrador = this.cData.dataset[0];
-                console.log('cobrador encontrada: ', this.cobrador);
                 //this.loading = false;
               } else {
                 this.cobrador = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
   buscarCondComercial(){
     this._condicionComercialService.getCondicionPorID(this.forma.controls['condComercial'].value, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.ccData = data;
           auxCondComercial = this.ccData.dataset.length;
           if(this.ccData.returnset[0].RCode=="-6003"){
@@ -1291,7 +1201,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarCondComercial();
@@ -1299,21 +1208,17 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.ccData.dataset.length>0){
                 this.condicionComercial = this.ccData.dataset[0];
-                console.log('cond comercial encontrada: ', this.condicionComercial);
                 //this.loading = false;
               } else {
                 this.condicionComercial = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
   buscarListaPrecios(){
-    console.log('valor de lista de precios al buscar: ', this.forma.controls['idlistaPrecios'].value);
     this._listasPreciosService.getLista(this.forma.controls['idlistaPrecios'].value, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.lpData = data;
           auxListaPrecios = this.lpData.dataset.length;
           if(this.lpData.returnset[0].RCode=="-6003"){
@@ -1323,29 +1228,23 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarListaPrecios();
               });
             } else {
-              console.log('respuesta lista de precios: ', this.lpData)
               if(this.lpData.dataset.length==1){
                 this.listaPrecios = this.lpData.dataset[0];
-                console.log('listaPrecios encontrada: ', this.listaPrecios);
                 //this.loading = false;
               } else {
                 this.listaPrecios = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   buscarPartidaPresupuestaria(){
-    console.log('buscando partida con id:')
     this._partidasPresupuestariasService.getPartida(this.forma.controls['idPartidaPresupuestaria'].value, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.ppData = data;
           auxPartidaPresupuestaria = this.ppData.dataset.length;
           if(this.ppData.returnset[0].RCode=="-6003"){
@@ -1355,28 +1254,23 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarPartidaPresupuestaria();
               });
             } else {
-              console.log('resultado consulta partida: ', this.ppData)
               if(this.ppData.dataset.length>0){
                 this.partidaPresupuestaria = this.ppData.dataset[0];
-                console.log('partida encontrada: ', this.partidaPresupuestaria);
                 //this.loading = false;
               } else {
                 this.partidaPresupuestaria = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   buscarRefContable(){
     this._refContablesService.getRefContable(this.forma.controls['refContable'].value, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.rcData = data;
           auxRefContable = this.rcData.dataset.length;
           if(this.rcData.returnset[0].RCode=="-6003"){
@@ -1386,7 +1280,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarRefContable();
@@ -1394,22 +1287,16 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.rcData.dataset.length==1){
                 this.referenciaContable = this.rcData.dataset[0];
-                console.log('referencia encontrada: ', this.referenciaContable);
-                console.log('nombre de ref: ', this.referenciaContable.name)
                 //this.loading = false;
               } else {
                 this.referenciaContable = null;
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   buscarTipoComprobante(){
-    console.log('valor de tipo de comprobante al buscar: ', this.forma.controls['idTipoComprobante'].value);
-
     this._tiposComprobanteService.getTipoOperacionPorIdTipoComprobante(this.forma.controls['idTipoComprobante'].value, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.tcData = data;
           auxTipoComprobante = this.tcData.dataset.length;
           if(this.tcData.returnset[0].RCode=="-6003"){
@@ -1419,34 +1306,29 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarTipoComprobante();
               });
             } else {
-              console.log('resultado consulta partida: ', this.tcData)
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset[0];
-                console.log('tipo de comp encontrado: ', this.tipoComprobante);
                 //this.loading = false;
               } else {
                 this.tipoComprobante = null;
-                console.log('sin resultados de tipo de comp')
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
   buscarArticulo(indice: number){
+    console.log('llamado buscar articulo para articulo nro ', indice)
     const arts = this.forma.controls.articulos as FormArray;
     let id = arts.controls[indice].value['artID'];
+    console.log('buscando item ', id, arts.controls[indice])
     // this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
-    console.log('buscando articulo con: ', id);
     // this._articulosService.getArticulo(id , this.token )
     this._articulosService.getcArticulo(id , this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.aData = data;
           auxArticulo = this.aData.dataset.length;
           if(this.aData.returnset[0].RCode=="-6003"){
@@ -1457,17 +1339,16 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarArticulo(indice);
               });
             } else {
+    console.log('resultado buscar articulo para articulo nro ', this.aData)
+
               if(this.aData.dataset.length>0){
                 // this.articulo = this.aData.dataset[0];
                 this.carticulo = this.aData.dataset[0];
-                console.log('articulo encontrada: ', this.carticulo);
-                console.log('nombre de ref: ', this.carticulo.name);
                 
                 //rellenar descripcion
                 ((this.forma.controls.articulos as FormArray).
@@ -1477,7 +1358,6 @@ export class AltaProveedorComponent implements OnInit {
               } else {
                 // this.articulo = null;
                 this.carticulo = null;
-                console.log('no se encontro el articulo ' + id);
                 
                 //vaciar descripcion
                 ((this.forma.controls.articulos as FormArray).
@@ -1485,14 +1365,12 @@ export class AltaProveedorComponent implements OnInit {
                     controls['artDesc'].setValue('');
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
-  //
+  //#endregion autocompletado
 
-  //todo cargar datos y buscar relacionados
+  //cargar datos en modificacion
   obtenerProveedor(){
-    // this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
     console.log('buscando proveedor con: ', this.id);
     this._proveedoresService.getCabeceraProveedor(this.id , this.token )
       .subscribe( data => {
@@ -1506,7 +1384,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._proveedoresService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.obtenerProveedor();
@@ -1578,7 +1455,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.forma.controls['sitIVA'].setValue(this.provCabecera.categoria_iva);
                 this.forma.controls['cuit'].setValue(this.provCabecera.cuit);
                 this.forma.controls['cai'].setValue(this.provCabecera.cai);
-                this.forma.controls['fechaVtoCai'].setValue(this.provCabecera.fecha_vto_cai);
+                this.forma.controls['fechaVtoCai'].setValue(this.nuevaFecha(this.provCabecera.fecha_vto_cai));
                 console.log('fecha real cai: ', this.provCabecera.fecha_vto_cai);
                 this.forma.controls['cuitExterior'].setValue(this.provCabecera.cuit_exterior);
                 this.forma.controls['idImpositivo'].setValue(this.provCabecera.idimpositivo);
@@ -1593,20 +1470,18 @@ export class AltaProveedorComponent implements OnInit {
               }
 
               if (this.existe == false){
-                console.log('no existe este id!');
                 this.forma.disable();
+                this.openSnackBar('Proveedor no encontrado');
                 /* this.forma.controls['numero'].disable();
                 this.forma.controls['razonSocial'].disable();
                 this.forma.controls['cuit'].disable();
                 this.forma.controls['posicionFiscal'].disable(); */
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
   obtenerDatosArrays(){
-    console.log('buscando datos para los arrays')
     let jsbodyID = {"Id_Proveedor": this.idCabecera}
     let jsonbodyID = JSON.stringify(jsbodyID);
     this.forma.controls.cuentas.reset();
@@ -1616,7 +1491,6 @@ export class AltaProveedorComponent implements OnInit {
 
     this._proveedoresService.getRelComerciales(jsonbodyID , this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.respData = data;
           // auxArticulo = this.aData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
@@ -1626,7 +1500,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._proveedoresService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.obtenerDatosArrays();
@@ -1649,17 +1522,8 @@ export class AltaProveedorComponent implements OnInit {
                 cCuenta.controls['rcCbu'].setValue(cuenta.CBU) ;
                 cCuenta.controls['rcCuentaBancaria'].setValue(cuenta.Numero_Cuenta) ;
                 cCuenta.controls['rcCodigoSucursal'].setValue(cuenta.Sucursal) ;
+                cCuenta.controls['ID_Relacion_Comercial'].setValue(cuenta.ID_Relacion_Comercial) ;
                 // cCuenta.controls['rcTipo'].setValue(cuenta.) ;
-                
-                //todo borrar intentos fallidos
-                /* this.forma.controls.cuentas.value[0];
-                (<FormGroup>this.forma.controls.cuentas[0]).controls['rcCbu'].setValue(cuenta.CBU);
-                this.forma.controls.cuentas[index].controls['rcCbu'].setValue(cuenta.CBU); */
-                // this.forma.controls.cuentas[index].controls['rcTipo'].setValue(cuenta.);
-                // this.forma.controls.cuentas[index].controls['rcTipo'].setValue();
-                // this.forma.controls.cuentas[index].controls['rcCuentaBancaria'].setValue(cuenta.Numero_Cuenta);
-                // this.forma.controls.cuentas[index].controls['rcCodigoSucursal'].setValue(cuenta.Sucursal);
-
                 index = index +1;
               });
             }
@@ -1679,7 +1543,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._proveedoresService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.obtenerDatosArrays();
@@ -1698,16 +1561,18 @@ export class AltaProveedorComponent implements OnInit {
                 console.log('impuesto: ' ,this.forma.get(['impuestos', index]));
                 let cImpuesto: FormGroup = <FormGroup>this.forma.get(['impuestos', index]);
                 //todo agregar lo que falta cuando esté en la api
-                // cImpuesto.controls['tipo'].setValue(impuesto.) ;
+                cImpuesto.controls['impuesto'].setValue(impuesto.Impuesto) ;
                 cImpuesto.controls['modelo'].setValue(impuesto.ID_Modelo_impuestos) ;
                 cImpuesto.controls['situacion'].setValue(impuesto.Situacion) ;
-                // cImpuesto.controls['codInscripcion'].setValue(impuesto.) ;
-                cImpuesto.controls['fechaInscripcion'].setValue(impuesto.Fecha_inscripcion) ;
+                cImpuesto.controls['codInscripcion'].setValue(impuesto.ID_Impuestos) ;
+                cImpuesto.controls['fechaInscripcion'].setValue(this.nuevaFecha(impuesto.Fecha_inscripcion));
                 // cImpuesto.controls['observaciones'].setValue(impuesto) ;
                 cImpuesto.controls['poseeExenciones'].setValue((impuesto.Exenciones == 1 ? true : false)) ;
                 if (impuesto.Exenciones == 1) {
-                  cImpuesto.controls['fechaDesde'].setValue(impuesto.Fecha_Desde_Exenciones) ;
-                  cImpuesto.controls['fechaHasta'].setValue(impuesto.Fecha_Hasta_Exenciones) ;
+                  cImpuesto.controls['fechaDesde'].setValue(this.nuevaFecha(impuesto.Fecha_Desde_Exenciones));
+                  console.log('fecha desde impuesto nro ' + index, impuesto.Fecha_Desde_Exenciones)
+                  cImpuesto.controls['fechaHasta'].setValue(this.nuevaFecha(impuesto.Fecha_Hasta_Exenciones));
+                  console.log('fecha hasta impuesto nro ' + index, impuesto.Fecha_Hasta_Exenciones)
                 }
                 
                 index = index +1;
@@ -1729,7 +1594,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._proveedoresService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.obtenerDatosArrays();
@@ -1745,18 +1609,18 @@ export class AltaProveedorComponent implements OnInit {
                 this.addFormulario();
                 // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
                 // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
-                console.log('impuesto: ' ,this.forma.get(['impuestos', index]));
-                let cFormulario: FormGroup = <FormGroup>this.forma.get(['impuestos', index]);
+                console.log('impuesto: ' ,this.forma.get(['formularios', index]));
+                let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios', index]);
                 //todo agregar lo que falta cuando esté en la api
-                // cImpuesto.controls['tipo'].setValue(impuesto.) ;
+                cFormulario.controls['ID_Form_Proveedor'].setValue(formulario.ID_Form_Proveedor) ;
                 cFormulario.controls['codForm'].setValue(formulario.ID_Formulario) ;
-                //todo corregir mostrado de fecha
-                cFormulario.controls['fechaPres'].setValue(formulario.Fecha_presentacion) ;
-                cFormulario.controls['fechaVenc'].setValue(formulario.Fecha_vencimiento) ;
+                cFormulario.controls['fechaPres'].setValue(this.nuevaFecha(formulario.Fecha_presentacion));
+                console.log('fecha real de impuesto ' + index + '(pres): ', formulario.Fecha_presentacion);
+                cFormulario.controls['fechaVenc'].setValue(this.nuevaFecha(formulario.Fecha_vencimiento));
+                console.log('fecha real de impuesto ' + index + '(venc): ', formulario.Fecha_vencimiento);
                 /* cFormulario.controls[''].setValue(formulario.ID_Form_Proveedor) ;//id proveedor
                 cFormulario.controls[''].setValue(formulario.Url) ;
                 cFormulario.controls[''].setValue(formulario.Descripcion) ; */
-                
                 index = index +1;
               });
             }
@@ -1777,7 +1641,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._proveedoresService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.obtenerDatosArrays();
@@ -1789,19 +1652,19 @@ export class AltaProveedorComponent implements OnInit {
               let index = 0;
               console.log('articulo recuperadas: ', this.articulosProvAll)
               this.articulosProvAll.forEach(articulo => {
-                console.log('se va a armar el formgroup para: ', articulo)
+                console.log('se va a armar el formgroup para articulo: ', articulo)
                 this.addArticulosStock();
                 // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
                 // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
-                console.log('articulo: ' ,this.forma.get(['impuestos', index]));
-                let cArticulo: FormGroup = <FormGroup>this.forma.get(['impuestos', index]);
+                console.log('lista controles articulo: ' ,this.forma.get(['articulos', index]));
+                let cArticulo: FormGroup = <FormGroup>this.forma.get(['articulos', index]);
                 //todo agregar lo que falta cuando esté en la api
                 // cImpuesto.controls['tipo'].setValue(impuesto.) ;
                 cArticulo.controls['artID'].setValue(articulo.id_art);
-                //todo verificar funcionamiento de busqueda
+                //todo verificar funcionamiento de busqueda, cuando funcione la api
                 this.buscarArticulo(index);
                 // cArticulo.controls['artDesc'].setValue(articulo);
-                cArticulo.controls['ultimaFecha'].setValue(articulo.fecha_ultima_compra);
+                cArticulo.controls['ultimaFecha'].setValue(this.nuevaFecha(articulo.fecha_ultima_compra));
                 // cArticulo.controls['ultimoPrecio'].setValue(articulo.);
                 // cArticulo.controls['codArtProv'].setValue(articulo.id_prov);//id de proveedor
                 cArticulo.controls['barrasArtProv'].setValue(articulo.codigobarra);
@@ -1830,7 +1693,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._proveedoresService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.obtenerDatosArrays();
@@ -1874,9 +1736,10 @@ export class AltaProveedorComponent implements OnInit {
     });
   }
   //fin carga de datos
+  
 
 
-  //validadores
+  //#region validadores
   existeLocalidadFac( control: FormControl ): Promise<any>{
     let promesa = new Promise(
       ( resolve, reject )=>{
@@ -1885,7 +1748,6 @@ export class AltaProveedorComponent implements OnInit {
             resolve( {noExiste:true} )
           // }else{resolve( null )}
           }else {
-            console.log('existe localidad fac salio por false: ', auxLocalidadFac)
             resolve (null)
           }
         },2000 )
@@ -1901,7 +1763,6 @@ export class AltaProveedorComponent implements OnInit {
           if( auxLocalidadEnv==0 ){
             resolve( {noExiste:true} )
           }else{
-            console.log('existe localidad env salio por false: ', auxLocalidadEnv)
             resolve( null )
             // resolve ({noExiste:false})
           }
@@ -2028,6 +1889,8 @@ export class AltaProveedorComponent implements OnInit {
     return promesa;
   }
 
+  //#endregion validadores
+
   openSnackBar(message: string) {
     this.snackBar.open(message,"Cerrar", {
       duration: 3000,
@@ -2094,6 +1957,7 @@ export class AltaProveedorComponent implements OnInit {
     this.ngxSmartModalService.open(datosModal.modal);
   }
 
+
   guardarProveedor(){
     if( this.id == "nuevo" ){
       // insertando
@@ -2126,7 +1990,9 @@ export class AltaProveedorComponent implements OnInit {
         "p_zona": this.forma.controls['idZona'].value, //id de consulta dinámica a tabla tg01_zonas: vacío
         "p_vendedor": this.forma.controls['idVendedor'].value, //id de consulta dinámica a tabla tg01_vendedor
         "p_cobrador": this.forma.controls['idCobrador'].value, //id de consulta dinámica a tabla tg01_vendedor
-        "p_lim_cred": this.forma.controls['limiteCredito'].value,
+        // "p_lim_cred": this.forma.controls['limiteCredito'].value,
+        //debe ser tipo int
+        "p_lim_cred": Math.trunc(this.forma.controls['limiteCredito'].value),
         "p_lista_precio": this.forma.controls['idlistaPrecios'].value, //id de consulta dinámica a tabla tglp_tg_listasprecios
         "p_cond_comercializacion": this.forma.controls['condComercial'].value,  //id de consulta dinámica a tabla tg01_condicioncomercial
         "p_partida_pres_default": this.forma.controls['idPartidaPresupuestaria'].value, //id de consulta dinámica a tabla tg05_partidas_presupuestaria
@@ -2135,7 +2001,7 @@ export class AltaProveedorComponent implements OnInit {
         "p_cuit_c": this.forma.controls['cuit'].value,
         "p_cai"	: this.forma.controls['cai'].value, //CAI
         "p_fecha_vto_cai" : this.extraerFecha(<FormControl>this.forma.controls['fechaVtoCai']),//this.forma.controls['fechaVtoCai'].value,
-        "p_cuit_exterior" : this.forma.controls['cuitExterior'].value,//todo ver qué es, abajo también
+        "p_cuit_exterior" : this.forma.controls['cuitExterior'].value,
         "p_id_impositivo" : this.forma.controls['idImpositivo'].value //id de consulta dinámica a tabla tg01_impuestos
       }
       console.log(jsbody);
@@ -2153,7 +2019,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._proveedoresService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.guardarProveedor();
@@ -2176,6 +2041,9 @@ export class AltaProveedorComponent implements OnInit {
             //console.log(this.refContablesAll);
       });
     }
+    else{
+      this.actualizarDatos();
+    }
   }
 
   guardarDatosProveedor(idProveedor: string){
@@ -2184,17 +2052,19 @@ export class AltaProveedorComponent implements OnInit {
        
       console.log(cuenta);
       let cuentaActual: FormGroup = <FormGroup>cuenta;
-      console.log(cuentaActual.controls['rcCbu'].value, 
+      /* console.log(cuentaActual.controls['rcCbu'].value, 
                   cuentaActual.controls['rcCuentaBancaria'].value, 
-                  cuentaActual.controls['rcCodigoSucursal'].value);
+                  cuentaActual.controls['rcCodigoSucursal'].value); */
 
-      let jsbodyRC = {
+      /* let jsbodyRC = {
         "Id_Proveedor": idProveedor, //Rid devuelto en el alta de proveedor
         "p_cbu": cuentaActual.controls['rcCbu'].value, //this.forma.controls['rcCbu'].value,
         "p_cuentabancaria": cuentaActual.controls['rcCuentaBancaria'].value, //this.forma.controls['rcCuentaBancaria'].value,
         "p_codigo_sucursal": cuentaActual.controls['rcCodigoSucursal'].value //this.forma.controls['rcCodigoSucursal'].value
       }
-      let jsonbodyRC= JSON.stringify(jsbodyRC);
+      let jsonbodyRC= JSON.stringify(jsbodyRC); */
+      let jsonbodyRC= this.armarJSONRelacionComercial(cuentaActual); 
+
       console.log('json relacion', jsonbodyRC);
 
       this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
@@ -2209,7 +2079,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 // this.eliminarProveedor();
@@ -2258,7 +2127,7 @@ export class AltaProveedorComponent implements OnInit {
       let jsbodyImp = {
         "Id_Proveedor": idProveedor, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
         // "p_imp_tipo" : impuestoActual.controls['tipo'].value, // id de tabla tg01_impuestos
-        "p_imp_tipo" : impuestoActual.controls['tipo'].value, // id de tabla tg01_impuestos
+        // "p_imp_tipo" : impuestoActual.controls['tipo'].value, // id de tabla tg01_impuestos //todo ver porque lo quitaron
         "p_imp_modelo" : impuestoActual.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
         "p_imp_situacion" : impuestoActual.controls['situacion'].value,
         "p_imp_codigo" : impuestoActual.controls['codInscripcion'].value,//"1",
@@ -2285,7 +2154,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 // this.eliminarProveedor();
@@ -2332,7 +2200,7 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
+                
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 // this.eliminarProveedor();
@@ -2380,7 +2248,7 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
+                
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 // this.eliminarProveedor();
@@ -2431,7 +2299,7 @@ export class AltaProveedorComponent implements OnInit {
           let jsonbody = JSON.stringify(jsbody);
           this._localidadesService.login(jsonbody)
             .subscribe( dataL => {
-              console.log(dataL);
+              
               this.loginData = dataL;
               this.token = this.loginData.dataset[0].jwt;
               // this.eliminarProveedor();
@@ -2474,8 +2342,15 @@ export class AltaProveedorComponent implements OnInit {
     this.addingStock = false;
   }*/
 
+  actualizarDatos(){
+    this.modificarProveedor();
+    this.actualizarRelComerciales();
+  }
+
   modificarProveedor(){
+    console.log('preparando json para update proveedor')
     let jsbody = {
+      "Id_Proveedor": this.id,
       "p_tipo_referente":	"P", 
       "prov_codigo": this.forma.controls['numero'].value, //Código del campo “Número”
       "p_name": this.forma.controls['razonSocial'].value, //Razón social
@@ -2502,32 +2377,172 @@ export class AltaProveedorComponent implements OnInit {
       "p_zona": this.forma.controls['idZona'].value, //id de consulta dinámica a tabla tg01_zonas: vacío
       "p_vendedor": this.forma.controls['idVendedor'].value, //id de consulta dinámica a tabla tg01_vendedor
       "p_cobrador": this.forma.controls['idCobrador'].value, //id de consulta dinámica a tabla tg01_vendedor
-      "p_lim_cred": this.forma.controls['limiteCredito'].value,
+      "p_lim_cred": Math.trunc(this.forma.controls['limiteCredito'].value),
       "p_lista_precio": this.forma.controls['idlistaPrecios'].value, //id de consulta dinámica a tabla tglp_tg_listasprecios
       "p_cond_comercializacion": this.forma.controls['condComercial'].value,  //id de consulta dinámica a tabla tg01_condicioncomercial
       "p_partida_pres_default": this.forma.controls['idPartidaPresupuestaria'].value, //id de consulta dinámica a tabla tg05_partidas_presupuestaria
       "p_ref_contable_default": this.forma.controls['refContable'].value, //id de consulta dinámica a tabla tg01_referenciascontables
-      "p_situacion_iva": this.forma.controls['sitIVA'], //"1", //id de consulta dinámica a tabla tg01_categoriasiva
+      "p_situacion_iva": this.forma.controls['sitIVA'].value, //"1", //id de consulta dinámica a tabla tg01_categoriasiva
       "p_cuit_c": this.forma.controls['cuit'].value,
       "p_cai"	: this.forma.controls['cai'].value, //CAI
       "p_fecha_vto_cai" : this.extraerFecha(<FormControl>this.forma.controls['fechaVtoCai']),
-      "p_cuit_exterior" :this.forma.controls['cuitExterior'].value,//todo ver qué es, abajo también
+      "p_cuit_exterior" :this.forma.controls['cuitExterior'].value,
       "p_id_impositivo" :this.forma.controls['idImpositivo'].value //id de consulta dinámica a tabla tg01_impuestos
     }
+    console.log('cabecera antes de stringify: ', jsbody)
     let jsonbody= JSON.stringify(jsbody);
-    console.log(jsonbody);
+    console.log('json para update de cabecera: ', jsonbody);
+
+    this._proveedoresService.updateCabecera(jsonbody, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._proveedoresService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.modificarProveedor();
+              });
+            } else {
+              console.log('Respuesta de update cabecera: ', this.respData)
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al guardar Proveedor: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                this.openSnackBar('Cabecera de proveedor actualizada con exito, continuando.');
+                // this.idCabecera = this.respData.returnset[0].RId;
+                // console.log('ID de proveedor recibido: ' + this.idCabecera);
+                // this.guardarDatosProveedor(this.respData.returnset[0].RId);
+                // this.openSnackBar('Proveedor guardado con exito, redireccionando.');
+
+                //todo agregar redirección
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
   }
 
-  modificarRelacion(){
-    //RELACION COMERCIAL
+  actualizarRelComerciales(){
+    //separar en nuevos y modificados 
+    /* this.estadosCuentas = {nuevos: [],
+      modificados: [],
+      eliminados: []}; */
+
+    this.estadosCuentas.nuevos = [];
+    this.estadosCuentas.modificados = [];
+
+    let listaCuentas = <FormArray>this.forma.get(['cuentas']);
+    // console.log('estado de la lista de cuentas: ', listaCuentas.dirty);
+    (listaCuentas.controls).forEach(element => {
+      let cuenta = <FormGroup>element;
+      // console.log('cuenta ', cuenta);
+      // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (cuenta.dirty){
+        //si tiene id es modificación
+        if (cuenta.controls['ID_Relacion_Comercial'].value != null){
+          this.estadosCuentas.modificados.push(cuenta);
+        }
+        else{
+          this.estadosCuentas.nuevos.push(cuenta);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+      }
+    });
+
+    this.estadosCuentas.nuevos.forEach(formCuenta => {
+      // this.modificarRelacion(formCuenta);
+      console.log('se agregará cuenta: ', formCuenta);
+    });
+
+    this.estadosCuentas.modificados.forEach(formCuenta => {
+      this.modificarRelacion(formCuenta);
+    });
+
+    //cuentas a eliminar
+    // console.log('lista de cuentas a eliminar: ');
+    this.estadosCuentas.eliminados.forEach(cuentaEliminada => {
+      // console.log(
+      //   this.cuentasProvAll.find(cuentaBuscada => cuentaBuscada.CBU == cuentaEliminada).ID_Relacion_Comercial
+      // );
+      this.eliminarRelacion(cuentaEliminada);
+    });
+    
+
+
+    //todo ver si es necesario revisar que no haya eliminados en la lista de modificados
+
+
+    //llamar a modificarRelaciones(lista de modificadas), reemplazar modificarRelacion y recorrer la lista parcial adentro
+    //idem eliminarRelaciones
+    //idem crearRelaciones, que va a pder recibir la lista entera o solo los nuevos cuando es actualizacion
+
+    //reiniciar listas
+    this.estadosCuentas ={nuevos: [],
+                          modificados: [],
+                          eliminados: []};
+  }
+
+  armarJSONRelacionComercial(cuenta: any){
+    let formGroupCuenta = <FormGroup>cuenta;
     let jsbodyRC = {
+      "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
+      "p_cbu": formGroupCuenta.controls['rcCbu'].value,
+      "p_cuentabancaria": formGroupCuenta.controls['rcCuentaBancaria'].value,
+      "p_codigo_sucursal": formGroupCuenta.controls['rcCodigoSucursal'].value
+    }
+    let jsonbodyRC= JSON.stringify(jsbodyRC);
+    return jsonbodyRC;
+  }
+
+  modificarRelacion(cuenta: any){
+    //RELACION COMERCIAL
+
+    /* let jsbodyRC = {
       "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
       "p_cbu": this.forma.controls['rcCbu'].value,
       "p_cuentabancaria": this.forma.controls['rcCuentaBancaria'].value,
       "p_codigo_sucursal": this.forma.controls['rcCodigoSucursal'].value
     }
-    let jsonbodyRC= JSON.stringify(jsbodyRC);
-    console.log(jsonbodyRC);
+    let jsonbodyRC= JSON.stringify(jsbodyRC); */
+    let jsonbodyRC = this.armarJSONRelacionComercial(cuenta);
+    console.log('body modificacion de relacion: ', jsonbodyRC);
+
+    this._proveedoresService.updateRelComercial(jsonbodyRC, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          console.log('respuesta update relacion: ', this.respData);
+          // auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                // this.eliminarProveedor();
+                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
+              }); */
+              this.openSnackBar('Token invalido updateando relacion comercial')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al actualizar Relación Comercial: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+                console.log('Relacion Comercial ID (update): ' + this.respData.returnset[0].RId);
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
   }
 
   modificarImpuesto(){
@@ -2549,7 +2564,6 @@ export class AltaProveedorComponent implements OnInit {
   }
 
   modificarFormulario(){
-    //todo ver si va o no, no está en la docu
     //FORMULARIOS
     let jsbodyForm = {
       "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
@@ -2615,7 +2629,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.eliminarProveedor();
@@ -2633,15 +2646,15 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
 
-  eliminarRelacion(){
+  eliminarRelacion(idRelacion: string){
     let jsbody = {
-      "prov_codigo": this.id, 
+      // "prov_codigo": this.id, 
+      "Id_Proveedor": this.id, 
       }
     let jsonbody = JSON.stringify(jsbody);
 
     this._proveedoresService.deleteRelComercial(jsonbody, this.token )
       .subscribe( data => {
-        //console.log(dataRC);
           this.respData = data;
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
@@ -2650,10 +2663,9 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.eliminarRelacion();
+                this.eliminarRelacion(idRelacion);
               });
             } else {
               if (this.respData.returnset[0].RCode != 1){
@@ -2663,7 +2675,6 @@ export class AltaProveedorComponent implements OnInit {
                 this.openSnackBar('Relación Comercial eliminada con exito');
               }
             }
-            //console.log(this.refContablesAll);
       });
   }
 
@@ -2685,7 +2696,6 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.eliminarImpuesto(codigo);
@@ -2720,7 +2730,7 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
+                
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.eliminarArticulo(codigo);
@@ -2755,7 +2765,7 @@ export class AltaProveedorComponent implements OnInit {
             let jsonbody = JSON.stringify(jsbody);
             this._localidadesService.login(jsonbody)
               .subscribe( dataL => {
-                console.log(dataL);
+                
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.eliminarAFIP(codigo);
@@ -2801,27 +2811,69 @@ export class AltaProveedorComponent implements OnInit {
       let dia = control.value.getDate().toString();
       if(dia.length==1){dia="0"+dia};
       auxFecha = ano+"-"+mes+"-"+dia;
-      // console.log('Fecha extraida: '+ auxFecha);
       return auxFecha;
     }
     else{
-      // console.log('control de fecha vacio o invalido: ', control);
       return null;
     }
   }
 
   testValidez(){
-    for (const field in this.forma.controls) { // 'field' is a string
+    this.estadosCuentas = {nuevos: [],
+      modificados: [],
+      eliminados: []};
+    //ver validez de todos los controles
+    /* for (const field in this.forma.controls) { // 'field' is a string
 
       const control = this.forma.get(field); // 'control' is a FormControl
       console.log('Control: ' + field, control.status, control.valid, control.enabled, control.value)
-    }
+    } */
 
+    let listaCuentas = <FormArray>this.forma.get(['cuentas']);
+    console.log('estado de la lista de cuentas: ', listaCuentas.dirty);
+    (listaCuentas.controls).forEach(element => {
+      let cuenta = <FormGroup>element;
+      console.log('cuenta ', cuenta);
+      console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (cuenta.dirty){
+        //si tiene id es modificación
+        if (cuenta.controls['ID_Relacion_Comercial'].value != null){
+          this.estadosCuentas.modificados.push(cuenta);
+        }
+        else{
+          this.estadosCuentas.nuevos.push(cuenta);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+        
+      }
+    });
+    console.log('lista de cuentas desde api: ', this.cuentasProvAll);
+    console.log('Estado de las cuentas: ', this.estadosCuentas);
+
+    //cuentas a eliminar
+    console.log('lista de cuentas a eliminar: ');
+    this.estadosCuentas.eliminados.forEach(cuentaEliminada => {
+      console.log(
+        this.cuentasProvAll.find(cuentaBuscada => cuentaBuscada.CBU == cuentaEliminada).ID_Relacion_Comercial
+      );
+    });
     
-    
+
+
+    //todo ver si es necesario revisar que no haya eliminados en la lista de modificados
+  }
+
+  nuevaFecha(dateString: string){
+    //agregado 1 día a la fecha para que se muestre correctamente en el datepicker
+    let fecha = new Date(dateString);
+    fecha.setDate(fecha.getDate() +1);
+    return fecha;
   }
 
   configurarFormulario(){
+    //deshabilitado de controles para que no quede como invalid el FormGroup
     switch (this.tipoReferente) {
       case 'C':
         this.forma.controls['cai'].disable();

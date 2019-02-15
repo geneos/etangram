@@ -100,6 +100,7 @@ export interface ArticuloProv{
   id_usuario_modificador: string;
 }//proveedores_articulo_GET_SP
 
+
 /* 
 export interface AFIPProv{
 

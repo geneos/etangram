@@ -132,7 +132,8 @@ export class AltaProveedorComponent implements OnInit {
   catsBloqueoAll:any[];
   formulariosAll:any[];
 
-  //datos de FormArray
+  //#region Formarray
+    //datos de FormArray
   cuentasProvAll:RelacionComercial[];
   // estadosCuentas:Map<string,any>;
   estadosCuentas:{
@@ -142,10 +143,36 @@ export class AltaProveedorComponent implements OnInit {
   } = {nuevos: [],
        modificados: [],
        eliminados: []};
+
   impuestosProvAll:Impuesto[];
+  estadosImpuestos:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};
+
   formulariosProvAll:Formulario[];
+  estadosFormularios:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};
+  
   articulosProvAll:ArticuloProv[];
+  estadosArticulos:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};
+  
   datosAFIP:any;
+  //#endregion FormArray
 
   localidadFac: Localidad;
   localidadEnv: Localidad;
@@ -589,7 +616,12 @@ export class AltaProveedorComponent implements OnInit {
   }
   deleteImpuesto(indice: number){
     const imps = this.forma.controls.impuestos as FormArray;
+    let imp = <FormGroup>imps.controls[indice];
+    if (imp.controls['Impuesto'].value != null){
+      this.estadosImpuestos.eliminados.push(imp.controls['Impuesto'].value);
+    }
     imps.removeAt(indice);
+    console.log('lista de impuestos eliminados: ', this.estadosImpuestos.eliminados)
   }
 
   /* addExencion(ind: number){
@@ -639,8 +671,13 @@ export class AltaProveedorComponent implements OnInit {
   deleteFormulario(ind: number){
     const forms= <FormArray>this.forma.get(['formularios']);
     // console.log('Lista de formularios ', forms.length, forms);
+    let formABorrar = (<FormGroup>forms.controls[ind]);
+    if (formABorrar.controls['ID_Form_Proveedor'].value != null){
+      this.estadosFormularios.eliminados.push(formABorrar.controls['ID_Form_Proveedor'].value);
+    }
     forms.removeAt(ind);
     // console.log('Lista de formularios ', forms.length, forms);
+    console.log('lista de forms eliminados: ', this.estadosFormularios.eliminados)
   }
 
 /*   addArticulosStock(){this.articulosStock.push({'nroArticulosStock':(this.articulosStock.length)});}
@@ -655,7 +692,13 @@ export class AltaProveedorComponent implements OnInit {
   }
   deleteArticulosStock(indice: number){
     const arts = this.forma.controls.articulos as FormArray;
+    let art = <FormGroup>arts.controls[indice];
+    //todo agregar a la lista de eliminados
+    /* if (arts.controls[''].value != null){
+      this.estadosArticulos.eliminados.push(arts.controls[''].value);
+    } */
     arts.removeAt(indice);
+    console.log('lista de articulos eliminados: ', this.estadosArticulos.eliminados);
   }
 
   deleteCuentasBanc(indice: number){
@@ -1444,12 +1487,12 @@ export class AltaProveedorComponent implements OnInit {
                   this.forma.controls['refContable'].setValue(this.provCabecera.referencias_contables);
                   // this.buscarRefContable();
                 }
-                //todo ver cómo se guarda
+                //todo ver cómo se guarda en la api
                 /* if (this.provCabecera != null){
                   this.forma.controls['idTipoComprobante'].setValue(this.provCabecera.ti);
                   this.busca
                 } */
-                // todo ver como se  guarda
+                // todo ver como se guarda en la api
                 // this.forma.controls['catBloq'].setValue(this.provCabecera.);
                 
                 this.forma.controls['sitIVA'].setValue(this.provCabecera.categoria_iva);
@@ -2048,7 +2091,7 @@ export class AltaProveedorComponent implements OnInit {
 
   guardarDatosProveedor(idProveedor: string){
     //RELACION COMERCIAL
-    (<FormArray>this.forma.controls.cuentas).controls.forEach( cuenta => {
+    /* (<FormArray>this.forma.controls.cuentas).controls.forEach( cuenta => {
        
       console.log(cuenta);
       let cuentaActual: FormGroup = <FormGroup>cuenta;
@@ -2062,7 +2105,7 @@ export class AltaProveedorComponent implements OnInit {
         "p_cuentabancaria": cuentaActual.controls['rcCuentaBancaria'].value, //this.forma.controls['rcCuentaBancaria'].value,
         "p_codigo_sucursal": cuentaActual.controls['rcCodigoSucursal'].value //this.forma.controls['rcCodigoSucursal'].value
       }
-      let jsonbodyRC= JSON.stringify(jsbodyRC); */
+      let jsonbodyRC= JSON.stringify(jsbodyRC); /
       let jsonbodyRC= this.armarJSONRelacionComercial(cuentaActual); 
 
       console.log('json relacion', jsonbodyRC);
@@ -2083,7 +2126,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.token = this.loginData.dataset[0].jwt;
                 // this.eliminarProveedor();
                 this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
-              }); */
+              }); /
               this.openSnackBar('Token invalido posteando relacion comercial')
             } else {
               if (this.respData.returnset[0].RCode != 1){
@@ -2096,37 +2139,21 @@ export class AltaProveedorComponent implements OnInit {
             }
             //console.log(this.refContablesAll);
       });
-    });// fin foreach relación comercial
-
+    });// fin foreach relación comercial */
+    this.guardarRelComerciales();
     
     //IMPUESTOS
-    (<FormArray>this.forma.controls.impuestos).controls.forEach( impuesto => {
+    /* (<FormArray>this.forma.controls.impuestos).controls.forEach( impuesto => {
       let impuestoActual: FormGroup = <FormGroup>impuesto;
 
       let auxDesde, auxHasta, auxInsc;
-      /* if (impuestoActual.controls['fechaDesde'].value != null){
-        let ano = impuestoActual.controls['fechaDesde'].value.getFullYear().toString();
-        let mes = (impuestoActual.controls['fechaDesde'].value.getMonth()+1).toString();
-        if(mes.length==1){mes="0"+mes};
-        let dia = impuestoActual.controls['fechaDesde'].value.getDate().toString();
-        if(dia.length==1){dia="0"+dia};
-        auxDesde = ano+"-"+mes+"-"+dia;
-      }
-      if (impuestoActual.controls['fechaHasta'].value != null){
-        let ano = impuestoActual.controls['fechaHasta'].value.getFullYear().toString();
-        let mes = (impuestoActual.controls['fechaHasta'].value.getMonth()+1).toString();
-        if(mes.length==1){mes="0"+mes};
-        let dia = impuestoActual.controls['fechaHasta'].value.getDate().toString();
-        if(dia.length==1){dia="0"+dia};
-        auxHasta = ano+"-"+mes+"-"+dia;
-      } */
+      
       auxDesde = this.extraerFecha(<FormControl>impuestoActual.controls['fechaDesde']);
       auxHasta = this.extraerFecha(<FormControl>impuestoActual.controls['fechaHasta']);
       auxInsc  = this.extraerFecha(<FormControl>impuestoActual.controls['fechaInscripcion']);
 
       let jsbodyImp = {
         "Id_Proveedor": idProveedor, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-        // "p_imp_tipo" : impuestoActual.controls['tipo'].value, // id de tabla tg01_impuestos
         // "p_imp_tipo" : impuestoActual.controls['tipo'].value, // id de tabla tg01_impuestos //todo ver porque lo quitaron
         "p_imp_modelo" : impuestoActual.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
         "p_imp_situacion" : impuestoActual.controls['situacion'].value,
@@ -2150,15 +2177,7 @@ export class AltaProveedorComponent implements OnInit {
           // auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                // this.eliminarProveedor();
-                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
-              }); */
+            
               this.openSnackBar('Token invalido posteando impuesto')
             } else {
               if (this.respData.returnset[0].RCode != 1){
@@ -2171,10 +2190,11 @@ export class AltaProveedorComponent implements OnInit {
             }
             //console.log(this.refContablesAll);
       });
-    });// fin foreach impuestos
+    });// fin foreach impuestos */
+    this.guardarImpuestos();
     
     //FORMULARIOS
-    (<FormArray>this.forma.controls.formularios).controls.forEach( formulario => {
+    /* (<FormArray>this.forma.controls.formularios).controls.forEach( formulario => {
       let formularioActual: FormGroup = <FormGroup>formulario;
 
       let jsbodyForm = {
@@ -2182,8 +2202,6 @@ export class AltaProveedorComponent implements OnInit {
         "p_form_codigo" : formularioActual.controls['codForm'].value,
         "p_form_fecha_pres" : this.extraerFecha(<FormControl>formularioActual.controls['fechaPres']),//"1997-05-05",
         "p_form_fecha_vto" : this.extraerFecha(<FormControl>formularioActual.controls['fechaVenc']),//"1997-05-05"
-        /* "p_form_fecha_pres" : formularioActual.controls['fechaPres'].value,//"1997-05-05",
-        "p_form_fecha_vto" : formularioActual.controls['fechaVenc'].value,//"1997-05-05" */
       }
       let jsonbodyForm = JSON.stringify(jsbodyForm);
       console.log('json form', jsonbodyForm);
@@ -2196,16 +2214,6 @@ export class AltaProveedorComponent implements OnInit {
           // auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                // this.eliminarProveedor();
-                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
-              }); */
               this.openSnackBar('Token invalido posteando formulario')
             } else {
               if (this.respData.returnset[0].RCode != 1){
@@ -2218,7 +2226,8 @@ export class AltaProveedorComponent implements OnInit {
             }
             //console.log(this.refContablesAll);
       });
-    });// fin foreach formularios
+    });// fin foreach formularios */
+    this.guardarFormularios();
 
     //ARTICULOS
     (<FormArray>this.forma.controls.articulos).controls.forEach( articulo => {
@@ -2343,8 +2352,12 @@ export class AltaProveedorComponent implements OnInit {
   }*/
 
   actualizarDatos(){
-    // this.modificarProveedor();
+    this.modificarProveedor();
     this.guardarRelComerciales();
+    this.guardarImpuestos();
+    this.guardarFormularios();
+    
+    //this.guardarArticulos();
   }
 
   modificarProveedor(){
@@ -2427,6 +2440,7 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
 
+  //#region sincronizarListas
   guardarRelComerciales(){
     //separar en nuevos y modificados 
     /* this.estadosCuentas = {nuevos: [],
@@ -2440,7 +2454,7 @@ export class AltaProveedorComponent implements OnInit {
     // console.log('estado de la lista de cuentas: ', listaCuentas.dirty);
     (listaCuentas.controls).forEach(element => {
       let cuenta = <FormGroup>element;
-      // console.log('cuenta ', cuenta);
+      console.log('cuenta ', cuenta);
       // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
       if (cuenta.dirty){
         //si tiene id es modificación
@@ -2455,6 +2469,8 @@ export class AltaProveedorComponent implements OnInit {
         //nada porque no fue tocado
       }
     });
+
+    console.log('Lista de cuentas a procesar: ', this.estadosCuentas);
 
     this.estadosCuentas.nuevos.forEach(formCuenta => {
       // this.modificarRelacion(formCuenta);
@@ -2481,6 +2497,145 @@ export class AltaProveedorComponent implements OnInit {
                           eliminados: []};
   }
 
+  guardarFormularios(){
+
+    this.estadosFormularios.nuevos = [];
+    this.estadosFormularios.modificados = [];
+
+    let listaFormularios = <FormArray>this.forma.get(['formularios']);
+    // console.log('estado de la lista de cuentas: ', listaCuentas.dirty);
+    (listaFormularios.controls).forEach(element => {
+      let formulario = <FormGroup>element;
+      console.log('formulario ', formulario);
+      // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (formulario.dirty){
+        //si tiene id es modificación
+        if (formulario.controls['ID_Form_Proveedor'].value != null){
+          this.estadosFormularios.modificados.push(formulario);
+        }
+        else{
+          this.estadosFormularios.nuevos.push(formulario);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+      }
+    });
+
+    console.log('Lista de Formularios a procesar: ', this.estadosFormularios);
+
+    this.estadosFormularios.nuevos.forEach(formFormulario => {
+      this.guardarFormulario(formFormulario);
+    });
+
+    this.estadosFormularios.modificados.forEach(formFormulario => {
+      this.modificarFormulario(formFormulario);
+    });
+
+    this.estadosFormularios.eliminados.forEach(formularioEliminado => {
+      this.eliminarFormulario(formularioEliminado);
+    });
+
+    //reiniciar listas
+    this.estadosFormularios ={nuevos: [],
+                          modificados: [],
+                          eliminados: []};
+  }
+
+  guardarImpuestos(){
+
+    this.estadosImpuestos.nuevos = [];
+    this.estadosImpuestos.modificados = [];
+
+    let listaImpuestos = <FormArray>this.forma.get(['impuestos']);
+    // console.log('estado de la lista de cuentas: ', listaCuentas.dirty);
+    (listaImpuestos.controls).forEach(element => {
+      let impuesto = <FormGroup>element;
+      console.log('impuesto ', impuesto);
+      // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (impuesto.dirty){
+        //si tiene id es modificación
+        if (impuesto.controls['impuesto'].value != null){
+          this.estadosImpuestos.modificados.push(impuesto);
+        }
+        else{
+          this.estadosImpuestos.nuevos.push(impuesto);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+      }
+    });
+
+    console.log('Lista de Impuestos a procesar: ', this.estadosImpuestos);
+
+    this.estadosImpuestos.nuevos.forEach(formImpuesto => {
+      this.guardarImpuesto(formImpuesto);
+    });
+
+    this.estadosImpuestos.modificados.forEach(formImpuesto => {
+      this.modificarImpuesto(formImpuesto);
+    });
+
+    this.estadosImpuestos.eliminados.forEach(impuestoEliminado => {
+      this.eliminarImpuesto(impuestoEliminado);
+    });
+
+    //reiniciar listas
+    this.estadosImpuestos ={nuevos: [],
+                          modificados: [],
+                          eliminados: []};
+  }
+
+  guardarArticulos(){
+
+    this.estadosArticulos.nuevos = [];
+    this.estadosArticulos.modificados = [];
+
+    let listaArticulos = <FormArray>this.forma.get(['articulos']);
+    // console.log('estado de la lista de cuentas: ', listaCuentas.dirty);
+    (listaArticulos.controls).forEach(element => {
+      let articulo = <FormGroup>element;
+      console.log('articulo ', articulo);
+      // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (articulo.dirty){
+        //si tiene id es modificación
+        //todo cambiar cuando arreglen la api
+        if (articulo.controls[''].value != null){
+          this.estadosArticulos.modificados.push(articulo);
+        }
+        else{
+          this.estadosArticulos.nuevos.push(articulo);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+      }
+    });
+
+    console.log('Lista de Articulos a procesar: ', this.estadosArticulos);
+
+    this.estadosArticulos.nuevos.forEach(formArticulo => {
+      this.guardarArticulo(formArticulo);
+    });
+
+    this.estadosArticulos.modificados.forEach(formArticulo => {
+      this.modificarArticulo(formArticulo);
+    });
+
+    this.estadosArticulos.eliminados.forEach(articuloEliminado => {
+      this.eliminarArticulo(articuloEliminado);
+    });
+
+    //reiniciar listas
+    this.estadosArticulos ={nuevos: [],
+                          modificados: [],
+                          eliminados: []};
+  }
+
+  //#endregion sincronizarListas
+
+  //#region jsons
   armarJSONRelacionComercial(cuenta: any){
     let formGroupCuenta = <FormGroup>cuenta;
     let jsonbodyRC, jsbodyRC;
@@ -2510,18 +2665,108 @@ export class AltaProveedorComponent implements OnInit {
     return jsonbodyRC;
   }
 
+  armarJSONFormulario(formulario: any){
+    let formgroupFormulario = <FormGroup>formulario;
+    let jsonbodyF, jsbodyF;
+    console.log('control de formulario a usar: ', formgroupFormulario)
+    //if suspendido, no hay update de formulario
+    //todo agregar cuando lo agreguen a la api
+    // if (formGroupCuenta.controls['ID_Relacion_Comercial'].value == null){
+      jsbodyF = {
+        "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
+        "p_form_fecha_pres" : formgroupFormulario.controls['fechaPres'].value,//"1997-05-05",
+        "p_form_fecha_vto" : formgroupFormulario.controls['fechaVenc'].value,//"1997-05-05"
+      }
+    /* }
+    else{
+      jsbodyRC = {
+        "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
+        "Id_RelComercial": formGroupCuenta.controls['ID_Relacion_Comercial'].value,
+        "p_cbu": formGroupCuenta.controls['rcCbu'].value,
+        "p_cuentabancaria": formGroupCuenta.controls['rcCuentaBancaria'].value,
+        "p_codigo_sucursal": formGroupCuenta.controls['rcCodigoSucursal'].value,
+        "p_tipo_cuenta": formGroupCuenta.controls['rcTipo'].value,
+      }
+    } */
+    
+    jsonbodyF= JSON.stringify(jsbodyF);
+    return jsonbodyF;
+  }
+
+  armarJSONImpuesto(impuesto: any){
+    let formGroupImpuesto = <FormGroup>impuesto;
+    let jsonbodyImp, jsbodyImp;
+    console.log('control de impuesto a usar: ', formGroupImpuesto)
+    // todo revisar if, parece que no hay diferencia, y cambiar cuando arreglen la api
+    // if (formGroupImpuesto.controls[''].value == null){
+      jsbodyImp = {
+        "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+        "p_imp_tipo" : formGroupImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
+        "p_imp_modelo" : formGroupImpuesto.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
+        "p_imp_situacion" : formGroupImpuesto.controls['situacion'].value,
+        "p_imp_codigo" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
+        "p_imp_fecha_insc" : formGroupImpuesto.controls['fechaInscripcion'].value,//"1997-05-05",
+        "p_imp_excenciones" : formGroupImpuesto.controls['exenciones'].value.toString(),//"false",
+        "p_imp_fecha_comienzo_excencion" : formGroupImpuesto.controls['fechaDesde'].value, // → si es true
+        "p_imp_fecha_caducidad_excencion" : formGroupImpuesto.controls['fechaHasta'].value,//  → si es true
+        "p_imp_obs" :formGroupImpuesto.controls['observaciones'].value
+      }
+    // }
+    // else{
+    //   jsbodyImp = {
+    //     "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+    //     "p_imp_tipo" : formGroupImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
+    //     "p_imp_modelo" : formGroupImpuesto.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
+    //     "p_imp_situacion" : formGroupImpuesto.controls['situacion'].value,
+    //     "p_imp_codigo" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
+    //     "p_imp_fecha_insc" : formGroupImpuesto.controls['fechaInscripcion'].value,//"1997-05-05",
+    //     "p_imp_excenciones" : formGroupImpuesto.controls['exenciones'].value.toString(),//"false",
+    //     "p_imp_fecha_comienzo_excencion" : formGroupImpuesto.controls['fechaDesde'].value, // → si es true
+    //     "p_imp_fecha_caducidad_excencion" : formGroupImpuesto.controls['fechaHasta'].value,//  → si es true
+    //     "p_imp_obs" :formGroupImpuesto.controls['observaciones'].value
+    //   }
+    // }
+    
+    jsonbodyImp= JSON.stringify(jsbodyImp);
+    return jsonbodyImp;
+  }
+
   armarJSONArticulo(articulo: any){
-    let jsbodyArticulo = {
+    //todo cambiar cuando corrijan la api
+    let formgroupArticulo = <FormGroup>articulo;
+    let jsonbodyArt, jsbodyArt;
+    console.log('control de articulo a usar: ', formgroupArticulo)
+    //condicion para saber si es update o insert
+    // if (??){
+      jsbodyArt = {
       "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-      "p_stock_id_art": this.formaArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
-      "p_stock_fecha_ult_compra": this.formaArticulo.controls['ultimaFecha'].value, //"1997-05-05",
-      "p_stock_moneda": this.formaArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
-      "p_stock_codigo_barra_prov": this.formaArticulo.controls['barrasArtProv'].value, //Código de barra
+      "p_stock_id_art": formgroupArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
+      "p_stock_fecha_ult_compra": formgroupArticulo.controls['ultimaFecha'].value, //"1997-05-05",
+      "p_stock_moneda": formgroupArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
+      "p_stock_codigo_barra_prov": formgroupArticulo.controls['barrasArtProv'].value, //Código de barra
       //ultimoPrecio
       //codArtProv
     }
-    let jsonbodyArticulo = JSON.stringify(jsbodyArticulo);
+    // }
+    // else{
+
+    // }
+    jsonbodyArt= JSON.stringify(jsbodyArt);
+    return jsonbodyArt;
+
+    // let jsbodyArticulo = {
+    //   "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+    //   "p_stock_id_art": this.formaArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
+    //   "p_stock_fecha_ult_compra": this.formaArticulo.controls['ultimaFecha'].value, //"1997-05-05",
+    //   "p_stock_moneda": this.formaArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
+    //   "p_stock_codigo_barra_prov": this.formaArticulo.controls['barrasArtProv'].value, //Código de barra
+    //   //ultimoPrecio
+    //   //codArtProv
+    // }
+    // let jsonbodyArticulo = JSON.stringify(jsbodyArticulo);
   }
+  //#endregion jsons
 
   guardarRelacion(cuenta: any){
     //RELACION COMERCIAL
@@ -2611,49 +2856,131 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
 
-  modificarImpuesto(){
-    //IMPUESTOS
-    let jsbodyImp = {
-      "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-      "p_imp_tipo" : this.formaImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
-      "p_imp_modelo" : this.formaImpuesto.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
-      "p_imp_situacion" : this.formaImpuesto.controls['situacion'].value,
-      "p_imp_codigo" : this.formaImpuesto.controls['codInscripcion'].value,//"1",
-      "p_imp_fecha_insc" : this.formaImpuesto.controls['fechaInscripcion'].value,//"1997-05-05",
-      "p_imp_excenciones" : this.formaImpuesto.controls['exenciones'].value.toString(),//"false",
-      "p_imp_fecha_comienzo_excencion" : this.formaImpuesto.controls['fechaDesde'].value, // → si es true
-      "p_imp_fecha_caducidad_excencion" : this.formaImpuesto.controls['fechaHasta'].value,//  → si es true
-      "p_imp_obs" :this.formaImpuesto.controls['observaciones'].value
-    }
-    let jsonbodyImp = JSON.stringify(jsbodyImp);
-    console.log(jsonbodyImp);
+  guardarFormulario(formulario: any){
+    let jsonbodyF = this.armarJSONFormulario(formulario);
+    console.log('body insertar de formulario: ', jsonbodyF);
+
+    this._proveedoresService.postFormulario(jsonbodyF, this.token )
+      .subscribe( data => {
+          this.respData = data;
+          console.log('respuesta insert formulario: ', this.respData);
+          if(this.respData.returnset[0].RCode=="-6003"){
+              this.openSnackBar('Token invalido insertando Formulario')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al agregar Formulario: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                console.log('Formulario ID (insert): ' + this.respData.returnset[0].RId);
+              }
+            }
+      });
   }
 
-  modificarFormulario(){
-    //FORMULARIOS
-    let jsbodyForm = {
-      "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-      "p_form_codigo" : this.formaFormulario.controls['codForm'].value,
-      "p_form_fecha_pres" : this.formaFormulario.controls['fechaPres'].value,//"1997-05-05",
-      "p_form_fecha_vto" : this.formaFormulario.controls['fechaVenc'].value,//"1997-05-05"
-    }
-    let jsonbodyForm = JSON.stringify(jsbodyForm);
-    console.log(jsonbodyForm);
+  modificarFormulario(formulario: any){
+    let jsonbodyF = this.armarJSONFormulario(formulario);
+    console.log('body modificacion de formulario: ', jsonbodyF);
+
+    //todo cambiar cuando agreguen update de formulario en la api
+    this._proveedoresService.postFormulario(jsonbodyF, this.token )
+      .subscribe( data => {
+          this.respData = data;
+          console.log('respuesta update formulario: ', this.respData);
+          if(this.respData.returnset[0].RCode=="-6003"){
+              this.openSnackBar('Token invalido modificando Formulario')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al modificar Formulario: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                console.log('Formulario ID (update): ' + this.respData.returnset[0].RId);
+              }
+            }
+      });
   }
 
-  modificarArticulo(){
-    //ARTICULOS
-    let jsbodyArticulo = {
-      "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-      "p_stock_id_art": this.formaArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
-      "p_stock_fecha_ult_compra": this.formaArticulo.controls['ultimaFecha'].value, //"1997-05-05",
-      "p_stock_moneda": this.formaArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
-      "p_stock_codigo_barra_prov": this.formaArticulo.controls['barrasArtProv'].value, //Código de barra
-      //ultimoPrecio
-      //codArtProv
-    }
-    let jsonbodyArticulo = JSON.stringify(jsbodyArticulo);
-    console.log(jsonbodyArticulo);
+  guardarImpuesto(impuesto: any){
+    let jsonbodyI = this.armarJSONImpuesto(impuesto);
+    console.log('body insertar de impuesto: ', jsonbodyI);
+
+    this._proveedoresService.postImpuesto(jsonbodyI, this.token )
+      .subscribe( data => {
+          this.respData = data;
+          console.log('respuesta insert impuesto: ', this.respData);
+          if(this.respData.returnset[0].RCode=="-6003"){
+              this.openSnackBar('Token invalido insertando Impuesto')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al agregar Impuesto: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                console.log('Impuesto ID (insert): ' + this.respData.returnset[0].RId);
+              }
+            }
+      });
+  }
+
+  modificarImpuesto(impuesto: any){
+    let jsonbodyI = this.armarJSONImpuesto(impuesto);
+    console.log('body modificar de impuesto: ', jsonbodyI);
+
+    this._proveedoresService.updateImpuesto(jsonbodyI, this.token )
+      .subscribe( data => {
+          this.respData = data;
+          console.log('respuesta update impuesto: ', this.respData);
+          if(this.respData.returnset[0].RCode=="-6003"){
+              this.openSnackBar('Token invalido modificando Impuesto')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al modificar Impuesto: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                console.log('Impuesto ID (update): ' + this.respData.returnset[0].RId);
+              }
+            }
+      });
+  }
+
+  guardarArticulo(articulo: any){
+    let jsonbodyA = this.armarJSONArticulo(articulo);
+    console.log('body insertar de articulo: ', jsonbodyA);
+
+    this._proveedoresService.postArticulo(jsonbodyA, this.token )
+      .subscribe( data => {
+          this.respData = data;
+          console.log('respuesta insert articulo: ', this.respData);
+          if(this.respData.returnset[0].RCode=="-6003"){
+              this.openSnackBar('Token invalido insertando Articulo')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al agregar Articulo: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                console.log('Articulo ID (insert): ' + this.respData.returnset[0].RId);
+              }
+            }
+      });
+  }
+
+  modificarArticulo(articulo: any){
+    let jsonbodyA = this.armarJSONArticulo(articulo);
+    console.log('body modificar de articulo: ', jsonbodyA);
+
+    this._proveedoresService.updateArticulo(jsonbodyA, this.token )
+      .subscribe( data => {
+          this.respData = data;
+          console.log('respuesta modificar articulo: ', this.respData);
+          if(this.respData.returnset[0].RCode=="-6003"){
+              this.openSnackBar('Token invalido modificar Articulo')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al modificar Articulo: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                console.log('Articulo ID (update): ' + this.respData.returnset[0].RId);
+              }
+            }
+      });
   }
 
   modificarAFIP(){
@@ -2814,6 +3141,42 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
 
+  eliminarFormulario(codigo: string){
+    console.log('NO HAY CON QUE, RECLAMAR A I2T, codigo: ', codigo);
+    /* let jsbody = {
+      "p_codigo_c": this.id, 
+      "p_afip_id" : codigo, //"a714a4d7-ee6d-11e8-ab85-d050990fe081"
+      }
+    let jsonbody = JSON.stringify(jsbody);
+
+    this._proveedoresService.deleteAFIP(jsonbody, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._localidadesService.login(jsonbody)
+              .subscribe( dataL => {
+                
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.eliminarAFIP(codigo);
+              });
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                this.openSnackBar('Articulo eliminado con exito');
+              }
+            }
+            //console.log(this.refContablesAll);
+      }); */
+  }
+
   eliminarAFIP(codigo: string){
     let jsbody = {
       "p_codigo_c": this.id, 
@@ -2889,7 +3252,7 @@ export class AltaProveedorComponent implements OnInit {
     this.estadosCuentas = {nuevos: [],
       modificados: [],
       eliminados: []};
-    //ver validez de todos los controles
+    //ver validez de  los controles
     /* for (const field in this.forma.controls) { // 'field' is a string
 
       const control = this.forma.get(field); // 'control' is a FormControl
@@ -2927,9 +3290,6 @@ export class AltaProveedorComponent implements OnInit {
       );
     });
     
-
-
-    //todo ver si es necesario revisar que no haya eliminados en la lista de modificados
   }
 
   nuevaFecha(dateString: string){

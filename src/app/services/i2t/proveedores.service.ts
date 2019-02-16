@@ -266,7 +266,7 @@ export class ProveedoresService {
       'Content-Type': 'application/json'
     });
 
-    let query = "api/proc/proveedores_relacioncomercial_UDP_SP";
+    let query = "api/proc/proveedores_UDP_SP";
     let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers });

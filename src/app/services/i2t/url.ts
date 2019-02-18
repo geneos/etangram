@@ -4,4 +4,4 @@ const preUrlImage:string = "http://172.30.0.129:5002/";
 
 export const PreUrl = preUrl;
 //export const PreUrl = preUrlTesting;
-export const PreUrlImage = preUrlImage;
+export const PreUrlImage = preUrl;

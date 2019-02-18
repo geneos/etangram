@@ -10,23 +10,24 @@ export class ImageService {
 
   constructor( private http:HttpClient ) { }
 
-  postImage( adjunto ){
-    /*const headers = new HttpHeaders({
+  postImage( adjunto, token ){
+    const headers = new HttpHeaders({
       'x-access-token': token,
       'Content-Type': 'application/json'
-    });*/
+    });
     console.log(adjunto);
 
     let formData:FormData = new FormData();
     formData.append('file', adjunto, adjunto.name);
 
     console.log(formData);
+    console.log(JSON.stringify(formData));
     console.log(formData.getAll('file'));
 
     let query = `api/attachments`;
     let url = this.preUrl + query;
 
-    return this.http.post( url, formData );
+    return this.http.post( url, formData, { headers } );
   }
 
 }

@@ -673,7 +673,7 @@ export class AltaProveedorComponent implements OnInit {
     // console.log('Lista de formularios ', forms.length, forms);
     let formABorrar = (<FormGroup>forms.controls[ind]);
     if (formABorrar.controls['ID_Form_Proveedor'].value != null){
-      this.estadosFormularios.eliminados.push(formABorrar.controls['ID_Form_Proveedor'].value);
+      this.estadosFormularios.eliminados.push(formABorrar.controls['codForm'].value);
     }
     forms.removeAt(ind);
     // console.log('Lista de formularios ', forms.length, forms);
@@ -924,7 +924,7 @@ export class AltaProveedorComponent implements OnInit {
             this.catsBloqueoAll = null;
             let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
-            this._tiposDocumentoService.login(jsonbody)
+            this._categoriasBloqueoService.login(jsonbody)
               .subscribe( dataL => {
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
@@ -1965,7 +1965,12 @@ export class AltaProveedorComponent implements OnInit {
         break;
       case 'tg01_categoriasiva':
         atributoAUsar = 'idcategoria';
+        break;
+      case 'tg05_partidas_presupuestaria':
+        atributoAUsar = 'codigo_partida';
+        break;
       default:
+        atributoAUsar = 'id';
         break;
     }
 
@@ -2671,24 +2676,24 @@ export class AltaProveedorComponent implements OnInit {
     console.log('control de formulario a usar: ', formgroupFormulario)
     //if suspendido, no hay update de formulario
     //todo agregar cuando lo agreguen a la api
-    // if (formGroupCuenta.controls['ID_Relacion_Comercial'].value == null){
+    if (formgroupFormulario.controls['ID_Form_Proveedor'].value == null){
       jsbodyF = {
         "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
         "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
-        "p_form_fecha_pres" : formgroupFormulario.controls['fechaPres'].value,//"1997-05-05",
-        "p_form_fecha_vto" : formgroupFormulario.controls['fechaVenc'].value,//"1997-05-05"
+        "p_form_fecha_pres" : this.extraerFecha(formgroupFormulario.controls['fechaPres'].value),//"1997-05-05",
+        "p_form_fecha_vto" : this.extraerFecha(formgroupFormulario.controls['fechaVenc'].value),//"1997-05-05"
       }
-    /* }
+    }
     else{
-      jsbodyRC = {
-        "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor
-        "Id_RelComercial": formGroupCuenta.controls['ID_Relacion_Comercial'].value,
-        "p_cbu": formGroupCuenta.controls['rcCbu'].value,
-        "p_cuentabancaria": formGroupCuenta.controls['rcCuentaBancaria'].value,
-        "p_codigo_sucursal": formGroupCuenta.controls['rcCodigoSucursal'].value,
-        "p_tipo_cuenta": formGroupCuenta.controls['rcTipo'].value,
+      jsbodyF = {
+        "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor        
+        "Id_FormularioCte" : formgroupFormulario.controls['ID_Form_Proveedor'].value,
+        "p_form_fecha_pres" : this.extraerFecha(formgroupFormulario.controls['fechaPres'].value),//"1997-05-05",
+        "p_form_fecha_vto" : this.extraerFecha(formgroupFormulario.controls['fechaVenc'].value),//"1997-05-05"
+        "url": "gfxgfc"
+        
       }
-    } */
+    }
     
     jsonbodyF= JSON.stringify(jsbodyF);
     return jsonbodyF;
@@ -2702,14 +2707,14 @@ export class AltaProveedorComponent implements OnInit {
     // if (formGroupImpuesto.controls[''].value == null){
       jsbodyImp = {
         "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-        "p_imp_tipo" : formGroupImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
+        // "p_imp_tipo" : formGroupImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
         "p_imp_modelo" : formGroupImpuesto.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
         "p_imp_situacion" : formGroupImpuesto.controls['situacion'].value,
         "p_imp_codigo" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
-        "p_imp_fecha_insc" : formGroupImpuesto.controls['fechaInscripcion'].value,//"1997-05-05",
-        "p_imp_excenciones" : formGroupImpuesto.controls['exenciones'].value.toString(),//"false",
-        "p_imp_fecha_comienzo_excencion" : formGroupImpuesto.controls['fechaDesde'].value, // → si es true
-        "p_imp_fecha_caducidad_excencion" : formGroupImpuesto.controls['fechaHasta'].value,//  → si es true
+        "p_imp_fecha_insc" : this.extraerFecha(formGroupImpuesto.controls['fechaInscripcion'].value),//"1997-05-05",
+        "p_imp_excenciones" : formGroupImpuesto.controls['poseeExenciones'].value.toString(),//"false",
+        "p_imp_fecha_comienzo_excencion" : this.extraerFecha(formGroupImpuesto.controls['fechaDesde'].value), // → si es true
+        "p_imp_fecha_caducidad_excencion" : this.extraerFecha(formGroupImpuesto.controls['fechaHasta'].value),//  → si es true
         "p_imp_obs" :formGroupImpuesto.controls['observaciones'].value
       }
     // }
@@ -2742,7 +2747,7 @@ export class AltaProveedorComponent implements OnInit {
       jsbodyArt = {
       "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
       "p_stock_id_art": formgroupArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
-      "p_stock_fecha_ult_compra": formgroupArticulo.controls['ultimaFecha'].value, //"1997-05-05",
+      "p_stock_fecha_ult_compra": this.extraerFecha(formgroupArticulo.controls['ultimaFecha'].value), //"1997-05-05",
       "p_stock_moneda": formgroupArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
       "p_stock_codigo_barra_prov": formgroupArticulo.controls['barrasArtProv'].value, //Código de barra
       //ultimoPrecio
@@ -2881,8 +2886,7 @@ export class AltaProveedorComponent implements OnInit {
     let jsonbodyF = this.armarJSONFormulario(formulario);
     console.log('body modificacion de formulario: ', jsonbodyF);
 
-    //todo cambiar cuando agreguen update de formulario en la api
-    this._proveedoresService.postFormulario(jsonbodyF, this.token )
+    this._proveedoresService.updateFormulario(jsonbodyF, this.token )
       .subscribe( data => {
           this.respData = data;
           console.log('respuesta update formulario: ', this.respData);
@@ -3132,9 +3136,11 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if (this.respData.returnset[0].RCode != 1){
                 this.openSnackBar('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
+                console.log('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
               }
               else{
                 this.openSnackBar('Articulo eliminado con exito');
+                console.log('Eliminado Articulo: ' + this.respData.returnset[0].RTxt);
               }
             }
             //console.log(this.refContablesAll);
@@ -3142,14 +3148,13 @@ export class AltaProveedorComponent implements OnInit {
   }
 
   eliminarFormulario(codigo: string){
-    console.log('NO HAY CON QUE, RECLAMAR A I2T, codigo: ', codigo);
-    /* let jsbody = {
-      "p_codigo_c": this.id, 
-      "p_afip_id" : codigo, //"a714a4d7-ee6d-11e8-ab85-d050990fe081"
+    let jsbody = {
+      "Id_Proveedor": this.id, 
+      "Id_Formulario" : codigo
       }
     let jsonbody = JSON.stringify(jsbody);
 
-    this._proveedoresService.deleteAFIP(jsonbody, this.token )
+    this._proveedoresService.deleteFormulario(jsonbody, this.token )
       .subscribe( data => {
         //console.log(dataRC);
           this.respData = data;
@@ -3163,18 +3168,20 @@ export class AltaProveedorComponent implements OnInit {
                 
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.eliminarAFIP(codigo);
+                this.eliminarFormulario(codigo);
               });
             } else {
               if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
+                this.openSnackBar('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
+                console.log('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
               }
               else{
-                this.openSnackBar('Articulo eliminado con exito');
+                this.openSnackBar('Formulario eliminado con exito');
+                console.log('Eliminado Formulario: ' + this.respData.returnset[0].RTxt);
               }
             }
             //console.log(this.refContablesAll);
-      }); */
+      });
   }
 
   eliminarAFIP(codigo: string){

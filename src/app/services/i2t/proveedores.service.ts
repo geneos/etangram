@@ -235,6 +235,18 @@ export class ProveedoresService {
     return this.http.post( url, body, { headers });
   }
 
+  deleteFormulario( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = "api/proc/proveedores_formulario_DEL_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
+  
   deleteArticulo( body:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,
@@ -295,7 +307,18 @@ export class ProveedoresService {
 
     return this.http.post( url, body, { headers });
   }
+  
+  updateFormulario( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
 
+    let query = "api/proc/proveedores_formulario_UPD_SP";
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers });
+  }
   updateArticulo( body:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,

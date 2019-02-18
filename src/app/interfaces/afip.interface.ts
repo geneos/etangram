@@ -30,6 +30,23 @@ export interface Impuestos{
 }
 //tg01_impuestos
 
+export interface grupoRefContArticulo{
+  id: string;
+  name: string;
+  idgrupo: string;
+  tg01_referenciascontables_id_c: string;
+  tg01_referenciascontables_id1_c: string;
+}//tg01_gruporefcontablearticulo
+
+export interface Alicuotas{
+  id: string;
+  name: string;
+  tipo: string;
+  idalicuota: number;
+  tg01_referenciascontables_id_c: string;
+  tg01_referenciascontables_id1_c: string;
+}//tg01_alicuotas
+
 export interface ConstatacionCbte{
   ComprobanteConstatarResult:{
     CmpResp: {

@@ -52,13 +52,23 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="idGrupo">
-            <mat-option value="1">Grupo1</mat-option>
-            <mat-option value="2">Grupo2</mat-option>
-          </mat-select>
+          <input matInput placeholder="" type="number" formControlName="idGrupo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
+      <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('c_producto_categoria', 'idGrupo')">
+        <a class="mine-btnforms" mat-flat-button>
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </a>
+      </div>
+      <div class="col s12 m12 l7">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nombre de Grupo</mat-label>
+          <!-- <input matInput placeholder="" formControlName="nombreGrupo" value="{{ resultadoidGrupo?.name }}"> -->
+          <input matInput placeholder="" value="{{ resultadoidGrupo?.name }}">
+        </mat-form-field>
+      </div>
+
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Tipo Artículo</mat-label>
@@ -85,13 +95,23 @@
       <div class="col s4 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Marca</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="idMarca">
-            <mat-option value="1">Nacional</mat-option>
-            <mat-option value="2">Importado</mat-option>
-          </mat-select>
+            <input matInput placeholder="" formControlName="idMarca" >
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
+      <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('tglp_tg_marcas', 'idMarca')">
+        <a class="mine-btnforms" mat-flat-button>
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </a>
+      </div>
+      <div class="col s12 m12 l7">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nombre de Marca</mat-label>
+          <!-- <input matInput placeholder="" formControlName="nombreMarca" value="{{ resultadoidMarca?.name }}"> -->
+          <input matInput placeholder="" value="{{ resultadoidMarca?.name }}">
+        </mat-form-field>
+      </div>
+
       <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Campo1</mat-label>
@@ -137,7 +157,11 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Categoría de Bloqueo</mat-label>
-          <input matInput placeholder="" type="text" formControlName="categoria_bloqueo">
+          <mat-select placeholder="Elija una opción" formControlName="categoria_bloqueo">
+            <mat-option *ngFor="let aux of catsBloqueoAll" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
+          </mat-select>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -215,8 +239,9 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Moneda</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra">
-            <mat-option value="1">Pesos</mat-option>
-            <mat-option value="2">Dólares</mat-option>
+            <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
           </mat-select>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
@@ -248,8 +273,9 @@
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Moneda</mat-label>
             <mat-select placeholder="Elija una opción" formControlName="idMonedaUltVenta">
-              <mat-option value="1">Pesos</mat-option>
-              <mat-option value="2">Dólares</mat-option>
+              <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
+                {{aux.name}}
+              </mat-option>
             </mat-select>
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
@@ -317,7 +343,11 @@
         <div class="col s4 m4 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Moneda Última Compra</mat-label>
-            <input matInput placeholder="" type="text">
+            <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra">
+              <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
+                {{aux.name}}
+              </mat-option>
+            </mat-select>
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
@@ -352,8 +382,9 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo de referencia contable</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idGrupoRefContArticulo">
-            <mat-option value="1">#</mat-option>
-            <mat-option value="2">#</mat-option>
+            <mat-option *ngFor="let aux of gruposRefContableArticuloAll" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -361,7 +392,9 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Alicuota IVA</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idAlicuotaIva">
-            <mat-option value="1">21</mat-option>
+            <mat-option *ngFor="let aux of alicuotasAll" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -369,8 +402,9 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Alicuota Imp. Internos</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idAlicuotaImpInt">
-            <mat-option value="1">#</mat-option>
-            <mat-option value="2">#</mat-option>
+            <mat-option *ngFor="let aux of alicuotas2All" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
           </mat-select>
         </mat-form-field>
       </div>

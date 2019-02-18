@@ -1,11 +1,15 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
-import { FormGroup, FormControl, Validators, FormsModule } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule, FormBuilder } from '@angular/forms';
 import { getMatFormFieldMissingControlError, MatSnackBar } from '@angular/material';
 import { ProveedoresService } from 'src/app/services/i2t/proveedores.service';
 import { Proveedor } from 'src/app/interfaces/proveedor.interface';
 import { Subscription } from 'rxjs';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { MonedasService } from 'src/app/services/i2t/monedas.service';
+import { CategoriasBloqueoService } from 'src/app/services/i2t/cat-bloqueo.service';
+import { AFIPInternoService } from 'src/app/services/i2t/afip.service';
+import { UnidadMedidaService } from 'src/app/services/i2t/unidad-medida.service';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -15,7 +19,7 @@ const ARTICULOS:any[] = [
   {'nroArticulo':4,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40}
 ];
 
-var auxProvData,auxArtiData:any;
+var auxProvData,auxArtiData,auxUnidadData:any;
 
 @Component({
   selector: 'app-alta-articulo',
@@ -46,91 +50,117 @@ export class AltaArticuloComponent implements OnInit {
   
   proveedorData: any;
   proveedor: Proveedor;
+
+  mData: any;//monedas
+  cbData:any; //categorias bloqueo
+  grcaData:any;//grupo ref. contable
+  aliData:any;//alicuotas
+  ali2Data:any;
+  umData:any;//unidades de medida
+
+  monedasAll:any[];
+  catsBloqueoAll:any[];
+  gruposRefContableArticuloAll:any[];
+  alicuotasAll:any[];
+  alicuotas2All:any[];
+  unidadesMedidaAll:any[];
+
   @ViewChild('codProv', { read: ElementRef}) elCodProv: any;
   @ViewChild('codArtProv', { read: ElementRef}) elcodArtProv: any;
   @ViewChild('codArtSust', { read: ElementRef}) elcodArtSust: any;
   @ViewChild('codArtHijo', { read: ElementRef}) elcodArtHijo: any;
 
   suscripcionConsDin: Subscription;
+  resultadoidGrupo: any;
+    grupo:any;
   
   constructor(private route:ActivatedRoute,
               public snackBar: MatSnackBar,
+              private FormBuilder: FormBuilder,
               public ngxSmartModalService: NgxSmartModalService,
               private _proveedorService: ProveedoresService,
+              private _monedaService: MonedasService,
+              private _categoriasBloqueoService: CategoriasBloqueoService,
+              private _AFIPInternoService: AFIPInternoService,
+              private _unidadMedidaService: UnidadMedidaService,
               private ref: ChangeDetectorRef 
               ) {
-    this.forma = new FormGroup({
-      'tipo': new FormControl(1,Validators.required),
-      'nroArticulo': new FormControl('',Validators.required),
-      'descripcion': new FormControl('',Validators.required),
-      'codigoAlternativo': new FormControl(),
-      'codigoBarra': new FormControl(),
-      'idGrupo': new FormControl('',Validators.required),
-      'idTipoArticulo': new FormControl('',Validators.required),
-      'procedencia': new FormControl('',Validators.required),
-      'propio': new FormControl(),
-      'idMarca': new FormControl(),
-      'idCampo1': new FormControl(),
-      'idCampo2': new FormControl(),
-      'idCampo3': new FormControl(),
-      'estado': new FormControl('',Validators.required),
-      'categoria_bloqueo': new FormControl(),
-      'obsRegistroAutoVta': new FormControl(),
-      'obsRegistroAutoCpa': new FormControl(),
-      'obsIngresoVta': new FormControl(),
-      'obsIngresoCpa': new FormControl(),
-      'obsAuditoriaVta': new FormControl(),
-      'obsAuditoriaCpa': new FormControl(),
-      'obsImprimeVta': new FormControl(),
-      'categoriaVenta': new FormControl(),
-      'categoriaCompra': new FormControl(),
-      'categoriaInventario': new FormControl(),
+    this.forma = this.FormBuilder.group({
+      tipo: new FormControl(1,Validators.required),
+      nroArticulo: new FormControl(null,Validators.required),
+      descripcion: new FormControl(null,Validators.required),
+      codigoAlternativo: new FormControl(),
+      codigoBarra: new FormControl(),
+      idGrupo: new FormControl(null,Validators.required),
+      idTipoArticulo: new FormControl(null,Validators.required),
+      procedencia: new FormControl(null,Validators.required),
+      propio: new FormControl(),
+      idMarca: new FormControl(),
+      idCampo1: new FormControl(),
+      idCampo2: new FormControl(),
+      idCampo3: new FormControl(),
+      estado: new FormControl(null,Validators.required),
+      categoria_bloqueo: new FormControl(),
+      obsRegistroAutoVta: new FormControl(),
+      obsRegistroAutoCpa: new FormControl(),
+      obsIngresoVta: new FormControl(),
+      obsIngresoCpa: new FormControl(),
+      obsAuditoriaVta: new FormControl(),
+      obsAuditoriaCpa: new FormControl(),
+      obsImprimeVta: new FormControl(),
+      categoriaVenta: new FormControl(),
+      categoriaCompra: new FormControl(),
+      categoriaInventario: new FormControl(),
       //comprasyventas
-      'precioUltCompra': new FormControl(),
-      'fechaUltCompra': new FormControl(),
-      'idMonedaUltCompra': new FormControl(),
-      'cantidadOptimaDeCompra': new FormControl(),
-      'precioUltVenta': new FormControl(),
-      'fechaUltVenta': new FormControl(),
-      'idMonedaUltVenta': new FormControl(),
+      precioUltCompra: new FormControl(),
+      fechaUltCompra: new FormControl(),
+      idMonedaUltCompra: new FormControl(),
+      cantidadOptimaDeCompra: new FormControl(),
+      precioUltVenta: new FormControl(),
+      fechaUltVenta: new FormControl(),
+      idMonedaUltVenta: new FormControl(),
         //proveedor
-        'proveedor': new FormControl('',Validators.required,this.existeProveedor),
-        'razonSocial': new FormControl(),
-        'artDeProveedor': new FormControl('',Validators.required,this.existeArticulo),
-        'artCodBarra': new FormControl(),
+        proveedores: this.FormBuilder.array([]),
+        /* proveedor: new FormControl(null,Validators.required,this.existeProveedor),
+        razonSocial: new FormControl(),
+        artDeProveedor: new FormControl(null,Validators.required,this.existeArticulo),
+        artCodBarra: new FormControl(), */
       //Impositivo
-      'idGrupoRefContArticulo': new FormControl(),
-      'idAlicuotaIva': new FormControl(),
-      'idAlicuotaImpInt': new FormControl(),
-      'IIAreaAplicacionAlicuota': new FormControl(),
-      'IIAreaAplicacionImporteFijo': new FormControl(),
-      'IncorporarIIalCosto': new FormControl(),
-      'impuestoInternoFijo': new FormControl(),
+      idGrupoRefContArticulo: new FormControl(),
+      idAlicuotaIva: new FormControl(),
+      idAlicuotaImpInt: new FormControl(),
+      IIAreaAplicacionAlicuota: new FormControl(),
+      IIAreaAplicacionImporteFijo: new FormControl(),
+      IncorporarIIalCosto: new FormControl(),
+      impuestoInternoFijo: new FormControl(),
       //Lotes y Series
-      'gestionDespacho': new FormControl(),
-      'gestionLote': new FormControl(),
-      'gestionSerie': new FormControl(),
+      gestionDespacho: new FormControl(),
+      gestionLote: new FormControl(),
+      gestionSerie: new FormControl(),
       //Stock
-      'administraStock': new FormControl(),
-      'stockIdeal': new FormControl(),
-      'stockMaximo': new FormControl(),
-      'stockReposicion': new FormControl(),
+      administraStock: new FormControl(),
+      stockIdeal: new FormControl(),
+      stockMaximo: new FormControl(),
+      stockReposicion: new FormControl(),
         //Productos sustitutos
-        'artSust': new FormControl(),
+        articulosSustitutos: this.FormBuilder.array([]),
+        // artSust: new FormControl(),
         //Productos Relacionados
-        'artHijo': new FormControl(),
+        articulosHijos: this.FormBuilder.array([]),
+        // artHijo: new FormControl(),
       //Datos Dimensiones
-      'Dimensiones': new FormControl(),
-      'Pesable': new FormControl(),
-      'Pesable_Estandar': new FormControl(),
-      'unidadMedidaBase': new FormControl(),
-      'aplicaConversionUnidadPrecio': new FormControl(),
-      'unidadMedidaLP': new FormControl(),
-      'largo': new FormControl(),
-      'ancho': new FormControl(),
-      'profundidad': new FormControl(),
-      'm3': new FormControl(),
-
+      Dimensiones: new FormControl(),
+      Pesable: new FormControl(),
+      Pesable_Estandar: new FormControl(),
+      unidadMedidaBase: new FormControl(),
+      aplicaConversionUnidadPrecio: new FormControl(),
+      unidadMedidaLP: new FormControl(),
+      largo: new FormControl(),
+      ancho: new FormControl(),
+      profundidad: new FormControl(),
+      m3: new FormControl(),
+        //Unidades de medida alternativas
+        unidadesAlternativas: this.FormBuilder.array([]),
 
       /*'articulo': new FormControl('',Validators.required),
       'unidadMedida': new FormControl('',Validators.required),
@@ -162,8 +192,10 @@ export class AltaArticuloComponent implements OnInit {
 
     });
 
+    //#region suscripciones
+    //todo revisar
     //suscripciones para rellenar datos después 
-    this.forma.controls['proveedor'].valueChanges.subscribe(() => {
+    /* this.forma.controls['proveedor'].valueChanges.subscribe(() => {
       // console.clear()
       setTimeout(() => {
         console.log('hubo un cambio')
@@ -214,11 +246,49 @@ export class AltaArticuloComponent implements OnInit {
         this.elcodArtHijo.nativeElement.dispatchEvent(new Event('keyup'));
       })
     });
-  }
+    */
+} 
+  //#endregion suscripciones
+
+//#region FormArrays
+construirProveedor(){
+  return new FormGroup({ 
+    'proveedor': new FormControl(null,Validators.required,this.existeProveedor),
+    'razonSocial': new FormControl(),
+    'artDeProveedor': new FormControl(null,Validators.required,this.existeArticulo),
+    'artCodBarra': new FormControl(),
+  });
+}
+
+construirArticuloSust(){
+  return new FormGroup({ 
+    'idArtSust': new FormControl(null,Validators.required,this.existeArticulo),
+  });
+}
+
+construirArticuloHijo(){
+  return new FormGroup({ 
+    'idArtHijo': new FormControl(null,Validators.required,this.existeArticulo),
+  });
+}
+
+construirUnidadMedida(){
+  return new FormGroup({ 
+    'idUM': new FormControl(null,Validators.required,this.existeUnidad),
+  });
+}
+//#endregion FormArrays
 
   ngOnInit() {
+    this.buscarMonedas();
+    this.buscarGruposRef();
+    this.buscarCategoriasBloqueo();
+    this.buscarAlicuotas();
+    this.buscarAlicuotas2();
+    this.buscarUnidades();
   }
 
+  //#region botonesArray
   addFoto(){this.fotos.push('nroFoto:'+(this.fotos.length).toString);}
   deleteFoto(ind){this.fotos.splice(ind, 1);}
 
@@ -236,6 +306,164 @@ export class AltaArticuloComponent implements OnInit {
 
   addUMAlt(){this.umAlt.push('nroUMAlt:'+(this.umAlt.length).toString);}
   deleteUMAlt(ind){this.umAlt.splice(ind, 1);}
+  //#endregion botonesArray
+
+  //#region datosCombobox
+  buscarMonedas(){
+    this._monedaService.getMonedas(this.token )
+      .subscribe( dataM => {
+        // console.log(dataM);
+          this.mData = dataM;
+          //auxRefConData = this.mcData.dataset.length;
+          if(this.mData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.monedasAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._monedaService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarMonedas();
+              });
+            } else {
+              if(this.mData.dataset.length>0){
+                this.monedasAll = this.mData.dataset;
+                // this.forma.controls['moneda'].setValue(this.moneda.name);
+              }
+              else{
+                this.monedasAll = null;
+              }
+            }
+
+      });
+  }
+
+  buscarCategoriasBloqueo(){
+    this._categoriasBloqueoService.getCategoriasDeUnTipo('A', this.token )
+      .subscribe( data => {
+          this.cbData = data;
+          if(this.cbData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.catsBloqueoAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._categoriasBloqueoService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarCategoriasBloqueo();
+              });
+            } else {
+              if(this.cbData.dataset.length>0){
+                this.catsBloqueoAll = this.cbData.dataset;
+              } else {
+                this.catsBloqueoAll = null;
+              }
+            }
+    });
+  }
+
+  buscarGruposRef(){
+    this._AFIPInternoService.getGruposRefContable( this.token )
+      .subscribe( data => {
+          this.grcaData = data;
+          if(this.grcaData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.gruposRefContableArticuloAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._AFIPInternoService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarGruposRef();
+              });
+            } else {
+              if(this.grcaData.dataset.length>0){
+                this.gruposRefContableArticuloAll = this.grcaData.dataset;
+              } else {
+                this.gruposRefContableArticuloAll = null;
+              }
+            }
+    });
+  }
+
+  buscarAlicuotas(){
+    this._AFIPInternoService.getAlicuotasPorTipo('I', this.token )
+      .subscribe( data => {
+          this.aliData = data;
+          if(this.aliData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.alicuotasAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._AFIPInternoService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarAlicuotas();
+              });
+            } else {
+              if(this.aliData.dataset.length>0){
+                this.alicuotasAll = this.aliData.dataset;
+              } else {
+                this.alicuotasAll = null;
+              }
+            }
+    });
+  }
+
+  buscarAlicuotas2(){
+    this._AFIPInternoService.getAlicuotasPorTipo('O', this.token )
+      .subscribe( data => {
+          this.ali2Data = data;
+          if(this.ali2Data.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.alicuotas2All = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._AFIPInternoService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarAlicuotas2();
+              });
+            } else {
+              if(this.ali2Data.dataset.length>0){
+                this.alicuotas2All = this.ali2Data.dataset;
+              } else {
+                this.alicuotas2All = null;
+              }
+            }
+    });
+  }
+
+  buscarUnidades(){
+    this._unidadMedidaService.getUnidadMedida(this.token )
+      .subscribe( data => {
+          this.umData = data;
+          if(this.umData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.unidadesMedidaAll = null;
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._AFIPInternoService.login(jsonbody)
+              .subscribe( dataL => {
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.buscarUnidades();
+              });
+            } else {
+              if(this.umData.dataset.length>0){
+                this.unidadesMedidaAll = this.umData.dataset;
+              } else {
+                this.unidadesMedidaAll = null;
+              }
+            }
+    });
+  }
+  //#endregion datosCombobox
 
   guardarArticulo(){
     if( this.id == "nuevo" ){
@@ -660,7 +888,7 @@ export class AltaArticuloComponent implements OnInit {
 
   */
 
-  //validaciones
+  //#region validaciones
   existeProveedor( control: FormControl ): Promise<any>{
     let promesa = new Promise(
       ( resolve, reject )=>{
@@ -687,7 +915,22 @@ export class AltaArticuloComponent implements OnInit {
     return promesa;
   }
 
-  //autocompletado
+  existeUnidad( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxUnidadData==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
+  //#endregion validaciones
+
+  //#region busquedasAutocompletado
   buscarProveedor(){
     // console.clear()
     console.log('llamado a la busqueda del proveedor', this.forma.controls['proveedor'].value)
@@ -736,6 +979,9 @@ export class AltaArticuloComponent implements OnInit {
     console.log('todo');
   }
 
+  buscarGrupo
+  //#endregion busquedasAutocompletado
+
   //modal
   abrirConsulta(consulta: string, control: string){
     console.clear();
@@ -761,7 +1007,9 @@ export class AltaArticuloComponent implements OnInit {
         break;
       case 'c_articulos':
         atributoAUsar = 'idcategoria';
+        break;
       default:
+        atributoAUsar = 'id';
         break;
     }
 
@@ -786,7 +1034,7 @@ export class AltaArticuloComponent implements OnInit {
         setTimeout(() => {
           this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
           // this['proveedor'] = null;
-          this[control] = respuesta.selection[0];
+          this['resultado'+control] = respuesta.selection[0];
           
           //todo 
           //disparar detección de cambios, cada parte es un intento distinto
@@ -797,7 +1045,7 @@ export class AltaArticuloComponent implements OnInit {
         
           // this.forma.controls['artDeProveedor'].updateValueAndValidity();
 
-          console.log('seleccionado: ',this.proveedor, this['proveedor']);
+          console.log('seleccionado: ',this.resultadoidGrupo, this['resultado'+control]);
         });
 
         // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);

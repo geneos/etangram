@@ -68,6 +68,40 @@ export class AFIPInternoService {
 
     return this.http.get( url , { headers });
   }
+
+  getGruposRefContable( token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_gruporefcontablearticulo`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getAlicuotas( token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_alicuotas`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getAlicuotasPorTipo( tipo:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_alicuotas?tipo=eq[${ tipo }]`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
   constatarComprobantes( token:string, body:string){
     const headers = new HttpHeaders({
       'x-access-token': token,

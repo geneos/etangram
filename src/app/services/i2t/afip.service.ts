@@ -57,7 +57,7 @@ export class AFIPInternoService {
 
     return this.http.get( url , { headers });
   }
-  
+
   getImpuestos( token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
@@ -68,6 +68,7 @@ export class AFIPInternoService {
 
     return this.http.get( url , { headers });
   }
+
   constatarComprobantes( token:string, body:string){
     const headers = new HttpHeaders({
       'x-access-token': token,
@@ -75,6 +76,26 @@ export class AFIPInternoService {
     });
 
     let query = `api/afip/wscdc/ComprobanteConstatar`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers } );
+  }
+
+  a5GetPersona( token:string, body:string){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    //ejemplo del json para este body
+    /*{
+        "token": "Token",
+        "sign": "Sign",
+        "cuitRepresentada": 30709041483,
+        "idPersona": 20221064233
+    }*/
+
+    let query = `api/afip/sr-padron/getPersona`;
     let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );

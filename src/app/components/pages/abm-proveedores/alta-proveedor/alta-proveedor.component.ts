@@ -1387,7 +1387,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.buscarArticulo(indice);
               });
             } else {
-    console.log('resultado buscar articulo para articulo nro ', this.aData)
+            console.log('resultado buscar articulo para articulo nro ', this.aData)
 
               if(this.aData.dataset.length>0){
                 // this.articulo = this.aData.dataset[0];

@@ -39,6 +39,17 @@ export class ProveedoresService {
     return this.http.get( url , { headers });
   }
 
+  getCProveedor( id:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/c_proveedores?codigo=${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
   getCabeceraProveedor(idProveedor:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,

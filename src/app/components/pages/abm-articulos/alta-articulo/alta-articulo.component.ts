@@ -1,15 +1,18 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, Inject, Injectable  } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
-import { FormGroup, FormControl, Validators, FormsModule, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule, FormBuilder, FormArray } from '@angular/forms';
 import { getMatFormFieldMissingControlError, MatSnackBar } from '@angular/material';
 import { ProveedoresService } from 'src/app/services/i2t/proveedores.service';
 import { Proveedor } from 'src/app/interfaces/proveedor.interface';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { MonedasService } from 'src/app/services/i2t/monedas.service';
 import { CategoriasBloqueoService } from 'src/app/services/i2t/cat-bloqueo.service';
 import { AFIPInternoService } from 'src/app/services/i2t/afip.service';
 import { UnidadMedidaService } from 'src/app/services/i2t/unidad-medida.service';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { ArticulosService } from 'src/app/services/i2t/articulos.service';
+import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo } from 'src/app/interfaces/articulo.interface';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -19,7 +22,12 @@ const ARTICULOS:any[] = [
   {'nroArticulo':4,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40}
 ];
 
-var auxProvData,auxArtiData,auxUnidadData:any;
+var auxProvData,auxArtiData,auxUnidadData,auxGrupoData, auxMarcaData:any;
+
+// key that is used to access the data in local storage
+const TOKEN = '';
+
+@Injectable()
 
 @Component({
   selector: 'app-alta-articulo',
@@ -50,6 +58,8 @@ export class AltaArticuloComponent implements OnInit {
   
   proveedorData: any;
   proveedor: Proveedor;
+  grupo:ProductoCategoria;
+  marca:Marca;
 
   mData: any;//monedas
   cbData:any; //categorias bloqueo
@@ -57,6 +67,11 @@ export class AltaArticuloComponent implements OnInit {
   aliData:any;//alicuotas
   ali2Data:any;
   umData:any;//unidades de medida
+  artData:any;//articulos
+  gData:any;//grupos
+  marData:any;//marcas
+  aaData:any;//atributos articulos
+  vaaData:any;//valores de atributos articulos
 
   monedasAll:any[];
   catsBloqueoAll:any[];
@@ -64,6 +79,41 @@ export class AltaArticuloComponent implements OnInit {
   alicuotasAll:any[];
   alicuotas2All:any[];
   unidadesMedidaAll:any[];
+  atributosArticuloAll:AtributoArticulo[];
+  valoresAtributosArticuloAll: any[] = [];
+  obsValoresAtributos0: Observable<any[]>;
+  obsValoresAtributos1: Observable<any[]>;
+  obsValoresAtributos2: Observable<any[]>;
+
+
+  estadosProveedores:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};
+  estadosArticulosSustitutos:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};
+  estadosArticulosHijos:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};       
+  estadosUnidadesAlternativas:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};  
 
   @ViewChild('codProv', { read: ElementRef}) elCodProv: any;
   @ViewChild('codArtProv', { read: ElementRef}) elcodArtProv: any;
@@ -71,20 +121,25 @@ export class AltaArticuloComponent implements OnInit {
   @ViewChild('codArtHijo', { read: ElementRef}) elcodArtHijo: any;
 
   suscripcionConsDin: Subscription;
-  resultadoidGrupo: any;
-    grupo:any;
+  // resultadoidGrupo: any;
   
   constructor(private route:ActivatedRoute,
               public snackBar: MatSnackBar,
               private FormBuilder: FormBuilder,
               public ngxSmartModalService: NgxSmartModalService,
               private _proveedorService: ProveedoresService,
+              private _articulosService: ArticulosService,
               private _monedaService: MonedasService,
               private _categoriasBloqueoService: CategoriasBloqueoService,
               private _AFIPInternoService: AFIPInternoService,
               private _unidadMedidaService: UnidadMedidaService,
-              private ref: ChangeDetectorRef 
+              private ref: ChangeDetectorRef,
+              @Inject(SESSION_STORAGE) private storage: StorageService
               ) {
+    
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);            
+
     this.forma = this.FormBuilder.group({
       tipo: new FormControl(1,Validators.required),
       nroArticulo: new FormControl(null,Validators.required),
@@ -92,10 +147,12 @@ export class AltaArticuloComponent implements OnInit {
       codigoAlternativo: new FormControl(),
       codigoBarra: new FormControl(),
       idGrupo: new FormControl(null,Validators.required),
+      nombreGrupo: new FormControl(),
       idTipoArticulo: new FormControl(null,Validators.required),
       procedencia: new FormControl(null,Validators.required),
       propio: new FormControl(),
       idMarca: new FormControl(),
+      nombreMarca: new FormControl(),
       idCampo1: new FormControl(),
       idCampo2: new FormControl(),
       idCampo3: new FormControl(),
@@ -253,28 +310,41 @@ export class AltaArticuloComponent implements OnInit {
 //#region FormArrays
 construirProveedor(){
   return new FormGroup({ 
-    'proveedor': new FormControl(null,Validators.required,this.existeProveedor),
+    'idProveedor': new FormControl(null,Validators.required,this.existeProveedor),
     'razonSocial': new FormControl(),
     'artDeProveedor': new FormControl(null,Validators.required,this.existeArticulo),
+    'artDesc': new FormControl(),
     'artCodBarra': new FormControl(),
+    'idMonedaUltCompra': new FormControl(),
+    'precioUltCompra': new FormControl(),
+    'esPorDefecto': new FormControl(),
   });
 }
 
 construirArticuloSust(){
   return new FormGroup({ 
     'idArtSust': new FormControl(null,Validators.required,this.existeArticulo),
+    'artDesc': new FormControl(),
+    'umArticulo': new FormControl(),
+    'umSustituto': new FormControl(),
+    'IIAreaAplicacionImporteFijo': new FormControl(),
+    'cantidad': new FormControl(null, Validators.required),
   });
 }
 
 construirArticuloHijo(){
   return new FormGroup({ 
     'idArtHijo': new FormControl(null,Validators.required,this.existeArticulo),
+    'artDesc': new FormControl(),
+    'cantidad': new FormControl(null, Validators.required),
   });
 }
 
 construirUnidadMedida(){
   return new FormGroup({ 
-    'idUM': new FormControl(null,Validators.required,this.existeUnidad),
+    'UMAlt': new FormControl(null,Validators.required),
+    /* 'idUMAlt': new FormControl(null,Validators.required,this.existeUnidad),
+    'UMAltDesc': new FormControl(), */
   });
 }
 //#endregion FormArrays
@@ -286,14 +356,16 @@ construirUnidadMedida(){
     this.buscarAlicuotas();
     this.buscarAlicuotas2();
     this.buscarUnidades();
+    this.buscarAtributos();
+      //this.buscarValoresAtributos();
   }
 
   //#region botonesArray
-  addFoto(){this.fotos.push('nroFoto:'+(this.fotos.length).toString);}
-  deleteFoto(ind){this.fotos.splice(ind, 1);}
+  /* addFoto(){this.fotos.push('nroFoto:'+(this.fotos.length).toString);}
+  deleteFoto(ind){this.fotos.splice(ind, 1);} */
 
-  addProveedor(){this.proveedores.push('nroProveedor:'+(this.proveedores.length).toString);}
-  deleteProveedor(ind){this.proveedores.splice(ind, 1);}
+  /* addProveedor(){this.proveedores.push('nroProveedor:'+(this.proveedores.length).toString);}
+  deleteProveedor(ind){this.proveedores.splice(ind, 1);} 
 
   addDeposito(){this.depositos.push('nroDeposito:'+(this.depositos.length).toString);}
   deleteDeposito(ind){this.depositos.splice(ind, 1);}
@@ -305,7 +377,77 @@ construirUnidadMedida(){
   deleteArtRelacion(ind){this.artRelaciones.splice(ind, 1);}
 
   addUMAlt(){this.umAlt.push('nroUMAlt:'+(this.umAlt.length).toString);}
-  deleteUMAlt(ind){this.umAlt.splice(ind, 1);}
+  deleteUMAlt(ind){this.umAlt.splice(ind, 1);} */
+
+  addProveedor(){
+    const provs = this.forma.controls.proveedores as FormArray;
+    provs.push(this.construirProveedor());
+  }
+  deleteProveedor(ind){
+    const provs = this.forma.controls.proveedores as FormArray;
+    let prov = <FormGroup>provs.controls[ind];
+    /* if (prov.controls[''].value != null){
+      this.estadosProveedores.eliminados.push(prov.controls[''].value);
+    } */
+    provs.removeAt(ind);
+    console.log('lista de proveedores eliminados: ', this.estadosProveedores.eliminados)
+  }
+
+  addSustituto(){
+    const arts = this.forma.controls.articulosSustitutos as FormArray;
+    arts.push(this.construirArticuloSust());
+  }
+  deleteSustituto(ind){
+    const arts = this.forma.controls.articulosSustitutos as FormArray;
+    let art = <FormGroup>arts.controls[ind];
+    /* if (art.controls[''].value != null){
+      this.estadosArticulosSustitutos.eliminados.push(art.controls[''].value);
+    } */
+    arts.removeAt(ind);
+    console.log('lista de proveedores eliminados: ', this.estadosArticulosSustitutos.eliminados)
+  }
+
+  addArtRelacion(){
+    const arts = this.forma.controls.articulosHijos as FormArray;
+    arts.push(this.construirArticuloHijo());
+  }
+  deleteArtRelacion(ind){
+    const arts = this.forma.controls.articulosHijos as FormArray;
+    let art = <FormGroup>arts.controls[ind];
+    /* if (art.controls[''].value != null){
+      this.estadosArticulosHijos.eliminados.push(art.controls[''].value);
+    } */
+    arts.removeAt(ind);
+    console.log('lista de proveedores eliminados: ', this.estadosArticulosHijos.eliminados)
+  }
+
+  addUMAlt(){
+    const ums = this.forma.controls.unidadesAlternativas as FormArray;
+    ums.push(this.construirUnidadMedida());
+  }
+  deleteUMAlt(ind){
+    const ums = this.forma.controls.unidadesAlternativas as FormArray;
+    let um = <FormGroup>ums.controls[ind];
+    /* if (um.controls[''].value != null){
+      this.estadosUnidadesAlternativas.eliminados.push(um.controls[''].value);
+    } */
+    ums.removeAt(ind);
+    console.log('lista de proveedores eliminados: ', this.estadosUnidadesAlternativas.eliminados)
+  } 
+
+  /* addDeposito(){
+    const deps = this.forma.controls.depositos as FormArray;
+    deps.push(this.construirDeposito());
+  }
+  deleteDeposito(ind){
+    const deps = this.forma.controls.depositos as FormArray;
+    let dep = <FormGroup>deps.controls[ind];
+    /* if (dep.controls[''].value != null){
+      this.estadosDepositos.eliminados.push(dep.controls[''].value);
+    } *
+    deps.removeAt(ind);
+    console.log('lista de proveedores eliminados: ', this.estadosDepositos.eliminados)
+  } */
   //#endregion botonesArray
 
   //#region datosCombobox
@@ -318,23 +460,17 @@ construirUnidadMedida(){
           if(this.mData.returnset[0].RCode=="-6003"){
             //token invalido
             this.monedasAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._monedaService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarMonedas();
-              });
-            } else {
-              if(this.mData.dataset.length>0){
-                this.monedasAll = this.mData.dataset;
-                // this.forma.controls['moneda'].setValue(this.moneda.name);
-              }
-              else{
-                this.monedasAll = null;
-              }
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if(this.mData.dataset.length>0){
+              this.monedasAll = this.mData.dataset;
+              // this.forma.controls['moneda'].setValue(this.moneda.name);
             }
+            else{
+              this.monedasAll = null;
+            }
+          }
 
       });
   }
@@ -346,21 +482,15 @@ construirUnidadMedida(){
           if(this.cbData.returnset[0].RCode=="-6003"){
             //token invalido
             this.catsBloqueoAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._categoriasBloqueoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarCategoriasBloqueo();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if(this.cbData.dataset.length>0){
+              this.catsBloqueoAll = this.cbData.dataset;
             } else {
-              if(this.cbData.dataset.length>0){
-                this.catsBloqueoAll = this.cbData.dataset;
-              } else {
-                this.catsBloqueoAll = null;
-              }
+              this.catsBloqueoAll = null;
             }
+          }
     });
   }
 
@@ -371,21 +501,15 @@ construirUnidadMedida(){
           if(this.grcaData.returnset[0].RCode=="-6003"){
             //token invalido
             this.gruposRefContableArticuloAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._AFIPInternoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarGruposRef();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if(this.grcaData.dataset.length>0){
+              this.gruposRefContableArticuloAll = this.grcaData.dataset;
             } else {
-              if(this.grcaData.dataset.length>0){
-                this.gruposRefContableArticuloAll = this.grcaData.dataset;
-              } else {
-                this.gruposRefContableArticuloAll = null;
-              }
+              this.gruposRefContableArticuloAll = null;
             }
+          }
     });
   }
 
@@ -396,21 +520,15 @@ construirUnidadMedida(){
           if(this.aliData.returnset[0].RCode=="-6003"){
             //token invalido
             this.alicuotasAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._AFIPInternoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarAlicuotas();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if(this.aliData.dataset.length>0){
+              this.alicuotasAll = this.aliData.dataset;
             } else {
-              if(this.aliData.dataset.length>0){
-                this.alicuotasAll = this.aliData.dataset;
-              } else {
-                this.alicuotasAll = null;
-              }
+              this.alicuotasAll = null;
             }
+          }
     });
   }
 
@@ -421,21 +539,15 @@ construirUnidadMedida(){
           if(this.ali2Data.returnset[0].RCode=="-6003"){
             //token invalido
             this.alicuotas2All = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._AFIPInternoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarAlicuotas2();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if(this.ali2Data.dataset.length>0){
+              this.alicuotas2All = this.ali2Data.dataset;
             } else {
-              if(this.ali2Data.dataset.length>0){
-                this.alicuotas2All = this.ali2Data.dataset;
-              } else {
-                this.alicuotas2All = null;
-              }
+              this.alicuotas2All = null;
             }
+          }
     });
   }
 
@@ -446,21 +558,77 @@ construirUnidadMedida(){
           if(this.umData.returnset[0].RCode=="-6003"){
             //token invalido
             this.unidadesMedidaAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._AFIPInternoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarUnidades();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if(this.umData.dataset.length>0){
+              this.unidadesMedidaAll = this.umData.dataset;
             } else {
-              if(this.umData.dataset.length>0){
-                this.unidadesMedidaAll = this.umData.dataset;
+              this.unidadesMedidaAll = null;
+            }
+          }
+    });
+  }
+  
+  buscarAtributos(){
+    this._articulosService.getAtributos(this.token )
+      .subscribe( data => {
+          this.aaData = data;
+          if(this.aaData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.atributosArticuloAll = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if(this.aaData.dataset.length>0){
+              this.atributosArticuloAll = this.aaData.dataset;
+              this.buscarValoresAtributos();
+            } else {
+              this.atributosArticuloAll = null;
+            }
+          }
+    });
+  }
+  
+  buscarValoresAtributos(){
+    //0,1,2
+    //idCampo1,idCampo2,idCampo3
+    
+/* 
+    let cantidad = this.atributosArticuloAll.length;
+    if (cantidad != 3){
+      for (let index = cantidad; index < 3; index++) {
+        // const element = array[index];
+        let campo = this.forma.get('campo'+index) as FormControl;
+        console.log('formcontrol: ', campo);
+        
+      }
+    }
+     */
+    
+    this.habilitarAtributos();
+
+    this.atributosArticuloAll.forEach(atributo => {
+      //atributo.idatributo comienza en 1
+      let indice = atributo.idatributo-1;
+      this._articulosService.getValoresAtributo( atributo.idatributo.toString(), this.token )
+        .subscribe( data => {
+            this.vaaData = data;
+            if(this.vaaData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.valoresAtributosArticuloAll[indice] = null;
+              this.forma.disable();
+              this.openSnackBar('Sesión expirada.')
+            } else {
+              if(this.vaaData.dataset.length>0){
+                this.valoresAtributosArticuloAll[indice] = this.vaaData.dataset;
+                // this['obsValoresAtributos'+indice] = new Observable(this.valoresAtributosArticuloAll[indice]);
+                this['obsValoresAtributos'+indice] = of(this.valoresAtributosArticuloAll[indice] as any);
               } else {
-                this.unidadesMedidaAll = null;
+                this.valoresAtributosArticuloAll[indice] = null;
               }
             }
+      });
     });
   }
   //#endregion datosCombobox
@@ -915,11 +1083,38 @@ construirUnidadMedida(){
     return promesa;
   }
 
-  existeUnidad( control: FormControl ): Promise<any>{
+  //todo borrar
+  /* existeUnidad( control: FormControl ): Promise<any>{
     let promesa = new Promise(
       ( resolve, reject )=>{
         setTimeout( ()=>{
           if( auxUnidadData==0 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  } */
+
+  existeMarca( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxMarcaData!=1 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
+
+  existeGrupo( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxGrupoData!=1 ){
             resolve( {noExiste:true} )
           }else{resolve( null )}
         },2000 )
@@ -931,60 +1126,245 @@ construirUnidadMedida(){
   //#endregion validaciones
 
   //#region busquedasAutocompletado
-  buscarProveedor(){
-    // console.clear()
-    console.log('llamado a la busqueda del proveedor', this.forma.controls['proveedor'].value)
-    this._proveedorService.getProveedor( this.forma.controls['proveedor'].value, this.token )
-    //this._proveedorService.getProveedores()
-      .subscribe( dataP => {
-        console.log(dataP);
-          this.proveedorData = dataP;
+  buscarProveedor(indice: number){
+    console.log('llamado buscar proveedor para proveedor nro ', indice)
+    const provs = this.forma.controls.proveedores as FormArray;
+    let id = provs.controls[indice].value['idProveedor'];
+    // console.log('buscando item ', id, provs.controls[indice])
+    this._proveedorService.getCProveedor(id , this.token )
+      .subscribe( data => {
+          this.proveedorData = data;
           auxProvData = this.proveedorData.dataset.length;
           if(this.proveedorData.returnset[0].RCode=="-6003"){
             //token invalido
             this.proveedor = null;
-            //let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsbody = {"usuario":this.user,"pass":this.pass}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedorService.login(jsonbody)
-              .subscribe( dataL => {
-                console.log(dataL);
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarProveedor();
-              });
-            } else {
-              if(this.proveedorData.dataset.length>0){
-                // this.proveedor = this.proveedorData.dataset[0];
-                this['proveedor'] = this.proveedorData.dataset[0];
-                console.log('encontrado: ',this.proveedor, this['proveedor']);
-        
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+          // console.log('resultado buscar proveedor para proveedor nro ', this.proveedorData)
 
-              } else {
-                this.proveedor = null;
-              }
-            }
+          if(this.proveedorData.dataset.length>0){
+            this.proveedor = this.proveedorData.dataset[0];
+            
+            //rellenar descripcion
+            ((this.forma.controls.proveedores as FormArray).
+              controls[indice] as FormGroup).
+                controls['razonSocial'].setValue(this.proveedor.name);
+          } else {
+            this.proveedor = null;
+            
+            //vaciar descripcion
+            ((this.forma.controls.proveedores as FormArray).
+              controls[indice] as FormGroup).
+                controls['razonSocial'].setValue('');
+          }
+        }
       });
   }
 
-  buscarArtProveedor(){
-    console.log('todo');
+  buscarArtProveedor(indice: number){
+    // console.log('llamado buscar articulo para proveedor nro ', indice)
+    const provs = this.forma.controls.proveedores as FormArray;
+    let id = provs.controls[indice].value['artDeProveedor'];
+    // console.log('buscando item ', id, provs.controls[indice])
+    this._articulosService.getcArticulo(id , this.token )
+      .subscribe( data => {
+          this.artData = data;
+          auxArtiData = this.artData.dataset.length;
+          if(this.artData.returnset[0].RCode=="-6003"){
+            //token invalido
+            // this.proveedor = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+          // console.log('resultado buscar articulo para proveedor nro ', this.artData)
+
+          if(this.artData.dataset.length>0){
+            this.proveedor = this.artData.dataset[0];
+            
+            //rellenar descripcion
+            ((this.forma.controls.proveedores as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(this.proveedor.name);
+          } else {
+            this.proveedor = null;
+            
+            //vaciar descripcion
+            ((this.forma.controls.proveedores as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue('');
+          }
+        }
+      });
   }
 
-  buscarArtSust(){
-    console.log('todo');
+  buscarArtSust(indice: number){
+    // console.log('llamado buscar articulo para sustituto nro ', indice)
+    const arts = this.forma.controls.articulosSustitutos as FormArray;
+    let id = arts.controls[indice].value['idArtSust'];
+    // console.log('buscando item ', id, provs.controls[indice])
+    this._articulosService.getcArticulo(id , this.token )
+      .subscribe( data => {
+          this.artData = data;
+          auxArtiData = this.artData.dataset.length;
+          if(this.artData.returnset[0].RCode=="-6003"){
+            //token invalido
+            // this.proveedor = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+          // console.log('resultado buscar articulo para sustituto nro ', this.artData)
+
+          if(this.artData.dataset.length>0){
+            this.proveedor = this.artData.dataset[0];
+            
+            //rellenar descripcion
+            ((this.forma.controls.articulosSustitutos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(this.proveedor.name);
+          } else {
+            this.proveedor = null;
+            
+            //vaciar descripcion
+            ((this.forma.controls.articulosSustitutos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue('');
+          }
+        }
+      });
   }
 
-  buscarArtHijo(){
-    console.log('todo');
+  buscarArtHijo(indice: number){
+    // console.log('llamado buscar articulo para hijo nro ', indice)
+    const arts = this.forma.controls.articulosHijos as FormArray;
+    let id = arts.controls[indice].value['idArtHijo'];
+    // console.log('buscando item ', id, provs.controls[indice])
+    this._articulosService.getcArticulo(id , this.token )
+      .subscribe( data => {
+          this.artData = data;
+          auxArtiData = this.artData.dataset.length;
+          if(this.artData.returnset[0].RCode=="-6003"){
+            //token invalido
+            // this.proveedor = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+          // console.log('resultado buscar articulo para hijo nro ', this.artData)
+
+          if(this.artData.dataset.length>0){
+            this.proveedor = this.artData.dataset[0];
+            
+            //rellenar descripcion
+            ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(this.proveedor.name);
+          } else {
+            this.proveedor = null;
+            
+            //vaciar descripcion
+            ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue('');
+          }
+        }
+      });
+  }
+  
+  buscarGrupo(){
+    // console.log('llamado buscar grupo para base ', indice)
+    // const arts = this.forma.controls.articulosHijos as FormArray;
+    // let id = arts.controls[indice].value['idArtHijo'];
+    // console.log('buscando item ', id, provs.controls[indice])
+    // this._articulosService.getcArticulo(id , this.token )
+    this._articulosService.getCategoria(this.forma.controls['idGrupo'].value, this.token)
+      .subscribe( data => {
+          this.gData = data;
+          auxGrupoData = this.gData.dataset.length;
+          if(this.gData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.grupo = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+          // console.log('resultado buscar grupo para base ', this.gData)
+
+          if(this.gData.dataset.length>0){
+            this.grupo = this.gData.dataset[0];
+            
+            //rellenar descripcion
+            this.forma.controls['nombreGrupo'].setValue(this.grupo.name);
+            /* ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(this.proveedor.name); */
+          } else {
+            this.grupo = null;
+            
+            //vaciar descripcion
+            this.forma.controls['nombreGrupo'].setValue(null);
+            /* ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(''); */
+          }
+        }
+      });
   }
 
-  buscarGrupo
+  buscarMarca(){
+    // console.log('llamado buscar grupo para base ', indice)
+    // const arts = this.forma.controls.articulosHijos as FormArray;
+    // let id = arts.controls[indice].value['idArtHijo'];
+    // console.log('buscando item ', id, provs.controls[indice])
+    // this._articulosService.getcArticulo(id , this.token )
+    this._articulosService.getMarca(this.forma.controls['idMarca'].value, this.token)
+      .subscribe( data => {
+          this.marData = data;
+          auxMarcaData = this.marData.dataset.length;
+          if(this.marData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.marca = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+          // console.log('resultado buscar grupo para base ', this.marData)
+
+          if(this.marData.dataset.length>0){
+            this.marca = this.marData.dataset[0];
+            
+            //rellenar descripcion
+            this.forma.controls['nombreMarca'].setValue(this.marca.name);
+            /* ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(this.proveedor.name); */
+          } else {
+            this.marca = null;
+            
+            //vaciar descripcion
+            this.forma.controls['nombreMarca'].setValue(null);
+            /* ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(''); */
+          }
+        }
+      });
+  }
   //#endregion busquedasAutocompletado
 
   //modal
-  abrirConsulta(consulta: string, control: string){
+  //todo agregar indice y array para escribir el resultado en donde corresponda con control
+  /* abrirConsulta2(consulta: string, control: string, control2: string, ubicacion: any[], funcion: string, param: any){
+    console.log(' recibido por abrirconsulta2: ', consulta, control, control2, ubicacion);
+    if (ubicacion.length == 0 )
+    (this.forma.get(ubicacion) as FormGroup).controls[control].setValue('1');
+    let fg = (this.forma.get(ubicacion) as FormGroup);
+    fg.controls[control2].setValue('2');
+    // this['openSnackBar']('i');
+    this[funcion](param);
+  } */
+  
+  //usa el mismo formato que los get de formcontrol: ej ['coleccion', indice_en_array...]
+  abrirConsulta(consulta: string, ubicacion: any[], controlID: string, controlDesc?: string, funcion?: string, param?: any){
     console.clear();
+    console.log(' recibido por abrirconsulta1: ', consulta, controlID, controlDesc, ubicacion, funcion, param);
     let datosModal : {
       consulta: string;
       permiteMultiples: boolean;
@@ -1001,6 +1381,7 @@ construirUnidadMedida(){
     }
     
     let atributoAUsar: string;
+    let atributoDesc:  string = 'name';
     switch (consulta) {
       case 'c_proveedores':
         atributoAUsar = 'codigo';
@@ -1010,6 +1391,7 @@ construirUnidadMedida(){
         break;
       default:
         atributoAUsar = 'id';
+        // atributoDesc = 'name';
         break;
     }
 
@@ -1032,9 +1414,41 @@ construirUnidadMedida(){
       }
       else{
         setTimeout(() => {
-          this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+          // this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+          // ==>
+          //obtener la base sobre la que se buscará los FormControl
+          let fg: FormGroup;
+          if (ubicacion.length == 0){
+            fg = this.forma;
+          }
+          else{
+            fg = this.forma.get(ubicacion) as FormGroup;
+          }
+
+          //escribir el valor en el primer control, para el id
+          fg.controls[controlID].setValue(respuesta.selection[0][atributoAUsar]);
+
+          //si hay que guardar descripción:
+          if (controlDesc != null){
+            if (respuesta.selection[0][atributoDesc] != null){
+              fg.controls[controlDesc].setValue(respuesta.selection[0][atributoDesc]);
+            }
+            else{
+              fg.controls[controlDesc].setValue('');
+              console.log('Valor de ' + controlDesc + ' vaciado, no se encontró ' + atributoDesc + ' en la seleccion');
+            }
+          }
+
+          //ejecutar función
+          if (funcion != null){
+            console.log('todo llamado a funcion');
+            
+            //lo siguiente funciona:
+            // this[funcion](param);
+          }
+
           // this['proveedor'] = null;
-          this['resultado'+control] = respuesta.selection[0];
+          // this['resultado'+control] = respuesta.selection[0];
           
           //todo 
           //disparar detección de cambios, cada parte es un intento distinto
@@ -1045,7 +1459,7 @@ construirUnidadMedida(){
         
           // this.forma.controls['artDeProveedor'].updateValueAndValidity();
 
-          console.log('seleccionado: ',this.resultadoidGrupo, this['resultado'+control]);
+          // console.log('seleccionado: ',this.resultadoidGrupo, this['resultado'+control]);
         });
 
         // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
@@ -1067,4 +1481,73 @@ construirUnidadMedida(){
     });
   }
   
+  testcampos(){
+    console.log('lista de valores todos ', this.valoresAtributosArticuloAll);
+    console.log('observables: ', this.obsValoresAtributos0, this.obsValoresAtributos1, this.obsValoresAtributos2)
+    console.log('test con verdadero valor')
+    let cantidad = this.atributosArticuloAll.length;
+    if (cantidad != 3){
+      for (let index = cantidad; index < 3; index++) {
+        // const element = array[index];
+        console.log('buscando idCampo'+(index+1));
+        let campo = this.forma.get('idCampo'+(index+1)) as FormControl;
+        console.log('formcontrol: ', campo);
+        campo.reset();
+        campo.disable();
+      }
+    }
+
+    console.log('test con cantidad = 1');
+    cantidad = 1
+    for (let index = cantidad; index < 3; index++) {
+      // const element = array[index];
+      console.log('buscando idCampo'+(index+1));
+      let campo = this.forma.get('idCampo'+(index+1)) as FormControl;
+      console.log('formcontrol: ', campo);
+      
+    }
+  }
+
+  seleccionarTipo(value){
+    if (value != 2){
+      this.habilitarAtributos();  
+    }
+    else
+    {
+      this.forma.controls['idCampo1'].disable();
+      this.forma.controls['idCampo2'].disable();
+      this.forma.controls['idCampo3'].disable();
+    }
+  }
+
+  habilitarAtributos(){
+    this.forma.controls['idCampo1'].enable();
+    this.forma.controls['idCampo2'].enable();
+    this.forma.controls['idCampo3'].enable();
+    let cantidad = this.atributosArticuloAll.length;
+    if (cantidad != 3){
+      for (let index = cantidad; index < 3; index++) {
+        // const element = array[index];
+        console.log('buscando idCampo'+(index+1));
+        let campo = this.forma.get('idCampo'+(index+1)) as FormControl;
+        console.log('formcontrol: ', campo);
+        campo.reset();
+        campo.disable();
+      }
+    }
+  }
+
+  calcularM3(){
+    // (largo*ancho*profundo)/ 1000000
+    let largo = this.forma.controls['largo'].value;
+    let ancho = this.forma.controls['ancho'].value;
+    let profundidad = this.forma.controls['profundidad'].value;
+
+    if(( largo == undefined )||( ancho == undefined )||( profundidad == undefined )){
+      this.forma.controls['m3'].setValue(null);
+    }
+    else{
+      this.forma.controls['m3'].setValue(largo*ancho*profundidad/1000000);
+    }
+  }
 }

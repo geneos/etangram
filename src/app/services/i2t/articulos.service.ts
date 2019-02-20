@@ -68,4 +68,70 @@ export class ArticulosService {
 
     return this.http.get( url , { headers });
   }
+
+  getCategorias( token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/c_producto_categoria`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getCategoria( id:number, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/c_producto_categoria/${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getMarcas( token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tglp_tg_marcas`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getMarca( id:number, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tglp_tg_marcas/${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getAtributos(token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_atributosarticulos?codigo=0`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getValoresAtributo(id: string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_atributosarticulos?idatributo=${ id }&codigo=gt[0] `;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
 }

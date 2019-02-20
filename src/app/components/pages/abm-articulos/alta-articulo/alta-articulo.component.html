@@ -14,58 +14,66 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo</mat-label>
-          <mat-select #tipoArt placeholder="Elija una opción" formControlName="tipo">
+          <mat-select (selectionChange)="seleccionarTipo($event.value)" #tipoArt placeholder="Elija una opción" formControlName="tipo">
             <mat-option value="1">Artículo</mat-option>
             <mat-option value="2">Item</mat-option>
           </mat-select>
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Número</mat-label>
           <input #nroArt matInput placeholder="" type="number" formControlName="nroArticulo">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s12 m12 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Descripción</mat-label>
           <input matInput placeholder="" formControlName="descripcion">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Código alternativo</mat-label>
           <input matInput placeholder="" type="number" formControlName="codigoAlternativo">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Código de barra</mat-label>
           <input matInput placeholder="" type="number" formControlName="codigoBarra">
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s6 m6 l3">
+      <div class="col s2 m2 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo</mat-label>
-          <input matInput placeholder="" type="number" formControlName="idGrupo">
-          <!--<mat-hint>Hint</mat-hint>-->
+          <input (keyup)="buscarGrupo()" (changed)="buscarGrupo()" #codGrupo matInput placeholder="" formControlName="idGrupo">
+          <mat-hint *ngIf="forma.controls['idGrupo'].status == 'PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['idGrupo'].errors?.noExiste">
+            El Grupo no existe
+          </mat-hint>
         </mat-form-field>
       </div>
-      <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('c_producto_categoria', 'idGrupo')">
-        <a class="mine-btnforms" mat-flat-button>
+      <!-- <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('c_producto_categoria', 'idGrupo')"> -->
+      <div class="col s2 m2 l1" style="margin-top:10px;">
+        <!-- <button type="button" class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </a>
+        </button> -->
+        <button type="button" class="mine-btnforms" mat-flat-button 
+        (click)="abrirConsulta('c_producto_categoria', [], 'idGrupo', 'nombreGrupo', 'openSnackBar', i)">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
+
       <div class="col s12 m12 l7">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de Grupo</mat-label>
           <!-- <input matInput placeholder="" formControlName="nombreGrupo" value="{{ resultadoidGrupo?.name }}"> -->
-          <input matInput placeholder="" value="{{ resultadoidGrupo?.name }}">
+          <!-- <input matInput readonly placeholder="" value="{{ resultadoidGrupo?.name }}"> -->
+          <!-- <input matInput readonly placeholder="" value="{{ grupo?.name }}"> -->
+          <input matInput readonly formControlName="nombreGrupo" placeholder="">
         </mat-form-field>
       </div>
 
@@ -92,55 +100,102 @@
       <div class="col s4 m4 l4">
           <mat-checkbox formControlName="propio" *ngIf="tipoArt.value!=2">¿Elaboración propia?</mat-checkbox>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s2 m2 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Marca</mat-label>
-            <input matInput placeholder="" formControlName="idMarca" >
-          <!--<mat-hint>Hint</mat-hint>-->
+          <input (keyup)="buscarMarca()" (changed)="buscarMarca()" #codGrupo matInput placeholder="" formControlName="idMarca">
+          <mat-hint *ngIf="forma.controls['idMarca'].status == 'PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['idMarca'].errors?.noExiste">
+            La Marca no existe
+          </mat-hint>
         </mat-form-field>
       </div>
-      <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('tglp_tg_marcas', 'idMarca')">
-        <a class="mine-btnforms" mat-flat-button>
+      <!-- <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tglp_tg_marcas', 'idMarca')"> -->
+      <div class="col s1 m1 l1" style="margin-top:10px;">
+        <!-- <button type="button" class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </a>
+        </button> -->
+        <button type="button" class="mine-btnforms" mat-flat-button 
+        (click)="abrirConsulta('tglp_tg_marcas', [], 'idMarca', 'nombreMarca', 'openSnackBar', i)">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
       <div class="col s12 m12 l7">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de Marca</mat-label>
           <!-- <input matInput placeholder="" formControlName="nombreMarca" value="{{ resultadoidMarca?.name }}"> -->
-          <input matInput placeholder="" value="{{ resultadoidMarca?.name }}">
+          <!-- <input matInput placeholder="" value="{{ resultadoidMarca?.name }}"> -->
+          <input matInput readonly formControlName="nombreMarca" placeholder="">
         </mat-form-field>
       </div>
 
-      <div class="col s4 m4 l2">
+      <!-- <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Campo1</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo1">
             <mat-option value="1">1</mat-option>
             <mat-option value="2">2</mat-option>
           </mat-select>
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
+      </div> -->
+      <div class="col s4 m4 l2" *ngIf="tipoArt.value!=2">
+        <!-- <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label *ngIf="atributosArticuloAll!=undefined">{{ atributosArticuloAll[0].name }}</mat-label>
+          <mat-label *ngIf="atributosArticuloAll==undefined">Campo1</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idCampo1">
+            <mat-option *ngFor="let aux of valoresAtributosArticuloAll[0]" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field> -->
+        <mat-form-field *ngIf="obsValoresAtributos0 | async as lista; else sincampo1" appearance="outline" floatLabel="always" style="width:100%;" >
+          <mat-label >{{ atributosArticuloAll[0].name }}</mat-label>
+          <mat-select placeholder="Elija una opción" formControlName="idCampo1">
+            <mat-option *ngFor="let aux of lista" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <ng-template #sincampo1>
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" >
+            <mat-label>Campo1</mat-label>
+            <mat-select placeholder="Elija una opción"></mat-select>
+          </mat-form-field>
+        </ng-template>
       </div>
-      <div class="col s4 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
-          <mat-label>Campo2</mat-label>
+      <div class="col s4 m4 l2" *ngIf="tipoArt.value!=2">
+        <mat-form-field *ngIf="obsValoresAtributos1 | async as lista; else sincampo2" appearance="outline" floatLabel="always" style="width:100%;" >
+          <mat-label >{{ atributosArticuloAll[1].name }}</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo2">
-            <mat-option value="1">1</mat-option>
-            <mat-option value="2">2</mat-option>
+            <mat-option *ngFor="let aux of lista" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
           </mat-select>
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
+        <ng-template #sincampo2>
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" >
+            <mat-label>Campo2</mat-label>
+            <mat-select placeholder="Elija una opción"></mat-select>
+          </mat-form-field>
+        </ng-template>
       </div>
-      <div class="col s4 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
-          <mat-label>Campo3</mat-label>
+      <div class="col s4 m4 l2" *ngIf="tipoArt.value!=2">
+        <mat-form-field *ngIf="obsValoresAtributos2 | async as lista; else sincampo3" appearance="outline" floatLabel="always" style="width:100%;" >
+          <mat-label >{{ atributosArticuloAll[2].name }}</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo3">
-            <mat-option value="1">1</mat-option>
-            <mat-option value="2">2</mat-option>
+            <mat-option *ngFor="let aux of lista" [value]="aux.id">
+              {{aux.name}}
+            </mat-option>
           </mat-select>
-          <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
+        <ng-template #sincampo3>
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" >
+            <mat-label>Campo3</mat-label>
+            <mat-select placeholder="Elija una opción"></mat-select>
+          </mat-form-field>
+        </ng-template>
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -166,22 +221,22 @@
         </mat-form-field>
       </div>
       <div class="row">
-      <div class="col s12 m4 l4">
-          <mat-checkbox formControlName="categoriaVenta" *ngIf="tipoArt.value!=2">Categoría Ventas</mat-checkbox>
-      </div>
-      <div class="col s12 m4 l4">
-          <mat-checkbox formControlName="categoriaInventario" *ngIf="tipoArt.value!=2">Categoría Inventario</mat-checkbox>
-      </div>
-      <div class="col s12 m4 l4">
-          <mat-checkbox formControlName="categoriaCompra" *ngIf="tipoArt.value!=2">Categoría Compra</mat-checkbox>
-      </div>
+        <div class="col s12 m4 l4">
+            <mat-checkbox formControlName="categoriaVenta" *ngIf="tipoArt.value!=2">Categoría Ventas</mat-checkbox>
+        </div>
+        <div class="col s12 m4 l4">
+            <mat-checkbox formControlName="categoriaInventario" *ngIf="tipoArt.value!=2">Categoría Inventario</mat-checkbox>
+        </div>
+        <div class="col s12 m4 l4">
+            <mat-checkbox formControlName="categoriaCompra" *ngIf="tipoArt.value!=2">Categoría Compra</mat-checkbox>
+        </div>
       </div>
 
       <!-- relacion fotos -->
       <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;"  *ngIf="tipoArt.value!=2">
         <span style="display:flex;">
           <h6>Fotos:</h6>
-          <button (click)="addFoto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+          <button type="button" (click)="addFoto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
             +
           </button>
         </span>
@@ -202,7 +257,7 @@
           </mat-form-field>
         </div>
         <div class="col s4 m4 l3" *ngIf="tipoArt.value!=2">
-          <button (click)="deleteFoto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+          <button type="button" (click)="deleteFoto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
             -
           </button>
         </div>
@@ -230,7 +285,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha última compra</mat-label>
-          <input matInput [matDatepicker]="picker1" placeholder="" formControlName="fechaUltCompra">
+          <input matInput readonly [matDatepicker]="picker1" placeholder="" formControlName="fechaUltCompra">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
@@ -264,7 +319,7 @@
       <div class="col s6 m6 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Fecha última venta</mat-label>
-            <input matInput [matDatepicker]="picker2" placeholder="" formControlName="fechaUltVenta">
+            <input matInput readonly [matDatepicker]="picker2" placeholder="" formControlName="fechaUltVenta">
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker #picker2></mat-datepicker>
           </mat-form-field>
@@ -285,87 +340,105 @@
       <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
         <span style="display:flex;">
           <h6>Proveedores:</h6>
-          <button (click)="addProveedor()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+          <button type="button" (click)="addProveedor()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
             +
           </button>
         </span>
       </div>
 
-      <div class="row" *ngFor="let item of proveedores; let in = index" style="margin:5px !important;">
-        <div class="col s6 m4 l1">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Id Proveedor</mat-label>
-            <input (keyup)="buscarProveedor()" (changed)="buscarProveedor()" #codProv matInput placeholder="" formControlName="proveedor">
-            <mat-hint *ngIf="forma.status=='PENDING'">
-              Buscando código...
-            </mat-hint>
-            <mat-hint *ngIf="forma.controls['proveedor'].errors?.noExiste">
-              El proveedor no existe
-            </mat-hint>
-          </mat-form-field>
-        </div>
-        <div class="col s2 m1 l1" style="margin-top:10px;">
-          <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_proveedores', 'proveedor')">
-            <i class="material-icons" style="font-size:20px;">more_horiz</i>
-          </button>
-        </div>
-        <div class="col s6 m4 l2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Razon Social</mat-label>
-            <input matInput placeholder="" formControlName="razonSocial" value="{{ proveedor?.razon_social }}">
-            <!--<mat-hint>Hint</mat-hint>-->
-          </mat-form-field>
-        </div>
-        <div class="col s6 m4 l2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Código Artículo</mat-label>
-            <input (keyup)="buscarArtProveedor()" #codArtProv matInput placeholder="" formControlName="artDeProveedor">
-            <mat-hint *ngIf="forma.status=='PENDING'">
-              Buscando código...
-            </mat-hint>
-            <mat-hint *ngIf="forma.controls['artDeProveedor'].errors?.noExiste">
-              El artículo no existe
-            </mat-hint>
-          </mat-form-field>
-        </div>
-        <div class="col s2 m1 l1" style="margin-top:10px;">
-          <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artDeProveedor')">
-            <i class="material-icons" style="font-size:20px;">more_horiz</i>
-          </button>
-        </div>
-        <div class="col s4 m4 l2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Código de Barra</mat-label>
-            <input matInput placeholder="" type="text" formControlName="artCodBarra">
-            <!--<mat-hint>Hint</mat-hint>-->
-          </mat-form-field>
-        </div>
-        <div class="col s4 m4 l2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Moneda Última Compra</mat-label>
-            <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra">
-              <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
-                {{aux.name}}
-              </mat-option>
-            </mat-select>
-            <!--<mat-hint>Hint</mat-hint>-->
-          </mat-form-field>
-        </div>
-        <div class="col s4 m4 l2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Precio Última Compra</mat-label>
-            <input matInput placeholder="" type="text">
-            <!--<mat-hint>Hint</mat-hint>-->
-          </mat-form-field>
-        </div>
-        <div class="col s6 m2 l1">
-            <mat-checkbox>Por defecto</mat-checkbox>
-        </div>
-        <div class="col s6 m2 l1">
-          <button (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-            -
-          </button>
-        </div>
+      <!-- <div class="row" *ngFor="let item of proveedores; let in = index" style="margin:5px !important;"> -->
+      <div formArrayName="proveedores" *ngFor="let pro of forma.controls.proveedores?.controls; let i = index">
+        <ng-container [formGroupName]="i">
+          <div class="row" style="margin:5px !important;">
+            <div class="col s6 m4 l1">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Id Proveedor</mat-label>
+                <input (keyup)="buscarProveedor(i)" (changed)="buscarProveedor(i)" #codProv matInput placeholder="" formControlName="idProveedor">
+                <mat-hint *ngIf="pro.controls['idProveedor'].status == 'PENDING'">
+                  Buscando código...
+                </mat-hint>
+                <mat-hint *ngIf="pro.controls['idProveedor'].errors?.noExiste">
+                  El proveedor no existe
+                </mat-hint>
+              </mat-form-field>
+            </div>
+            <div class="col s2 m1 l1" style="margin-top:10px;">
+              <!-- <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_proveedores', 'idProveedor')"> -->
+              <button type="button" class="mine-btnforms" mat-flat-button 
+              (click)="abrirConsulta('c_proveedores', ['proveedores', i], 'idProveedor', 'razonSocial', 'openSnackBar', i)">
+                <i class="material-icons" style="font-size:20px;">more_horiz</i>
+              </button>
+              <!-- <button type="button" class="mine-btnforms" mat-flat-button 
+              (click)="abrirConsulta('c_proveedores', 'precioUltCompra', 'precioUltVenta', [''], 'openSnackBar', i)">
+                <i class="material-icons" style="font-size:20px;">more_horiz</i>
+              </button> -->
+            </div>
+            <div class="col s6 m4 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Razon Social</mat-label>
+                <!-- <input matInput placeholder="" formControlName="razonSocial" value="{{ proveedor?.razon_social }}"> -->
+                <input matInput placeholder="" readonly formControlName="razonSocial">
+              </mat-form-field>
+            </div>
+            <div class="col s6 m4 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Código Artículo</mat-label>
+                <input (keyup)="buscarArtProveedor(i)" #codArtProv matInput placeholder="" formControlName="artDeProveedor">
+                <mat-hint *ngIf="pro.controls['artDeProveedor'].status == 'PENDING'">
+                  Buscando código...
+                </mat-hint>
+                <mat-hint *ngIf="pro.controls['artDeProveedor'].errors?.noExiste">
+                  El artículo no existe
+                </mat-hint>
+              </mat-form-field>
+            </div>
+            <div class="col s2 m1 l1" style="margin-top:10px;">
+              <!-- <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artDeProveedor')">
+                <i class="material-icons" style="font-size:20px;">more_horiz</i>
+              </button> -->
+              <button type="button" class="mine-btnforms" mat-flat-button 
+              (click)="abrirConsulta('c_articulos', ['proveedores', i], 'artDeProveedor', 'artDesc', 'openSnackBar', i)">
+                <i class="material-icons" style="font-size:20px;">more_horiz</i>
+              </button>
+            </div>
+            <div class="col s4 m4 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Descripción Artículo</mat-label>
+                <input matInput placeholder="" readonly type="text" formControlName="artDesc">
+              </mat-form-field>
+            </div>
+            <div class="col s4 m4 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Código de Barra</mat-label>
+                <input matInput placeholder="" type="text" formControlName="artCodBarra">
+              </mat-form-field>
+            </div>
+            <div class="col s4 m4 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Moneda Última Compra</mat-label>
+                <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra">
+                  <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
+                    {{aux.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col s4 m4 l2">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Precio Última Compra</mat-label>
+                <input matInput placeholder="" type="number" formControlName="precioUltCompra">
+              </mat-form-field>
+            </div>
+            <div class="col s6 m2 l1">
+                <mat-checkbox formControlName="esPorDefecto">Por defecto</mat-checkbox>
+            </div>
+            <div class="col s6 m2 l1">
+              <button type="button" (click)="deleteProveedor(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+                -
+              </button>
+            </div>
+          </div>
+        </ng-container>
       </div>
       <!--fin relacion-->
     </div>
@@ -498,7 +571,7 @@
     <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;" *ngIf="adminStock.checked">
       <span style="display:flex;">
         <h6>Depósitos:</h6>
-        <button (click)="addDeposito()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+        <button type="button" (click)="addDeposito()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
           +
         </button>
       </span>
@@ -534,7 +607,7 @@
         </mat-form-field>
       </div>
       <div class="col s12 m4 l4" *ngIf="adminStock.checked">
-        <button (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+        <button type="button" (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
           -
         </button>
       </div>
@@ -545,133 +618,148 @@
     <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
       <span style="display:flex;">
         <h6>Productos Sustitutos:</h6>
-        <button (click)="addSustituto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+        <button type="button" (click)="addSustituto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
           +
         </button>
       </span>
     </div>
 
-    <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;">
-      <div class="col s12 m6 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id Artículo Sustituto</mat-label>
-          <input (keyup)="buscarArtSust()" #codArtSust matInput placeholder="" formControlName="artSust">
-          <mat-hint *ngIf="forma.status=='PENDING'">
-            Buscando código...
-          </mat-hint>
-          <mat-hint *ngIf="forma.controls['artSust'].errors?.noExiste">
-            El artículo no existe
-          </mat-hint>
-        </mat-form-field>
-      </div>
-      <div class="col s2 m1 l1" style="margin-top:10px;">
-        <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artSust')">
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </button>
-      </div>
-      <div class="col s12 m6 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Descripción</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>U.M. Artículo</mat-label>
-          <mat-select placeholder="Elija una opción">
-            <mat-option value="1">1</mat-option>
-            <mat-option value="2">2</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>U.M. Sustituto</mat-label>
-          <mat-select placeholder="Elija una opción">
-            <mat-option value="1">1</mat-option>
-            <mat-option value="2">2</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Tipo Sustituto</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo">
-            <mat-option value="0">Simple</mat-option>
-            <mat-option value="1">Compuesto</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="col s12 m6 l1">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Cantidad</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l2">
-        <button (click)="deleteSustituto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-          -
-        </button>
-      </div>
+    <!-- <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;"> -->
+    <div formArrayName="articulosSustitutos" *ngFor="let art of forma.controls.articulosSustitutos?.controls; let i = index">
+      <ng-container [formGroupName]="i">
+        <div class="row" style="margin:5px !important;">
+          <div class="col s12 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Id Artículo Sustituto</mat-label>
+              <input (keyup)="buscarArtSust(i)" #codArtSust matInput placeholder="" formControlName="idArtSust">
+              <mat-hint *ngIf="art.controls['idArtSust'].status == 'PENDING'">
+                Buscando código...
+              </mat-hint>
+              <mat-hint *ngIf="art.controls['idArtSust'].errors?.noExiste">
+                El artículo no existe
+              </mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="col s2 m1 l1" style="margin-top:10px;">
+            <!-- <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'idArtSust')">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button> -->
+            <button type="button" class="mine-btnforms" mat-flat-button 
+            (click)="abrirConsulta('c_articulos', ['articulosSustitutos', i], 'idArtSust', 'artDesc', 'openSnackBar', i)">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button>
+          </div>
+          <div class="col s12 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Descripción</mat-label>
+              <input matInput placeholder="" disabled readonly formControlName="artDesc">
+            </mat-form-field>
+          </div>
+          <div class="col s12 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>U.M. Artículo</mat-label>
+              <mat-select placeholder="Elija una opción" formControlName="umArticulo">
+                <mat-option value="1">1</mat-option>
+                <mat-option value="2">2</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col s12 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>U.M. Sustituto</mat-label>
+              <mat-select placeholder="Elija una opción" formControlName="umSustituto">
+                <mat-option value="1">1</mat-option>
+                <mat-option value="2">2</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col s12 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Tipo Sustituto</mat-label>
+              <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo">
+                <mat-option value="0">Simple</mat-option>
+                <mat-option value="1">Compuesto</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col s12 m6 l1">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Cantidad</mat-label>
+              <input matInput placeholder="" type="text" formControlName="cantidad">
+              <!--<mat-hint>Hint</mat-hint>-->
+            </mat-form-field>
+          </div>
+          <div class="col s1 m1 l1">
+            <button type="button" (click)="deleteSustituto(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+              -
+            </button>
+          </div>
+        </div>
+      </ng-container>
     </div>
     <!--fin relacion-->
 
-    <!-- relacion articulo relaciones -->
+    <!-- relacion articulo relaciones -->   
     <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
       <span style="display:flex;">
         <h6>Productos Relacionados:</h6>
-        <button (click)="addArtRelacion()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+        <button type="button" (click)="addArtRelacion()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
           +
         </button>
       </span>
     </div>
 
-    <div class="row" *ngFor="let item of artRelaciones; let in = index" style="margin:5px !important;">
-      <div class="col s12 m6 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id Artículo Hijo</mat-label>
-          <input (keyup)="buscarArtHijo()" #codArtHijo matInput placeholder="" formControlName="artHijo">
-          <mat-hint *ngIf="forma.status=='PENDING'">
-            Buscando código...
-          </mat-hint>
-          <mat-hint *ngIf="forma.controls['artHijo'].errors?.noExiste">
-            El artículo no existe
-          </mat-hint>
-        </mat-form-field>
-      </div>
-      <div class="col s2 m1 l1" style="margin-top:10px;">
-        <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artHijo')">
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </button>
-      </div>
-      <div class="col s12 m6 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Descripción</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-   <!--   <div class="col s12 m6 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id Artículo Padre</mat-label>
-          <input matInput placeholder="" type="text">
-          <mat-hint>Hint</mat-hint>
-        </mat-form-field>
-      </div> -->
-      <div class="col s8 m6 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Cantidad</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s4 m4 l2">
-        <button (click)="deleteArtRelacion(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-          -
-        </button>
-      </div>
+    <!-- <div class="row" *ngFor="let item of artRelaciones; let in = index" style="margin:5px !important;"> -->
+    <div formArrayName="articulosHijos" *ngFor="let art of forma.controls.articulosHijos?.controls; let i = index">
+      <ng-container [formGroupName]="i">
+        <div class="row" style="margin:5px !important;">
+          <div class="col s12 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Id Artículo Hijo</mat-label>
+              <input (keyup)="buscarArtHijo(i)" #codArtHijo matInput placeholder="" formControlName="idArtHijo">
+              <mat-hint *ngIf="art.controls['idArtHijo'].status == 'PENDING'">
+                Buscando código...
+              </mat-hint>
+              <mat-hint *ngIf="art.controls['idArtHijo'].errors?.noExiste">
+                El artículo no existe
+              </mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="col s2 m1 l1" style="margin-top:10px;">
+           <!--  <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'idArtHijo')">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button> -->
+            <button type="button" class="mine-btnforms" mat-flat-button 
+            (click)="abrirConsulta('c_articulos', ['articulosHijos', i], 'idArtHijo', 'artDesc', 'openSnackBar', i)">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button>
+          </div>
+          <div class="col s12 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Descripción</mat-label>
+              <input matInput placeholder="" disabled readonly formControlName="artDesc">
+            </mat-form-field>
+          </div>
+      <!--   <div class="col s12 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Id Artículo Padre</mat-label>
+              <input matInput placeholder="" type="text">
+              <mat-hint>Hint</mat-hint>
+            </mat-form-field>
+          </div> -->
+          <div class="col s8 m6 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Cantidad</mat-label>
+              <input matInput placeholder="" type="number" formControlName="cantidad">
+            </mat-form-field>
+          </div>
+          <div class="col s4 m4 l2">
+            <button type="button" (click)="deleteArtRelacion(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+              -
+            </button>
+          </div>
+        </div>
+      </ng-container>
     </div>
     <!--fin relacion-->
 
@@ -710,7 +798,9 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Unidad medida base</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="unidadMedidaBase">
-                <mat-option value="1">-</mat-option>
+                <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
+                  {{aux.name}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
         </div>
@@ -719,36 +809,35 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Unidad medida LP</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="unidadMedidaLP">
-                <mat-option value="1">-</mat-option>
+                <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
+                  {{aux.name}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Largo</mat-label>
-              <input matInput placeholder="" formControlName="largo">
+              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="largo">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Ancho</mat-label>
-              <input matInput placeholder="" formControlName="ancho">
-              <!--<mat-hint>Hint</mat-hint>-->
+              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="ancho">
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Profundidad</mat-label>
-              <input matInput placeholder="" formControlName="profundidad">
-              <!--<mat-hint>Hint</mat-hint>-->
+              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="profundidad">
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>m3</mat-label>
               <input matInput placeholder="" formControlName="m3" readonly>
-              <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>
     </div>
@@ -757,32 +846,46 @@
     <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">
       <span style="display:flex;">
         <h6>U.M. Alternativas:</h6>
-        <button (click)="addUMAlt()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+        <button type="button" (click)="addUMAlt()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
           +
         </button>
       </span>
     </div>
 
-    <div class="row" *ngFor="let item of umAlt; let in = index" style="margin:5px !important;">
-      <div class="col s12 m4 l2">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id U.M. Alternativa</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s8 m4 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Descripción U.M. Alternativa</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s4 m4 l2">
-        <button (click)="deleteUMAlt(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-          -
-        </button>
-      </div>
+    <!-- <div class="row" *ngFor="let item of umAlt; let in = index" style="margin:5px !important;"> -->
+    <div formArrayName="unidadesAlternativas" *ngFor="let ua of forma.controls.unidadesAlternativas?.controls; let i = index">
+      <ng-container [formGroupName]="i">
+        <div class="row" style="margin:5px !important;">
+          <div class="col s12 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>U.M. Alternativa</mat-label>
+              <mat-select placeholder="Elija una opción" formControlName="UMAlt">
+                <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
+                  {{aux.name}}
+                </mat-option>
+              </mat-select>
+              <!-- <input (keyup)="buscarUnidadAlternativa(i)" #codUMAlt matInput placeholder="" formControlName="idUMAlt">
+              <mat-hint *ngIf="ua.controls['idUMAlt'].status == 'PENDING'">
+                Buscando código...
+              </mat-hint>
+              <mat-hint *ngIf="ua.controls['idUMAlt'].errors?.noExiste">
+                La Unidad de Medida no existe
+              </mat-hint> -->
+            </mat-form-field>
+          </div>
+          <!-- <div class="col s8 m4 l3">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Descripción U.M. Alternativa</mat-label>
+              <input matInput placeholder="" readonly type="text" formControlName="UMAltDesc">
+            </mat-form-field>
+          </div> -->
+          <div class="col s4 m4 l2">
+            <button type="button" (click)="deleteUMAlt(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+              -
+            </button>
+          </div>
+        </div>
+      </ng-container>
     </div>
     <!--fin relacion-->
 
@@ -831,6 +934,9 @@
       <button type="reset" class="mine-btnbig-grey" mat-flat-button>
         CANCELAR
       </button>
+      <a (click)="testcampos()" class="mine-btnbig-grey" mat-flat-button>
+          CANCELAR
+      </a>
     </div>
   </div>
 </form>

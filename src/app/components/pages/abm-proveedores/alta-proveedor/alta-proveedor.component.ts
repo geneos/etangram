@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewChildren } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, Inject, Injectable} from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
@@ -32,6 +32,10 @@ import { CategoriasBloqueoService } from 'src/app/services/i2t/cat-bloqueo.servi
 import { FormulariosService } from 'src/app/services/i2t/formularios.service';
 import { PartidasPresupuestariasService } from 'src/app/services/i2t/part-presupuestaria.service';
 import { isUndefined, isNullOrUndefined } from 'util';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+
+// key that is used to access the data in local storage
+const TOKEN = '';
 
 const PROVEEDORES:any[] = [
   {'numero':0,'razonSocial':'Deux IT SRL','cuit':'30-123456789-9','posicionFiscal':'IVA Responsable Inscripto'},
@@ -42,6 +46,8 @@ const PROVEEDORES:any[] = [
 var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
     auxListaPrecios,auxCondComercial,auxPartidaPresupuestaria,auxRefContable,auxTipoComprobante: any;
 
+  @Injectable()
+
 @Component({
   selector: 'app-alta-proveedor',
   templateUrl: './alta-proveedor.component.html',
@@ -49,7 +55,7 @@ var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
 })
 export class AltaProveedorComponent implements OnInit {
 
-  token: string = "a";
+  token: string;
   loading: boolean;
 
   tipoReferente: string;
@@ -213,8 +219,12 @@ export class AltaProveedorComponent implements OnInit {
               private _formulariosService: FormulariosService,
               private _partidasPresupuestariasService: PartidasPresupuestariasService,
               public ngxSmartModalService: NgxSmartModalService,
+              @Inject(SESSION_STORAGE) private storage: StorageService,
               public snackBar: MatSnackBar,) 
   {
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);
+
     this.loading = true;
     this.forma = this.FormBuilder.group({ 
       tipoReferente: new FormControl('',Validators.required),
@@ -553,6 +563,9 @@ export class AltaProveedorComponent implements OnInit {
       'codForm': new FormControl('', Validators.required),
       'fechaPres': new FormControl('', Validators.required),
       'fechaVenc': new FormControl('', Validators.required),
+      'url': new FormControl(),
+      'descripcion': new FormControl(),
+      'Id_FormularioCte': new FormControl(),
     });
   }
   /* construirExcencion(){
@@ -571,7 +584,11 @@ export class AltaProveedorComponent implements OnInit {
       'ultimoPrecio': new FormControl(),
       'codArtProv': new FormControl(),
       'barrasArtProv': new FormControl('', Validators.required),
-      'moneda': new FormControl('', Validators.required)
+      'moneda': new FormControl('', Validators.required),
+      'fecha_creacion': new FormControl(),
+      'fecha_ult_modificacion': new FormControl(),
+      'id_usuario_creador': new FormControl(),
+      'id_usuario_modificador': new FormControl(),
     });
     articulo.controls['artDesc'].disable();
     return articulo;
@@ -579,6 +596,7 @@ export class AltaProveedorComponent implements OnInit {
   //#endregion constructoresFormGroups
 
   ngOnInit() {
+    this.tipoReferente = 'P';
     this.buscarTiposDocumento();
     this.buscarCategoriasIVA();
     this.buscarCategoriasRef();
@@ -588,7 +606,6 @@ export class AltaProveedorComponent implements OnInit {
     this.buscarCategoriasBloqueo();
     this.buscarFormularios();
 
-    this.tipoReferente = 'P';
     this.forma.controls['tipoReferente'].setValue(this.tipoReferente);
     this.configurarFormulario();
     this.loading = false;
@@ -694,9 +711,9 @@ export class AltaProveedorComponent implements OnInit {
     const arts = this.forma.controls.articulos as FormArray;
     let art = <FormGroup>arts.controls[indice];
     //todo agregar a la lista de eliminados
-    /* if (arts.controls[''].value != null){
-      this.estadosArticulos.eliminados.push(arts.controls[''].value);
-    } */
+    if (arts.controls['fecha_creacion'].value != null){
+      this.estadosArticulos.eliminados.push(arts.controls['fecha_creacion'].value);
+    }
     arts.removeAt(indice);
     console.log('lista de articulos eliminados: ', this.estadosArticulos.eliminados);
   }
@@ -730,20 +747,14 @@ export class AltaProveedorComponent implements OnInit {
   buscarTiposDocumento(){
     this._tiposDocumentoService.getTiposDocumento( this.token )
       .subscribe( data => {
-        //console.log(dataRC);
+        console.log('Datos recibidos de buscar tipo documento: ', data);
           this.tdData = data;
           //auxProvData = this.proveedorData.dataset.length;
           if(this.tdData.returnset[0].RCode=="-6003"){
             //token invalido
             this.tiposDocumentoAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._tiposDocumentoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarTiposDocumento();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.tdData.dataset.length>0){
                 this.tiposDocumentoAll = this.tdData.dataset;
@@ -766,14 +777,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.civaData.returnset[0].RCode=="-6003"){
             //token invalido
             this.catIVAAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._afipService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarCategoriasIVA();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.civaData.dataset.length>0){
                 this.catIVAAll = this.civaData.dataset;
@@ -797,14 +802,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.crefData.returnset[0].RCode=="-6003"){
             //token invalido
             this.catsReferenteAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._tiposDocumentoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarCategoriasRef();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.crefData.dataset.length>0){
                 this.catsReferenteAll = this.crefData.dataset;
@@ -829,14 +828,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.mData.returnset[0].RCode=="-6003"){
             //token invalido
             this.monedasAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._monedaService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarMonedas();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.mData.dataset.length>0){
                 this.monedasAll = this.mData.dataset;
@@ -860,14 +853,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.impData.returnset[0].RCode=="-6003"){
             //token invalido
             this.impuestosAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._monedaService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarImpuestos();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.impData.dataset.length>0){
                 this.impuestosAll = this.impData.dataset;
@@ -891,14 +878,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.mimpdata.returnset[0].RCode=="-6003"){
             //token invalido
             this.modelosImpAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._monedaService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarModelosImp();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.mimpdata.dataset.length>0){
                 this.modelosImpAll = this.mimpdata.dataset;
@@ -914,6 +895,7 @@ export class AltaProveedorComponent implements OnInit {
 
   buscarCategoriasBloqueo(){
     // this._categoriasBloqueoService.getCategorias( this.token )
+    console.log('buscando categorias con ', this.tipoReferente);
     this._categoriasBloqueoService.getCategoriasDeUnTipo(this.tipoReferente, this.token )
       .subscribe( data => {
         //console.log(dataRC);
@@ -922,14 +904,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.cbData.returnset[0].RCode=="-6003"){
             //token invalido
             this.catsBloqueoAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._categoriasBloqueoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarCategoriasBloqueo();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.cbData.dataset.length>0){
                 this.catsBloqueoAll = this.cbData.dataset;
@@ -953,14 +929,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.fData.returnset[0].RCode=="-6003"){
             //token invalido
             this.formulariosAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._tiposDocumentoService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarFormularios();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.fData.dataset.length>0){
                 this.formulariosAll = this.fData.dataset;
@@ -987,14 +957,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.fcpData.returnset[0].RCode=="-6003"){
             //token invalido
             this.localidadFac = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarCPostalFac();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.fcpData.dataset.length>0){
                 this.localidadFac = this.fcpData.dataset[0];
@@ -1019,14 +983,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.fcpData.returnset[0].RCode=="-6003"){
             //token invalido
             this.localidadEnv = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarCPostalEnv();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.fcpData.dataset.length>0){
                 this.localidadEnv = this.fcpData.dataset[0];
@@ -1049,14 +1007,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.fpData.returnset[0].RCode=="-6003"){
             //token invalido
             this.provinciaFac = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarProvinciaFac();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.fpData.dataset.length>0){
                 this.provinciaFac = this.fpData.dataset[0];
@@ -1078,14 +1030,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.fpData.returnset[0].RCode=="-6003"){
             //token invalido
             this.provinciaEnv = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarProvinciaEnv();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.fpData.dataset.length>0){
                 this.provinciaEnv = this.fpData.dataset[0];
@@ -1107,14 +1053,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.pData.returnset[0].RCode=="-6003"){
             //token invalido
             this.paisEnv = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarPaisFac();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.pData.dataset.length>0){
                 this.paisFac = this.pData.dataset[0];
@@ -1134,14 +1074,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.pData.returnset[0].RCode=="-6003"){
             //token invalido
             this.paisEnv = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarPaisEnv();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.pData.dataset.length>0){
                 this.paisEnv = this.pData.dataset[0];
@@ -1161,14 +1095,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.zData.returnset[0].RCode=="-6003"){
             //token invalido
             this.zona = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarZona();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.zData.dataset.length>0){
                 this.zona = this.zData.dataset[0];
@@ -1187,14 +1115,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.vData.returnset[0].RCode=="-6003"){
             //token invalido
             this.vendedor = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarVendedor();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.vData.dataset.length>0){
                 this.vendedor = this.vData.dataset[0];
@@ -1213,14 +1135,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.cData.returnset[0].RCode=="-6003"){
             //token invalido
             this.cobrador = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarCobrador();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.cData.dataset.length>0){
                 this.cobrador = this.cData.dataset[0];
@@ -1240,14 +1156,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.ccData.returnset[0].RCode=="-6003"){
             //token invalido
             this.condicionComercial = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarCondComercial();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.ccData.dataset.length>0){
                 this.condicionComercial = this.ccData.dataset[0];
@@ -1267,14 +1177,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.lpData.returnset[0].RCode=="-6003"){
             //token invalido
             this.listaPrecios = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarListaPrecios();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.lpData.dataset.length==1){
                 this.listaPrecios = this.lpData.dataset[0];
@@ -1293,14 +1197,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.ppData.returnset[0].RCode=="-6003"){
             //token invalido
             this.partidaPresupuestaria = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarPartidaPresupuestaria();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.ppData.dataset.length>0){
                 this.partidaPresupuestaria = this.ppData.dataset[0];
@@ -1319,14 +1217,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.rcData.returnset[0].RCode=="-6003"){
             //token invalido
             this.referenciaContable = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarRefContable();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.rcData.dataset.length==1){
                 this.referenciaContable = this.rcData.dataset[0];
@@ -1345,14 +1237,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.tcData.returnset[0].RCode=="-6003"){
             //token invalido
             this.tipoComprobante = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarTipoComprobante();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset[0];
@@ -1378,15 +1264,10 @@ export class AltaProveedorComponent implements OnInit {
             //token invalido
             // this.articulo = null;
             this.carticulo = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.buscarArticulo(indice);
-              });
-            } else {
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+            } 
+            else {
             console.log('resultado buscar articulo para articulo nro ', this.aData)
 
               if(this.aData.dataset.length>0){
@@ -1423,14 +1304,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.provData.returnset[0].RCode=="-6003"){
             //token invalido
             this.provCabecera = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedoresService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.obtenerProveedor();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               if(this.provData.dataset.length>0){
                 this.provCabecera = this.provData.dataset[0];
@@ -1532,6 +1407,8 @@ export class AltaProveedorComponent implements OnInit {
     this.forma.controls.formularios.reset();
     this.forma.controls.articulos.reset();
 
+    //cargar datos de cuentas
+    //cargar datos de relaciones comerciales
     this._proveedoresService.getRelComerciales(jsonbodyID , this.token )
       .subscribe( data => {
           this.respData = data;
@@ -1539,14 +1416,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
             this.cuentasProvAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedoresService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.obtenerDatosArrays();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de cuentas asociadas: ', this.respData)
             if(this.respData.dataset.length>0){
@@ -1574,6 +1445,7 @@ export class AltaProveedorComponent implements OnInit {
           }
     });
 
+    //cargar datos de impuestos
     this._proveedoresService.getImpuestos(jsonbodyID , this.token )
       .subscribe( data => {
         //console.log(dataRC);
@@ -1582,14 +1454,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
             this.impuestosProvAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedoresService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.obtenerDatosArrays();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de impuestos asociadas: ', this.respData)
             if(this.respData.dataset.length>0){
@@ -1609,7 +1475,7 @@ export class AltaProveedorComponent implements OnInit {
                 cImpuesto.controls['situacion'].setValue(impuesto.Situacion) ;
                 cImpuesto.controls['codInscripcion'].setValue(impuesto.ID_Impuestos) ;
                 cImpuesto.controls['fechaInscripcion'].setValue(this.nuevaFecha(impuesto.Fecha_inscripcion));
-                // cImpuesto.controls['observaciones'].setValue(impuesto) ;
+                cImpuesto.controls['observaciones'].setValue(impuesto.Observaciones) ;
                 cImpuesto.controls['poseeExenciones'].setValue((impuesto.Exenciones == 1 ? true : false)) ;
                 if (impuesto.Exenciones == 1) {
                   cImpuesto.controls['fechaDesde'].setValue(this.nuevaFecha(impuesto.Fecha_Desde_Exenciones));
@@ -1625,6 +1491,7 @@ export class AltaProveedorComponent implements OnInit {
           }
     });
 
+    //cargar datos de formularios
     this._proveedoresService.getFormularios(jsonbodyID , this.token )
       .subscribe( data => {
         //console.log(dataRC);
@@ -1633,14 +1500,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
             this.formulariosProvAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedoresService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.obtenerDatosArrays();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de formulario asociadas: ', this.respData)
             if(this.respData.dataset.length>0){
@@ -1656,14 +1517,16 @@ export class AltaProveedorComponent implements OnInit {
                 let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios', index]);
                 //todo agregar lo que falta cuando esté en la api
                 cFormulario.controls['ID_Form_Proveedor'].setValue(formulario.ID_Form_Proveedor) ;
-                cFormulario.controls['codForm'].setValue(formulario.ID_Formulario) ;
+                // cFormulario.controls['codForm'].setValue(formulario.ID_Formulario) ;
+                //ID_Formulario es el id de relación
                 cFormulario.controls['fechaPres'].setValue(this.nuevaFecha(formulario.Fecha_presentacion));
                 console.log('fecha real de impuesto ' + index + '(pres): ', formulario.Fecha_presentacion);
                 cFormulario.controls['fechaVenc'].setValue(this.nuevaFecha(formulario.Fecha_vencimiento));
                 console.log('fecha real de impuesto ' + index + '(venc): ', formulario.Fecha_vencimiento);
-                /* cFormulario.controls[''].setValue(formulario.ID_Form_Proveedor) ;//id proveedor
-                cFormulario.controls[''].setValue(formulario.Url) ;
-                cFormulario.controls[''].setValue(formulario.Descripcion) ; */
+                cFormulario.controls['url'].setValue(formulario.Url) ;
+                cFormulario.controls['descripcion'].setValue(formulario.Descripcion) ; 
+                cFormulario.controls['Id_FormularioCte'].setValue(formulario.ID_Formulario) ; 
+                
                 index = index +1;
               });
             }
@@ -1671,6 +1534,7 @@ export class AltaProveedorComponent implements OnInit {
           }
     });
 
+    //cargar datos de articulos
     //todo probar cuando lo permita la api
     this._proveedoresService.getArticulos(jsonbodyID , this.token )
       .subscribe( data => {
@@ -1680,14 +1544,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
             this.articulosProvAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedoresService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.obtenerDatosArrays();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de articulo asociadas: ', this.respData)
             if(this.respData.dataset.length>0){
@@ -1712,10 +1570,10 @@ export class AltaProveedorComponent implements OnInit {
                 // cArticulo.controls['codArtProv'].setValue(articulo.id_prov);//id de proveedor
                 cArticulo.controls['barrasArtProv'].setValue(articulo.codigobarra);
                 cArticulo.controls['moneda'].setValue(articulo.id_moneda);
-                /* cArticulo.controls[''].setValue(articulo.fecha_creacion);
-                cArticulo.controls[''].setValue(articulo.fecha_ult_modificacion);
-                cArticulo.controls[''].setValue(articulo.id_usuario_creador);
-                cArticulo.controls[''].setValue(articulo.id_usuario_modificador); */
+                cArticulo.controls['fecha_creacion'].setValue(articulo.fecha_creacion);
+                cArticulo.controls['fecha_ult_modificacion'].setValue(articulo.fecha_ult_modificacion);
+                cArticulo.controls['id_usuario_creador'].setValue(articulo.id_usuario_creador);
+                cArticulo.controls['id_usuario_modificador'].setValue(articulo.id_usuario_modificador);
 
                 index = index +1;
               });
@@ -1732,14 +1590,8 @@ export class AltaProveedorComponent implements OnInit {
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
             this.datosAFIP = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedoresService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.obtenerDatosArrays();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de afip asociadas: ', this.respData)
             if(this.respData.dataset.length>0){
@@ -2063,14 +1915,8 @@ export class AltaProveedorComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedoresService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.guardarProveedor();
-              });
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
             } else {
               console.log(this.respData)
               if (this.respData.returnset[0].RCode != 1){
@@ -2258,16 +2104,8 @@ export class AltaProveedorComponent implements OnInit {
           // auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                // this.eliminarProveedor();
-                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
-              }); */
+              this.forma.disable();
+              // this.openSnackBar('Sesión expirada.')
               this.openSnackBar('Token invalido posteando articulo')
             } else {
               if (this.respData.returnset[0].RCode != 1){
@@ -2309,26 +2147,17 @@ export class AltaProveedorComponent implements OnInit {
         // auxProvData = this.proveedorData.dataset.length;
         if(this.respData.returnset[0].RCode=="-6003"){
           //token invalido
-          /* let jsbody = {"usuario":"usuario1","pass":"password1"}
-          let jsonbody = JSON.stringify(jsbody);
-          this._localidadesService.login(jsonbody)
-            .subscribe( dataL => {
-              
-              this.loginData = dataL;
-              this.token = this.loginData.dataset[0].jwt;
-              // this.eliminarProveedor();
-              this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
-            }); */
-            this.openSnackBar('Token invalido posteando afip')
-          } else {
-            if (this.respData.returnset[0].RCode != 1){
-              this.openSnackBar('Error al guardar Datos de AFIP: ' + this.respData.returnset[0].RTxt);
-            }
-            else{
-              // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
-              console.log('AFIP ID: ' + this.respData.returnset[0].RId);
-            }
+          this.forma.disable();
+          this.openSnackBar('Token invalido posteando afip')
+        } else {
+          if (this.respData.returnset[0].RCode != 1){
+            this.openSnackBar('Error al guardar Datos de AFIP: ' + this.respData.returnset[0].RTxt);
           }
+          else{
+            // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+            console.log('AFIP ID: ' + this.respData.returnset[0].RId);
+          }
+        }
           //console.log(this.refContablesAll);
     });
     
@@ -2362,7 +2191,7 @@ export class AltaProveedorComponent implements OnInit {
     this.guardarImpuestos();
     this.guardarFormularios();
     
-    //this.guardarArticulos();
+    this.guardarArticulos();
   }
 
   modificarProveedor(){
@@ -2418,30 +2247,24 @@ export class AltaProveedorComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._proveedoresService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.modificarProveedor();
-              });
-            } else {
-              console.log('Respuesta de update cabecera: ', this.respData)
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al guardar Proveedor: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                this.openSnackBar('Cabecera de proveedor actualizada con exito, continuando.');
-                // this.idCabecera = this.respData.returnset[0].RId;
-                // console.log('ID de proveedor recibido: ' + this.idCabecera);
-                // this.guardarDatosProveedor(this.respData.returnset[0].RId);
-                // this.openSnackBar('Proveedor guardado con exito, redireccionando.');
-
-                //todo agregar redirección
-              }
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            console.log('Respuesta de update cabecera: ', this.respData)
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al guardar Proveedor: ' + this.respData.returnset[0].RTxt);
             }
-            //console.log(this.refContablesAll);
+            else{
+              this.openSnackBar('Cabecera de proveedor actualizada con exito, continuando.');
+              // this.idCabecera = this.respData.returnset[0].RId;
+              // console.log('ID de proveedor recibido: ' + this.idCabecera);
+              // this.guardarDatosProveedor(this.respData.returnset[0].RId);
+              // this.openSnackBar('Proveedor guardado con exito, redireccionando.');
+
+              //todo agregar redirección
+            }
+          }
+          //console.log(this.refContablesAll);
       });
   }
 
@@ -2606,7 +2429,7 @@ export class AltaProveedorComponent implements OnInit {
       if (articulo.dirty){
         //si tiene id es modificación
         //todo cambiar cuando arreglen la api
-        if (articulo.controls[''].value != null){
+        if (articulo.controls['fecha_creacion'].value != null){
           this.estadosArticulos.modificados.push(articulo);
         }
         else{
@@ -2682,16 +2505,20 @@ export class AltaProveedorComponent implements OnInit {
         "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
         "p_form_fecha_pres" : this.extraerFecha(formgroupFormulario.controls['fechaPres'].value),//"1997-05-05",
         "p_form_fecha_vto" : this.extraerFecha(formgroupFormulario.controls['fechaVenc'].value),//"1997-05-05"
+        "url": formgroupFormulario.controls['url'].value,
+        "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
     else{
       jsbodyF = {
-        "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor        
-        "Id_FormularioCte" : formgroupFormulario.controls['ID_Form_Proveedor'].value,
+        /* "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor, igual a     ID_Form_Proveedor   
+        "Id_FormularioCte" : formgroupFormulario.controls['ID_Form_Proveedor'].value, */
+        "Id_Proveedor": this.id,
+        "Id_FormularioCte": formgroupFormulario.controls['Id_FormularioCte'].value,
         "p_form_fecha_pres" : this.extraerFecha(formgroupFormulario.controls['fechaPres'].value),//"1997-05-05",
         "p_form_fecha_vto" : this.extraerFecha(formgroupFormulario.controls['fechaVenc'].value),//"1997-05-05"
-        "url": "gfxgfc"
-        
+        "url": formgroupFormulario.controls['url'].value,
+        "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
     
@@ -2747,7 +2574,8 @@ export class AltaProveedorComponent implements OnInit {
       jsbodyArt = {
       "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
       "p_stock_id_art": formgroupArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
-      "p_stock_fecha_ult_compra": this.extraerFecha(formgroupArticulo.controls['ultimaFecha'].value), //"1997-05-05",
+      // "p_stock_fecha_ult_compra": this.extraerFecha(formgroupArticulo.controls['ultimaFecha'].value), //"1997-05-05",
+      "p_stock_fecha_ult_compra": this.extraerFecha(<FormControl>formgroupArticulo.controls['ultimaFecha']), //"1997-05-05",
       "p_stock_moneda": formgroupArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
       "p_stock_codigo_barra_prov": formgroupArticulo.controls['barrasArtProv'].value, //Código de barra
       //ultimoPrecio
@@ -2794,26 +2622,18 @@ export class AltaProveedorComponent implements OnInit {
           // auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                // this.eliminarProveedor();
-                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
-              }); */
-              this.openSnackBar('Token invalido insertando relacion comercial')
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al agregar Relación Comercial: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
-                console.log('Relacion Comercial ID (insert): ' + this.respData.returnset[0].RId);
-              }
+            this.forma.disable();
+            this.openSnackBar('Token invalido insertando relacion comercial')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al agregar Relación Comercial: ' + this.respData.returnset[0].RTxt);
             }
-            //console.log(this.refContablesAll);
+            else{
+              // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+              console.log('Relacion Comercial ID (insert): ' + this.respData.returnset[0].RId);
+            }
+          }
+          //console.log(this.refContablesAll);
       });
   }
 
@@ -2838,26 +2658,18 @@ export class AltaProveedorComponent implements OnInit {
           // auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                // this.eliminarProveedor();
-                this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
-              }); */
-              this.openSnackBar('Token invalido updateando relacion comercial')
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al actualizar Relación Comercial: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
-                console.log('Relacion Comercial ID (update): ' + this.respData.returnset[0].RId);
-              }
+            this.forma.disable();
+            this.openSnackBar('Token invalido updateando relacion comercial')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al actualizar Relación Comercial: ' + this.respData.returnset[0].RTxt);
             }
-            //console.log(this.refContablesAll);
+            else{
+              // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+              console.log('Relacion Comercial ID (update): ' + this.respData.returnset[0].RId);
+            }
+          }
+          //console.log(this.refContablesAll);
       });
   }
 
@@ -2870,15 +2682,16 @@ export class AltaProveedorComponent implements OnInit {
           this.respData = data;
           console.log('respuesta insert formulario: ', this.respData);
           if(this.respData.returnset[0].RCode=="-6003"){
-              this.openSnackBar('Token invalido insertando Formulario')
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al agregar Formulario: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                console.log('Formulario ID (insert): ' + this.respData.returnset[0].RId);
-              }
+            this.openSnackBar('Sesión expirada.')
+            this.openSnackBar('Token invalido insertando Formulario')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al agregar Formulario: ' + this.respData.returnset[0].RTxt);
             }
+            else{
+              console.log('Formulario ID (insert): ' + this.respData.returnset[0].RId);
+            }
+          }
       });
   }
 
@@ -2891,15 +2704,16 @@ export class AltaProveedorComponent implements OnInit {
           this.respData = data;
           console.log('respuesta update formulario: ', this.respData);
           if(this.respData.returnset[0].RCode=="-6003"){
-              this.openSnackBar('Token invalido modificando Formulario')
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al modificar Formulario: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                console.log('Formulario ID (update): ' + this.respData.returnset[0].RId);
-              }
+            this.forma.disable();
+            this.openSnackBar('Token invalido modificando Formulario')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al modificar Formulario: ' + this.respData.returnset[0].RTxt);
             }
+            else{
+              console.log('Formulario ID (update): ' + this.respData.returnset[0].RId);
+            }
+          }
       });
   }
 
@@ -2912,15 +2726,16 @@ export class AltaProveedorComponent implements OnInit {
           this.respData = data;
           console.log('respuesta insert impuesto: ', this.respData);
           if(this.respData.returnset[0].RCode=="-6003"){
-              this.openSnackBar('Token invalido insertando Impuesto')
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al agregar Impuesto: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                console.log('Impuesto ID (insert): ' + this.respData.returnset[0].RId);
-              }
+            this.forma.disable();
+            this.openSnackBar('Token invalido insertando Impuesto')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al agregar Impuesto: ' + this.respData.returnset[0].RTxt);
             }
+            else{
+              console.log('Impuesto ID (insert): ' + this.respData.returnset[0].RId);
+            }
+          }
       });
   }
 
@@ -2933,15 +2748,16 @@ export class AltaProveedorComponent implements OnInit {
           this.respData = data;
           console.log('respuesta update impuesto: ', this.respData);
           if(this.respData.returnset[0].RCode=="-6003"){
-              this.openSnackBar('Token invalido modificando Impuesto')
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al modificar Impuesto: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                console.log('Impuesto ID (update): ' + this.respData.returnset[0].RId);
-              }
+            this.forma.disable();
+            this.openSnackBar('Token invalido modificando Impuesto')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al modificar Impuesto: ' + this.respData.returnset[0].RTxt);
             }
+            else{
+              console.log('Impuesto ID (update): ' + this.respData.returnset[0].RId);
+            }
+          }
       });
   }
 
@@ -2954,15 +2770,16 @@ export class AltaProveedorComponent implements OnInit {
           this.respData = data;
           console.log('respuesta insert articulo: ', this.respData);
           if(this.respData.returnset[0].RCode=="-6003"){
-              this.openSnackBar('Token invalido insertando Articulo')
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al agregar Articulo: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                console.log('Articulo ID (insert): ' + this.respData.returnset[0].RId);
-              }
+            this.forma.disable();  
+            this.openSnackBar('Token invalido insertando Articulo')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al agregar Articulo: ' + this.respData.returnset[0].RTxt);
             }
+            else{
+              console.log('Articulo ID (insert): ' + this.respData.returnset[0].RId);
+            }
+          }
       });
   }
 
@@ -2975,15 +2792,16 @@ export class AltaProveedorComponent implements OnInit {
           this.respData = data;
           console.log('respuesta modificar articulo: ', this.respData);
           if(this.respData.returnset[0].RCode=="-6003"){
-              this.openSnackBar('Token invalido modificar Articulo')
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al modificar Articulo: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                console.log('Articulo ID (update): ' + this.respData.returnset[0].RId);
-              }
+            this.forma.disable();  
+            this.openSnackBar('Token invalido modificar Articulo')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al modificar Articulo: ' + this.respData.returnset[0].RTxt);
             }
+            else{
+              console.log('Articulo ID (update): ' + this.respData.returnset[0].RId);
+            }
+          }
       });
   }
 
@@ -3022,24 +2840,18 @@ export class AltaProveedorComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.eliminarProveedor();
-              });
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al eliminar Proveedor: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
-                //todo agregar redirección
-              }
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al eliminar Proveedor: ' + this.respData.returnset[0].RTxt);
             }
-            //console.log(this.refContablesAll);
+            else{
+              this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
+              //todo agregar redirección
+            }
+          }
+          //console.log(this.refContablesAll);
       });
   }
 
@@ -3057,22 +2869,16 @@ export class AltaProveedorComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.eliminarRelacion(idRelacion);
-              });
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al eliminar Relación Comercial: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                this.openSnackBar('Relación Comercial eliminada con exito');
-              }
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al eliminar Relación Comercial: ' + this.respData.returnset[0].RTxt);
             }
+            else{
+              this.openSnackBar('Relación Comercial eliminada con exito');
+            }
+          }
       });
   }
 
@@ -3090,23 +2896,17 @@ export class AltaProveedorComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.eliminarImpuesto(codigo);
-              });
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al eliminar Impuesto: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                this.openSnackBar('Impuesto eliminado con exito');
-              }
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al eliminar Impuesto: ' + this.respData.returnset[0].RTxt);
             }
-            //console.log(this.refContablesAll);
+            else{
+              this.openSnackBar('Impuesto eliminado con exito');
+            }
+          }
+          //console.log(this.refContablesAll);
       });
   }
 
@@ -3124,26 +2924,19 @@ export class AltaProveedorComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.eliminarArticulo(codigo);
-              });
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
-                console.log('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                this.openSnackBar('Articulo eliminado con exito');
-                console.log('Eliminado Articulo: ' + this.respData.returnset[0].RTxt);
-              }
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
+              console.log('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
             }
-            //console.log(this.refContablesAll);
+            else{
+              this.openSnackBar('Articulo eliminado con exito');
+              console.log('Eliminado Articulo: ' + this.respData.returnset[0].RTxt);
+            }
+          }
+          //console.log(this.refContablesAll);
       });
   }
 
@@ -3161,26 +2954,19 @@ export class AltaProveedorComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.eliminarFormulario(codigo);
-              });
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
-                console.log('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                this.openSnackBar('Formulario eliminado con exito');
-                console.log('Eliminado Formulario: ' + this.respData.returnset[0].RTxt);
-              }
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
+              console.log('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
             }
-            //console.log(this.refContablesAll);
+            else{
+              this.openSnackBar('Formulario eliminado con exito');
+              console.log('Eliminado Formulario: ' + this.respData.returnset[0].RTxt);
+            }
+          }
+          //console.log(this.refContablesAll);
       });
   }
 
@@ -3198,24 +2984,17 @@ export class AltaProveedorComponent implements OnInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.respData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._localidadesService.login(jsonbody)
-              .subscribe( dataL => {
-                
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.eliminarAFIP(codigo);
-              });
-            } else {
-              if (this.respData.returnset[0].RCode != 1){
-                this.openSnackBar('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
-              }
-              else{
-                this.openSnackBar('Articulo eliminado con exito');
-              }
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            if (this.respData.returnset[0].RCode != 1){
+              this.openSnackBar('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
             }
-            //console.log(this.refContablesAll);
+            else{
+              this.openSnackBar('Articulo eliminado con exito');
+            }
+          }
+          //console.log(this.refContablesAll);
       });
   }
   /*guardarImpuesto(){
@@ -3240,6 +3019,7 @@ export class AltaProveedorComponent implements OnInit {
     this.table.renderRows();
   };*/
   extraerFecha(control: FormControl){
+    console.log('control a usar para fecha: ', control)
     let auxFecha: string;
     if (control.value != null){
       let ano = control.value.getFullYear().toString();

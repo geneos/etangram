@@ -69,6 +69,7 @@ export class ArticulosService {
     return this.http.get( url , { headers });
   }
 
+  //#region datos para autocompletar/comboboxes
   getCategorias( token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
@@ -134,4 +135,281 @@ export class ArticulosService {
 
     return this.http.get( url , { headers });
   }
+
+  getDepositos( token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_depositos`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
+  getDeposito( id:number, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_depositos?iddeposito=${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+  //#endregion datos para autocompletar/comboboxes
+
+  //#region abm
+    //#region gets
+    getCabeceraArticulo(idProveedor:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let jsbody = {"Id_Proveedor": idProveedor}; //"ff413af6-ee5c-11e8-ab85-d050990fe081"
+      let body = JSON.stringify(jsbody);
+  
+      let query = "api/proc/proveedores_GET_SP";
+      let url = this.preUrl + query;
+  
+      return this.http.post( url, body, { headers });
+    }
+  
+    getDepositosArticulo(idProducto: string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token
+      });
+  
+      let query = `api/tg08_articulosdepositos?aos_products_id_c=${ idProducto }`;
+      let url = this.preUrl + query;
+  
+      return this.http.get( url , { headers });
+    }
+
+    getFotos(idProducto: string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token
+      });
+  
+      let query = `api/tg08_articulosfotos?aos_products_id_c=${ idProducto }`;
+      let url = this.preUrl + query;
+  
+      return this.http.get( url , { headers });
+    }
+    
+    getProveedores(idProducto: string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token
+      });
+  
+      let query = `api/tg08_articulosproveedores?aos_products_id_c=${ idProducto }`;
+      let url = this.preUrl + query;
+  
+      return this.http.get( url , { headers });
+    }
+
+    getProductosSustitutos(idProducto: string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token
+      });
+  
+      let query = `api/tg08_articulossustitutos?aos_products_id_c=${ idProducto }`;
+      let url = this.preUrl + query;
+  
+      return this.http.get( url , { headers });
+    }
+    //#endregion gets
+
+    //#region baja
+    deleteCabeceraArticulo(){
+
+    }
+
+    deleteDeposito( id:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+      
+      let jsbody = { "deleted": 1 };
+      let jsonbody = JSON.stringify(jsbody);
+
+      let query = `api/tg08_articulosdepositos/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, jsonbody, { headers } );
+    }
+
+    deleteFoto( id:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+      
+      let jsbody = { "deleted": 1 };
+      let jsonbody = JSON.stringify(jsbody);
+
+      let query = `api/tg08_articulosfotos/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, jsonbody, { headers } );
+    }
+
+    deleteProveedor( id:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+      
+      let jsbody = { "deleted": 1 };
+      let jsonbody = JSON.stringify(jsbody);
+
+      let query = `api/tg08_articulosproveedores/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, jsonbody, { headers } );
+    }
+
+    deleteArticuloSustituto( id:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+      
+      let jsbody = { "deleted": 1 };
+      let jsonbody = JSON.stringify(jsbody);
+
+      let query = `api/tg08_articulossustitutos/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, jsonbody, { headers } );
+    }
+    //#endregion baja
+
+    //#region alta
+    postCabeceraArticulo( body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = "api/proc/SP_ET_ArticuloINS";
+      let url = this.preUrl + query;
+  
+      return this.http.post( url, body, { headers } );
+    }
+
+    postDeposito( body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = "api/tg08_articulosdepositos";
+      let url = this.preUrl + query;
+  
+      return this.http.post( url, body, { headers } );
+    }
+
+    postFoto( body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = "api/tg08_articulosfotos";
+      let url = this.preUrl + query;
+  
+      return this.http.post( url, body, { headers } );
+    }
+
+    postProveedor( body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = "tg08_articulosproveedores";
+      let url = this.preUrl + query;
+  
+      return this.http.post( url, body, { headers } );
+    }
+
+    postArticuloSustituto( body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = "api/tg08_articulossustitutos";
+      let url = this.preUrl + query;
+  
+      return this.http.post( url, body, { headers } );
+    }
+    //#endregion alta
+
+    //#region mod
+    updateCabeceraArticulo( body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = "api/proc/SP_ET_ArticuloUDP";
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, body, { headers } );
+    }
+    
+    updateDeposito(id:string, body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = `api/tg08_articulosdepositos/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, body, { headers } );
+    }
+    
+    updateFoto(id:string, body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = `api/tg08_articulosfotos/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, body, { headers } );
+    }
+    
+    updateProveedor(id:string, body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = `api/tg08_articulosproveedores/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, body, { headers } );
+    }
+    
+    updateArticuloSustituto(id:string, body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = `api/tg08_articulossustitutos/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, body, { headers } );
+    }
+
+    //#endregion mod
+  //#endregion abm
 }

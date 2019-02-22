@@ -78,6 +78,7 @@ export interface Impuesto{
   Exenciones: number;
   Fecha_Desde_Exenciones: string;
   Fecha_Hasta_Exenciones: string;
+  Observaciones: string;
 }//proveedores_impuesto_GET_SP
 
 export interface Formulario{

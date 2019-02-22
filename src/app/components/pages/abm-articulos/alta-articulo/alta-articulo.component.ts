@@ -12,7 +12,7 @@ import { AFIPInternoService } from 'src/app/services/i2t/afip.service';
 import { UnidadMedidaService } from 'src/app/services/i2t/unidad-medida.service';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ArticulosService } from 'src/app/services/i2t/articulos.service';
-import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo } from 'src/app/interfaces/articulo.interface';
+import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito } from 'src/app/interfaces/articulo.interface';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -22,7 +22,7 @@ const ARTICULOS:any[] = [
   {'nroArticulo':4,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40}
 ];
 
-var auxProvData,auxArtiData,auxUnidadData,auxGrupoData, auxMarcaData:any;
+var auxProvData,auxArtiData,auxUnidadData,auxGrupoData, auxMarcaData, auxDepData:any;
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -60,6 +60,7 @@ export class AltaArticuloComponent implements OnInit {
   proveedor: Proveedor;
   grupo:ProductoCategoria;
   marca:Marca;
+  deposito:Deposito;
 
   mData: any;//monedas
   cbData:any; //categorias bloqueo
@@ -72,6 +73,7 @@ export class AltaArticuloComponent implements OnInit {
   marData:any;//marcas
   aaData:any;//atributos articulos
   vaaData:any;//valores de atributos articulos
+  depData:any;//depositos
 
   monedasAll:any[];
   catsBloqueoAll:any[];
@@ -93,6 +95,13 @@ export class AltaArticuloComponent implements OnInit {
   } = {nuevos: [],
        modificados: [],
        eliminados: []};
+  estadosDepositos:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+        modificados: [],
+        eliminados: []};
   estadosArticulosSustitutos:{
     nuevos: any[],
     modificados: any[],
@@ -199,6 +208,8 @@ export class AltaArticuloComponent implements OnInit {
       stockIdeal: new FormControl(),
       stockMaximo: new FormControl(),
       stockReposicion: new FormControl(),
+        //depositos
+        depositos: this.FormBuilder.array([]),
         //Productos sustitutos
         articulosSustitutos: this.FormBuilder.array([]),
         // artSust: new FormControl(),
@@ -229,13 +240,13 @@ export class AltaArticuloComponent implements OnInit {
       this.existe = false;
 
       if( this.id !== "nuevo" ){
-        for( let aux in this.constArticulos ){
+        /* for( let aux in this.constArticulos ){
           if (this.id == aux){
             this.existe=true;
             this.forma.controls['nroArticulo'].setValue(this.id);
             /*this.forma.controls['articulo'].setValue(this.constArticulos[this.id].articulo);
             this.forma.controls['unidadMedida'].setValue(this.constArticulos[this.id].unidadMedida);
-            this.forma.controls['precioUnitario'].setValue(this.constArticulos[this.id].precioUnitario);*/
+            this.forma.controls['precioUnitario'].setValue(this.constArticulos[this.id].precioUnitario);/
           }
         }
         if (this.existe == false){
@@ -243,10 +254,11 @@ export class AltaArticuloComponent implements OnInit {
           this.forma.controls['nroArticulo'].disable();
           /*this.forma.controls['articulo'].disable();
           this.forma.controls['unidadMedida'].disable();
-          this.forma.controls['precioUnitario'].disable();*/
+          this.forma.controls['precioUnitario'].disable();*
         }
+      } */
+        this.buscarArticulo();
       }
-
     });
 
     //#region suscripciones
@@ -317,7 +329,10 @@ construirProveedor(){
     'artCodBarra': new FormControl(),
     'idMonedaUltCompra': new FormControl(),
     'precioUltCompra': new FormControl(),
+    'fechaUltCompra': new FormControl(),
     'esPorDefecto': new FormControl(),
+    'date_entered': new FormControl(),
+    'created_by': new FormControl(),
   });
 }
 
@@ -329,6 +344,27 @@ construirArticuloSust(){
     'umSustituto': new FormControl(),
     'IIAreaAplicacionImporteFijo': new FormControl(),
     'cantidad': new FormControl(null, Validators.required),
+    'date_entered': new FormControl(),
+    'created_by': new FormControl(),
+  });
+}
+
+construirDeposito(){
+  return new FormGroup({
+    'id': new FormControl(),
+    'name': new FormControl(),
+    'date_entered': new FormControl(),
+    'date_modified': new FormControl(),
+    'modified_user_id': new FormControl(),
+    'created_by': new FormControl(),
+    'description': new FormControl(),
+    'deleted': new FormControl(),
+    'assigned_user_id': new FormControl(),
+    'aos_products_id_c': new FormControl(),
+    'tg01_depositos_id_c': new FormControl(null, Validators.required),
+    'stockideal': new FormControl(null, Validators.required),
+    'stockmaximo': new FormControl(null, Validators.required),
+    'stockreposicion': new FormControl(null, Validators.required),
   });
 }
 
@@ -404,7 +440,7 @@ construirUnidadMedida(){
       this.estadosArticulosSustitutos.eliminados.push(art.controls[''].value);
     } */
     arts.removeAt(ind);
-    console.log('lista de proveedores eliminados: ', this.estadosArticulosSustitutos.eliminados)
+    console.log('lista de sustitutos eliminados: ', this.estadosArticulosSustitutos.eliminados)
   }
 
   addArtRelacion(){
@@ -418,7 +454,7 @@ construirUnidadMedida(){
       this.estadosArticulosHijos.eliminados.push(art.controls[''].value);
     } */
     arts.removeAt(ind);
-    console.log('lista de proveedores eliminados: ', this.estadosArticulosHijos.eliminados)
+    console.log('lista de hijos eliminados: ', this.estadosArticulosHijos.eliminados)
   }
 
   addUMAlt(){
@@ -432,10 +468,10 @@ construirUnidadMedida(){
       this.estadosUnidadesAlternativas.eliminados.push(um.controls[''].value);
     } */
     ums.removeAt(ind);
-    console.log('lista de proveedores eliminados: ', this.estadosUnidadesAlternativas.eliminados)
+    console.log('lista de unidades eliminados: ', this.estadosUnidadesAlternativas.eliminados)
   } 
 
-  /* addDeposito(){
+  addDeposito(){
     const deps = this.forma.controls.depositos as FormArray;
     deps.push(this.construirDeposito());
   }
@@ -444,10 +480,10 @@ construirUnidadMedida(){
     let dep = <FormGroup>deps.controls[ind];
     /* if (dep.controls[''].value != null){
       this.estadosDepositos.eliminados.push(dep.controls[''].value);
-    } *
+    } */
     deps.removeAt(ind);
-    console.log('lista de proveedores eliminados: ', this.estadosDepositos.eliminados)
-  } */
+    console.log('lista de depositos eliminados: ', this.estadosDepositos.eliminados)
+  }
   //#endregion botonesArray
 
   //#region datosCombobox
@@ -633,71 +669,250 @@ construirUnidadMedida(){
   }
   //#endregion datosCombobox
 
+  //#region cargaDatos
+  buscarArticulo(){
+    console.log('todo')
+  }
+  //#endregion cargaDatos
+
+  //#region armadoJSONs
+  armarJSONArticulo(){
+    let jsbody = {
+      "ArticuloItem" : this.forma.controls['tipo'].value,
+      "IPart_number" : this.forma.controls['nroArticulo'].value,
+      "IName" : this.forma.controls['descripcion'].value,
+      "C_alternativo": this.forma.controls['codigoAlternativo'].value,
+      "C_barra": this.forma.controls['codigoBarra'].value,
+      "Grupo": this.forma.controls['idGrupo'].value,//id de tabla grupos-consulta dinamica
+
+      "Tipo": this.forma.controls['idTipoArticulo'].value,// id de la tabla tipo de articulos consulta dinamica //todo revisar
+      "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
+      "marca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
+      "campo1": this.forma.controls['campo1'].value,
+      "campo2": this.forma.controls['campo2'].value,
+      "campo3": this.forma.controls['campo3'].value,
+      "estado": this.forma.controls['estado'].value,// "Activo", 
+      "cat_b": this.forma.controls['categoria_bloqueo'].value,
+      "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
+      "Obs_auto_cpa":this.forma.controls['obsRegistroAutoCpa'].value, //,0 false , 1 true
+      "Obs_ingr_cpa":this.forma.controls['obsIngresoCpa'].value, //,0 false , 1 true
+      "Obs_ingr_vta": this.forma.controls['obsIngresoVta'].value,//,0 false , 1 true
+      "Obs_imprime_vta": this.forma.controls['obsImprimeVta'].value,//,0 false , 1 true
+      "Obs_auditoria_cpa": this.forma.controls['obsAuditoriaCpa'].value,//,0 false , 1 true
+      "Obs_auditoria_vta": this.forma.controls['obsAuditoriaVta'].value,//,0 false , 1 true
+      "Categoria_vta": this.forma.controls['categoriaVenta'].value,//,0 false , 1 true
+      "Categoria_inventario": this.forma.controls['categoriaInventario'].value,//,0 false , 1 true
+      "Categoria_cpa": this.forma.controls['categoriaCompra'].value,//,0 false , 1 true
+
+      "precio_UCpa":this.forma.controls['precioUltCompra'].value,// 200,
+      "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
+      "moneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
+      "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
+      "PrecioU_vta": this.forma.controls['precioUltVenta'].value,
+      "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
+      "moneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
+
+      //datos impositivos
+      "ref_contable": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica
+      "alicuota": this.forma.controls['idAlicuotaIva'].value,//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
+      "alicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
+      "Area_AAII":this.forma.controls['IIAreaAplicacionAlicuota'].value,// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
+      "Area_AIFII":this.forma.controls['IIAreaAplicacionImporteFijo'].value,//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
+      "incorporaCosto":this.forma.controls['IncorporarIIalCosto'].value,// 0, 0 false , 1 true
+      "impuesto_intFijo": this.forma.controls['impuestoInternoFijo'].value,
+      "gestion_despacho":this.forma.controls['gestionDespacho'].value,//0, 0 false , 1 true
+      "gestion_lote":this.forma.controls['gestionLote'].value,// 0,0 false , 1 true
+      "gestion_serie":this.forma.controls['gestionSerie'].value,//0,0 false , 1 true
+
+      //datos de stock
+      "admStock": this.forma.controls['administraStock'].value,//0, 0 false , 1 true
+      "stockIdeal": this.forma.controls['stockIdeal'].value,
+      "stockMax": this.forma.controls['stockMaximo'].value,
+      "stockRepo":this.forma.controls['stockReposicion'].value,
+      //unidad de medida
+      "dimensiones": this.forma.controls['Dimensiones'].value,
+      "pesable":this.forma.controls['Pesable'].value,
+      "pesableE":this.forma.controls['Pesable_Estandar'].value, 
+      "unidad_medida":this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
+      "unidad_medida1":this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
+      "largo":this.forma.controls['largo'].value,
+      "ancho":this.forma.controls['ancho'].value,
+      "profundidad":this.forma.controls['profundidad'].value,
+      "m3": this.forma.controls['m3'].value
+    };
+
+    let jsonbody = JSON.stringify(jsbody);
+    return jsonbody;
+  }
+
+  // armarJSONDeposito(Deposito: any, id?: string){
+  armarJSONDeposito(Deposito: any){
+    let fgDeposito = <FormGroup>Deposito;
+    let jsonbodyD, jsbodyD;
+    console.log('control de deposito a usar: ', fgDeposito)
+    var d = new Date();
+
+    if(fgDeposito.controls['id'].value != null){
+      //nuevo
+      jsbodyD = {
+        "id": fgDeposito.controls['tg01_depositos_id_c'].value,
+        "name": fgDeposito.controls['name'].value,
+        "date_entered": d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),//fgDeposito.controls['date_entered'].value,
+        "date_modified": d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),//fgDeposito.controls['date_modified'].value,
+        "modified_user_id": 1, //fgDeposito.controls['modified_user_id'].value, //1,
+        "created_by": 1, //fgDeposito.controls['created_by'].value, //1,
+        "description": null, //fgDeposito.controls['description'].value,
+        "deleted": 0, //fgDeposito.controls['deleted'].value,  //0,
+        "assigned_user_id": 1, //fgDeposito.controls['assigned_user_id'].value, //1,
+        "aos_products_id_c": this.auxRid, //fgDeposito.controls['aos_products_id_c'].value, //, //Rid, 
+        "tg01_depositos_id_c": fgDeposito.controls['tg01_depositos_id_c'].value, //Id consulta dinámica de tabla: tg01_depositos
+        "stockideal": fgDeposito.controls['stockideal'].value, //150,
+        "stockmaximo": fgDeposito.controls['stockmaximo'].value, //1500,
+        "stockreposicion": fgDeposito.controls['stockreposicion'].value, //15
+      };
+    }
+    else{
+      jsbodyD = {
+        // "id": fgDeposito.controls['tg01_depositos_id_c'].value,
+        "name": fgDeposito.controls['name'].value,
+        "date_entered": fgDeposito.controls['date_entered'].value,
+        "date_modified": d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),//fgDeposito.controls['date_modified'].value,
+        "modified_user_id": 1, //fgDeposito.controls['modified_user_id'].value, //1,
+        "created_by": fgDeposito.controls['created_by'].value, //1,
+        "description": null, //fgDeposito.controls['description'].value,
+        "deleted":fgDeposito.controls['deleted'].value,  //0,
+        "assigned_user_id": fgDeposito.controls['assigned_user_id'].value, //1,
+        "aos_products_id_c": fgDeposito.controls['aos_products_id_c'].value, //, //Rid, 
+        "tg01_depositos_id_c": fgDeposito.controls['tg01_depositos_id_c'].value, //Id consulta dinámica de tabla: tg01_depositos
+        "stockideal": fgDeposito.controls['stockideal'].value, //150,
+        "stockmaximo": fgDeposito.controls['stockmaximo'].value, //1500,
+        "stockreposicion": fgDeposito.controls['stockreposicion'].value, //15
+      };
+    }
+
+    jsonbodyD = JSON.stringify(jsbodyD);
+    return jsonbodyD;
+  }
+
+  armarJSONProveedor(Proveedor: any){
+    let fgProveedor = <FormGroup>Proveedor;
+    let jsonbodyP, jsbodyP;
+    console.log('control de deposito a usar: ', fgProveedor)
+    var d = new Date();
+
+    if(fgProveedor.controls['idProveedor'].value != null){
+      //nuevo
+      jsbodyP = {
+        "id": fgProveedor.controls['idProveedor'].value,//todo revisar
+        "name": fgProveedor.controls['razonSocial'].value,
+        "date_entered":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "modified_user_id": 1,//usuario logueado por ahora 1
+        "created_by": 1, //,usuario logueado por ahora 1
+        "description": null,
+        "deleted": 0,
+        "assigned_user_id": 1,//usuario logueado por ahora 1
+        "codigobarra": fgProveedor.controls['artCodBarra'].value,//alfanumerico hasta 20 caracteres
+        "precioultimacompra":fgProveedor.controls['precioUltCompra'].value,// 100,
+        "currency_id": 1,
+        "ultimacompra": this.extraerFecha(<FormControl>fgProveedor.controls['fechaUltCompra']),//"2018-02-26",
+        "tg01_monedas_id_c": fgProveedor.controls['idMonedaUltCompra'].value, //1, ID de consulta dinámica a la tabla tg01_monedas
+        "pordefecto": fgProveedor.controls['esPorDefecto'].value,//1,
+        "aos_products_id_c": this.auxRid,
+        "account_id_c": 1, //fgProveedor.controls[''].value,//1 ID de consulta dinámica a la tabla tg01_accounts_cstm, tiporeferente_c = P
+      }
+    }
+    else{
+      jsbodyP = {
+        // "id": fgProveedor.controls['idProveedor'].value,//todo revisar
+        "name": fgProveedor.controls['razonSocial'].value,
+        "date_entered": fgProveedor.controls['date_entered'].value,
+        "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "modified_user_id": 1,//usuario logueado por ahora 1
+        "created_by": fgProveedor.controls['created_by'].value, //,usuario logueado por ahora 1
+        "description": null,
+        "deleted": 0,
+        "assigned_user_id": 1,//usuario logueado por ahora 1
+        "codigobarra": fgProveedor.controls['artCodBarra'].value,//alfanumerico hasta 20 caracteres
+        "precioultimacompra":fgProveedor.controls['precioUltCompra'].value,// 100,
+        "currency_id": 1,
+        "ultimacompra": this.extraerFecha(<FormControl>fgProveedor.controls['fechaUltCompra']),//"2018-02-26",
+        "tg01_monedas_id_c": fgProveedor.controls['idMonedaUltCompra'].value, //1, ID de consulta dinámica a la tabla tg01_monedas
+        "pordefecto": fgProveedor.controls['esPorDefecto'].value,//1,
+        "aos_products_id_c": this.auxRid,
+        "account_id_c": 1, //fgProveedor.controls[''].value,//1 ID de consulta dinámica a la tabla tg01_accounts_cstm, tiporeferente_c = P
+      }
+    }
+
+    jsonbodyP = JSON.stringify(jsbodyP);
+    return jsonbodyP;
+  }
+
+  armarJSONSustituto(Sustituto: any){
+    let fgSustituto = <FormGroup>Sustituto;
+    let jsonbodyP, jsbodyP;
+    console.log('control de deposito a usar: ', fgSustituto)
+    var d = new Date();
+
+    if(fgSustituto.controls['id'].value != null){
+      //nuevo
+      jsbodyP = {
+        "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica
+        "name": fgSustituto.controls['razonSocial'].value,
+        "date_entered":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "modified_user_id": 1,//usuario logueado por ahora 1
+        "created_by": 1, //,usuario logueado por ahora 1
+        "description": null,
+        "deleted": 0,
+        "assigned_user_id": 1,//usuario logueado por ahora 1
+        "aos_products_id_c": this.auxRid,
+        "aos_products_id1_c": fgSustituto.controls['idArtSust'].value, //1, //todo: Id del producto sustituto (Consulta dinámica a aos_products)
+        "cantidad": fgSustituto.controls['cantidad'].value, //100, Cantidad
+        "tg01_unidadmedida_id_c": fgSustituto.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "tg01_unidadmedida_id1_c": fgSustituto.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "idsustituto": fgSustituto.controls['idArtSust'].value, //, codigo de articulo //todo revisar
+        "tiposustituto": fgSustituto.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
+      }
+    }
+    else{
+      jsbodyP = {
+        // "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica
+        "name": fgSustituto.controls['razonSocial'].value,
+        "date_entered": fgSustituto.controls['date_entered'].value,
+        "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "modified_user_id": 1,//usuario logueado por ahora 1
+        "created_by": fgSustituto.controls['created_by'].value,
+        "description": null,
+        "deleted": 0,
+        "assigned_user_id": 1,//usuario logueado por ahora 1
+        "aos_products_id_c": this.auxRid,
+        "aos_products_id1_c": fgSustituto.controls['idArtSust'].value, //1, //todo: Id del producto sustituto (Consulta dinámica a aos_products)
+        "cantidad": fgSustituto.controls['cantidad'].value, //100, Cantidad
+        "tg01_unidadmedida_id_c": fgSustituto.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "tg01_unidadmedida_id1_c": fgSustituto.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "idsustituto": fgSustituto.controls['idArtSust'].value, //, codigo de articulo //todo revisar
+        "tiposustituto": fgSustituto.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
+      }
+    }
+
+    jsonbodyP = JSON.stringify(jsbodyP);
+    return jsonbodyP;
+  }
+  //todo armarJSONFotos 25/02/19
+  //después recorrer los array, armar las listas, y llamar a los procedimientos de abm (que faltan todavia)
+  //#endregion armadoJSONs
+
   guardarArticulo(){
     if( this.id == "nuevo" ){
       // insertando
-      let jsbody = {
-        "ArticuloItem" : this.forma.controls['tipo'].value,
-        "IPart_number" : this.forma.controls['nroArticulo'].value,
-        "IName" : this.forma.controls['descripcion'].value,
-        "C_alternativo": this.forma.controls['codigoAlternativo'].value,
-        "C_barra": this.forma.controls['codigoBarra'].value,
-        "Grupo": "",//id de tabla grupos-consulta dinamica
- 
-        "Tipo":"",// id de la tabla tipo de articulos consulta dinamica
-        "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
-        "marca":"",// id de marcas ->consulta dinamica
-        "campo1": this.forma.controls['campo1'].value,
-        "campo2": this.forma.controls['campo2'].value,
-        "campo3": this.forma.controls['campo3'].value,
-        "estado": this.forma.controls['estado'].value,// "Activo", 
-        "cat_b": this.forma.controls['categoria_bloqueo'].value,
-        "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
-        "Obs_auto_cpa":this.forma.controls['obsRegistroAutoCpa'].value, //,0 false , 1 true
-        "Obs_ingr_cpa":this.forma.controls['obsIngresoCpa'].value, //,0 false , 1 true
-        "Obs_ingr_vta": this.forma.controls['obsIngresoVta'].value,//,0 false , 1 true
-        "Obs_imprime_vta": this.forma.controls['obsImprimeVta'].value,//,0 false , 1 true
-        "Obs_auditoria_cpa": this.forma.controls['obsAuditoriaCpa'].value,//,0 false , 1 true
-        "Obs_auditoria_vta": this.forma.controls['obsAuditoriaVta'].value,//,0 false , 1 true
-        "Categoria_vta": this.forma.controls['categoriaVenta'].value,//,0 false , 1 true
-        "Categoria_inventario": this.forma.controls['categoriaInventario'].value,//,0 false , 1 true
-        "Categoria_cpa": this.forma.controls['categoriaCompra'].value,//,0 false , 1 true
+      let jsonbodyCabecera = this.armarJSONArticulo();
 
-        "precio_UCpa":this.forma.controls['precioUltCompra'].value,// 200,
-        "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
-        "moneda":"",// codigo de monedas → lista desplegable con tg01_monedas
-        "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
-        "PrecioU_vta": this.forma.controls['precioUltVenta'].value,
-        "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
-        "moneda1":"",//, codigo de monedas-> lista desplegable con tg01_monedas
+      
 
-        "ref_contable": "",//id de referencia contable ->consulta dinamica
-        "alicuota": "",//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
-        "alicuota1":"",//,id de alicuota->consulta dinamica (tipo impuestos internos)
-        "Area_AAII":this.forma.controls['IIAreaAplicacionAlicuota'].value,// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
-        "Area_AIFII":this.forma.controls['IIAreaAplicacionImporteFijo'].value,//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
-        "incorporaCosto":this.forma.controls['IncorporarIIalCosto'].value,// 0, 0 false , 1 true
-        "impuesto_intFijo": this.forma.controls['impuestoInternoFijo'].value,
-        "gestion_despacho":this.forma.controls['gestionDespacho'].value,//0, 0 false , 1 true
-        "gestion_lote":this.forma.controls['gestionLote'].value,// 0,0 false , 1 true
-        "gestion_serie":this.forma.controls['gestionSerie'].value,//0,0 false , 1 true
-
-        "admStock": this.forma.controls['administraStock'].value,//0, 0 false , 1 true
-        "stockIdeal": this.forma.controls['stockIdeal'].value,
-        "stockMax": this.forma.controls['stockMaximo'].value,
-        "stockRepo":this.forma.controls['stockReposicion'].value,
-        "dimensiones": this.forma.controls['Dimensiones'].value,
-        "pesable":this.forma.controls['Pesable'].value,
-        "pesableE":this.forma.controls['Pesable_Estandar'].value, 
-        "unidad_medida":"",//char(36),id de UM,consulta dinamica,
-        "unidad_medida1":"",// char(36) id de UM,consulta dinamica,
-        "largo":this.forma.controls['largo'].value,
-        "ancho":this.forma.controls['ancho'].value,
-        "profundidad":this.forma.controls['profundidad'].value,
-        "m3": this.forma.controls['m3'].value
-      };
       // ARTÍCULO - DEPÓSITO: INSERT
-     let jsbodyDepo = {
+      /*
+      let jsbodyDepo = {
       "id": 12,
       "name": "jcabrera",
       "date_entered": "2018-02-26",
@@ -712,8 +927,9 @@ construirUnidadMedida(){
       "stockideal": 150,
       "stockmaximo": 1500,
       "stockreposicion": 15
-      
-   }
+      }
+      */
+
       
     }else{
       //actualizando
@@ -1123,6 +1339,18 @@ construirUnidadMedida(){
     return promesa;
   }
 
+  existeDeposito( control: FormControl ): Promise<any>{
+    let promesa = new Promise(
+      ( resolve, reject )=>{
+        setTimeout( ()=>{
+          if( auxDepData!=1 ){
+            resolve( {noExiste:true} )
+          }else{resolve( null )}
+        },2000 )
+      }
+    )
+    return promesa;
+  }
   //#endregion validaciones
 
   //#region busquedasAutocompletado
@@ -1157,6 +1385,42 @@ construirUnidadMedida(){
             ((this.forma.controls.proveedores as FormArray).
               controls[indice] as FormGroup).
                 controls['razonSocial'].setValue('');
+          }
+        }
+      });
+  }
+
+  buscarDeposito(indice: number){
+    // console.log('llamado buscar articulo para proveedor nro ', indice)
+    const deps = this.forma.controls.depositos as FormArray;
+    let id = deps.controls[indice].value['tg01_depositos_id_c'];
+    // console.log('buscando item ', id, provs.controls[indice])
+    this._articulosService.getDeposito(id , this.token )
+      .subscribe( data => {
+          this.depData = data;
+          auxDepData = this.depData.dataset.length;
+          if(this.depData.returnset[0].RCode=="-6003"){
+            //token invalido
+            // this.deposito = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+          // console.log('resultado buscar articulo para deposito nro ', this.depData)
+
+          if(this.depData.dataset.length>0){
+            this.deposito = this.depData.dataset[0];
+            
+            //rellenar descripcion
+            ((this.forma.controls.depositos as FormArray).
+              controls[indice] as FormGroup).
+                controls['name'].setValue(this.deposito.name);
+          } else {
+            this.deposito = null;
+            
+            //vaciar descripcion
+            ((this.forma.controls.depositos as FormArray).
+              controls[indice] as FormGroup).
+                controls['name'].setValue('');
           }
         }
       });
@@ -1548,6 +1812,23 @@ construirUnidadMedida(){
     }
     else{
       this.forma.controls['m3'].setValue(largo*ancho*profundidad/1000000);
+    }
+  }
+
+  extraerFecha(control: FormControl){
+    console.log('control a usar para fecha: ', control)
+    let auxFecha: string;
+    if (control.value != null){
+      let ano = control.value.getFullYear().toString();
+      let mes = (control.value.getMonth()+1).toString();
+      if(mes.length==1){mes="0"+mes};
+      let dia = control.value.getDate().toString();
+      if(dia.length==1){dia="0"+dia};
+      auxFecha = ano+"-"+mes+"-"+dia;
+      return auxFecha;
+    }
+    else{
+      return null;
     }
   }
 }

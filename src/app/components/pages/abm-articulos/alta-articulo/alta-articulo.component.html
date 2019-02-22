@@ -103,7 +103,7 @@
       <div class="col s2 m2 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Marca</mat-label>
-          <input (keyup)="buscarMarca()" (changed)="buscarMarca()" #codGrupo matInput placeholder="" formControlName="idMarca">
+          <input (keyup)="buscarMarca()" (changed)="buscarMarca()" #codMarca matInput placeholder="" formControlName="idMarca">
           <mat-hint *ngIf="forma.controls['idMarca'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
@@ -429,6 +429,14 @@
                 <input matInput placeholder="" type="number" formControlName="precioUltCompra">
               </mat-form-field>
             </div>
+            <div class="col s6 m6 l3">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Fecha última compra</mat-label>
+                <input matInput readonly [matDatepicker]="pickerUltProv" placeholder="" formControlName="fechaUltCompra">
+                <mat-datepicker-toggle matSuffix [for]="pickerUltProv"></mat-datepicker-toggle>
+                <mat-datepicker #pickerUltProv></mat-datepicker>
+              </mat-form-field>
+            </div>
             <div class="col s6 m2 l1">
                 <mat-checkbox formControlName="esPorDefecto">Por defecto</mat-checkbox>
             </div>
@@ -568,7 +576,7 @@
     </div>
 
     <!-- relacion articulo deposito -->
-    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;" *ngIf="adminStock.checked">
+    <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;" *ngIf="adminStock.checked">    
       <span style="display:flex;">
         <h6>Depósitos:</h6>
         <button type="button" (click)="addDeposito()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
@@ -577,40 +585,63 @@
       </span>
     </div>
 
-    <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;">
-      <div class="col s12 m6 l2" *ngIf="adminStock.checked">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Id Depósito</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l2" *ngIf="adminStock.checked">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Stock Ideal</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l2" *ngIf="adminStock.checked">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Stock Máximo</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l2" *ngIf="adminStock.checked">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Stock Reposición</mat-label>
-          <input matInput placeholder="" type="text">
-          <!--<mat-hint>Hint</mat-hint>-->
-        </mat-form-field>
-      </div>
-      <div class="col s12 m4 l4" *ngIf="adminStock.checked">
-        <button type="button" (click)="deleteProveedor(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-          -
-        </button>
-      </div>
+    <div formArrayName="depositos" *ngFor="let dep of forma.controls.depositos?.controls; let i = index">
+      <ng-container [formGroupName]="i">
+        <!-- <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;"> -->
+        <div class="row" style="margin:5px !important;">
+          <div class="col s6 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Id Depósito</mat-label>
+              <input (keyup)="buscarDeposito(i)" #codDep matInput placeholder="" formControlName="tg01_depositos_id_c">
+              <mat-hint *ngIf="dep.controls['tg01_depositos_id_c'].status == 'PENDING'">
+                Buscando código...
+              </mat-hint>
+              <mat-hint *ngIf="dep.controls['tg01_depositos_id_c'].errors?.noExiste">
+                El Depósito no existe
+              </mat-hint>
+            </mat-form-field>
+          </div>
+          <div class="col s2 m1 l1" style="margin-top:10px;">
+            <!-- <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artDeProveedor')">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button> -->
+            <button type="button" class="mine-btnforms" mat-flat-button 
+            (click)="abrirConsulta('tg01_depositos', ['depositos', i], 'tg01_depositos_id_c', 'name', 'openSnackBar', i)">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button>
+          </div>
+          <div class="col s6 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Nombre Depósito</mat-label>
+              <input matInput placeholder="" readonly formControlName="name">
+            </mat-form-field>
+          </div>
+
+          <div class="col s12 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Stock Ideal</mat-label>
+              <input matInput placeholder="" type="number" formControlName="stockideal">
+            </mat-form-field>
+          </div>
+          <div class="col s12 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Stock Máximo</mat-label>
+              <input matInput placeholder="" type="number" formControlName="stockmaximo">
+            </mat-form-field>
+          </div>
+          <div class="col s12 m4 l2">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Stock Reposición</mat-label>
+              <input matInput placeholder="" type="number" formControlName="stockreposicion">
+            </mat-form-field>
+          </div>
+          <div class="col s12 m4 l4">
+            <button type="button" (click)="deleteDeposito(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+              -
+            </button>
+          </div>
+        </div>
+      </ng-container>
     </div>
     <!--fin relacion-->
 
@@ -676,9 +707,10 @@
           <div class="col s12 m4 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Tipo Sustituto</mat-label>
-              <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo">
-                <mat-option value="0">Simple</mat-option>
-                <mat-option value="1">Compuesto</mat-option>
+              <mat-select placeholder="Elija una opción" formControlName="tipoSustituto">
+                <mat-option value="S">Simple</mat-option>
+                <mat-option value="C">Compuesto</mat-option>
+                <mat-option value="P">Sustituto</mat-option>
               </mat-select>
             </mat-form-field>
           </div>

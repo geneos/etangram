@@ -755,7 +755,7 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="col s12 m3 l3">
+            <div class="col s6 m2 l2">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Fecha de Presentación</mat-label>
                 <input matInput readonly [matDatepicker]="picker2" placeholder="" formControlName="fechaPres">
@@ -763,7 +763,7 @@
                 <mat-datepicker #picker2></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col s12 m3 l3">
+            <div class="col s6 m2 l2">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Fecha de Vencimiento</mat-label>
                 <input matInput readonly [matDatepicker]="picker3" placeholder="" formControlName="fechaVenc">
@@ -771,7 +771,19 @@
                 <mat-datepicker #picker3></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col s6 m3 l3">
+            <div class="col s12 m5 l5">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>URL</mat-label>
+                <input matInput placeholder="" formControlName="url">
+              </mat-form-field>
+            </div>
+            <div class="col s11 m5 l5">
+              <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                <mat-label>Descripción</mat-label>
+                <textarea matInput placeholder="" formControlName="descripcion"></textarea>
+              </mat-form-field>
+            </div>
+            <div class="col s1 m1 l1">
               <a (click)="deleteFormulario(j)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
                 -
               </a>

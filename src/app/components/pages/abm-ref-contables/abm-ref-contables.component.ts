@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections';
 import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
 import { ConsultaDinamicaService } from 'src/app/services/i2t/consulta-din.service';
-import { MatTable, MatSort, MatPaginator, MatTableDataSource } from '@angular/material';
+import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { RefContablesService } from "../../../services/i2t/ref-contables.service";
 import { RefContable } from "../../../interfaces/ref-contable.interface";
 import { PermisosService } from "../../../services/i2t/permisos.service";
@@ -27,8 +27,18 @@ export class AbmRefContablesComponent implements OnInit {
   rData: any;
   pData: any;
   reportesAll: Reporte[] = [];
+  nombreReporte: string;
+  reporteSeleccionado : number;
+  reporteMostrado: number; 
+  reporteCambiado: boolean= false;
 
-  permiso_crear: boolean;
+  permisos = {
+    permiso_crear: false,
+    permiso_editar: false,
+    permiso_borrar: false,
+    permiso_mostrar: false,
+    permiso_exportar: false
+  }
   
   refContablesAll:RefContable[];
   loading:boolean;
@@ -43,6 +53,7 @@ export class AbmRefContablesComponent implements OnInit {
   constructor(private _refContablesService:RefContablesService,
               private _permisosService: PermisosService,
               private _consultaDinamicaService: ConsultaDinamicaService,
+              public snackBar: MatSnackBar,
               @Inject(SESSION_STORAGE) private storage: StorageService
               ) {
 
@@ -59,6 +70,11 @@ export class AbmRefContablesComponent implements OnInit {
     this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
   
   }
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
+  }
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -74,6 +90,58 @@ export class AbmRefContablesComponent implements OnInit {
         this.constRefContables.data.forEach(row => this.selection.select(row));
   }
   
+  habilitarAcciones(){
+    /* this.permiso_crear	=;
+    this.permiso_editar	=;
+    this.permiso_borrar	=;
+    this.permiso_mostrar	=;
+    this.permiso_exportar=; */
+    Object.keys(this.permisos).forEach(permiso => {
+      // console.log(permiso, this.reportesAll[this.reporteSeleccionado][permiso]);
+      if (this.reportesAll[this.reporteSeleccionado][permiso] == ''){
+        this.permisos[permiso] = true;
+        console.log('permiso ' + permiso + ' habilitado por vacio');
+      }
+      else{
+        //todo cambiar por usuario real (tal vez traido por parametros)
+        //this._permisosService.getPermiso( this.usuario,
+        console.log(this.reportesAll[this.reporteSeleccionado][permiso])
+        this._permisosService.getPermiso( 'usuario2',
+                                          this.reportesAll[this.reporteSeleccionado][permiso],
+                                          this.token)
+        .subscribe( dataP => {
+          //console.log(dataR);
+          this.pData = dataP;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.pData.returnset[0].RCode=="-6003"){
+            //token invalido
+            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            let jsonbody = JSON.stringify(jsbody);
+            this._consultaDinamicaService.login(jsonbody)
+              .subscribe( dataL => {
+                console.log(dataL);
+                this.loginData = dataL;
+                this.token = this.loginData.dataset[0].jwt;
+                this.habilitarAcciones();
+              });
+            } else {
+              console.log('respuesta===> ', this.pData.returnset[0])
+              if(this.pData.returnset[0].RCode=="200"){
+                this.permisos[permiso] = true;
+              }
+              //this.pData.returnset[0].RCode=="-501" => no existe o usuario incorrecto
+              else {
+                this.permisos[permiso] = false;
+                console.log('permiso ' + permiso + ' deshabilitado por respuesta de error: '+ this.pData.returnset[0].RTxt);
+              }
+            }
+      });
+      }
+
+    });
+    console.log(this.reportesAll[this.reporteSeleccionado]);
+  }
+
   buscarReportes(){
     this._consultaDinamicaService.getReporte('tg01_referenciascontables', this.token)
       .subscribe( dataR => {
@@ -96,11 +164,28 @@ export class AbmRefContablesComponent implements OnInit {
               if(this.rData.dataset.length>0){
                 this.reportesAll = this.rData.dataset;
                 console.log(this.reportesAll);
-                if(this.reportesAll[0].permiso_crear == ''){
-                  this.permiso_crear = true //CAMBIAR CUANDO HAYA DATOS DE LOS PERMISOS
-                  ;
+                if (this.rData.dataset.length >0)
+                {
+                  this.reporteSeleccionado = this.reportesAll.findIndex(reporte => reporte.name === 'tg01_referenciascontables');
+                  if (this.reporteSeleccionado != -1)
+                {
+                  if (this.reporteSeleccionado != this.reporteMostrado){
+                    this.reporteMostrado = this.reporteSeleccionado;
+                    this.reporteCambiado = true;
+                  }
+                  this.habilitarAcciones();
                 }
-                
+                else{
+                  this.openSnackBar('No existe la consulta "' + this.nombreReporte + '"');
+                  this.loading = false;
+                }
+                }
+                else{
+                  this.openSnackBar('No existe la consulta "' + this.nombreReporte + '"');
+              //    this.limpiarDatos();
+                  this.loading = false;
+                }
+
                 // this.buscarAtributos();
 
                 //this.table.renderRows();
@@ -153,54 +238,5 @@ export class AbmRefContablesComponent implements OnInit {
             //console.log(this.refContablesAll);
       });
   }
-  
-  // habilitarAcciones(){
-  //   /* this.permiso_crear	=;
-  //   this.permiso_editar	=;
-  //   this.permiso_borrar	=;
-  //   this.permiso_mostrar	=;
-  //   this.permiso_exportar=; */
-    
-  //     if (this.reportesAll['tg01_referenciascontables'][this.permiso_crear] == ''){
-        
-  //      // console.log('permiso ' + permiso + ' habilitado por vacio');
-  //     }
-  //     else{
-  //       //todo cambiar por usuario real (tal vez traido por parametros)
-  //       //this._permisosService.getPermiso( this.usuario,
-  //       this._permisosService.getPermiso( 'usuario1',
-  //                                         this.reportesAll['tg01_referenciascontables'][this.permiso_crear],
-  //                                         this.token)
-  //       .subscribe( dataP => {
-  //         console.log(dataP);
-  //         this.pData = dataP;
-  //         //auxProvData = this.proveedorData.dataset.length;
-  //         if(this.pData.returnset[0].RCode=="-6003"){
-  //           //token invalido
-  //           let jsbody = {"usuario":"usuario1","pass":"password1"}
-  //           let jsonbody = JSON.stringify(jsbody);
-  //           this._consultaDinamicaService.login(jsonbody)
-  //             .subscribe( dataL => {
-  //               console.log(dataL);
-  //               this.loginData = dataL;
-  //               this.token = this.loginData.dataset[0].jwt;
-  //               this.habilitarAcciones();
-  //             });
-  //           } else {
-  //             console.log('respuesta===> ', this.pData.returnset[0])
-  //             if(this.pData.returnset[0].RCode=="200"){
-                
-  //             }
-  //             //this.pData.returnset[0].RCode=="-501" => no existe o usuario incorrecto
-  //             else {
-                
-  //               console.log('permiso ' + this.permiso_crear + ' deshabilitado por respuesta de error: '+ this.pData.returnset[0].RTxt);
-  //             }
-  //           }
-  //     });
-  //     }
-
-  //   console.log(this.reportesAll['tg01_referenciascontables']);
-  // }
 
 }

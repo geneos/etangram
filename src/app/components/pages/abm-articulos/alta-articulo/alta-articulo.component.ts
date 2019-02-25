@@ -12,7 +12,7 @@ import { AFIPInternoService } from 'src/app/services/i2t/afip.service';
 import { UnidadMedidaService } from 'src/app/services/i2t/unidad-medida.service';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ArticulosService } from 'src/app/services/i2t/articulos.service';
-import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito } from 'src/app/interfaces/articulo.interface';
+import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo } from 'src/app/interfaces/articulo.interface';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -74,6 +74,7 @@ export class AltaArticuloComponent implements OnInit {
   aaData:any;//atributos articulos
   vaaData:any;//valores de atributos articulos
   depData:any;//depositos
+  respData:any;
 
   monedasAll:any[];
   catsBloqueoAll:any[];
@@ -86,6 +87,11 @@ export class AltaArticuloComponent implements OnInit {
   obsValoresAtributos0: Observable<any[]>;
   obsValoresAtributos1: Observable<any[]>;
   obsValoresAtributos2: Observable<any[]>;
+  depositosAll:DepostitoArticulo[];
+  proveedoresAll:ProveedorArticulo[];
+  sustitutosAll:ArticuloSustituto[];
+  // hijosAll:artic
+  fotosAll:FotoArticulo[];
 
 
   estadosProveedores:{
@@ -238,7 +244,7 @@ export class AltaArticuloComponent implements OnInit {
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
       this.existe = false;
-
+      console.log('viendo parametros por url');
       if( this.id !== "nuevo" ){
         /* for( let aux in this.constArticulos ){
           if (this.id == aux){
@@ -257,6 +263,8 @@ export class AltaArticuloComponent implements OnInit {
           this.forma.controls['precioUnitario'].disable();*
         }
       } */
+      console.log('llamando a buscar articulo');
+      this.auxRid = this.id;
         this.buscarArticulo();
       }
     });
@@ -332,22 +340,43 @@ construirProveedor(){
     'fechaUltCompra': new FormControl(),
     'esPorDefecto': new FormControl(),
     'date_entered': new FormControl(),
+    'date_modified': new FormControl(),
     'created_by': new FormControl(),
+    'modified_user_id': new FormControl(),
+    'description': new FormControl(),
+    'deleted': new FormControl(),
+    'assigned_user_id': new FormControl(),
+    'currency_id': new FormControl(),
+    'aos_products_id_c': new FormControl(),
+    'account_id_c': new FormControl(),
   });
 }
 
 construirArticuloSust(){
   return new FormGroup({ 
-    'idArtSust': new FormControl(null,Validators.required,this.existeArticulo),
-    'artDesc': new FormControl(),
+    'idArtSust': new FormControl(null,Validators.required,this.existeArticulo),//id
+    'artDesc': new FormControl(),//name
     'umArticulo': new FormControl(),
     'umSustituto': new FormControl(),
-    'IIAreaAplicacionImporteFijo': new FormControl(),
+    'tipoSustituto': new FormControl(),
     'cantidad': new FormControl(null, Validators.required),
+    'assigned_user_id': new FormControl(),
+    'aos_products_id_c': new FormControl(),
+    'aos_products_id1_c': new FormControl(),
+    'tg01_unidadmedida_id_c': new FormControl(),
+    'tg01_unidadmedida_id1_c': new FormControl(),
+    // 'IIAreaAplicacionImporteFijo': new FormControl(),
     'date_entered': new FormControl(),
     'created_by': new FormControl(),
+    'date_modified': new FormControl(),
+    'modified_user_id': new FormControl(),
+    'description': new FormControl(),
+    'deleted': new FormControl(),
+    // 'idsustituto': new FormControl(),
+    // 'tiposustituto': new FormControl(),
   });
 }
+
 
 construirDeposito(){
   return new FormGroup({
@@ -671,12 +700,169 @@ construirUnidadMedida(){
 
   //#region cargaDatos
   buscarArticulo(){
+    console.log('ejecutando buscarArticulo');
     console.log('todo')
+
+    this.obtenerDatosArrays();
   }
+  obtenerDatosArrays(){
+    console.log(' ejecutando obtenerDatosArrays');
+    this.forma.controls.proveedores.reset();
+    this.forma.controls.depositos.reset();
+    this.forma.controls.articulosSustitutos.reset();
+    this.forma.controls.articulosHijos.reset();
+    // this.forma.controls.fotos.reset();
+    this.forma.controls.unidadesAlternativas.reset();
+    
+    //cargar datos de depositos
+    this._articulosService.getDepositosArticulo(this.auxRid , this.token )
+      .subscribe( data => {
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.depositosAll = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            console.log('respuesta consulta de depositos asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.depositosAll = this.respData.dataset;
+              let index = 0;
+              //todo revisar
+              this.forma.controls['administraStock'].setValue(true);
+              //
+              console.log('depositos recuperadas: ', this.depositosAll)
+              this.depositosAll.forEach(deposito => {
+                console.log('se va a armar el formgroup para deposito: ', deposito)
+                this.addDeposito();
+                console.log('deposito: ' ,this.forma.get(['depositos', index]));
+                console.log('id deposito: ',(this.forma.get(['depositos', index])).value['id']);
+                console.log('depsoito como formgroup: ', <FormGroup>this.forma.get(['depositos', index]))
+                let fgDeposito: FormGroup = <FormGroup>this.forma.get(['depositos', index]);
+                fgDeposito.controls['id'].setValue(deposito.id);
+                fgDeposito.controls['name'].setValue(deposito.name);
+                fgDeposito.controls['date_entered'].setValue(deposito.date_entered);
+                fgDeposito.controls['date_modified'].setValue(deposito.date_modified);
+                fgDeposito.controls['modified_user_id'].setValue(deposito.modified_user_id);
+                fgDeposito.controls['created_by'].setValue(deposito.created_by);
+                fgDeposito.controls['description'].setValue(deposito.description);
+                fgDeposito.controls['deleted'].setValue(deposito.deleted);
+                fgDeposito.controls['assigned_user_id'].setValue(deposito.assigned_user_id);
+                fgDeposito.controls['aos_products_id_c'].setValue(deposito.aos_products_id_c);
+                fgDeposito.controls['tg01_depositos_id_c'].setValue(deposito.tg01_depositos_id_c);
+                fgDeposito.controls['stockideal'].setValue(deposito.stockideal);
+                fgDeposito.controls['stockmaximo'].setValue(deposito.stockmaximo);
+                fgDeposito.controls['stockreposicion'].setValue(deposito.stockreposicion);
+                index = index +1;
+              });
+            }
+          }
+    });
+    //cargar datos de proveedores
+    this._articulosService.getProveedores(this.auxRid , this.token )
+      .subscribe( data => {
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.proveedoresAll = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            console.log('respuesta consulta de proveedores asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.proveedoresAll = this.respData.dataset;
+              let index = 0;
+              console.log('proveedores recuperadas: ', this.proveedoresAll)
+              this.proveedoresAll.forEach(proveedor => {
+                console.log('se va a armar el formgroup para proveedor: ', proveedor)
+                this.addProveedor();
+                console.log('proveedor: ' ,this.forma.get(['proveedores', index]));
+                console.log('id proveedor: ',(this.forma.get(['proveedores', index])).value['id']);
+                console.log('depsoito como formgroup: ', <FormGroup>this.forma.get(['proveedores', index]))
+                let fgProveedor: FormGroup = <FormGroup>this.forma.get(['proveedores', index]);
+                fgProveedor.controls['idProveedor'].setValue(proveedor.id);
+                fgProveedor.controls['razonSocial'].setValue(proveedor.name);
+                fgProveedor.controls['date_entered'].setValue(proveedor.date_entered);
+                fgProveedor.controls['date_modified'].setValue(proveedor.date_modified);
+                fgProveedor.controls['modified_user_id'].setValue(proveedor.modified_user_id);
+                fgProveedor.controls['created_by'].setValue(proveedor.created_by);
+                fgProveedor.controls['description'].setValue(proveedor.description);
+                fgProveedor.controls['deleted'].setValue(proveedor.deleted);
+                fgProveedor.controls['assigned_user_id'].setValue(proveedor.assigned_user_id);
+                fgProveedor.controls['artDeProveedor'].setValue(proveedor.aos_products_id_c);
+                fgProveedor.controls['account_id_c'].setValue(proveedor.account_id_c);//id objeto proveedor
+                fgProveedor.controls['artCodBarra'].setValue(proveedor.codigobarra);
+                fgProveedor.controls['idMonedaUltCompra'].setValue(proveedor.tg01_monedas_id_c);
+                fgProveedor.controls['precioUltCompra'].setValue(proveedor.precioultimacompra);
+                fgProveedor.controls['fechaUltCompra'].setValue(this.nuevaFecha(proveedor.ultimacompra));
+                fgProveedor.controls['esPorDefecto'].setValue(proveedor.pordefecto);
+                //datos a mostrar
+                  //nombre del articulo
+                  this.buscarArtProveedor(index);
+                index = index +1;              
+              });
+            }
+          }
+    });
+    //cargar datos de articulos sustitutos
+    this._articulosService.getProductosSustitutos(this.auxRid , this.token )
+      .subscribe( data => {
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.sustitutosAll = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            console.log('respuesta consulta de sustitutos asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.sustitutosAll = this.respData.dataset;
+              let index = 0;
+              console.log('sustitutos recuperadas: ', this.sustitutosAll)
+              this.sustitutosAll.forEach(sustituto => {
+                console.log('se va a armar el formgroup para: ', sustituto)
+                this.addSustituto();
+                console.log('sustituto: ' ,this.forma.get(['articulosSustitutos', index]));
+                console.log('id sustituto: ',(this.forma.get(['articulosSustitutos', index])).value['id']);
+                console.log('sustituto como formgroup: ', <FormGroup>this.forma.get(['articulosSustitutos', index]))
+                let fgSustituto: FormGroup = <FormGroup>this.forma.get(['articulosSustitutos', index]);
+                fgSustituto.controls['idArtSust'].setValue(sustituto.id);
+                fgSustituto.controls['artDesc'].setValue(sustituto.name);
+                fgSustituto.controls['date_entered'].setValue(sustituto.date_entered);
+                fgSustituto.controls['date_modified'].setValue(sustituto.date_modified);
+                fgSustituto.controls['modified_user_id'].setValue(sustituto.modified_user_id);
+                fgSustituto.controls['created_by'].setValue(sustituto.created_by);
+                fgSustituto.controls['description'].setValue(sustituto.description);
+                fgSustituto.controls['deleted'].setValue(sustituto.deleted);
+                fgSustituto.controls['assigned_user_id'].setValue(sustituto.assigned_user_id);
+                fgSustituto.controls['aos_products_id_c'].setValue(sustituto.aos_products_id_c);
+                fgSustituto.controls['aos_products_id1_c'].setValue(sustituto.aos_products_id1_c);
+                fgSustituto.controls['tg01_unidadmedida_id_c'].setValue(sustituto.tg01_unidadmedida_id_c);
+                fgSustituto.controls['tg01_unidadmedida_id1_c'].setValue(sustituto.tg01_unidadmedida_id1_c);
+                fgSustituto.controls['cantidad'].setValue(sustituto.cantidad);
+                
+                index = index +1;
+              });
+
+
+
+            }
+          }
+    });
+  }
+
+  //todo
+  //cargar datos de fotos
+  //cargar datos de articulos hijos
+  //cargar datos de fotos
   //#endregion cargaDatos
 
   //#region armadoJSONs
   armarJSONArticulo(){
+    console.log('armando json articulo con form: ', this.forma)
     let jsbody = {
       "ArticuloItem" : this.forma.controls['tipo'].value,
       "IPart_number" : this.forma.controls['nroArticulo'].value,
@@ -688,9 +874,9 @@ construirUnidadMedida(){
       "Tipo": this.forma.controls['idTipoArticulo'].value,// id de la tabla tipo de articulos consulta dinamica //todo revisar
       "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
       "marca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
-      "campo1": this.forma.controls['campo1'].value,
-      "campo2": this.forma.controls['campo2'].value,
-      "campo3": this.forma.controls['campo3'].value,
+      "campo1": this.forma.controls['idCampo1'].value,
+      "campo2": this.forma.controls['idCampo2'].value,
+      "campo3": this.forma.controls['idCampo3'].value,
       "estado": this.forma.controls['estado'].value,// "Activo", 
       "cat_b": this.forma.controls['categoria_bloqueo'].value,
       "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
@@ -740,8 +926,9 @@ construirUnidadMedida(){
       "profundidad":this.forma.controls['profundidad'].value,
       "m3": this.forma.controls['m3'].value
     };
-
+    console.log('stringifeando esto: ', jsbody)
     let jsonbody = JSON.stringify(jsbody);
+    console.log('json de cabecera stringifeado: ', jsonbody)
     return jsonbody;
   }
 
@@ -899,8 +1086,54 @@ construirUnidadMedida(){
     jsonbodyP = JSON.stringify(jsbodyP);
     return jsonbodyP;
   }
-  //todo armarJSONFotos 25/02/19
-  //después recorrer los array, armar las listas, y llamar a los procedimientos de abm (que faltan todavia)
+  /*
+  armarJSONFoto(Foto: any){
+    let fgFoto = <FormGroup>Foto;
+    let jsonbodyF, jsbodyF;
+    console.log('control de deposito a usar: ', fgFoto)
+    var d = new Date();
+
+    if(fgFoto.controls['id'].value != null){
+      //nuevo
+      jsbodyF = {
+        "id": 12,
+        "name": "jcabrera",
+        "date_entered": now()
+        "date_modified":now(),
+        "modified_user_id": 1 ,usuario logueado por ahora 1
+        "created_by": 1,usuario logueado por ahora 1
+        "description": null,
+        "deleted": 0,
+        "assigned_user_id": 1, usuario logueado por ahora 1
+        "aos_products_id_c": RId,
+        "foto": "www.i2t-sa.com/fotoJcabrera", URL de la foto
+        }
+    }
+    else{
+      jsbodyF = {
+        // "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica
+        "name": fgSustituto.controls['razonSocial'].value,
+        "date_entered": fgSustituto.controls['date_entered'].value,
+        "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "modified_user_id": 1,//usuario logueado por ahora 1
+        "created_by": fgSustituto.controls['created_by'].value,
+        "description": null,
+        "deleted": 0,
+        "assigned_user_id": 1,//usuario logueado por ahora 1
+        "aos_products_id_c": this.auxRid,
+        "aos_products_id1_c": fgSustituto.controls['idArtSust'].value, //1, //todo: Id del producto sustituto (Consulta dinámica a aos_products)
+        "cantidad": fgSustituto.controls['cantidad'].value, //100, Cantidad
+        "tg01_unidadmedida_id_c": fgSustituto.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "tg01_unidadmedida_id1_c": fgSustituto.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "idsustituto": fgSustituto.controls['idArtSust'].value, //, codigo de articulo //todo revisar
+        "tiposustituto": fgSustituto.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
+      }
+    }
+    
+    jsonbodyF = JSON.stringify(jsbodyF);
+    return jsonbodyF;
+  }
+  */
   //#endregion armadoJSONs
 
   guardarArticulo(){
@@ -908,7 +1141,36 @@ construirUnidadMedida(){
       // insertando
       let jsonbodyCabecera = this.armarJSONArticulo();
 
-      
+      console.log('json principal', jsonbodyCabecera);
+      this._articulosService.postCabeceraArticulo(jsonbodyCabecera, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+            } else {
+              console.log(this.respData)
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al guardar Articulo: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                this.openSnackBar('Cabecera de Articulo guardada con exito, continuando.');
+                // this.id = this.respData.returnset[0].RId;
+                this.auxRid = this.respData.returnset[0].RId;
+                console.log('ID de Articulo recibido: ' + this.auxRid, this.respData);
+                // this.guardarDatosArticulo(this.respData.returnset[0].RId);
+                this.guardarDatosArticulo();
+                // this.openSnackBar('Proveedor guardado con exito, redireccionando.');
+
+                //todo agregar redirección
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+    
 
       // ARTÍCULO - DEPÓSITO: INSERT
       /*
@@ -996,6 +1258,355 @@ construirUnidadMedida(){
       }
     }
   }
+
+  // guardarDatosArticulo(idProveedor: string){
+  guardarDatosArticulo(){
+    this.guardarProveedores();
+    this.guardarDepositos();
+    this.guardarSustitutos();
+    //todo agregar
+    // this.guardarHijos();
+    // this.guardarFotos();
+  }
+
+  //#region sincronizarListas
+  guardarProveedores(){
+    this.estadosProveedores.nuevos = [];
+    this.estadosProveedores.modificados = [];
+
+    let listaProveedores = <FormArray>this.forma.get(['proveedores']);
+    (listaProveedores.controls).forEach(element => {
+      let proveedor = <FormGroup>element;
+      console.log('proveedor ', proveedor);
+      // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (proveedor.dirty){
+        //si tiene x es modificación
+        if (proveedor.controls['date_entered'].value != null){
+          this.estadosProveedores.modificados.push(proveedor);
+        }
+        else{
+          this.estadosProveedores.nuevos.push(proveedor);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+      }
+    });
+
+    console.log('Lista de proveedores a procesar: ', this.estadosProveedores);
+
+    this.estadosProveedores.nuevos.forEach(formProveedor => {
+      console.log('se agregará proveedor: ', formProveedor);
+      this.guardarProveedor(formProveedor);
+    });
+
+    this.estadosProveedores.modificados.forEach(formProveedor => {
+      this.modificarProveedor(formProveedor);
+    });
+
+    this.estadosProveedores.eliminados.forEach(proveedorEliminado => {
+      this.eliminarProveedor(proveedorEliminado);
+    });
+
+    //reiniciar listas
+    this.estadosProveedores ={nuevos: [],
+                          modificados: [],
+                          eliminados: []};
+  }
+
+  guardarDepositos(){
+    this.estadosDepositos.nuevos = [];
+    this.estadosDepositos.modificados = [];
+
+    let listaDepositos = <FormArray>this.forma.get(['depositos']);
+    (listaDepositos.controls).forEach(element => {
+      let deposito = <FormGroup>element;
+      console.log('deposito ', deposito);
+      // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (deposito.dirty){
+        //si tiene x es modificación
+        if (deposito.controls['date_entered'].value != null){
+          this.estadosDepositos.modificados.push(deposito);
+        }
+        else{
+          this.estadosDepositos.nuevos.push(deposito);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+      }
+    });
+
+    console.log('Lista de depositoes a procesar: ', this.estadosDepositos);
+
+    this.estadosDepositos.nuevos.forEach(formDeposito => {
+      console.log('se agregará deposito: ', formDeposito);
+      this.guardarDeposito(formDeposito);
+    });
+
+    this.estadosDepositos.modificados.forEach(formDeposito => {
+      this.modificarDeposito(formDeposito);
+    });
+
+    this.estadosDepositos.eliminados.forEach(depositoEliminado => {
+      this.eliminarDeposito(depositoEliminado);
+    });
+
+    //reiniciar listas
+    this.estadosDepositos ={nuevos: [],
+                          modificados: [],
+                          eliminados: []};
+  }
+
+  guardarSustitutos(){
+    this.estadosArticulosSustitutos.nuevos = [];
+    this.estadosArticulosSustitutos.modificados = [];
+
+    let listaSustitutos = <FormArray>this.forma.get(['articulosSustitutos']);
+    (listaSustitutos.controls).forEach(element => {
+      let sustituto = <FormGroup>element;
+      console.log('sustituto ', sustituto);
+      // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (sustituto.dirty){
+        //si tiene x es modificación
+        if (sustituto.controls['date_entered'].value != null){
+          this.estadosArticulosSustitutos.modificados.push(sustituto);
+        }
+        else{
+          this.estadosArticulosSustitutos.nuevos.push(sustituto);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+      }
+    });
+
+    console.log('Lista de sustitutoes a procesar: ', this.estadosArticulosSustitutos);
+
+    this.estadosArticulosSustitutos.nuevos.forEach(formSustituto => {
+      console.log('se agregará sustituto: ', formSustituto);
+      this.guardarArticuloSustituto(formSustituto);
+    });
+
+    this.estadosArticulosSustitutos.modificados.forEach(formSustituto => {
+      this.modificarArticuloSustituto(formSustituto);
+    });
+
+    this.estadosArticulosSustitutos.eliminados.forEach(sustitutoEliminado => {
+      this.eliminarArticuloSustituto(sustitutoEliminado);
+    });
+
+    //reiniciar listas
+    this.estadosArticulosSustitutos ={nuevos: [],
+                          modificados: [],
+                          eliminados: []};
+  }
+
+  //#endregion sincronizarListas
+
+  //#region abm
+    //#region abmProveedor
+    guardarProveedor(proveedor: any){
+      let jsonbodyP = this.armarJSONProveedor(proveedor);
+      console.log('body guardado de proveedor: ', jsonbodyP);
+
+      this._articulosService.postProveedor(jsonbodyP, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            console.log('respuesta insert proveedor: ', this.respData);
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Token invalido insertando proveedor')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al agregar Proveedor: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Proveedor ID (insert): ' + this.respData.returnset[0].RId);
+              }
+            }
+        });
+    }
+
+    modificarProveedor(proveedor: any){
+      let jsonbodyP = this.armarJSONProveedor(proveedor);
+      console.log('body modificado de proveedor: ', jsonbodyP);
+      let id = (<FormGroup>proveedor).controls['idProveedor'].value;
+      this._articulosService.updateProveedor(id, jsonbodyP, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            console.log('respuesta modificar proveedor: ', this.respData);
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Token invalido modificando proveedor')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al modificar Proveedor: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Proveedor ID (update): ' + this.respData.returnset[0].RId);
+              }
+            }
+        });
+    }
+
+    eliminarProveedor(idProveedor: string){
+      console.log('Eliminando prov: ', idProveedor);
+      this._articulosService.deleteProveedor(idProveedor, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Sesión expirada.')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al eliminar Proveedor: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Proveedor ID (eliminado): ' + idProveedor);
+              }
+            }
+        });
+    }
+    //#endregion abmProveedor
+    //#region abmDeposito
+    guardarDeposito(deposito: any){
+      let jsonbodyD = this.armarJSONDeposito(deposito);
+      console.log('body guardado de deposito: ', jsonbodyD);
+
+      this._articulosService.postDeposito(jsonbodyD, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            console.log('respuesta insert deposito: ', this.respData);
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Token invalido insertando deposito')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al agregar Deposito: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Deposito ID (insert): ' + this.respData.returnset[0].RId);
+              }
+            }
+        });
+    }
+
+    modificarDeposito(deposito: any){
+      let jsonbodyD = this.armarJSONDeposito(deposito);
+      console.log('body modificado de deposito: ', jsonbodyD);
+      let id = (<FormGroup>deposito).controls['id'].value;
+      this._articulosService.updateDeposito(id, jsonbodyD, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            console.log('respuesta modificar deposito: ', this.respData);
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Token invalido modificando deposito')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al modificar Deposito: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Deposito ID (update): ' + this.respData.returnset[0].RId);
+              }
+            }
+        });
+    }
+
+    eliminarDeposito(idDeposito: string){
+      console.log('Eliminando dep: ', idDeposito);
+      this._articulosService.deleteDeposito(idDeposito, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Sesión expirada.')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al eliminar Deposito: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Deposito ID (eliminado): ' + idDeposito);
+              }
+            }
+        });
+    }
+    //#endregion abmDeposito
+    //#region abmArticulosSustitutos
+    guardarArticuloSustituto(sustituto: any){
+      let jsonbodyD = this.armarJSONSustituto(sustituto);
+      console.log('body guardado de sustituto: ', jsonbodyD);
+
+      this._articulosService.postArticuloSustituto(jsonbodyD, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            console.log('respuesta insert sustituto: ', this.respData);
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Token invalido insertando sustituto')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al agregar Sustituto: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Sustituto ID (insert): ' + this.respData.returnset[0].RId);
+              }
+            }
+        });
+    }
+
+    modificarArticuloSustituto(sustituto: any){
+      let jsonbodyD = this.armarJSONSustituto(sustituto);
+      console.log('body modificado de sustituto: ', jsonbodyD);
+      let id = (<FormGroup>sustituto).controls['idArtSust'].value;
+      this._articulosService.updateArticuloSustituto(id, jsonbodyD, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            console.log('respuesta modificar sustituto: ', this.respData);
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Token invalido modificando sustituto')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al modificar Sustituto: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Sustituto ID (update): ' + this.respData.returnset[0].RId);
+              }
+            }
+        });
+    }
+
+    eliminarArticuloSustituto(idSustituto: string){
+      console.log('Eliminando sust: ', idSustituto);
+      this._articulosService.deleteArticuloSustituto(idSustituto, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Sesión expirada.')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al eliminar Sustituto: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('Sustituto ID (eliminado): ' + idSustituto);
+              }
+            }
+        });
+    }
+    //#endregion abmArticulosSustitutos
+  //#endregion abm
 
   /* +++++++++++
     ARTÍCULO - FOTOS:
@@ -1427,10 +2038,10 @@ construirUnidadMedida(){
   }
 
   buscarArtProveedor(indice: number){
-    // console.log('llamado buscar articulo para proveedor nro ', indice)
+    console.log('llamado buscar articulo para proveedor nro ', indice)
     const provs = this.forma.controls.proveedores as FormArray;
     let id = provs.controls[indice].value['artDeProveedor'];
-    // console.log('buscando item ', id, provs.controls[indice])
+    console.log('buscando item indice ' + indice, id, provs.controls[indice])
     this._articulosService.getcArticulo(id , this.token )
       .subscribe( data => {
           this.artData = data;
@@ -1441,7 +2052,7 @@ construirUnidadMedida(){
             this.forma.disable();
             this.openSnackBar('Sesión expirada.')
           } else {
-          // console.log('resultado buscar articulo para proveedor nro ', this.artData)
+          console.log('resultado buscar articulo para proveedor nro '+ indice, this.artData)
 
           if(this.artData.dataset.length>0){
             this.proveedor = this.artData.dataset[0];
@@ -1830,5 +2441,11 @@ construirUnidadMedida(){
     else{
       return null;
     }
+  }
+  nuevaFecha(dateString: string){
+    //agregado 1 día a la fecha para que se muestre correctamente en el datepicker
+    let fecha = new Date(dateString);
+    fecha.setDate(fecha.getDate() +1);
+    return fecha;
   }
 }

@@ -79,12 +79,6 @@ export class LoginComponent implements OnInit {
     //this.routerLinkVariable = '/consulta-retenciones'
     this.dynamicParameter = this.formaFormulario.controls['idMCont'].value;
   }
-  prueba(){
-    this.routerLinkVariable = '/compra'
-    this.dynamicParameter = this.formaFormulario.controls['idPortal'].value;
-    this.exp = '302-905867';
-    console.log(this.dynamicParameter)
-  }
   /*compras(){
     this.routerLinkVariable = '/compra'
   }

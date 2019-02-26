@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, Inject, Injectable  } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
-import { FormGroup, FormControl, Validators, FormsModule, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormsModule, FormBuilder, FormArray, NgControlStatus } from '@angular/forms';
 import { getMatFormFieldMissingControlError, MatSnackBar } from '@angular/material';
 import { ProveedoresService } from 'src/app/services/i2t/proveedores.service';
 import { Proveedor } from 'src/app/interfaces/proveedor.interface';
@@ -12,7 +12,7 @@ import { AFIPInternoService } from 'src/app/services/i2t/afip.service';
 import { UnidadMedidaService } from 'src/app/services/i2t/unidad-medida.service';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ArticulosService } from 'src/app/services/i2t/articulos.service';
-import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo } from 'src/app/interfaces/articulo.interface';
+import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo, cArticulo } from 'src/app/interfaces/articulo.interface';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -61,6 +61,8 @@ export class AltaArticuloComponent implements OnInit {
   grupo:ProductoCategoria;
   marca:Marca;
   deposito:Deposito;
+  // artSust:ArticuloSustituto;
+  artSust:cArticulo;
 
   mData: any;//monedas
   cbData:any; //categorias bloqueo
@@ -93,7 +95,13 @@ export class AltaArticuloComponent implements OnInit {
   // hijosAll:artic
   fotosAll:FotoArticulo[];
 
-
+  estadosFotos:{
+    nuevos: any[],
+    modificados: any[],
+    eliminados: any[]
+  } = {nuevos: [],
+       modificados: [],
+       eliminados: []};
   estadosProveedores:{
     nuevos: any[],
     modificados: any[],
@@ -183,6 +191,8 @@ export class AltaArticuloComponent implements OnInit {
       categoriaVenta: new FormControl(),
       categoriaCompra: new FormControl(),
       categoriaInventario: new FormControl(),
+        //fotos
+        fotos: this.FormBuilder.array([]),
       //comprasyventas
       precioUltCompra: new FormControl(),
       fechaUltCompra: new FormControl(),
@@ -356,15 +366,16 @@ construirArticuloSust(){
   return new FormGroup({ 
     'idArtSust': new FormControl(null,Validators.required,this.existeArticulo),//id
     'artDesc': new FormControl(),//name
-    'umArticulo': new FormControl(),
-    'umSustituto': new FormControl(),
+    'umArticulo': new FormControl(),//tg01_unidadmedida_id_c
+    'umSustituto': new FormControl(),//tg01_unidadmedida_id1_c
     'tipoSustituto': new FormControl(),
+    'idsustituto': new FormControl(),
     'cantidad': new FormControl(null, Validators.required),
     'assigned_user_id': new FormControl(),
     'aos_products_id_c': new FormControl(),
     'aos_products_id1_c': new FormControl(),
-    'tg01_unidadmedida_id_c': new FormControl(),
-    'tg01_unidadmedida_id1_c': new FormControl(),
+    // 'tg01_unidadmedida_id_c': new FormControl(),
+    // 'tg01_unidadmedida_id1_c': new FormControl(),
     // 'IIAreaAplicacionImporteFijo': new FormControl(),
     'date_entered': new FormControl(),
     'created_by': new FormControl(),
@@ -412,6 +423,22 @@ construirUnidadMedida(){
     'UMAltDesc': new FormControl(), */
   });
 }
+
+construirFoto(){
+  return new FormGroup({
+    'id': new FormControl(),
+    'name': new FormControl(null,Validators.required),
+    'date_entered': new FormControl(),
+    'date_modified': new FormControl(),
+    'modified_user_id': new FormControl(),
+    'created_by': new FormControl(),
+    'description': new FormControl(),
+    'deleted': new FormControl(),
+    'assigned_user_id': new FormControl(),
+    'aos_products_id_c': new FormControl(),
+    'foto': new FormControl(null,Validators.required), //"www.i2t-sa.com/fotoJcabreraEDIT"
+  })
+}
 //#endregion FormArrays
 
   ngOnInit() {
@@ -444,16 +471,39 @@ construirUnidadMedida(){
   addUMAlt(){this.umAlt.push('nroUMAlt:'+(this.umAlt.length).toString);}
   deleteUMAlt(ind){this.umAlt.splice(ind, 1);} */
 
+  addFoto(){
+    const fotos = this.forma.controls.fotos as FormArray;
+    fotos.push(this.construirFoto());
+  }
+  deleteFoto(ind){
+    const fotos = this.forma.controls.fotos as FormArray;
+    console.log('fa proveedores a actualizar: ', fotos)
+    let foto = <FormGroup>fotos.controls[ind];
+    console.log('fg proveedor a borrar: ', foto)
+    if (foto.controls['date_entered'].value != null){
+      this.estadosFotos.eliminados.push(foto.controls['foto'].value);
+      // this.estadosProveedores.eliminados.push({id: foto.controls['id'].value, moneda: foto.controls['idMonedaUltCompra'].value});
+
+    } 
+    fotos.removeAt(ind);
+    console.log('lista de proveedores eliminados: ', this.estadosFotos.eliminados)
+  }
+
   addProveedor(){
     const provs = this.forma.controls.proveedores as FormArray;
     provs.push(this.construirProveedor());
   }
   deleteProveedor(ind){
     const provs = this.forma.controls.proveedores as FormArray;
+    console.log('fa proveedores a actualizar: ', provs)
     let prov = <FormGroup>provs.controls[ind];
-    /* if (prov.controls[''].value != null){
-      this.estadosProveedores.eliminados.push(prov.controls[''].value);
-    } */
+    console.log('fg proveedor a borrar: ', prov)
+    if (prov.controls['date_entered'].value != null){
+      // this.estadosProveedores.eliminados.push(prov.controls['idProveedor'].value);
+      this.estadosProveedores.eliminados.push({id: prov.controls['idProveedor'].value, 
+                                               moneda: prov.controls['idMonedaUltCompra'].value});
+
+    } 
     provs.removeAt(ind);
     console.log('lista de proveedores eliminados: ', this.estadosProveedores.eliminados)
   }
@@ -465,9 +515,12 @@ construirUnidadMedida(){
   deleteSustituto(ind){
     const arts = this.forma.controls.articulosSustitutos as FormArray;
     let art = <FormGroup>arts.controls[ind];
-    /* if (art.controls[''].value != null){
-      this.estadosArticulosSustitutos.eliminados.push(art.controls[''].value);
-    } */
+    if (art.controls['date_entered'].value != null){
+      // this.estadosArticulosSustitutos.eliminados.push(art.controls['idArtSust'].value);
+      this.estadosArticulosSustitutos.eliminados.push({id: art.controls['idArtSust'].value, 
+                                                       um: art.controls['umArticulo'].value,
+                                                       um2:art.controls['umSustituto'].value });
+    } 
     arts.removeAt(ind);
     console.log('lista de sustitutos eliminados: ', this.estadosArticulosSustitutos.eliminados)
   }
@@ -507,9 +560,11 @@ construirUnidadMedida(){
   deleteDeposito(ind){
     const deps = this.forma.controls.depositos as FormArray;
     let dep = <FormGroup>deps.controls[ind];
-    /* if (dep.controls[''].value != null){
-      this.estadosDepositos.eliminados.push(dep.controls[''].value);
-    } */
+    if (dep.controls['date_entered'].value != null){
+      // this.estadosDepositos.eliminados.push(dep.controls['id'].value);
+      this.estadosDepositos.eliminados.push({id: dep.controls['id'].value, 
+                                             deposito: dep.controls['tg01_depositos_id_c'].value});
+    } 
     deps.removeAt(ind);
     console.log('lista de depositos eliminados: ', this.estadosDepositos.eliminados)
   }
@@ -711,9 +766,50 @@ construirUnidadMedida(){
     this.forma.controls.depositos.reset();
     this.forma.controls.articulosSustitutos.reset();
     this.forma.controls.articulosHijos.reset();
-    // this.forma.controls.fotos.reset();
+    this.forma.controls.fotos.reset();
     this.forma.controls.unidadesAlternativas.reset();
     
+    //cargar datos de fotos
+    this._articulosService.getFotos(this.auxRid , this.token )
+      .subscribe( data => {
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.fotosAll = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            console.log('respuesta consulta de fotos asociadas: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.fotosAll = this.respData.dataset;
+              let index = 0;
+              
+              console.log('fotos recuperadas: ', this.fotosAll)
+              this.fotosAll.forEach(foto => {
+                console.log('se va a armar el formgroup para foto: ', foto)
+                this.addFoto();
+                console.log('foto: ' ,this.forma.get(['fotos', index]));
+                console.log('id foto: ',(this.forma.get(['fotos', index])).value['id']);
+                console.log('depsoito como formgroup: ', <FormGroup>this.forma.get(['fotos', index]))
+                let fgFoto: FormGroup = <FormGroup>this.forma.get(['fotos', index]);
+                fgFoto.controls['id'].setValue(foto.id);
+                fgFoto.controls['name'].setValue(foto.name);
+                fgFoto.controls['date_entered'].setValue(foto.date_entered);
+                fgFoto.controls['date_modified'].setValue(foto.date_modified);
+                fgFoto.controls['modified_user_id'].setValue(foto.modified_user_id);
+                fgFoto.controls['created_by'].setValue(foto.created_by);
+                fgFoto.controls['description'].setValue(foto.description);
+                fgFoto.controls['deleted'].setValue(foto.deleted);
+                fgFoto.controls['assigned_user_id'].setValue(foto.assigned_user_id);
+                fgFoto.controls['aos_products_id_c'].setValue(foto.aos_products_id_c);
+                fgFoto.controls['foto'].setValue(foto.id);
+
+                index = index +1;
+              });
+            }
+          }
+    });
     //cargar datos de depositos
     this._articulosService.getDepositosArticulo(this.auxRid , this.token )
       .subscribe( data => {
@@ -780,7 +876,7 @@ construirUnidadMedida(){
                 this.addProveedor();
                 console.log('proveedor: ' ,this.forma.get(['proveedores', index]));
                 console.log('id proveedor: ',(this.forma.get(['proveedores', index])).value['id']);
-                console.log('depsoito como formgroup: ', <FormGroup>this.forma.get(['proveedores', index]))
+                console.log('proveedor como formgroup: ', <FormGroup>this.forma.get(['proveedores', index]))
                 let fgProveedor: FormGroup = <FormGroup>this.forma.get(['proveedores', index]);
                 fgProveedor.controls['idProveedor'].setValue(proveedor.id);
                 fgProveedor.controls['razonSocial'].setValue(proveedor.name);
@@ -840,9 +936,13 @@ construirUnidadMedida(){
                 fgSustituto.controls['assigned_user_id'].setValue(sustituto.assigned_user_id);
                 fgSustituto.controls['aos_products_id_c'].setValue(sustituto.aos_products_id_c);
                 fgSustituto.controls['aos_products_id1_c'].setValue(sustituto.aos_products_id1_c);
-                fgSustituto.controls['tg01_unidadmedida_id_c'].setValue(sustituto.tg01_unidadmedida_id_c);
-                fgSustituto.controls['tg01_unidadmedida_id1_c'].setValue(sustituto.tg01_unidadmedida_id1_c);
+                // fgSustituto.controls['tg01_unidadmedida_id_c'].setValue(sustituto.tg01_unidadmedida_id_c);
+                // fgSustituto.controls['tg01_unidadmedida_id1_c'].setValue(sustituto.tg01_unidadmedida_id1_c);
+                fgSustituto.controls['umArticulo'].setValue(sustituto.tg01_unidadmedida_id_c);
+                fgSustituto.controls['umSustituto'].setValue(sustituto.tg01_unidadmedida_id1_c);
                 fgSustituto.controls['cantidad'].setValue(sustituto.cantidad);
+                fgSustituto.controls['tipoSustituto'].setValue(sustituto.tiposustituto);
+                fgSustituto.controls['idsustituto'].setValue(sustituto.idsustituto);
                 
                 index = index +1;
               });
@@ -861,6 +961,48 @@ construirUnidadMedida(){
   //#endregion cargaDatos
 
   //#region armadoJSONs
+  armarJSONFoto(Foto: any){
+    let fgFoto = <FormGroup>Foto;
+    let jsonbodyF, jsbodyF;
+    console.log('control de foto a usar: ', fgFoto)
+    var d = new Date();
+
+    if(fgFoto.controls['date_entered'].value == null){
+      //nuevo
+      jsbodyF = {
+        "id": fgFoto.controls['id'].value,
+        "name": fgFoto.controls['name'].value,
+        "date_entered": d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),//fgDeposito.controls['date_entered'].value,
+        "date_modified": d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),//fgDeposito.controls['date_modified'].value,
+        "modified_user_id": 1, //fgDeposito.controls['modified_user_id'].value, //1,controls['date_modified'].value,
+        "created_by": 1, //fgDeposito.controls['created_by'].value, //1,
+        "description": null, //fgDeposito.controls['description'].value,
+        "deleted": 0, //fgDeposito.controls['deleted'].value,  //0,
+        "assigned_user_id": 1, //fgDeposito.controls['assigned_user_id'].value, //1,
+        "aos_products_id_c": this.auxRid, //fgDeposito.controls['aos_products_id_c'].value, //, //Rid,
+        "foto":fgFoto.controls['foto'].value, 
+      }
+    }
+    else{
+      jsbodyF = {
+        "id": fgFoto.controls['id'].value,
+        "name": fgFoto.controls['name'].value,
+        "date_entered": fgFoto.controls['date_entered'].value,
+        "date_modified": d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),//fgDeposito.controls['date_modified'].value,
+        "modified_user_id": 1, //fgDeposito.controls['modified_user_id'].value, //1,controls['date_modified'].value,
+        "created_by": fgFoto.controls['created_by'].value, //fgDeposito.controls['created_by'].value, //1,
+        "description": null, //fgDeposito.controls['description'].value,
+        "deleted": 0, //fgDeposito.controls['deleted'].value,  //0,
+        "assigned_user_id": 1, //fgDeposito.controls['assigned_user_id'].value, //1,
+        "aos_products_id_c": this.auxRid, //fgDeposito.controls['aos_products_id_c'].value, //, //Rid,
+        "foto":fgFoto.controls['foto'].value, 
+      }
+    }
+    jsonbodyF = JSON.stringify(jsbodyF);
+    console.log('json de foto stringifeado: ', jsonbodyF)
+    return jsonbodyF;
+  }
+
   armarJSONArticulo(){
     console.log('armando json articulo con form: ', this.forma)
     let jsbody = {
@@ -939,7 +1081,7 @@ construirUnidadMedida(){
     console.log('control de deposito a usar: ', fgDeposito)
     var d = new Date();
 
-    if(fgDeposito.controls['id'].value != null){
+    if(fgDeposito.controls['date_entered'].value == null){
       //nuevo
       jsbodyD = {
         "id": fgDeposito.controls['tg01_depositos_id_c'].value,
@@ -986,8 +1128,10 @@ construirUnidadMedida(){
     let jsonbodyP, jsbodyP;
     console.log('control de deposito a usar: ', fgProveedor)
     var d = new Date();
+    var porDefecto: number =
+      (fgProveedor.controls['esPorDefecto'].value == null ? 0 : fgProveedor.controls['esPorDefecto'].value);
 
-    if(fgProveedor.controls['idProveedor'].value != null){
+    if(fgProveedor.controls['date_entered'].value == null){
       //nuevo
       jsbodyP = {
         "id": fgProveedor.controls['idProveedor'].value,//todo revisar
@@ -1004,7 +1148,8 @@ construirUnidadMedida(){
         "currency_id": 1,
         "ultimacompra": this.extraerFecha(<FormControl>fgProveedor.controls['fechaUltCompra']),//"2018-02-26",
         "tg01_monedas_id_c": fgProveedor.controls['idMonedaUltCompra'].value, //1, ID de consulta dinámica a la tabla tg01_monedas
-        "pordefecto": fgProveedor.controls['esPorDefecto'].value,//1,
+        // "pordefecto": (fgProveedor.controls['esPorDefecto'].value == null ? 0 : 1 ),//1,
+        "pordefecto": porDefecto,//1,
         "aos_products_id_c": this.auxRid,
         "account_id_c": 1, //fgProveedor.controls[''].value,//1 ID de consulta dinámica a la tabla tg01_accounts_cstm, tiporeferente_c = P
       }
@@ -1024,8 +1169,10 @@ construirUnidadMedida(){
         "precioultimacompra":fgProveedor.controls['precioUltCompra'].value,// 100,
         "currency_id": 1,
         "ultimacompra": this.extraerFecha(<FormControl>fgProveedor.controls['fechaUltCompra']),//"2018-02-26",
-        "tg01_monedas_id_c": fgProveedor.controls['idMonedaUltCompra'].value, //1, ID de consulta dinámica a la tabla tg01_monedas
-        "pordefecto": fgProveedor.controls['esPorDefecto'].value,//1,
+        // "tg01_monedas_id_c": fgProveedor.controls['idMonedaUltCompra'].value, //1, ID de consulta dinámica a la tabla tg01_monedas
+        "tg01_monedas_id_c": 1, //ID de consulta dinámica a la tabla tg01_monedas
+        // "pordefecto": fgProveedor.controls['esPorDefecto'].value,//1,
+        "pordefecto": porDefecto,//1,
         "aos_products_id_c": this.auxRid,
         "account_id_c": 1, //fgProveedor.controls[''].value,//1 ID de consulta dinámica a la tabla tg01_accounts_cstm, tiporeferente_c = P
       }
@@ -1038,14 +1185,14 @@ construirUnidadMedida(){
   armarJSONSustituto(Sustituto: any){
     let fgSustituto = <FormGroup>Sustituto;
     let jsonbodyP, jsbodyP;
-    console.log('control de deposito a usar: ', fgSustituto)
+    console.log('control de sustituto a usar: ', fgSustituto)
     var d = new Date();
 
-    if(fgSustituto.controls['id'].value != null){
+    if(fgSustituto.controls['date_entered'].value == null){
       //nuevo
       jsbodyP = {
         "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica
-        "name": fgSustituto.controls['razonSocial'].value,
+        "name": fgSustituto.controls['artDesc'].value,
         "date_entered":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "modified_user_id": 1,//usuario logueado por ahora 1
@@ -1058,14 +1205,15 @@ construirUnidadMedida(){
         "cantidad": fgSustituto.controls['cantidad'].value, //100, Cantidad
         "tg01_unidadmedida_id_c": fgSustituto.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
         "tg01_unidadmedida_id1_c": fgSustituto.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
-        "idsustituto": fgSustituto.controls['idArtSust'].value, //, codigo de articulo //todo revisar
+        "idsustituto": fgSustituto.controls['idsustituto'].value, //, codigo de articulo //todo revisar si es part number
         "tiposustituto": fgSustituto.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
       }
     }
     else{
       jsbodyP = {
         // "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica
-        "name": fgSustituto.controls['razonSocial'].value,
+        // "name": fgSustituto.controls['razonSocial'].value,
+        "name": fgSustituto.controls['artDesc'].value,
         "date_entered": fgSustituto.controls['date_entered'].value,
         "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "modified_user_id": 1,//usuario logueado por ahora 1
@@ -1078,7 +1226,7 @@ construirUnidadMedida(){
         "cantidad": fgSustituto.controls['cantidad'].value, //100, Cantidad
         "tg01_unidadmedida_id_c": fgSustituto.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
         "tg01_unidadmedida_id1_c": fgSustituto.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
-        "idsustituto": fgSustituto.controls['idArtSust'].value, //, codigo de articulo //todo revisar
+        "idsustituto": fgSustituto.controls['idsustituto'].value, //, codigo de articulo //todo revisar si es part number
         "tiposustituto": fgSustituto.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
       }
     }
@@ -1196,6 +1344,8 @@ construirUnidadMedida(){
     }else{
       //actualizando
 
+      //todo descomentar
+      /*
       let jsbody = {
         "ArticuloItem" : this.forma.controls['tipo'].value,
         "IPart_number" : this.forma.controls['nroArticulo'].value,
@@ -1256,6 +1406,8 @@ construirUnidadMedida(){
         "profundidad":this.forma.controls['profundidad'].value,
         "m3": this.forma.controls['m3'].value
       }
+      */
+     this.guardarDatosArticulo();
     }
   }
 
@@ -1452,9 +1604,16 @@ construirUnidadMedida(){
         });
     }
 
-    eliminarProveedor(idProveedor: string){
-      console.log('Eliminando prov: ', idProveedor);
-      this._articulosService.deleteProveedor(idProveedor, this.token )
+    eliminarProveedor(proveedor: any){
+      console.log('Eliminando prov: ', proveedor.id);
+      
+      let jsbody = { 
+        "deleted": 1,
+        "tg01_monedas_id_c": proveedor.moneda
+      };
+      let jsonbody = JSON.stringify(jsbody);
+
+      this._articulosService.deleteProveedor(proveedor.id, jsonbody, this.token )
         .subscribe( data => {
             this.respData = data;
             if(this.respData.returnset[0].RCode=="-6003"){
@@ -1466,7 +1625,7 @@ construirUnidadMedida(){
                 console.log('Error al eliminar Proveedor: ' + this.respData.returnset[0].RTxt, this.respData);
               }
               else{
-                console.log('Proveedor ID (eliminado): ' + idProveedor);
+                console.log('Proveedor ID (eliminado): ' + proveedor.id);
               }
             }
         });
@@ -1519,9 +1678,16 @@ construirUnidadMedida(){
         });
     }
 
-    eliminarDeposito(idDeposito: string){
-      console.log('Eliminando dep: ', idDeposito);
-      this._articulosService.deleteDeposito(idDeposito, this.token )
+    eliminarDeposito(deposito: any){
+      console.log('Eliminando dep: ', deposito);
+      
+      let jsbody = { 
+        "deleted": 1,
+        "tg01_depositos_id_c": deposito.deposito
+      };
+      let jsonbody = JSON.stringify(jsbody);
+
+      this._articulosService.deleteDeposito( deposito.id, jsonbody, this.token )
         .subscribe( data => {
             this.respData = data;
             if(this.respData.returnset[0].RCode=="-6003"){
@@ -1533,7 +1699,7 @@ construirUnidadMedida(){
                 console.log('Error al eliminar Deposito: ' + this.respData.returnset[0].RTxt, this.respData);
               }
               else{
-                console.log('Deposito ID (eliminado): ' + idDeposito);
+                console.log('Deposito ID (eliminado): ' + deposito);
               }
             }
         });
@@ -1586,9 +1752,16 @@ construirUnidadMedida(){
         });
     }
 
-    eliminarArticuloSustituto(idSustituto: string){
-      console.log('Eliminando sust: ', idSustituto);
-      this._articulosService.deleteArticuloSustituto(idSustituto, this.token )
+    eliminarArticuloSustituto(sustituto: any){
+      console.log('Eliminando sust: ', sustituto);
+      let jsbody = { 
+        "deleted": 1,
+        "tg01_unidadmedida_id_c": sustituto.um,
+        "tg01_unidadmedida_id1_c": sustituto.um2
+      };
+      let jsonbody = JSON.stringify(jsbody);
+
+      this._articulosService.deleteArticuloSustituto(sustituto.id, jsonbody, this.token )
         .subscribe( data => {
             this.respData = data;
             if(this.respData.returnset[0].RCode=="-6003"){
@@ -1600,7 +1773,7 @@ construirUnidadMedida(){
                 console.log('Error al eliminar Sustituto: ' + this.respData.returnset[0].RTxt, this.respData);
               }
               else{
-                console.log('Sustituto ID (eliminado): ' + idSustituto);
+                console.log('Sustituto ID (eliminado): ' + sustituto);
               }
             }
         });
@@ -2090,20 +2263,26 @@ construirUnidadMedida(){
           } else {
           // console.log('resultado buscar articulo para sustituto nro ', this.artData)
 
-          if(this.artData.dataset.length>0){
-            this.proveedor = this.artData.dataset[0];
+          if(this.artData.dataset.length==1){
+            this.artSust = this.artData.dataset[0];
             
             //rellenar descripcion
             ((this.forma.controls.articulosSustitutos as FormArray).
               controls[indice] as FormGroup).
-                controls['artDesc'].setValue(this.proveedor.name);
+                controls['artDesc'].setValue(this.artSust.name);
+            ((this.forma.controls.articulosSustitutos as FormArray).
+              controls[indice] as FormGroup).
+                controls['idsustituto'].setValue(this.artSust.part_number);  
           } else {
-            this.proveedor = null;
+            this.artSust = null;
             
             //vaciar descripcion
             ((this.forma.controls.articulosSustitutos as FormArray).
               controls[indice] as FormGroup).
-                controls['artDesc'].setValue('');
+                controls['artDesc'].setValue(null);
+            ((this.forma.controls.articulosSustitutos as FormArray).
+              controls[indice] as FormGroup).
+                controls['idsustituto'].setValue(null);  
           }
         }
       });
@@ -2126,7 +2305,7 @@ construirUnidadMedida(){
           } else {
           // console.log('resultado buscar articulo para hijo nro ', this.artData)
 
-          if(this.artData.dataset.length>0){
+          if(this.artData.dataset.length==1){
             this.proveedor = this.artData.dataset[0];
             
             //rellenar descripcion

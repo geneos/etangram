@@ -233,33 +233,40 @@
       </div>
 
       <!-- relacion fotos -->
-      <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;"  *ngIf="tipoArt.value!=2">
-        <span style="display:flex;">
-          <h6>Fotos:</h6>
-          <button type="button" (click)="addFoto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
-            +
-          </button>
-        </span>
-      </div>
- 
-      <div class="row" *ngFor="let item of fotos; let in = index" style="margin:5px !important;">
-        <!--<div class="col s12 m4 l3">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>Número de Foto</mat-label>
-            <input matInput placeholder="" type="text">
-          </mat-form-field>
-        </div>-->
-        <div class="col s8 m8 l4"  *ngIf="tipoArt.value!=2">
-          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-            <mat-label>URL de Foto</mat-label>
-            <input matInput placeholder="" type="text">
-            <!--<mat-hint>Hint</mat-hint>-->
-          </mat-form-field>
+      <div *ngIf="tipoArt.value!=2">
+        <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;"  >
+          <span style="display:flex;">
+            <h6>Fotos:</h6>
+            <button type="button" (click)="addFoto()" class="mine-btnbig" mat-mini-fab style="font-size:20px !important; margin-left:10px;">
+              +
+            </button>
+          </span>
         </div>
-        <div class="col s4 m4 l3" *ngIf="tipoArt.value!=2">
-          <button type="button" (click)="deleteFoto(in)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
-            -
-          </button>
+ 
+        <div formArrayName="fotos" *ngFor="let dep of forma.controls.fotos?.controls; let i = index">
+          <ng-container [formGroupName]="i">
+            <!-- <div class="row" *ngFor="let item of fotos; let in = index" style="margin:5px !important;"> -->
+            <div class="row" style="margin:5px !important;">
+              <div class="col s12 m4 l3">
+                <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                  <mat-label>Nombre</mat-label>
+                  <input matInput placeholder="" formControlName="name" type="text">
+                </mat-form-field>
+              </div>
+              <div class="col s8 m8 l4"  *ngIf="tipoArt.value!=2">
+                <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+                  <mat-label>URL de Foto</mat-label>
+                  <input matInput placeholder="" formControlName="foto" type="text">
+                  <!--<mat-hint>Hint</mat-hint>-->
+                </mat-form-field>
+              </div>
+              <div class="col s4 m4 l3" *ngIf="tipoArt.value!=2">
+                <button type="button" (click)="deleteFoto(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
+                  -
+                </button>
+              </div>
+            </div>
+          </ng-container>
         </div>
       </div>
       <!--fin relacion-->
@@ -690,8 +697,11 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>U.M. Artículo</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="umArticulo">
-                <mat-option value="1">1</mat-option>
-                <mat-option value="2">2</mat-option>
+                <!-- <mat-option value="1">1</mat-option> -->
+                <!-- <mat-option value="2">2</mat-option> -->
+                <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
+                  {{aux.name}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -699,8 +709,11 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>U.M. Sustituto</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="umSustituto">
-                <mat-option value="1">1</mat-option>
-                <mat-option value="2">2</mat-option>
+                <!-- <mat-option value="1">1</mat-option> -->
+                <!-- <mat-option value="2">2</mat-option> -->
+                <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
+                  {{aux.name}}
+                </mat-option>
               </mat-select>
             </mat-form-field>
           </div>
@@ -960,7 +973,9 @@
 
   <div class="row" style="margin-top:25px;">
     <div class="col s12" style="text-align: right;">
-      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
+      <!-- todo cambiar -->
+      <!-- <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid"> -->
+      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" >
         GUARDAR
       </button>
       <button type="reset" class="mine-btnbig-grey" mat-flat-button>

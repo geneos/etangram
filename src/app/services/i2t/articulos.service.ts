@@ -181,7 +181,7 @@ export class ArticulosService {
         'x-access-token': token
       });
   
-      let query = `api/tg08_articulosdepositos?aos_products_id_c=${ idProducto }`;
+      let query = `api/tg08_articulosdepositos?aos_products_id_c=${ idProducto }&deleted=0`;
       let url = this.preUrl + query;
   
       return this.http.get( url , { headers });
@@ -192,7 +192,7 @@ export class ArticulosService {
         'x-access-token': token
       });
   
-      let query = `api/tg08_articulosfotos?aos_products_id_c=${ idProducto }`;
+      let query = `api/tg08_articulosfotos?aos_products_id_c=${ idProducto }&deleted=0`;
       let url = this.preUrl + query;
   
       return this.http.get( url , { headers });
@@ -203,7 +203,7 @@ export class ArticulosService {
         'x-access-token': token
       });
   
-      let query = `api/tg08_articulosproveedores?aos_products_id_c=${ idProducto }`;
+      let query = `api/tg08_articulosproveedores?aos_products_id_c=${ idProducto }&deleted=0`;
       let url = this.preUrl + query;
   
       return this.http.get( url , { headers });
@@ -214,7 +214,7 @@ export class ArticulosService {
         'x-access-token': token
       });
   
-      let query = `api/tg08_articulossustitutos?aos_products_id_c=${ idProducto }`;
+      let query = `api/tg08_articulossustitutos?aos_products_id_c=${ idProducto }&deleted=0`;
       let url = this.preUrl + query;
   
       return this.http.get( url , { headers });
@@ -226,14 +226,14 @@ export class ArticulosService {
 
     }
 
-    deleteDeposito( id:string, token:string ){
+    deleteDeposito( id:string, jsonbody: string, token:string ){
       const headers = new HttpHeaders({
         'x-access-token': token,
         'Content-Type': 'application/json'
       });
-      
+      /* 
       let jsbody = { "deleted": 1 };
-      let jsonbody = JSON.stringify(jsbody);
+      let jsonbody = JSON.stringify(jsbody); */
 
       let query = `api/tg08_articulosdepositos/${id}`;
       let url = this.preUrl + query;
@@ -256,29 +256,29 @@ export class ArticulosService {
       return this.http.put( url, jsonbody, { headers } );
     }
 
-    deleteProveedor( id:string, token:string ){
+    deleteProveedor( id:string, body: string, token:string ){
       const headers = new HttpHeaders({
         'x-access-token': token,
         'Content-Type': 'application/json'
       });
       
-      let jsbody = { "deleted": 1 };
-      let jsonbody = JSON.stringify(jsbody);
+      // let jsbody = { "deleted": 1 };
+      // let jsonbody = JSON.stringify(jsbody);
 
       let query = `api/tg08_articulosproveedores/${id}`;
       let url = this.preUrl + query;
   
-      return this.http.put( url, jsonbody, { headers } );
+      return this.http.put( url, body, { headers } );
     }
 
-    deleteArticuloSustituto( id:string, token:string ){
+    deleteArticuloSustituto( id:string, jsonbody: string, token:string ){
       const headers = new HttpHeaders({
         'x-access-token': token,
         'Content-Type': 'application/json'
       });
       
-      let jsbody = { "deleted": 1 };
-      let jsonbody = JSON.stringify(jsbody);
+      // let jsbody = { "deleted": 1 };
+      // let jsonbody = JSON.stringify(jsbody);
 
       let query = `api/tg08_articulossustitutos/${id}`;
       let url = this.preUrl + query;
@@ -330,7 +330,7 @@ export class ArticulosService {
         'Content-Type': 'application/json'
       });
   
-      let query = "tg08_articulosproveedores";
+      let query = "api/tg08_articulosproveedores";
       let url = this.preUrl + query;
   
       return this.http.post( url, body, { headers } );

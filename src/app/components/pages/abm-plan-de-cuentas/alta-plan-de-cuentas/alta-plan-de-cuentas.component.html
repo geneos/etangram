@@ -1,12 +1,13 @@
 <h2 *ngIf="!existe">NUEVA CUENTA CONTABLE</h2>
 <h2 *ngIf="existe">EDITANDO CUENTA CONTABLE</h2>
-<button [routerLink]="['/plan-cuentas']" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+<button [routerLink]="['/plan-cuentas',urla]" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
   VOLVER A LISTA
 </button>
 <button (click)="eliminarPlanDeCuentas()" class="mine-btnbig" mat-flat-button style="margin-right:10px;" *ngIf="existe">
   ELIMINAR
 </button>
 
+<app-loading *ngIf="loading"></app-loading>
 <form [formGroup]="forma" (ngSubmit)="guardarPlanDeCuentas()" novalidate="novalidate">
       <!--
       id                  if:string;
@@ -19,9 +20,11 @@
 
       Imputable?          imputable:number;
       Patrimonial?        patrimonial:number;
-      -->
 
-  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;">
+
+      [ngStyle]="{'display':loading ? 'none' : 'block' }"
+      -->
+  <mat-expansion-panel [expanded]=true [disabled]=true style="margin-top:10px;" *ngIf="!loading">
     <mat-expansion-panel-header>
       <mat-panel-title>BÁSICO</mat-panel-title>
     </mat-expansion-panel-header>
@@ -235,7 +238,7 @@
     </div>
   </mat-expansion-panel>
 
-  <div class="row" style="margin-top:15px;">
+  <div class="row" style="margin-top:15px;" *ngIf="!loading">
     <div class="col s12" style="text-align: right;">
       <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid">
         GUARDAR

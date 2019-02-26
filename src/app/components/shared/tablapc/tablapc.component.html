@@ -25,10 +25,10 @@
     <th mat-header-cell *matHeaderCellDef> </th>
     <td mat-cell *matCellDef="let auxtabla" style="width:100px;">
       <!--<i class="material-icons" style="color:red;">close</i>-->
-      <a [routerLink]="['/plan-cuentas',auxtabla.id]" style="color:#f08377;">
+      <a [routerLink]="['/plan-cuentas/alta',auxtabla.id]" style="color:#f08377;">
         <i class="material-icons">edit</i>
       </a>
-      <a [routerLink]="['/plan-cuentas','nuevo',auxtabla.nomenclador]" style="color:#f08377;">
+      <a [routerLink]="['/plan-cuentas/alta','nuevo',auxtabla.nomenclador]" style="color:#f08377;">
         <i class="material-icons">add</i>
       </a>
     </td>

@@ -82,7 +82,7 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef style="text-align:center;"> Acciones </th>
         <td mat-cell *cdkCellDef="let element" style="text-align:center;">
-            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" > D </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" (click)="expandedElement = expandedElement === element ? null : element"> D </span>
             <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)=print(element.id_op_url)> I </span>
         </td>
       </ng-container>
@@ -92,21 +92,19 @@
           <div class="example-element-detail"
                [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
             <div class="example-element-diagram">
-              <h6>Observaciones</h6>
-              <div class="example-element-position"> {{element.Observaciones_Comprobante}} </div>
+              <h6>Descripcion</h6>
+              <div class="example-element-position"> {{element.descripcion}} </div>
             </div>
           </div>
         </td>
       </ng-container>
 
-      <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
-      <tr mat-row *cdkRowDef="let row; columns: ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];"
-      class="example-element-row"
-      [class.example-expanded-row]="expandedElement === element"
-      (click)="expandedElement = expandedElement === element ? null : element"></tr>
+         <tr mat-header-row *matHeaderRowDef="columnsToDisplay "></tr>
+         <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;"
+         class="example-element-row"
+         [class.example-expanded-row]="expandedElement === element"></tr>
 
-      <tr mat-row *cdkRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-      
+         <tr mat-row *cdkRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
     </table>
     
   </div>
@@ -121,7 +119,7 @@
   
   <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading">
 
-    <table  mat-table [dataSource]="pendienteRendicion" matSort class="mat-elevation-z1">
+    <table  mat-table [dataSource]="pendienteRendicion" multiTemplateDataRows matSort class="mat-elevation-z1">
     
       <!-- fecha Column -->
       <ng-container matColumnDef="numero">
@@ -157,15 +155,31 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef style="text-align:center;"> Acciones </th>
         <td mat-cell *cdkCellDef="let element" style="text-align:center;">
-            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" > D </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" (click)="expandedElement = expandedElement === element ? null : element"> D </span>
             <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)="print(element.id_op_url)"> I </span>
             <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" (click)="abrirConsulta()"> E </span>
-            <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;"> F </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)="cargaFactura(element.expediente_nombre)"> F </span>
         </td>
       </ng-container>
   
-      <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
-      <tr mat-row *cdkRowDef="let row; columns: ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];"></tr>
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *cdkCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+          <div class="example-element-detail"
+               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+            <div class="example-element-diagram">
+              <h6>Descripcion</h6>
+              <div class="example-element-position"> {{element.descripcion}} </div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+         <tr mat-header-row *matHeaderRowDef="columnsToDisplay "></tr>
+         <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;"
+         class="example-element-row"
+         [class.example-expanded-row]="expandedElement === element"></tr>
+
+         <tr mat-row *cdkRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
     </table>
     
   </div>
@@ -179,7 +193,7 @@
   </mat-expansion-panel-header>
   <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading">
 
-    <table  #tableConsultaCrd mat-table [dataSource]="enProcesoLiquidacion" matSort class="mat-elevation-z1">
+    <table  #tableConsultaCrd mat-table [dataSource]="enProcesoLiquidacion" multiTemplateDataRows matSort class="mat-elevation-z1">
     
       <!-- fecha Column -->
       <ng-container matColumnDef="numero">
@@ -215,14 +229,29 @@
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef style="text-align:center;"> Acciones </th>
         <td mat-cell *cdkCellDef="let element" style="text-align:center;">
-            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" > D </span>
+            <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" (click)="expandedElement = expandedElement === element ? null : element"> D </span>
             <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)=print(element.id_op_url)> I </span>
         </td>
       </ng-container>
-  
-      <tr mat-header-row *cdkHeaderRowDef="['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones']"></tr>
-      <tr mat-row *cdkRowDef="let row; columns: ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];"></tr>
-    </table>
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *cdkCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+          <div class="example-element-detail"
+               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+            <div class="example-element-diagram">
+              <h6>Descripcion</h6>
+              <div class="example-element-position"> {{element.descripcion}} </div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+         <tr mat-header-row *matHeaderRowDef="columnsToDisplay "></tr>
+         <tr mat-row *cdkRowDef="let element; columns: columnsToDisplay ;"
+         class="example-element-row"
+         [class.example-expanded-row]="expandedElement === element"></tr>
+
+         <tr mat-row *cdkRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+   </table>
     
   </div>
 </mat-expansion-panel>

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild,  ElementRef, Inject, Injectable } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { CompraService } from "../../../services/i2t/compra.service";
@@ -18,6 +19,7 @@ import { supportsScrollBehavior } from '@angular/cdk/platform';
 const TOKEN = '';
 var auxProvData: any;
 
+
 @Injectable()
 
 @Component({
@@ -33,11 +35,15 @@ var auxProvData: any;
   ],
 })
 export class OrdenesPublicidadComponent implements OnInit {
+
+  dynamicParameter: string = "";
+  routerLinkVariable = "/compra";
   loading: boolean = true;
   forma: FormGroup;
   @ViewChild(MatSort) sort: MatSort;
   suscripcionEvidencias: Subscription;
   itemDeConsulta: any;
+  exp: any;
 
   //datos para impresion
   baseDatos: any;
@@ -53,7 +59,10 @@ export class OrdenesPublicidadComponent implements OnInit {
   enProcesoLiquidacion: OrdPublicidad[] = [];
   
   expandedElement: OrdPublicidad | null;
+  expandedElementP: OrdPublicidad | null;
+  expandedElementE: OrdPublicidad | null;
   columnsToDisplay  = ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];
+  selection = new SelectionModel(true, []);
 
   compraProveedor: CompraProveedor;
   proveedorData: any;
@@ -63,7 +72,9 @@ export class OrdenesPublicidadComponent implements OnInit {
   loginData: any;
   razonSocial: string;
 
-  constructor(private route:ActivatedRoute,private router: Router,
+    
+  constructor(private route:ActivatedRoute,
+              private router: Router,
               private _compraService: CompraService,
               private _ImpresionCompService:ImpresionCompService,
               private _ordPublicidadService: OrdPublicidadService,
@@ -273,4 +284,9 @@ export class OrdenesPublicidadComponent implements OnInit {
     });
     this.ngxSmartModalService.open(datosModal.modal);
   }   
+
+  cargaFactura(exp){
+    this.dynamicParameter = this.id;
+    this.router.navigate(['compra', this.id, exp])
+  }
 }

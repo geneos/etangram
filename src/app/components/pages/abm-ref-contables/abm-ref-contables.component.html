@@ -1,5 +1,5 @@
 <h2>REFERENCIAS CONTABLES</h2>
-<button [routerLink]="['/ref-contables','nuevo']" class="mine-btnbig" mat-flat-button *ngIf="!permiso_crear">
+<button [routerLink]="['/ref-contables','nuevo']" class="mine-btnbig" mat-flat-button *ngIf="!permisos.permiso_crear">
   NUEVO
 </button>
 
@@ -26,12 +26,12 @@
       </ng-container>
 
       <!-- Columna Opciones --> 
-      <ng-container  matColumnDef="opciones">
+      <ng-container   matColumnDef="opciones">
         <th mat-header-cell *matHeaderCellDef> </th>
-        <td mat-cell *matCellDef="let auxtabla" style="width:60px;">
+        <td  mat-cell *matCellDef="let auxtabla" style="width:60px;">
           <!--<i class="material-icons" style="color:red;">close</i>-->
           <a [routerLink]="['/ref-contables',auxtabla.id]" style="color:#000;">
-            <i class="material-icons">edit</i>
+            <i *ngIf="permisos.permiso_editar" class="material-icons">edit</i>
           </a>
         </td>
       </ng-container>

@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   offline: boolean = true;
   hide = true;
   dynamicParameter: string = "";
+  exp: string ="";
   routerLinkVariable = "/compra";
   loginData: any;
   token: string = "a";

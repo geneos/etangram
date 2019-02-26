@@ -65,6 +65,7 @@ export class AbmComprasComponent implements OnInit {
 
   idParam:string = null;
   expParam:string = null;
+  retorna: boolean = false;
 
   tcData: any;
   tipoComprobante: TipoComprobante[] = [];
@@ -104,6 +105,7 @@ export class AbmComprasComponent implements OnInit {
   pass: string;
 
   constructor(public dialogArt: MatDialog,
+              private router: Router,
               private _compraService:CompraService,
               private _tiposComprobante:TiposComprobanteService,
               private _unidadMedida:UnidadMedidaService,
@@ -168,6 +170,7 @@ export class AbmComprasComponent implements OnInit {
       this.forma.controls['proveedor'].disable();
     }
     if(this.expParam != null){
+      this.retorna = true;
       this.forma.controls['expediente'].setValue(this.expParam);
       this.buscarExpediente();
       this.existeExp = true;
@@ -626,6 +629,9 @@ export class AbmComprasComponent implements OnInit {
     this.forma.controls['cbtemodo'].disable();
     this.forma.controls['totalCabecera'].disable();
     this.forma.controls['expediente'].disable();
+  }
+  if(this.retorna = true){
+    this.router.navigate(['ordenes-publicidad', this.idParam])
   }
 }
   guardarArticulo(){

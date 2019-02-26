@@ -5,6 +5,8 @@ import { MatSnackBar,MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_D
 import { RefContablesService } from '../../../../services/i2t/ref-contables.service';
 import { RefContable } from '../../../../interfaces/ref-contable.interface';
 import { formatDate } from '@angular/common';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { Subscription } from 'rxjs';
 import { UsuariosService } from '../../../../services/i2t/usuarios.service';
 import { Usuario } from 'src/app/interfaces/usuario.interface';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
@@ -42,10 +44,14 @@ export class AltaRefContableComponent implements OnInit {
   today:Date;
   datetime = '';
 
+  suscripcionConsDin: Subscription;
+  itemDeConsulta: any;
+
   constructor(
     private route:ActivatedRoute,
     private _refContablesService:RefContablesService,
     private _usuariosService:UsuariosService,
+    public ngxSmartModalService: NgxSmartModalService,
     private router: Router,
     public snackBar: MatSnackBar,
     @Inject(SESSION_STORAGE) private storage: StorageService
@@ -389,4 +395,65 @@ export class AltaRefContableComponent implements OnInit {
     }
   }
 
+  abrirConsulta(consulta: string, control: string){
+    this.itemDeConsulta = null;
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'consDinModal'
+    }
+    
+    let atributoAUsar: string;
+    switch (consulta) {
+      case 'tg01_cuentascontables':
+        atributoAUsar = 'name';
+        break;
+      case 'tg01_grupofinanciero':
+        atributoAUsar = 'name';
+        break;
+      default:
+        atributoAUsar = 'id';
+        break;
+    }
+
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+        this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+        this.itemDeConsulta = respuesta.selection[0];
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionConsDin.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
+  }
 }

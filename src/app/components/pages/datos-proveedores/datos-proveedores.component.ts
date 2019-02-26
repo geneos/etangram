@@ -27,6 +27,8 @@ export class DatosProveedoresComponent implements OnInit {
   suscripcionConsDin: Subscription;
   itemDeConsulta: any;
   @ViewChild('envCodPostal') elEnvCodigoPostal: any;
+  suscripcionFormularios: Subscription;
+
 
   respCabecera: any;
   respUpdCabecera: any;
@@ -377,6 +379,54 @@ export class DatosProveedoresComponent implements OnInit {
     return this.usuario;
   }
 
+  cargarFormulario(consulta){
+    this.itemDeConsulta = null;
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'formulariosModal'
+    }
+    
+
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionFormularios = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+        this.itemDeConsulta = respuesta.selection[0];
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionFormularios.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
+  }
 }
 export interface datosCabecera {
   'Razon_Social': string,

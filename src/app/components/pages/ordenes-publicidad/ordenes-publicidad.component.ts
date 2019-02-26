@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild,  ElementRef, Inject, Injectable } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { SelectionModel, DataSource } from '@angular/cdk/collections';
 import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatSnackBar } from '@angular/material';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { CompraService } from "../../../services/i2t/compra.service";
@@ -58,7 +59,10 @@ export class OrdenesPublicidadComponent implements OnInit {
   enProcesoLiquidacion: OrdPublicidad[] = [];
   
   expandedElement: OrdPublicidad | null;
+  expandedElementP: OrdPublicidad | null;
+  expandedElementE: OrdPublicidad | null;
   columnsToDisplay  = ['numero', 'mes', 'medio', 'expediente', 'importe', 'acciones'];
+  selection = new SelectionModel(true, []);
 
   compraProveedor: CompraProveedor;
   proveedorData: any;

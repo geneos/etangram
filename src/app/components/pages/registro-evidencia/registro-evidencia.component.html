@@ -33,22 +33,22 @@
     </div>
   </div>
 
-  <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!loading&&!nuevo">
+  <div class="mat-elevation-z8" style="margin-top:15px;" *ngIf="!nuevo">
 
-    <table mat-table [dataSource]="aEjecutar" multiTemplateDataRows class="mat-elevation-z1">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z1">
     
       <!-- fecha Column -->
-      <ng-container matColumnDef="fecha">
-        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Numero </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.num_operacion }} </td>
-      </ng-container>
-  
-      <!-- comprobante Column -->
       <ng-container matColumnDef="descripcion">
-        <th mat-header-cell *matHeaderCellDef> Mes</th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.mes_pactado }} </td>
+        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripcion </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.descripcion }} </td>
       </ng-container>
   
+      <!-- fecha Column -->
+      <ng-container matColumnDef="fecha">
+        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Fecha </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.fecha }} </td>
+      </ng-container>
+
        <!-- accion Column -->
       <ng-container matColumnDef="acciones">
         <th mat-header-cell *matHeaderCellDef style="text-align:center;"> Acciones </th>
@@ -58,8 +58,8 @@
         </td>
       </ng-container>
       
-      <tr mat-header-row *cdkHeaderRowDef="['fecha', 'descripcion', 'acciones']"></tr>
-      <tr mat-row *cdkRowDef="let row; columns: ['fecha', 'descripcion', 'acciones'];"></tr>
+      <tr mat-header-row *cdkHeaderRowDef="['descripcion', 'fecha', 'acciones']"></tr>
+      <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'fecha', 'acciones'];"></tr>
     </table>
     
   </div>
@@ -69,7 +69,7 @@
       <div class="col s12 m3 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha</mat-label>
-          <input matInput placeholder="" formControlName="fecha">
+          <input matInput placeholder="" formControlName="fecha" value="{{ fechaActual | date: 'dd-MM-yyyy' }}">
           <!--<mat-hint>Hint</mat-hint>-->
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
@@ -85,6 +85,6 @@
     </div> 
   </form>
 
-  <button class="mine-btnbig" mat-flat-button *ngIf="!nuevo" (click)="agregarEvidencia()">NUEVO</button>
+  <button class="mine-btnbig" mat-flat-button *ngIf="!nuevo" (click)="agregarEvidencia()" style="margin:15px;">NUEVO</button>
   <button class="mine-btnbig" mat-flat-button *ngIf="nuevo" (click)="guardarEvidencia()">GUARDAR</button>  
 </mat-expansion-panel>

@@ -38,7 +38,7 @@
       </div>
       <div class="col s2 m2 l1" style="margin-top:10px;">
         <a class="mine-btnforms" mat-flat-button>
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          <i class="material-icons" style="font-size:20px;" (click)="abrirConsulta('tg01_cuentascontables', 'cuenta_contable')">more_horiz</i>
         </a>
       </div>
       <div class="col s10 m4 l3">
@@ -50,7 +50,7 @@
       </div>
       <div class="col s2 m2 l1" style="margin-top:10px;">
         <a class="mine-btnforms" mat-flat-button>
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          <i class="material-icons" style="font-size:20px;" (click)="abrirConsulta('tg01_grupofinanciero', 'grupo_financiero')">more_horiz</i>
         </a>
       </div>
       <div class="col s5 m4 l2">
@@ -101,5 +101,5 @@
       </button>
     </div>
   </div>
-
 </form>
+<app-cons-din></app-cons-din>

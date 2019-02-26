@@ -18,6 +18,9 @@ var auxProvData: any;
   styleUrls: ['./registro-evidencia.component.css']
 })
 export class RegistroEvidenciaComponent implements OnInit {
+
+  suscripcionesModal: Subscription[] = [];
+  
   token: any;
   forma: FormGroup;
   loading: boolean = false;
@@ -25,7 +28,12 @@ export class RegistroEvidenciaComponent implements OnInit {
   suscripcionConsDin: Subscription;
   itemDeConsulta: any;
   id: any;
+  fechaActual: Date = new Date();
+  evidencias: any;
+  descripcion: string;
+  evidenciasdata: evidenciasdata[] = [];
 
+  dataSource = new MatTableDataSource<evidenciasdata>(this.evidencias);
   constructor(public ngxSmartModalService: NgxSmartModalService,
               private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar,
@@ -49,7 +57,11 @@ export class RegistroEvidenciaComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.fechaActual.setDate(this.fechaActual.getDate());
+    this.forma.controls['fecha'].setValue(this.fechaActual);
+    this.mostrarEvidencias();
   }
+  
 
   openSnackBar(message: string) {
     this.snackBar.open(message,"Cerrar", {
@@ -86,6 +98,15 @@ export class RegistroEvidenciaComponent implements OnInit {
     this._evidenciasService.getEvidencias( jsonbodyevid, this.token)
       .subscribe(dataEv => {
         console.log(dataEv);
+        this.evidencias = dataEv;
+        this.evidenciasdata = this.evidencias.dataset;
+        this.dataSource = new MatTableDataSource(this.evidenciasdata)
+        console.log(this.dataSource)
       })
   }
+}
+export interface evidenciasdata{
+  descripcion: string,
+  fecha: string,
+  url_imagen: string
 }

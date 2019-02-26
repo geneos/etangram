@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { FormulariosService} from 'src/app/services/i2t/formularios.service';
 import { ProveedoresService } from 'src/app/services/i2t/proveedores.service';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { ImageService } from "src/app/services/i2t/image.service";
 import { ProveedorCabecera, RelacionComercial, Impuesto, Formulario, ArticuloProv } from 'src/app/interfaces/proveedor.interface';
 
 const TOKEN = '';
@@ -14,14 +15,18 @@ const TOKEN = '';
   styleUrls: ['./carga-formulario.component.css']
 })
 export class CargaFormularioComponent implements OnInit {
-  
-  token: string;
+
+  urlImagen:string = "url vacia aun";
+  adjunto: any;
+  token: string = "a";
+
   respData:any; //respuestas de servicio proveedores
   formulariosAll:any[];
   formulariosProvAll:Formulario[];
   id:any;
 
   constructor(private route:ActivatedRoute,
+              private _imageService:ImageService,
               public ngxSmartModalService: NgxSmartModalService,
               private _formulariosService: FormulariosService,
               private _proveedoresService: ProveedoresService,
@@ -32,8 +37,6 @@ export class CargaFormularioComponent implements OnInit {
     this.route.params.subscribe( parametros=>{
     this.id = parametros['id'];
 
-    this.cargaFormulario();
-    console.log(this.id)
     })
 
     
@@ -42,26 +45,21 @@ export class CargaFormularioComponent implements OnInit {
   ngOnInit() {
   }
 
-  cargaFormulario(){
-    let jsbody = {
+  subirFoto(){
+    console.clear();
+    //this.urlImagen = "url sigue vacia"
+     //console.log(formData.getAll('file'));
+     //console.log(formData);
+     this._imageService.postImage( this.adjunto, this.token )
+       .subscribe( resp => {
+         console.log(resp);
+         this.urlImagen = resp.toString();
+       });
+   }
 
-      "id_proveedor": '4081'
-    } 
-     let jsonbody = JSON.stringify(jsbody);
-    
-    this._proveedoresService.getFormularios( jsonbody , this.token )
-    .subscribe( data => {
-      console.log(data);
-        this.respData = data;
-        // auxArticulo = this.aData.dataset.length;
-        if(this.respData.returnset[0].RCode=="-6003"){
-          //token invalido
-          this.formulariosProvAll = null;
-        //  this.forma.disable();
-        } else {
-          console.log('respuesta consulta de formulario asociadas: ', this.respData)
-        }
-      });
+  cargar(attachment){
+    this.adjunto = attachment.files[0];
   }
+
 }
 

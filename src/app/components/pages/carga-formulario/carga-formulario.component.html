@@ -1,2 +1,3 @@
-<button (click)="cargaFormulario()">A</button>
-<div></div>
+<p><input type="file" #attachment name="attachment" (change)="cargar(attachment)" id="attachment"></p>
+<p><button class="mine-btnbig" mat-flat-button (click)="subirFoto()">SUBIR ARCHIVO</button></p>
+<p>{{ urlImagen }}</p>

@@ -59,6 +59,8 @@ export class RegistroEvidenciaComponent implements OnInit {
 
   agregarEvidencia(){
     this.nuevo = true;
+    
+    this.mostrarEvidencias();
   }
   guardarEvidencia(){
     this.nuevo = false;
@@ -76,4 +78,14 @@ export class RegistroEvidenciaComponent implements OnInit {
 
   }
 
+  mostrarEvidencias(){
+    let jsbodyevid = {
+      "user_evidencia": "1191"
+    }
+    let jsonbodyevid = JSON.stringify(jsbodyevid)
+    this._evidenciasService.getEvidencias( jsonbodyevid, this.token)
+      .subscribe(dataEv => {
+        console.log(dataEv);
+      })
+  }
 }

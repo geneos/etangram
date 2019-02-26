@@ -1,18 +1,16 @@
-<ngx-smart-modal #consDinModal 
+<ngx-smart-modal #formulariosModal 
                  customClass="overlay-evidencias" 
-                 [identifier]="'evidenciasModal'"
+                 [identifier]="'formulariosModal'"
                  [closable]="false"
                  [dismissable]="false"
                  [escapable]="false"
                  >
 
   <div class="modal-body"  style="max-width: 2000px !important;">
-    <app-registro-evidencia></app-registro-evidencia>
+    <app-carga-formulario></app-carga-formulario>
   </div>
 
   <div style="margin-top: 10px; width: 100%; text-align: right;">
       <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
   </div>
 </ngx-smart-modal>
-
-

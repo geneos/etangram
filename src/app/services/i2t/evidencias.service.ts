@@ -22,4 +22,16 @@ export class EvidenciasService {
 
     return this.http.post( url, body, { headers } );
   }
+
+  getEvidencias( body:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/proc/SP_ET_EvidenciaOP_GET`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers } );
+  }
 }

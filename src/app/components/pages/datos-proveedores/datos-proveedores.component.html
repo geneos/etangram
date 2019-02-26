@@ -126,7 +126,7 @@
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:right;">
             <a href='{{ element.Url }}'><i class="material-icons" style="cursor:pointer; color:#f08377;">visibility</i></a>
-            <a href='#'><i class="material-icons" style="cursor:pointer; margin-left: 10px; color:#f08377;">edit</i></a>
+            <i (click)="cargarFormulario()" class="material-icons" style="cursor:pointer; margin-left: 10px; color:#f08377;">edit</i>
           </td>
         </ng-container>
 
@@ -253,3 +253,4 @@
   </div>
 </form>
 <app-cons-din></app-cons-din>
+<app-formularios></app-formularios>

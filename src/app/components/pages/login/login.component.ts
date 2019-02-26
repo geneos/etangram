@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   offline: boolean = true;
   hide = true;
   dynamicParameter: string = "";
+  exp: string ="";
   routerLinkVariable = "/compra";
   loginData: any;
   token: string = "a";
@@ -77,6 +78,12 @@ export class LoginComponent implements OnInit {
   minCont(){
     //this.routerLinkVariable = '/consulta-retenciones'
     this.dynamicParameter = this.formaFormulario.controls['idMCont'].value;
+  }
+  prueba(){
+    this.routerLinkVariable = '/compra'
+    this.dynamicParameter = this.formaFormulario.controls['idPortal'].value;
+    this.exp = '302-905867';
+    console.log(this.dynamicParameter)
   }
   /*compras(){
     this.routerLinkVariable = '/compra'

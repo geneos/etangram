@@ -75,6 +75,8 @@ import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicida
 import { ImageComponent } from './components/pages/prueba/image/image.component';
 import { EvidenciasComponent } from './components/shared/modals/evidencias/evidencias.component';
 import { RegistroEvidenciaComponent } from './components/pages/registro-evidencia/registro-evidencia.component';
+import { FormulariosComponent } from './components/shared/modals/formularios/formularios.component';
+import { CargaFormularioComponent } from './components/pages/carga-formulario/carga-formulario.component';
 
 
 
@@ -126,7 +128,9 @@ import { RegistroEvidenciaComponent } from './components/pages/registro-evidenci
     OrdenesPublicidadComponent,
     ImageComponent,
     EvidenciasComponent,
-    RegistroEvidenciaComponent
+    RegistroEvidenciaComponent,
+    FormulariosComponent,
+    CargaFormularioComponent
   ],
   imports: [
     BrowserModule,

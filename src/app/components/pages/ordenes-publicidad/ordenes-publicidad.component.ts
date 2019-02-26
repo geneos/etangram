@@ -18,6 +18,7 @@ import { supportsScrollBehavior } from '@angular/cdk/platform';
 const TOKEN = '';
 var auxProvData: any;
 
+
 @Injectable()
 
 @Component({
@@ -33,11 +34,15 @@ var auxProvData: any;
   ],
 })
 export class OrdenesPublicidadComponent implements OnInit {
+
+  dynamicParameter: string = "";
+  routerLinkVariable = "/compra";
   loading: boolean = true;
   forma: FormGroup;
   @ViewChild(MatSort) sort: MatSort;
   suscripcionEvidencias: Subscription;
   itemDeConsulta: any;
+  exp: any;
 
   //datos para impresion
   baseDatos: any;
@@ -63,7 +68,9 @@ export class OrdenesPublicidadComponent implements OnInit {
   loginData: any;
   razonSocial: string;
 
-  constructor(private route:ActivatedRoute,private router: Router,
+    
+  constructor(private route:ActivatedRoute,
+              private router: Router,
               private _compraService: CompraService,
               private _ImpresionCompService:ImpresionCompService,
               private _ordPublicidadService: OrdPublicidadService,
@@ -273,4 +280,9 @@ export class OrdenesPublicidadComponent implements OnInit {
     });
     this.ngxSmartModalService.open(datosModal.modal);
   }   
+
+  cargaFactura(exp){
+    this.dynamicParameter = this.id;
+    this.router.navigate(['compra', this.id, exp])
+  }
 }

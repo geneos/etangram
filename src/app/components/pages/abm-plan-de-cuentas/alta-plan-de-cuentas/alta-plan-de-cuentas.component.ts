@@ -50,6 +50,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   selection = new SelectionModel(true, []);
   cdadniveles: number;
   cdadnivelespadre: any;
+  urla: string;
   //
 
   constructor(
@@ -81,6 +82,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
+      this.urla = this.id;
       this.padre = parametros['padre'];
       this.existe = false;
 

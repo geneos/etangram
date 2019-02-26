@@ -12,9 +12,9 @@ export class ImageService {
 
   postImage( adjunto, token ){
     const headers = new HttpHeaders({
-      'x-access-token': token,
-      'Content-Type': 'application/json'
+      'x-access-token': token
     });
+    //'Content-Type': 'application/json'
     console.log(adjunto);
 
     let formData:FormData = new FormData();
@@ -24,8 +24,9 @@ export class ImageService {
     console.log(JSON.stringify(formData));
     console.log(formData.getAll('file'));
 
-    let query = `api/attachments`;
+    let query = `api/imagenes/attachments`;
     let url = this.preUrl + query;
+    console.log(url);
 
     return this.http.post( url, formData, { headers } );
   }

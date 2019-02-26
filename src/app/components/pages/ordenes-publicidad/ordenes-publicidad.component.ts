@@ -68,6 +68,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   proveedorData: any;
   id: any;
   token: string;
+  ordenPub: string;
   cuit: any;
   loginData: any;
   razonSocial: string;
@@ -94,6 +95,10 @@ export class OrdenesPublicidadComponent implements OnInit {
     //this.token = parametros['token'];
     //this.Controles['proveedor'].setValue(this.id);
     this.buscarProveedor();
+    this.ordenPub = parametros['ord'];
+    if(this.ordenPub != null){
+      this.actualizaOrden();
+    }
 
     });
 
@@ -102,6 +107,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   
   ngOnInit() {
     this.mostrarDatos();
+    
   }
 
   openSnackBar(message: string) {
@@ -285,8 +291,21 @@ export class OrdenesPublicidadComponent implements OnInit {
     this.ngxSmartModalService.open(datosModal.modal);
   }   
 
-  cargaFactura(exp){
+  cargaFactura(exp,ord){
     this.dynamicParameter = this.id;
-    this.router.navigate(['compra', this.id, exp])
+    this.router.navigate(['compra', this.id, exp, ord])
+  }
+  actualizaOrden(){
+    let jsbodyUpdOrd = {
+      "id_op": this.ordenPub,
+	    "user_id": "1",
+    	"estado_op": 50
+    }
+    console.log('armado de json upd de orden')
+    let jsonbodyUpdOrd = JSON.stringify(jsbodyUpdOrd);
+    this._ordPublicidadService.updOrden( jsonbodyUpdOrd, this.token)
+      .subscribe( respUpd => {
+        console.log(respUpd)
+      })
   }
 }

@@ -32,4 +32,15 @@ export class OrdPublicidadService {
 
     return this.http.post( url, body, { headers } );
   }
+  updOrden( body:string, token:string){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/proc/SP_PRENSA_EstadoOP_UPD`;
+    let url = this.urlProveedor + query;
+
+    return this.http.post( url, body, { headers } );
+  }
 }

@@ -69,6 +69,17 @@ export class ArticulosService {
     return this.http.get( url , { headers });
   }
 
+  getcArticuloPorPartNumber( id:number, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/c_articulos?part_number=${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
   //#region datos para autocompletar/comboboxes
   getCategorias( token:string ){
     const headers = new HttpHeaders({
@@ -294,7 +305,8 @@ export class ArticulosService {
         'Content-Type': 'application/json'
       });
   
-      let query = "api/proc/SP_ET_ArticuloINS";
+      // let query = "api/proc/SP_ET_ArticuloINS";
+      let query = "api/proc/ArticuloINS";
       let url = this.preUrl + query;
   
       return this.http.post( url, body, { headers } );

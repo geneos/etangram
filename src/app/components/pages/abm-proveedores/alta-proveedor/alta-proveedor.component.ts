@@ -272,6 +272,7 @@ export class AltaProveedorComponent implements OnInit {
           descRefContable: new FormControl(),
           descTipoComprobante: new FormControl(),
         cuentas: this.FormBuilder.array([]),
+      estado:  new FormControl(),       
       catBloq: new FormControl(),
       //IMPUESTOS
       sitIVA: new FormControl(),
@@ -565,7 +566,7 @@ export class AltaProveedorComponent implements OnInit {
       'fechaVenc': new FormControl('', Validators.required),
       'url': new FormControl(),
       'descripcion': new FormControl(),
-      'Id_FormularioCte': new FormControl(),
+      // 'Id_FormularioCte': new FormControl(),
     });
   }
   /* construirExcencion(){
@@ -634,8 +635,10 @@ export class AltaProveedorComponent implements OnInit {
   deleteImpuesto(indice: number){
     const imps = this.forma.controls.impuestos as FormArray;
     let imp = <FormGroup>imps.controls[indice];
-    if (imp.controls['Impuesto'].value != null){
-      this.estadosImpuestos.eliminados.push(imp.controls['Impuesto'].value);
+    if (imp.controls['impuesto'].value != null){
+      // this.estadosImpuestos.eliminados.push(imp.controls['impuesto'].value);
+      this.estadosImpuestos.eliminados.push({tipo: imp.controls['tipo'].value, modelo: imp.controls['modelo'].value });
+
     }
     imps.removeAt(indice);
     console.log('lista de impuestos eliminados: ', this.estadosImpuestos.eliminados)
@@ -690,7 +693,7 @@ export class AltaProveedorComponent implements OnInit {
     // console.log('Lista de formularios ', forms.length, forms);
     let formABorrar = (<FormGroup>forms.controls[ind]);
     if (formABorrar.controls['ID_Form_Proveedor'].value != null){
-      this.estadosFormularios.eliminados.push(formABorrar.controls['codForm'].value);
+      this.estadosFormularios.eliminados.push(formABorrar.controls['ID_Form_Proveedor'].value);
     }
     forms.removeAt(ind);
     // console.log('Lista de formularios ', forms.length, forms);
@@ -710,9 +713,8 @@ export class AltaProveedorComponent implements OnInit {
   deleteArticulosStock(indice: number){
     const arts = this.forma.controls.articulos as FormArray;
     let art = <FormGroup>arts.controls[indice];
-    //todo agregar a la lista de eliminados
-    if (arts.controls['fecha_creacion'].value != null){
-      this.estadosArticulos.eliminados.push(arts.controls['fecha_creacion'].value);
+    if (art.controls['fecha_creacion'].value != null){
+      this.estadosArticulos.eliminados.push(art.controls['fecha_creacion'].value);
     }
     arts.removeAt(indice);
     console.log('lista de articulos eliminados: ', this.estadosArticulos.eliminados);
@@ -1170,6 +1172,7 @@ export class AltaProveedorComponent implements OnInit {
   }
 
   buscarListaPrecios(){
+    console.log('buscando lista de precios con ', this.forma.controls['idlistaPrecios'].value)
     this._listasPreciosService.getLista(this.forma.controls['idlistaPrecios'].value, this.token )
       .subscribe( data => {
           this.lpData = data;
@@ -1180,6 +1183,7 @@ export class AltaProveedorComponent implements OnInit {
             this.forma.disable();
             this.openSnackBar('Sesión expirada.')
             } else {
+              console.log('encontrada lista de precios, ', this.lpData)
               if(this.lpData.dataset.length==1){
                 this.listaPrecios = this.lpData.dataset[0];
                 //this.loading = false;
@@ -1190,6 +1194,7 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
   buscarPartidaPresupuestaria(){
+    console.log('buscando partida con ', this.forma.controls['idPartidaPresupuestaria'].value)
     this._partidasPresupuestariasService.getPartida(this.forma.controls['idPartidaPresupuestaria'].value, this.token )
       .subscribe( data => {
           this.ppData = data;
@@ -1200,6 +1205,7 @@ export class AltaProveedorComponent implements OnInit {
             this.forma.disable();
             this.openSnackBar('Sesión expirada.')
             } else {
+              console.log('encontrada partida, ', this.ppData)
               if(this.ppData.dataset.length>0){
                 this.partidaPresupuestaria = this.ppData.dataset[0];
                 //this.loading = false;
@@ -1256,7 +1262,8 @@ export class AltaProveedorComponent implements OnInit {
     console.log('buscando item ', id, arts.controls[indice])
     // this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
     // this._articulosService.getArticulo(id , this.token )
-    this._articulosService.getcArticulo(id , this.token )
+    // this._articulosService.getcArticulo(id , this.token )
+    this._articulosService.getcArticuloPorPartNumber(id , this.token )
       .subscribe( data => {
           this.aData = data;
           auxArticulo = this.aData.dataset.length;
@@ -1348,27 +1355,26 @@ export class AltaProveedorComponent implements OnInit {
                 //las busquedas no hacen falta porque están las suscripciones
                 if (this.provCabecera.listaprecios != null){
                   this.forma.controls['idlistaPrecios'].setValue(this.provCabecera.listaprecios);
-                  // this.buscarListaPrecios();
+                  this.buscarListaPrecios();
                 }
                 if (this.provCabecera.condicion_comercial != null){
                   this.forma.controls['condComercial'].setValue(this.provCabecera.condicion_comercial);
-                  // this.buscarCondComercial();
+                  this.buscarCondComercial();
                 }
                 if (this.provCabecera.partidas_presupuestarias != null){
                   this.forma.controls['idPartidaPresupuestaria'].setValue(this.provCabecera.partidas_presupuestarias);
-                  // this.buscarPartidaPresupuestaria();
+                  this.buscarPartidaPresupuestaria();
                 }
                 if (this.provCabecera.referencias_contables != null){
                   this.forma.controls['refContable'].setValue(this.provCabecera.referencias_contables);
-                  // this.buscarRefContable();
+                  this.buscarRefContable();
                 }
-                //todo ver cómo se guarda en la api
-                /* if (this.provCabecera != null){
-                  this.forma.controls['idTipoComprobante'].setValue(this.provCabecera.ti);
-                  this.busca
-                } */
-                // todo ver como se guarda en la api
-                // this.forma.controls['catBloq'].setValue(this.provCabecera.);
+                if (this.provCabecera.tipo_comprobante != null){
+                  this.forma.controls['idTipoComprobante'].setValue(this.provCabecera.tipo_comprobante);
+                  this.buscarTipoComprobante();
+                }
+                this.forma.controls['estado'].setValue(this.provCabecera.estado);
+                this.forma.controls['catBloq'].setValue(this.provCabecera.categoria_bloqueo);
                 
                 this.forma.controls['sitIVA'].setValue(this.provCabecera.categoria_iva);
                 this.forma.controls['cuit'].setValue(this.provCabecera.cuit);
@@ -1425,7 +1431,7 @@ export class AltaProveedorComponent implements OnInit {
               let index = 0;
               console.log('cuentas recuperadas: ', this.cuentasProvAll)
               this.cuentasProvAll.forEach(cuenta => {
-                console.log('se va a armar el formgroup para: ', cuenta)
+                console.log('se va a armar el formgroup para cbu: ', cuenta)
                 this.addCuentaBanc();
                 // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
                 // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
@@ -1463,7 +1469,7 @@ export class AltaProveedorComponent implements OnInit {
               let index = 0;
               console.log('impuestos recuperadas: ', this.impuestosProvAll)
               this.impuestosProvAll.forEach(impuesto => {
-                console.log('se va a armar el formgroup para: ', impuesto)
+                console.log('se va a armar el formgroup para impuesto: ', impuesto)
                 this.addImpuesto();
                 // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
                 // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
@@ -1471,9 +1477,10 @@ export class AltaProveedorComponent implements OnInit {
                 let cImpuesto: FormGroup = <FormGroup>this.forma.get(['impuestos', index]);
                 //todo agregar lo que falta cuando esté en la api
                 cImpuesto.controls['impuesto'].setValue(impuesto.Impuesto) ;
+                cImpuesto.controls['tipo'].setValue(impuesto.ID_Impuestos) ;
                 cImpuesto.controls['modelo'].setValue(impuesto.ID_Modelo_impuestos) ;
                 cImpuesto.controls['situacion'].setValue(impuesto.Situacion) ;
-                cImpuesto.controls['codInscripcion'].setValue(impuesto.ID_Impuestos) ;
+                // cImpuesto.controls['codInscripcion'].setValue(impuesto.ID_Impuestos) ;
                 cImpuesto.controls['fechaInscripcion'].setValue(this.nuevaFecha(impuesto.Fecha_inscripcion));
                 cImpuesto.controls['observaciones'].setValue(impuesto.Observaciones) ;
                 cImpuesto.controls['poseeExenciones'].setValue((impuesto.Exenciones == 1 ? true : false)) ;
@@ -1509,15 +1516,15 @@ export class AltaProveedorComponent implements OnInit {
               let index = 0;
               console.log('formulario recuperadas: ', this.formulariosProvAll)
               this.formulariosProvAll.forEach(formulario => {
-                console.log('se va a armar el formgroup para: ', formulario)
+                console.log('se va a armar el formgroup para formulario: ', formulario)
                 this.addFormulario();
                 // this.forma.controls.cuentas[0].controls[''].setValue(cuenta.CBU);
                 // (<FormArray>this.forma.controls.cuentas).controls['rcCbu'].setValue(cuenta.CBU);
                 console.log('impuesto: ' ,this.forma.get(['formularios', index]));
                 let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios', index]);
                 //todo agregar lo que falta cuando esté en la api
-                cFormulario.controls['ID_Form_Proveedor'].setValue(formulario.ID_Form_Proveedor) ;
-                // cFormulario.controls['codForm'].setValue(formulario.ID_Formulario) ;
+                cFormulario.controls['ID_Form_Proveedor'].setValue(formulario.ID_Formulario) ;
+                cFormulario.controls['codForm'].setValue(formulario.ID_Formulario_nombre) ;
                 //ID_Formulario es el id de relación
                 cFormulario.controls['fechaPres'].setValue(this.nuevaFecha(formulario.Fecha_presentacion));
                 console.log('fecha real de impuesto ' + index + '(pres): ', formulario.Fecha_presentacion);
@@ -1525,7 +1532,7 @@ export class AltaProveedorComponent implements OnInit {
                 console.log('fecha real de impuesto ' + index + '(venc): ', formulario.Fecha_vencimiento);
                 cFormulario.controls['url'].setValue(formulario.Url) ;
                 cFormulario.controls['descripcion'].setValue(formulario.Descripcion) ; 
-                cFormulario.controls['Id_FormularioCte'].setValue(formulario.ID_Formulario) ; 
+                // cFormulario.controls['Id_FormularioCte'].setValue(formulario.ID_Formulario) ; 
                 
                 index = index +1;
               });
@@ -1792,9 +1799,19 @@ export class AltaProveedorComponent implements OnInit {
     });
   }
 
-  abrirConsulta(consulta: string, control: string){
-    this.itemDeConsulta = null;
+  // abrirConsulta(consulta: string, control: string){
+  //usa el mismo formato que los get de formcontrol: ej ['coleccion', indice_en_array...]
+  /** @description Abre el modal de consulta y establece una suscripción para usar el o los objetos seleccionados
+   * @param {string} consulta Nombre del reporte. Por ahora también el endpoint que contiene los datos
+   * @param {any[]} ubicacion Camino hacia los controles a actualizar. Si está vacío se actualizan los controles al nivel base del form. 
+   * @param {string} controlID Nombre del FormControl donde se pegará el id del objeto seleccionado
+   * @param {string} controlDesc (Opcional) Nombre del FormControl donde se pegará el Nombre o Descripción del objeto seleccionado
+   * @param {string} funcion (Opcional) [NO IMPLEMENTADO] Nombre de la función a ejecutar luego de la selección.
+   * @param {any} param (Opcional) [NO IMPLEMENTADO] Lista de parámetros para la función a ejecutar.
+  */
+  abrirConsulta(consulta: string, ubicacion: any[], controlID: string, controlDesc?: string, funcion?: string, param?: any){
     console.clear();
+    console.log(' recibido por abrirconsulta1: ', consulta, controlID, controlDesc, ubicacion, funcion, param);
     let datosModal : {
       consulta: string;
       permiteMultiples: boolean;
@@ -1811,7 +1828,11 @@ export class AltaProveedorComponent implements OnInit {
     }
     
     let atributoAUsar: string;
+    let atributoDesc:  string = 'name';
     switch (consulta) {
+      case 'c_articulos':
+        atributoAUsar = 'part_number';
+        break;
       case 'tg01_localidades':
         atributoAUsar = 'cpostal';
         break;
@@ -1844,13 +1865,51 @@ export class AltaProveedorComponent implements OnInit {
         this.openSnackBar('Se canceló la selección');
       }
       else{
-        this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
-        this.itemDeConsulta = respuesta.selection[0];
-        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
-        // this.buscarProveedor();
+        //obtener la base sobre la que se buscará los FormControl
+        let fg: FormGroup;
+        if (ubicacion.length == 0){
+          fg = this.forma;
+        }
+        else{
+          fg = this.forma.get(ubicacion) as FormGroup;
+        }
+
+        //escribir el valor en el primer control, para el id
+        fg.controls[controlID].setValue(respuesta.selection[0][atributoAUsar]);
+
+        //si hay que guardar descripción:
+        if (controlDesc != null){
+          if (respuesta.selection[0][atributoDesc] != null){
+            fg.controls[controlDesc].setValue(respuesta.selection[0][atributoDesc]);
+          }
+          else{
+            fg.controls[controlDesc].setValue('');
+            console.log('Valor de ' + controlDesc + ' vaciado, no se encontró ' + atributoDesc + ' en la seleccion');
+          }
+        }
+
+        //ejecutar función
+        if (funcion != null){
+          console.log('todo llamado a funcion');
+          
+          //lo siguiente funciona:
+          // this[funcion](param);
+        }
+
+        // this['proveedor'] = null;
+        // this['resultado'+control] = respuesta.selection[0];
+        
+        //todo 
+        //disparar detección de cambios, cada parte es un intento distinto
+        // this.proveedor = respuesta.selection[0];
+        
+        // setTimeout(() => this.ref.detectChanges(), 1000);
+        // this.ref.markForCheck();
+      
+        // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+
+        // console.log('seleccionado: ',this.resultadoidGrupo, this['resultado'+control]);
       }
-      // this.establecerColumnas();
-      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
       this.suscripcionConsDin.unsubscribe();
       console.log('se desuscribió al modal de consulta dinamica');
     });
@@ -1902,7 +1961,10 @@ export class AltaProveedorComponent implements OnInit {
         "p_cai"	: this.forma.controls['cai'].value, //CAI
         "p_fecha_vto_cai" : this.extraerFecha(<FormControl>this.forma.controls['fechaVtoCai']),//this.forma.controls['fechaVtoCai'].value,
         "p_cuit_exterior" : this.forma.controls['cuitExterior'].value,
-        "p_id_impositivo" : this.forma.controls['idImpositivo'].value //id de consulta dinámica a tabla tg01_impuestos
+        "p_id_impositivo" : this.forma.controls['idImpositivo'].value, //id de consulta dinámica a tabla tg01_impuestos
+        "p_rel_estado" : this.forma.controls['estado'].value, 
+        "p_rel_categoria_bloqueo" : this.forma.controls['catBloq'].value, 
+        "p_rel_tipo_comprobante" : this.forma.controls['idTipoComprobante'].value 
       }
       console.log(jsbody);
       let jsonbody= JSON.stringify(jsbody);
@@ -2234,7 +2296,10 @@ export class AltaProveedorComponent implements OnInit {
       "p_cai"	: this.forma.controls['cai'].value, //CAI
       "p_fecha_vto_cai" : this.extraerFecha(<FormControl>this.forma.controls['fechaVtoCai']),
       "p_cuit_exterior" :this.forma.controls['cuitExterior'].value,
-      "p_id_impositivo" :this.forma.controls['idImpositivo'].value //id de consulta dinámica a tabla tg01_impuestos
+      "p_id_impositivo" :this.forma.controls['idImpositivo'].value, //id de consulta dinámica a tabla tg01_impuestos
+      "p_rel_estado" : this.forma.controls['estado'].value, 
+      "p_rel_categoria_bloqueo" : this.forma.controls['catBloq'].value, 
+      "p_rel_tipo_comprobante" : this.forma.controls['idTipoComprobante'].value 
     }
     console.log('cabecera antes de stringify: ', jsbody)
     let jsonbody= JSON.stringify(jsbody);
@@ -2503,8 +2568,8 @@ export class AltaProveedorComponent implements OnInit {
       jsbodyF = {
         "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
         "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
-        "p_form_fecha_pres" : this.extraerFecha(formgroupFormulario.controls['fechaPres'].value),//"1997-05-05",
-        "p_form_fecha_vto" : this.extraerFecha(formgroupFormulario.controls['fechaVenc'].value),//"1997-05-05"
+        "p_form_fecha_pres" : this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
+        "p_form_fecha_vto" : this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
         "url": formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
@@ -2514,9 +2579,10 @@ export class AltaProveedorComponent implements OnInit {
         /* "Id_Proveedor": this.id, //Rid devuelto en el alta de proveedor, igual a     ID_Form_Proveedor   
         "Id_FormularioCte" : formgroupFormulario.controls['ID_Form_Proveedor'].value, */
         "Id_Proveedor": this.id,
-        "Id_FormularioCte": formgroupFormulario.controls['Id_FormularioCte'].value,
-        "p_form_fecha_pres" : this.extraerFecha(formgroupFormulario.controls['fechaPres'].value),//"1997-05-05",
-        "p_form_fecha_vto" : this.extraerFecha(formgroupFormulario.controls['fechaVenc'].value),//"1997-05-05"
+        "Id_FormularioCte": formgroupFormulario.controls['ID_Form_Proveedor'].value,
+        // "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
+        "p_form_fecha_pres" : this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
+        "p_form_fecha_vto" : this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
         "url": formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
@@ -2534,14 +2600,14 @@ export class AltaProveedorComponent implements OnInit {
     // if (formGroupImpuesto.controls[''].value == null){
       jsbodyImp = {
         "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-        // "p_imp_tipo" : formGroupImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
+        "p_imp_tipo" : formGroupImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
         "p_imp_modelo" : formGroupImpuesto.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
         "p_imp_situacion" : formGroupImpuesto.controls['situacion'].value,
-        "p_imp_codigo" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
-        "p_imp_fecha_insc" : this.extraerFecha(formGroupImpuesto.controls['fechaInscripcion'].value),//"1997-05-05",
+        // "p_imp_codigo" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
+        "p_imp_fecha_insc" : this.extraerFecha(<FormControl>formGroupImpuesto.controls['fechaInscripcion']),//"1997-05-05",
         "p_imp_excenciones" : formGroupImpuesto.controls['poseeExenciones'].value.toString(),//"false",
-        "p_imp_fecha_comienzo_excencion" : this.extraerFecha(formGroupImpuesto.controls['fechaDesde'].value), // → si es true
-        "p_imp_fecha_caducidad_excencion" : this.extraerFecha(formGroupImpuesto.controls['fechaHasta'].value),//  → si es true
+        "p_imp_fecha_comienzo_excencion" : this.extraerFecha(<FormControl>formGroupImpuesto.controls['fechaDesde'], false), // → si es true
+        "p_imp_fecha_caducidad_excencion" : this.extraerFecha(<FormControl>formGroupImpuesto.controls['fechaHasta'], false),//  → si es true
         "p_imp_obs" :formGroupImpuesto.controls['observaciones'].value
       }
     // }
@@ -2559,8 +2625,8 @@ export class AltaProveedorComponent implements OnInit {
     //     "p_imp_obs" :formGroupImpuesto.controls['observaciones'].value
     //   }
     // }
-    
     jsonbodyImp= JSON.stringify(jsbodyImp);
+    console.log('json impuesto a usar: ', jsonbodyImp)
     return jsonbodyImp;
   }
 
@@ -2873,19 +2939,20 @@ export class AltaProveedorComponent implements OnInit {
             this.openSnackBar('Sesión expirada.')
           } else {
             if (this.respData.returnset[0].RCode != 1){
-              this.openSnackBar('Error al eliminar Relación Comercial: ' + this.respData.returnset[0].RTxt);
+              console.log('Error al eliminar Relación Comercial: ' + this.respData.returnset[0].RTxt);
             }
             else{
-              this.openSnackBar('Relación Comercial eliminada con exito');
+              console.log('Relación Comercial eliminada con exito');
             }
           }
       });
   }
 
-  eliminarImpuesto(codigo: string){
+  eliminarImpuesto(impuesto: any){
     let jsbody = {
-      "prov_codigo": this.id, 
-      "p_imp_codigo": codigo, //id de consulta dinámica a tabla tg01_impuestos
+      "Id_Proveedor": this.id, 
+      "p_imp_tipo": impuesto.tipo, //id de consulta dinámica a tabla tg01_impuestos
+      "p_imp_modelo": impuesto.modelo
       }
     let jsonbody = JSON.stringify(jsbody);
 
@@ -2900,10 +2967,12 @@ export class AltaProveedorComponent implements OnInit {
             this.openSnackBar('Sesión expirada.')
           } else {
             if (this.respData.returnset[0].RCode != 1){
-              this.openSnackBar('Error al eliminar Impuesto: ' + this.respData.returnset[0].RTxt);
+              console.log('Error al eliminar Impuesto: ' + this.respData.returnset[0].RTxt);
+              // this.openSnackBar('Error al eliminar Impuesto: ' + this.respData.returnset[0].RTxt);
             }
             else{
-              this.openSnackBar('Impuesto eliminado con exito');
+              console.log('Impuesto eliminado con exito');
+              // this.openSnackBar('Impuesto eliminado con exito');
             }
           }
           //console.log(this.refContablesAll);
@@ -2958,11 +3027,11 @@ export class AltaProveedorComponent implements OnInit {
             this.openSnackBar('Sesión expirada.')
           } else {
             if (this.respData.returnset[0].RCode != 1){
-              this.openSnackBar('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
+              // this.openSnackBar('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
               console.log('Error al eliminar Formulario: ' + this.respData.returnset[0].RTxt);
             }
             else{
-              this.openSnackBar('Formulario eliminado con exito');
+              // this.openSnackBar('Formulario eliminado con exito');
               console.log('Eliminado Formulario: ' + this.respData.returnset[0].RTxt);
             }
           }
@@ -3018,10 +3087,10 @@ export class AltaProveedorComponent implements OnInit {
     this.impuestosData.splice(ind, 1);
     this.table.renderRows();
   };*/
-  extraerFecha(control: FormControl){
+  extraerFecha(control: FormControl, admiteNulos?: boolean){
     console.log('control a usar para fecha: ', control)
     let auxFecha: string;
-    if (control.value != null){
+    if ((control.value != null)&&(control.value != '')){
       let ano = control.value.getFullYear().toString();
       let mes = (control.value.getMonth()+1).toString();
       if(mes.length==1){mes="0"+mes};
@@ -3031,6 +3100,11 @@ export class AltaProveedorComponent implements OnInit {
       return auxFecha;
     }
     else{
+      if (admiteNulos != null){
+        if (admiteNulos == false){
+          return '';
+        }
+      }
       return null;
     }
   }

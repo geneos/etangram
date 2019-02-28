@@ -135,7 +135,7 @@
     </div>
 
     <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingReferencia || editingAI || editingRenglones)">
-      <form [formGroup]="formaReferencias" (ngSubmit)="guardarReferencia()" novalidate="novalidate">
+      <form [formGroup]="formaReferencias"  novalidate="novalidate">
         <div class="col s8 m3 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Referencia Contable</mat-label>
@@ -151,7 +151,7 @@
         </div>
         <div class="col s4 m2 l1" style="margin-top:10px;">
           <button class="mine-btnforms" mat-flat-button>
-            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            <i class="material-icons" style="font-size:20px;" (click)="abrirConsulta('tg01_referenciascontables','refContable')">more_horiz</i>
           </button>
         </div>
         <div class="col s12 m7 l3">
@@ -230,3 +230,4 @@
     CONFIRMAR
   </a>
 </div>
+<app-cons-din></app-cons-din>

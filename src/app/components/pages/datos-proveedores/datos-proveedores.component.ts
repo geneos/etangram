@@ -379,22 +379,28 @@ export class DatosProveedoresComponent implements OnInit {
     return this.usuario;
   }
 
-  cargarFormulario(consulta){
+  cargarFormulario(formId,formNomId,fechPresen,fechVenci,urlImagen){
     this.itemDeConsulta = null;
     console.clear();
     let datosModal : {
-      consulta: string;
-      permiteMultiples: boolean;
-      selection: any;
       modal: string;
+      provId: string;
+      form: string;
+      formNombre: string;
+      fechaPresen: string;
+      fechaVenci: string;
+      url: string;
       // valores: any;
       // columnSelection: any
     }
     datosModal = {
-      consulta: consulta,
-      permiteMultiples: false,
-      selection: null,
-      modal: 'formulariosModal'
+      modal: 'formulariosModal',
+      provId: this.idProv,
+      form: formId,
+      formNombre: formNomId,
+      fechaPresen: fechPresen,
+      fechaVenci: fechVenci,
+      url: urlImagen
     }
     
 
@@ -457,8 +463,10 @@ export interface datosImpuesto {
   "Situacion": string
 }
 export interface datosFormularios{
-  "Descripcion": string,
+  "ID_Formulario": string,
+  "ID_Formulario_nombre": string,
   "Fecha_presentacion": string,
   "Fecha_vencimiento": string,
-  "Url": string
+  "Url": string,
+  "Descripcion": string,
 }

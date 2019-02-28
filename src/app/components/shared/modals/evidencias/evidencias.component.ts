@@ -10,38 +10,28 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./evidencias.component.css']
 })
 export class EvidenciasComponent implements OnInit, AfterViewInit {
-
+  inputParam: any;
   suscripcionesModal: Subscription[] = [];
+  //nuevo: boolean = false;
 
   constructor(public ngxSmartModalService: NgxSmartModalService) { }
 
   ngOnInit() {
   }
 
+
   ngAfterViewInit()
   {
-    console.log('inicializando segundo nivel')
-    //suscribir a los eventos de escape del modal, para no hacer nada en esos casos
-    this.suscripcionesModal[0] = this.ngxSmartModalService.getModal('evidenciasModal').onDismiss.subscribe((modal: NgxSmartModalComponent) => {
-      console.log('dismissed modal de evidencias: ', modal.getData());
-      this.ngxSmartModalService.resetModalData('evidenciasModal');
-      this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'evidenciasModal');
-      // this.suscripcionesModal[0].unsubscribe();
+    this.ngxSmartModalService.getModal('evidenciasModal').onOpen.subscribe(() => {
+      this.inputParam = this.ngxSmartModalService.getModalData('evidenciasModal');
+      console.log('datos recibidos por modal de evidencias: ', this.inputParam);
     });
-    console.log('Modal Consulta din - ngAfterViewInit: suscripto a dismiss')
-
-    this.suscripcionesModal[1] = this.ngxSmartModalService.getModal('evidenciasModal').onEscape.subscribe((modal: NgxSmartModalComponent) => {
-      console.log('escaped modal de evidencias: ', modal.getData());
-      this.ngxSmartModalService.resetModalData('evidenciasModal');
-      this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'evidenciasModal');
-      // this.suscripcionesModal[1].unsubscribe();
-    });
-    console.log('Modal Consulta din - ngAfterViewInit: suscripto a escape')
+    
   }
 
   cancelar(){
     this.ngxSmartModalService.resetModalData('evidenciasModal');
-    this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'evidenciasModal');
+    this.ngxSmartModalService.setModalData({estado: 'cancelado', nuevo: false}, 'evidenciasModal');
     this.ngxSmartModalService.close('evidenciasModal');
   }
 }

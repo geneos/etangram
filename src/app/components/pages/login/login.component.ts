@@ -21,6 +21,7 @@ const TOKEN = '';
 export class LoginComponent implements OnInit {
 
   offline: boolean = true;
+  loading: boolean = false;
   hide = true;
   dynamicParameter: string = "";
   exp: string ="";
@@ -41,7 +42,8 @@ export class LoginComponent implements OnInit {
       'idOrdPagos': new FormControl(''),
       'idMCont': new FormControl(''),
       'idRet': new FormControl(''),
-      'idPortal': new FormControl('')
+      'idPortal': new FormControl(''),
+      'idOrdPubli': new FormControl('')
     })
    }
 
@@ -79,6 +81,10 @@ export class LoginComponent implements OnInit {
     //this.routerLinkVariable = '/consulta-retenciones'
     this.dynamicParameter = this.formaFormulario.controls['idMCont'].value;
   }
+  ordPubli(){
+    this.routerLinkVariable = '/ordenes-publicidad'
+    this.dynamicParameter = this.formaFormulario.controls['idOrdPubli'].value;
+  }
   /*compras(){
     this.routerLinkVariable = '/compra'
   }
@@ -93,6 +99,7 @@ export class LoginComponent implements OnInit {
   }*/
 
   login(){
+    this.loading=true;
     let jsbody = {
       "usuario": this.forma.controls['usuario'].value,//"usuario1",
       "pass": this.forma.controls['password'].value //"password1"
@@ -106,6 +113,7 @@ export class LoginComponent implements OnInit {
     console.log(this.loginData);
     this.storeOnLocalStorage(this.token);
     this.offline = false;
+    this.loading = false;
     });
   }
 }

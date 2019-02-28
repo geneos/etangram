@@ -20,7 +20,8 @@ var auxProvData: any;
 export class RegistroEvidenciaComponent implements OnInit {
 
   suscripcionesModal: Subscription[] = [];
-  
+  inputParam: any;
+
   token: any;
   forma: FormGroup;
   loading: boolean = false;
@@ -32,6 +33,7 @@ export class RegistroEvidenciaComponent implements OnInit {
   evidencias: any;
   descripcion: string;
   evidenciasdata: evidenciasdata[] = [];
+  evidenciaId: any;
 
   dataSource = new MatTableDataSource<evidenciasdata>(this.evidencias);
   constructor(public ngxSmartModalService: NgxSmartModalService,
@@ -56,10 +58,20 @@ export class RegistroEvidenciaComponent implements OnInit {
      });
   }
 
+  ngAfterViewInit(){
+   
+    this.ngxSmartModalService.getModal('evidenciasModal').onOpen.subscribe(() => {
+      this.inputParam = this.ngxSmartModalService.getModalData('evidenciasModal');
+      console.log('datos recibidos por modal de evidencias: ', this.inputParam);
+      this.nuevo = this.inputParam.nuevo;
+      this.mostrarEvidencias();
+    });
+  }
+
   ngOnInit() {
     this.fechaActual.setDate(this.fechaActual.getDate());
     this.forma.controls['fecha'].setValue(this.fechaActual);
-    this.mostrarEvidencias();
+    
   }
   
 
@@ -71,28 +83,30 @@ export class RegistroEvidenciaComponent implements OnInit {
 
   agregarEvidencia(){
     this.nuevo = true;
-    
+    this.forma.controls['descripcion'].setValue('')
     this.mostrarEvidencias();
   }
   guardarEvidencia(){
     this.nuevo = false;
     let jsbody = {
-      "id_op": "002df6c8-5c12-11e7-afc8-005056b65e14",
-	    "name_evidencia": "Evidencia ff",
+      "id_op": this.inputParam.ordPublicidadId,
+	    "name_evidencia": this.forma.controls['descripcion'].value,
 	    "url_evidencia": "https://google.com/",
-	    "user_evidencia": "FaustoID"
+	    "id_proveedor": this.inputParam.proveedorId
     }
     let jsonbody = JSON.stringify(jsbody)
     this._evidenciasService.registrarEvidencia( jsonbody, this.token)
       .subscribe(dataE => {
         console.log(dataE);
       })
-
+      this.forma.controls['descripcion'].setValue('')
+      this.mostrarEvidencias();
   }
 
   mostrarEvidencias(){
     let jsbodyevid = {
-      "user_evidencia": "1191"
+      "id_proveedor": this.inputParam.proveedorId,
+      "id_op": this.inputParam.ordPublicidadId
     }
     let jsonbodyevid = JSON.stringify(jsbodyevid)
     this._evidenciasService.getEvidencias( jsonbodyevid, this.token)
@@ -100,12 +114,25 @@ export class RegistroEvidenciaComponent implements OnInit {
         console.log(dataEv);
         this.evidencias = dataEv;
         this.evidenciasdata = this.evidencias.dataset;
-        this.dataSource = new MatTableDataSource(this.evidenciasdata)
-        console.log(this.dataSource)
+        this.dataSource = new MatTableDataSource(this.evidenciasdata) 
+      })
+  }
+
+  eliminarEvidencia(id){
+    let jsbodyEvDel = {
+      "id_op": this.inputParam.ordPublicidadId,
+      "id_evidencia": id
+    }
+    let jsonbodyEvDel = JSON.stringify(jsbodyEvDel)
+    this._evidenciasService.delEvidencia( jsonbodyEvDel, this.token)
+      .subscribe(dataEv => {
+        console.log(dataEv);
+        this.mostrarEvidencias();
       })
   }
 }
 export interface evidenciasdata{
+  id_evidencia: string,
   descripcion: string,
   fecha: string,
   url_imagen: string

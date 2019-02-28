@@ -62,11 +62,13 @@ export class AbmComprasComponent implements OnInit {
   totalneto:number = 0;
   impuestosalicuotas:number = 0;
   totaltotal:number = 0;
-
+ // inicio parametros
   idParam:string = null;
   expParam:string = null;
   retorna: boolean = false;
-
+  return: string = '1';
+  ordPub: string;
+// fin parametros
   tcData: any;
   tipoComprobante: TipoComprobante[] = [];
   dataAfip: any;
@@ -160,6 +162,7 @@ export class AbmComprasComponent implements OnInit {
     this.route.params.subscribe( parametros=>{
       this.idParam = parametros['id'];
       this.expParam = parametros['expediente'];
+      this.ordPub = parametros['orden'];
     });
 
     //if id existe
@@ -631,7 +634,7 @@ export class AbmComprasComponent implements OnInit {
     this.forma.controls['expediente'].disable();
   }
   if(this.retorna = true){
-    this.router.navigate(['ordenes-publicidad', this.idParam])
+    this.router.navigate(['ordenes-publicidad', this.idParam, this.ordPub])
   }
 }
   guardarArticulo(){

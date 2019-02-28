@@ -1,3 +1,26 @@
+<h2>CARGA FORMULARIO</h2>
+<form [formGroup]="forma" novalidate="novalidate">
+    <div class="row" style="margin-top:15px; margin-bottom:10px;">
+        <div class="col s6 m3 l3" style="display: inline-block">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Fecha Presentación</mat-label>
+            <input matInput type="text"  placeholder="" value="{{ fechaPresenta | date: 'dd-MM-yyyy' }}" readonly>
+            </mat-form-field>
+        </div>
+        <div class="col s6 m3 l3" style="display: inline-block">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>Fecha Vencimiento</mat-label>
+            <input matInput type="text"  placeholder="" formControlName="fechVenci" value="{{ fechaVencimiento | date: 'dd-MM-yyyy' }}" readonly>
+            </mat-form-field>
+        </div>
+        <div class="col s6 m3 l3" style="display: inline-block">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
+            <mat-label>URL</mat-label>
+            <input matInput type="text"  placeholder="" formControlName="url" value="{{ urlImagen }}" readonly>
+            </mat-form-field>
+        </div>
+    </div>
+</form>
 <p><input type="file" #attachment name="attachment" (change)="cargar(attachment)" id="attachment"></p>
-<p><button class="mine-btnbig" mat-flat-button (click)="subirFoto()">SUBIR ARCHIVO</button></p>
-<p>{{ urlImagen }}</p>
+<!-- <p><button class="mine-btnbig" mat-flat-button (click)="subirFoto()">SUBIR ARCHIVO</button></p> -->
+<button class="mine-btnbig" mat-flat-button (click)="guardar()"> Guardar</button>

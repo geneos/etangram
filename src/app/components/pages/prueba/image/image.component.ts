@@ -42,5 +42,4 @@ export class ImageComponent implements OnInit {
   cargar(attachment){
     this.adjunto = attachment.files[0];
   }
-
 }

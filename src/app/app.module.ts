@@ -79,7 +79,6 @@ import { FormulariosComponent } from './components/shared/modals/formularios/for
 import { CargaFormularioComponent } from './components/pages/carga-formulario/carga-formulario.component';
 
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -130,7 +129,7 @@ import { CargaFormularioComponent } from './components/pages/carga-formulario/ca
     EvidenciasComponent,
     RegistroEvidenciaComponent,
     FormulariosComponent,
-    CargaFormularioComponent
+    CargaFormularioComponent,
   ],
   imports: [
     BrowserModule,
@@ -145,6 +144,7 @@ import { CargaFormularioComponent } from './components/pages/carga-formulario/ca
     CdkTableModule,
     NgxSmartModalModule.forRoot(),
     StorageServiceModule,
+    
   ],
   entryComponents: [
     TextoComponent,

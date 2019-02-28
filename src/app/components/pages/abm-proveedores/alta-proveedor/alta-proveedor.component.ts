@@ -1352,7 +1352,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.forma.controls['idVendedor'].setValue(this.provCabecera.id_vendedor);
                 this.forma.controls['idCobrador'].setValue(this.provCabecera.id_cobrador);
                 this.forma.controls['limiteCredito'].setValue(this.provCabecera.limitecredito);
-                //las busquedas no hacen falta porque están las suscripciones
+                
                 if (this.provCabecera.listaprecios != null){
                   this.forma.controls['idlistaPrecios'].setValue(this.provCabecera.listaprecios);
                   this.buscarListaPrecios();
@@ -1480,7 +1480,7 @@ export class AltaProveedorComponent implements OnInit {
                 cImpuesto.controls['tipo'].setValue(impuesto.ID_Impuestos) ;
                 cImpuesto.controls['modelo'].setValue(impuesto.ID_Modelo_impuestos) ;
                 cImpuesto.controls['situacion'].setValue(impuesto.Situacion) ;
-                // cImpuesto.controls['codInscripcion'].setValue(impuesto.ID_Impuestos) ;
+                cImpuesto.controls['codInscripcion'].setValue(impuesto.Codigo_inscripcion) ;
                 cImpuesto.controls['fechaInscripcion'].setValue(this.nuevaFecha(impuesto.Fecha_inscripcion));
                 cImpuesto.controls['observaciones'].setValue(impuesto.Observaciones) ;
                 cImpuesto.controls['poseeExenciones'].setValue((impuesto.Exenciones == 1 ? true : false)) ;
@@ -2603,7 +2603,7 @@ export class AltaProveedorComponent implements OnInit {
         "p_imp_tipo" : formGroupImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
         "p_imp_modelo" : formGroupImpuesto.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
         "p_imp_situacion" : formGroupImpuesto.controls['situacion'].value,
-        // "p_imp_codigo" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
+        "p_imp_nro_inscripcion" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
         "p_imp_fecha_insc" : this.extraerFecha(<FormControl>formGroupImpuesto.controls['fechaInscripcion']),//"1997-05-05",
         "p_imp_excenciones" : formGroupImpuesto.controls['poseeExenciones'].value.toString(),//"false",
         "p_imp_fecha_comienzo_excencion" : this.extraerFecha(<FormControl>formGroupImpuesto.controls['fechaDesde'], false), // → si es true

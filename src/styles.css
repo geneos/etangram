@@ -195,3 +195,4 @@ app-cons-din-n2 ngx-smart-modal div {
 /* .cdk-global-overlay-wrapper {
   z-index: 1000;
 } */
+.mat-checkbox-layout { white-space: normal !important; }

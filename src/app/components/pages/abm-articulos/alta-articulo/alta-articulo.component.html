@@ -10,7 +10,7 @@
       <mat-panel-title>DATOS DESCRIPTIVOS</mat-panel-title>
     </mat-expansion-panel-header>
 
-    <div class="row" style="margin-top:15px;">
+    <div class="row" style="margin-top:15px; margin-bottom:0px;">
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo</mat-label>
@@ -44,7 +44,7 @@
           <input matInput placeholder="" type="number" formControlName="codigoBarra">
         </mat-form-field>
       </div>
-      <div class="col s2 m2 l1">
+      <div class="col s3 m3 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo</mat-label>
           <input (keyup)="buscarGrupo()" (changed)="buscarGrupo()" #codGrupo matInput placeholder="" formControlName="idGrupo">
@@ -66,8 +66,7 @@
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>
-
-      <div class="col s12 m12 l7">
+      <div class="col s7 m7 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de Grupo</mat-label>
           <!-- <input matInput placeholder="" formControlName="nombreGrupo" value="{{ resultadoidGrupo?.name }}"> -->
@@ -77,7 +76,7 @@
         </mat-form-field>
       </div>
 
-      <div class="col s6 m6 l3">
+      <div class="col s4 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Tipo Artículo</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idTipoArticulo">
@@ -87,7 +86,7 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s4 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Procedencia</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="procedencia">
@@ -97,10 +96,12 @@
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s4 m4 l4">
+      <div class="col s4 m4 l6" style="margin-top:10px; margin-bottom:15px; ">
           <mat-checkbox formControlName="propio" *ngIf="tipoArt.value!=2">¿Elaboración propia?</mat-checkbox>
       </div>
-      <div class="col s2 m2 l1">
+    </div>
+    <div class="row" style="margin-top:0px;">
+      <div class="col s3 m3 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Marca</mat-label>
           <input (keyup)="buscarMarca()" (changed)="buscarMarca()" #codMarca matInput placeholder="" formControlName="idMarca">
@@ -113,7 +114,7 @@
         </mat-form-field>
       </div>
       <!-- <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tglp_tg_marcas', 'idMarca')"> -->
-      <div class="col s1 m1 l1" style="margin-top:10px;">
+      <div class="col s2 m2 l1" style="margin-top:10px;">
         <!-- <button type="button" class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button> -->
@@ -122,7 +123,7 @@
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>
-      <div class="col s12 m12 l7">
+      <div class="col s7 m7 l5">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre de Marca</mat-label>
           <!-- <input matInput placeholder="" formControlName="nombreMarca" value="{{ resultadoidMarca?.name }}"> -->
@@ -150,7 +151,8 @@
             </mat-option>
           </mat-select>
         </mat-form-field> -->
-        <mat-form-field *ngIf="obsValoresAtributos0 | async as lista; else sincampo1" appearance="outline" floatLabel="always" style="width:100%;" >
+        <!-- <mat-form-field *ngIf="obsValoresAtributos0 | async as lista; else sincampo1" appearance="outline" floatLabel="always" style="width:100%;" > -->
+        <mat-form-field *ngIf="obsValoresAtributos0 | async as lista" appearance="outline" floatLabel="always" style="width:100%;" >
           <mat-label >{{ atributosArticuloAll[0].name }}</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo1">
             <mat-option *ngFor="let aux of lista" [value]="aux.id">
@@ -158,15 +160,16 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <ng-template #sincampo1>
+        <!-- <ng-template #sincampo1>
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" >
             <mat-label>Campo1</mat-label>
             <mat-select placeholder="Elija una opción"></mat-select>
           </mat-form-field>
-        </ng-template>
+        </ng-template> -->
       </div>
       <div class="col s4 m4 l2" *ngIf="tipoArt.value!=2">
-        <mat-form-field *ngIf="obsValoresAtributos1 | async as lista; else sincampo2" appearance="outline" floatLabel="always" style="width:100%;" >
+        <!-- <mat-form-field *ngIf="obsValoresAtributos1 | async as lista; else sincampo2" appearance="outline" floatLabel="always" style="width:100%;" > -->
+            <mat-form-field *ngIf="obsValoresAtributos1 | async as lista" appearance="outline" floatLabel="always" style="width:100%;" >
           <mat-label >{{ atributosArticuloAll[1].name }}</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo2">
             <mat-option *ngFor="let aux of lista" [value]="aux.id">
@@ -174,15 +177,16 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <ng-template #sincampo2>
+        <!-- <ng-template #sincampo2>
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" >
             <mat-label>Campo2</mat-label>
             <mat-select placeholder="Elija una opción"></mat-select>
           </mat-form-field>
-        </ng-template>
+        </ng-template> -->
       </div>
       <div class="col s4 m4 l2" *ngIf="tipoArt.value!=2">
-        <mat-form-field *ngIf="obsValoresAtributos2 | async as lista; else sincampo3" appearance="outline" floatLabel="always" style="width:100%;" >
+        <!-- <mat-form-field *ngIf="obsValoresAtributos2 | async as lista; else sincampo3" appearance="outline" floatLabel="always" style="width:100%;" > -->
+        <mat-form-field *ngIf="obsValoresAtributos2 | async as lista" appearance="outline" floatLabel="always" style="width:100%;" >
           <mat-label >{{ atributosArticuloAll[2].name }}</mat-label>
           <mat-select placeholder="Elija una opción" formControlName="idCampo3">
             <mat-option *ngFor="let aux of lista" [value]="aux.id">
@@ -190,12 +194,12 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <ng-template #sincampo3>
+        <!-- <ng-template #sincampo3>
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" >
             <mat-label>Campo3</mat-label>
             <mat-select placeholder="Elija una opción"></mat-select>
           </mat-form-field>
-        </ng-template>
+        </ng-template> -->
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -357,9 +361,9 @@
       <div formArrayName="proveedores" *ngFor="let pro of forma.controls.proveedores?.controls; let i = index">
         <ng-container [formGroupName]="i">
           <div class="row" style="margin:5px !important;">
-            <div class="col s6 m4 l1">
+            <div class="col s3 m3 l1">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-                <mat-label>Id Proveedor</mat-label>
+                <mat-label>Proveedor</mat-label>
                 <input (keyup)="buscarProveedor(i)" (changed)="buscarProveedor(i)" #codProv matInput placeholder="" formControlName="idProveedor">
                 <mat-hint *ngIf="pro.controls['idProveedor'].status == 'PENDING'">
                   Buscando código...
@@ -369,7 +373,7 @@
                 </mat-hint>
               </mat-form-field>
             </div>
-            <div class="col s2 m1 l1" style="margin-top:10px;">
+            <div class="col s2 m2 l1" style="margin-top:10px;">
               <!-- <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_proveedores', 'idProveedor')"> -->
               <button type="button" class="mine-btnforms" mat-flat-button 
               (click)="abrirConsulta('c_proveedores', ['proveedores', i], 'idProveedor', 'razonSocial', 'openSnackBar', i)">
@@ -380,16 +384,17 @@
                 <i class="material-icons" style="font-size:20px;">more_horiz</i>
               </button> -->
             </div>
-            <div class="col s6 m4 l2">
+            <div class="col s7 m7 l2">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Razon Social</mat-label>
                 <!-- <input matInput placeholder="" formControlName="razonSocial" value="{{ proveedor?.razon_social }}"> -->
                 <input matInput placeholder="" readonly formControlName="razonSocial">
               </mat-form-field>
             </div>
-            <div class="col s6 m4 l2">
+            <!-- todo quitar cd articulo -->
+            <div class="col s3 m3 l2">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-                <mat-label>Código Artículo</mat-label>
+                <mat-label>Artículo</mat-label>
                 <input (keyup)="buscarArtProveedor(i)" #codArtProv matInput placeholder="" formControlName="artDeProveedor">
                 <mat-hint *ngIf="pro.controls['artDeProveedor'].status == 'PENDING'">
                   Buscando código...
@@ -399,7 +404,7 @@
                 </mat-hint>
               </mat-form-field>
             </div>
-            <div class="col s2 m1 l1" style="margin-top:10px;">
+            <div class="col s2 m2 l1" style="margin-top:10px;">
               <!-- <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artDeProveedor')">
                 <i class="material-icons" style="font-size:20px;">more_horiz</i>
               </button> -->
@@ -408,7 +413,7 @@
                 <i class="material-icons" style="font-size:20px;">more_horiz</i>
               </button>
             </div>
-            <div class="col s4 m4 l2">
+            <div class="col s7 m7 l2">
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Descripción Artículo</mat-label>
                 <input matInput placeholder="" readonly type="text" formControlName="artDesc">
@@ -444,10 +449,10 @@
                 <mat-datepicker #pickerUltProv></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col s6 m2 l1">
+            <div class="col s3 m3 l1">
                 <mat-checkbox formControlName="esPorDefecto">Por defecto</mat-checkbox>
             </div>
-            <div class="col s6 m2 l1">
+            <div class="col s1 m1 l1">
               <button type="button" (click)="deleteProveedor(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
                 -
               </button>
@@ -555,25 +560,25 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
-      <div class="col s12 m6 l3">
+      <div class="col s12 m4 l3" style="padding-bottom: 15px">
         <mat-checkbox #adminStock formControlName="administraStock">Administra Stock</mat-checkbox>
       </div>
       <!--  *ngIf="adminStock.checked==true" -->
-      <div class="col s12 m6 l3" *ngIf="adminStock.checked">
+      <div class="col s6 m4 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Ideal</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockIdeal">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m6 l3" *ngIf="adminStock.checked">
+      <div class="col s6 m4 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Máximo</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockMaximo">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m6 l3" *ngIf="adminStock.checked">
+      <div class="col s6 m4 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock de Reposición</mat-label>
           <input matInput placeholder="" type="number" formControlName="stockReposicion">
@@ -596,7 +601,7 @@
       <ng-container [formGroupName]="i">
         <!-- <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;"> -->
         <div class="row" style="margin:5px !important;">
-          <div class="col s6 m4 l2">
+          <div class="col s3 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Id Depósito</mat-label>
               <input (keyup)="buscarDeposito(i)" #codDep matInput placeholder="" formControlName="tg01_depositos_id_c">
@@ -608,7 +613,7 @@
               </mat-hint>
             </mat-form-field>
           </div>
-          <div class="col s2 m1 l1" style="margin-top:10px;">
+          <div class="col s2 m2 l1" style="margin-top:10px;">
             <!-- <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artDeProveedor')">
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </button> -->
@@ -617,32 +622,32 @@
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </button>
           </div>
-          <div class="col s6 m4 l2">
+          <div class="col s7 m7 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Nombre Depósito</mat-label>
               <input matInput placeholder="" readonly formControlName="name">
             </mat-form-field>
           </div>
 
-          <div class="col s12 m4 l2">
+          <div class="col s6 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Stock Ideal</mat-label>
               <input matInput placeholder="" type="number" formControlName="stockideal">
             </mat-form-field>
           </div>
-          <div class="col s12 m4 l2">
+          <div class="col s6 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Stock Máximo</mat-label>
               <input matInput placeholder="" type="number" formControlName="stockmaximo">
             </mat-form-field>
           </div>
-          <div class="col s12 m4 l2">
+          <div class="col s6 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Stock Reposición</mat-label>
               <input matInput placeholder="" type="number" formControlName="stockreposicion">
             </mat-form-field>
           </div>
-          <div class="col s12 m4 l4">
+          <div class="col s6 m3 l2">
             <button type="button" (click)="deleteDeposito(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
               -
             </button>
@@ -666,10 +671,10 @@
     <div formArrayName="articulosSustitutos" *ngFor="let art of forma.controls.articulosSustitutos?.controls; let i = index">
       <ng-container [formGroupName]="i">
         <div class="row" style="margin:5px !important;">
-          <div class="col s12 m6 l2">
+          <div class="col s3 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Id Artículo Sustituto</mat-label>
-              <input (keyup)="buscarArtSust(i)" #codArtSust matInput placeholder="" formControlName="idArtSust">
+              <mat-label>Artículo</mat-label>
+              <input (keyup)="buscarArtSust(i)" #codArtSust matInput type="number" placeholder="" formControlName="idArtSust">
               <mat-hint *ngIf="art.controls['idArtSust'].status == 'PENDING'">
                 Buscando código...
               </mat-hint>
@@ -678,7 +683,7 @@
               </mat-hint>
             </mat-form-field>
           </div>
-          <div class="col s2 m1 l1" style="margin-top:10px;">
+          <div class="col s2 m2 l1" style="margin-top:10px;">
             <!-- <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'idArtSust')">
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </button> -->
@@ -687,13 +692,13 @@
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </button>
           </div>
-          <div class="col s12 m6 l2">
+          <div class="col s7 m7 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Descripción</mat-label>
               <input matInput placeholder="" disabled readonly formControlName="artDesc">
             </mat-form-field>
           </div>
-          <div class="col s12 m4 l2">
+          <div class="col s6 m6 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>U.M. Artículo</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="umArticulo">
@@ -705,7 +710,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col s12 m4 l2">
+          <div class="col s6 m6 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>U.M. Sustituto</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="umSustituto">
@@ -717,7 +722,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col s12 m4 l2">
+          <div class="col s6 m6 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Tipo Sustituto</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="tipoSustituto">
@@ -727,7 +732,7 @@
               </mat-select>
             </mat-form-field>
           </div>
-          <div class="col s12 m6 l1">
+          <div class="col s5 m5 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Cantidad</mat-label>
               <input matInput placeholder="" type="text" formControlName="cantidad">
@@ -758,9 +763,9 @@
     <div formArrayName="articulosHijos" *ngFor="let art of forma.controls.articulosHijos?.controls; let i = index">
       <ng-container [formGroupName]="i">
         <div class="row" style="margin:5px !important;">
-          <div class="col s12 m6 l2">
+          <div class="col s3 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Id Artículo Hijo</mat-label>
+              <mat-label>Artículo</mat-label>
               <input (keyup)="buscarArtHijo(i)" #codArtHijo matInput placeholder="" formControlName="idArtHijo">
               <mat-hint *ngIf="art.controls['idArtHijo'].status == 'PENDING'">
                 Buscando código...
@@ -770,7 +775,7 @@
               </mat-hint>
             </mat-form-field>
           </div>
-          <div class="col s2 m1 l1" style="margin-top:10px;">
+          <div class="col s2 m2 l1" style="margin-top:10px;">
            <!--  <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'idArtHijo')">
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </button> -->
@@ -779,7 +784,7 @@
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </button>
           </div>
-          <div class="col s12 m6 l2">
+          <div class="col s7 m7 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Descripción</mat-label>
               <input matInput placeholder="" disabled readonly formControlName="artDesc">
@@ -816,7 +821,7 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px;">
-        <div class="col s12 m4 l3">
+        <div class="col s5 m5 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Dimensiones</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="Dimensiones">
@@ -826,10 +831,11 @@
               </mat-select>
             </mat-form-field>
         </div>
-        <div class="col s12 m4 l3" style="margin-bottom:20px;">
+        <!-- <div class="col s3 m3 l2" style="margin-bottom:20px;"> -->
+        <div class="col s3 m3 l2" style="padding-top:15px;">
             <mat-checkbox formControlName="Pesable">Pesable</mat-checkbox>
         </div>
-        <div class="col s12 m4 l2">
+        <div class="col s4 m4 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Pesable Estandar</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="Pesable_Estandar">

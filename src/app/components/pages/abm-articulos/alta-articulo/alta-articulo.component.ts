@@ -2404,7 +2404,7 @@ construirFoto(){
   //#endregion busquedasAutocompletado
 
   //modal
-  //todo agregar indice y array para escribir el resultado en donde corresponda con control
+  //agregado agregar indice y array para escribir el resultado en donde corresponda con control
   /* abrirConsulta2(consulta: string, control: string, control2: string, ubicacion: any[], funcion: string, param: any){
     console.log(' recibido por abrirconsulta2: ', consulta, control, control2, ubicacion);
     if (ubicacion.length == 0 )

@@ -59,6 +59,9 @@ export interface ProveedorCabecera{
   fecha_vto_cai: string;
   cuit_exterior: string;
   idimpositivo: string;
+  estado: string;
+  categoria_bloqueo: string;
+  tipo_comprobante: string;
 }
 
 export interface RelacionComercial{
@@ -82,8 +85,9 @@ export interface Impuesto{
 }//proveedores_impuesto_GET_SP
 
 export interface Formulario{
-  ID_Form_Proveedor: string;
+  // ID_Form_Proveedor: string;
   ID_Formulario: string;
+  ID_Formulario_nombre: string;
   Fecha_presentacion: string;
   Fecha_vencimiento: string;
   Url: string;

@@ -63,105 +63,119 @@
         </mat-form-field>
       </div>
     <!--</div>-->
-    <div *ngIf="tipoReferente == ('P'||'C')" class="col s12 m6 l6">
-    <div class="row" style="margin-top:5px; ">
-      <div class="col s12 m12 l12">
-        <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Dirección de Facturación:</h6>
+      <div *ngIf="tipoReferente == ('P'||'C')" class="col s12 m6 l6">
+        <div class="row" style="margin-top:5px; ">
+          <div class="col s12 m12 l12">
+            <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Dirección de Facturación:</h6>
+          </div>
+          <div class="col s12 m12 l12">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Calle</mat-label>
+              <input matInput placeholder="" formControlName="facCalle">
+            </mat-form-field>
+          </div>
+          <div class="col s10 m10 l4">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Código Postal</mat-label>
+              <input matInput (keyup)="buscarCPostalFac()" placeholder="" #facCodigoPostal formControlName="facCodigoPostal" >
+              <mat-hint *ngIf="forma.controls['facCodigoPostal'].status == 'PENDING'">
+                Buscando código...
+              </mat-hint>
+              <mat-hint *ngIf="forma.controls['facCodigoPostal'].errors?.noExiste">
+                El código postal no existe
+              </mat-hint>
+            </mat-form-field>
+          </div>
+          <!-- <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_localidades', 'facCodigoPostal')">
+            <a class="mine-btnforms" mat-flat-button>
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </a>
+          </div> -->
+          <div class="col s1 m1 l1" style="margin-top:10px;">
+            <button type="button" class="mine-btnforms" mat-flat-button 
+            (click)="abrirConsulta('tg01_localidades', [], 'facCodigoPostal', 'facCiudad')">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button>
+          </div>
+          <div class="col s12 m12 l7">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Ciudad</mat-label>
+              <!-- <input matInput readonly placeholder="" formControlName="facCiudad" value="{{ localidadFac?.name }}"> -->
+              <input matInput readonly placeholder="" formControlName="facCiudad">
+            </mat-form-field>
+          </div>
+          <div class="col s12 m12 l12">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Provincia</mat-label>
+              <input matInput placeholder="" formControlName="facProvincia" value="{{ provinciaFac?.name }}">
+            </mat-form-field>
+          </div>
+          <div class="col s12 m12 l12">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>País</mat-label>
+              <input matInput placeholder="" formControlName="facPais" value="{{ paisFac?.name }}">
+            </mat-form-field>
+          </div>
+        </div>
       </div>
-      <div class="col s12 m12 l12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Calle</mat-label>
-          <input matInput placeholder="" formControlName="facCalle">
-        </mat-form-field>
+      <div *ngIf="tipoReferente == ('P'||'C')" class="col s12 m6 l6">
+        <div class="row" style="margin-top:5px; ">
+          <div class="col s12 m12 l12" style="display:flex">
+            <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Dirección de Envío:</h6>
+            <a (click)="copiarDireccion()" class="mine-btnbig-grey" mat-flat-button style="height:25px;line-height:0px;margin-left:15px;min-width:40px !important;padding:0 !important">
+              <i class="material-icons" style="font-size:16px;margin-top: 4px;">file_copy</i>
+            </a>
+          </div>
+          <div class="col s12 m12 l12">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Calle</mat-label>
+              <input matInput placeholder="" formControlName="envCalle">
+            </mat-form-field>
+          </div>
+          <div class="col s10 m10 l4">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Código Postal</mat-label>
+              <input matInput (keyup)="buscarCPostalEnv()" placeholder="" #envCodigoPostal formControlName="envCodigoPostal">
+              <mat-hint *ngIf="forma.controls['envCodigoPostal'].status == 'PENDING'">
+                Buscando código...
+              </mat-hint>
+              <mat-hint *ngIf="forma.controls['envCodigoPostal'].errors?.noExiste">
+                El código postal no existe
+              </mat-hint>
+            </mat-form-field>
+          </div>
+          <!-- <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_localidades', 'envCodigoPostal')">
+            <a class="mine-btnforms" mat-flat-button>
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </a>
+          </div> -->
+          <div class="col s1 m1 l1" style="margin-top:10px;">
+            <button type="button" class="mine-btnforms" mat-flat-button 
+            (click)="abrirConsulta('tg01_localidades', [], 'envCodigoPostal', 'envCiudad')">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button>
+          </div>
+          <div class="col s12 m12 l7">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Ciudad</mat-label>
+              <!-- <input matInput readonly placeholder="" formControlName="envCiudad" value="{{ localidadEnv?.name }}"> -->
+              <input matInput readonly placeholder="" formControlName="envCiudad">
+            </mat-form-field>
+          </div>
+          <div class="col s12 m12 l12">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Provincia</mat-label>
+              <input matInput placeholder="" formControlName="envProvincia" value="{{ provinciaEnv?.name }}">
+            </mat-form-field>
+          </div>
+          <div class="col s12 m12 l12">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>País</mat-label>
+              <input matInput placeholder="" formControlName="envPais" value="{{ paisEnv?.name }}">
+            </mat-form-field>
+          </div>
+        </div>
       </div>
-      <div class="col s10 m10 l4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Código Postal</mat-label>
-          <input matInput (keyup)="buscarCPostalFac()" placeholder="" #facCodigoPostal formControlName="facCodigoPostal" >
-          <mat-hint *ngIf="forma.controls['facCodigoPostal'].status == 'PENDING'">
-            Buscando código...
-          </mat-hint>
-          <mat-hint *ngIf="forma.controls['facCodigoPostal'].errors?.noExiste">
-            El código postal no existe
-          </mat-hint>
-        </mat-form-field>
-      </div>
-      <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_localidades', 'facCodigoPostal')">
-        <a class="mine-btnforms" mat-flat-button>
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </a>
-      </div>
-      <div class="col s12 m12 l7">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Ciudad</mat-label>
-          <input matInput placeholder="" formControlName="facCiudad" value="{{ localidadFac?.name }}">
-        </mat-form-field>
-      </div>
-      <div class="col s12 m12 l12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Provincia</mat-label>
-          <input matInput placeholder="" formControlName="facProvincia" value="{{ provinciaFac?.name }}">
-        </mat-form-field>
-      </div>
-      <div class="col s12 m12 l12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>País</mat-label>
-          <input matInput placeholder="" formControlName="facPais" value="{{ paisFac?.name }}">
-        </mat-form-field>
-      </div>
-    </div>
-    </div>
-    <div *ngIf="tipoReferente == ('P'||'C')" class="col s12 m6 l6">
-    <div class="row" style="margin-top:5px; ">
-      <div class="col s12 m12 l12" style="display:flex">
-        <h6 style="margin-top:0px !important; margin-bottom: 15px !important;">Dirección de Envío:</h6>
-        <a (click)="copiarDireccion()" class="mine-btnbig-grey" mat-flat-button style="height:25px;line-height:0px;margin-left:15px;min-width:40px !important;padding:0 !important">
-          <i class="material-icons" style="font-size:16px;margin-top: 4px;">file_copy</i>
-        </a>
-      </div>
-      <div class="col s12 m12 l12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Calle</mat-label>
-          <input matInput placeholder="" formControlName="envCalle">
-        </mat-form-field>
-      </div>
-      <div class="col s10 m10 l4">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Código Postal</mat-label>
-          <input matInput (keyup)="buscarCPostalEnv()" placeholder="" #envCodigoPostal formControlName="envCodigoPostal">
-          <mat-hint *ngIf="forma.controls['envCodigoPostal'].status == 'PENDING'">
-            Buscando código...
-          </mat-hint>
-          <mat-hint *ngIf="forma.controls['envCodigoPostal'].errors?.noExiste">
-            El código postal no existe
-          </mat-hint>
-        </mat-form-field>
-      </div>
-      <div class="col s2 m2 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_localidades', 'envCodigoPostal')">
-        <a class="mine-btnforms" mat-flat-button>
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </a>
-      </div>
-      <div class="col s12 m12 l7">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Ciudad</mat-label>
-          <input matInput placeholder="" formControlName="envCiudad" value="{{ localidadEnv?.name }}">
-        </mat-form-field>
-      </div>
-      <div class="col s12 m12 l12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>Provincia</mat-label>
-          <input matInput placeholder="" formControlName="envProvincia" value="{{ provinciaEnv?.name }}">
-        </mat-form-field>
-      </div>
-      <div class="col s12 m12 l12">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>País</mat-label>
-          <input matInput placeholder="" formControlName="envPais" value="{{ paisEnv?.name }}">
-        </mat-form-field>
-      </div>
-    </div>
-    </div>
 
       <div *ngIf="tipoReferente == ('P'||'C')" class="col s12 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -227,10 +241,16 @@
           </mat-hint>
         </mat-form-field>
       </div>
-      <div *ngIf="tipoReferente == ('C')" class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_zonas', 'idZona')">
+      <!-- <div *ngIf="tipoReferente == ('C')" class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_zonas', 'idZona')">
         <a class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </a>
+      </div> -->
+      <div class="col s1 m1 l1" style="margin-top:10px;" *ngIf="tipoReferente == ('C')">
+        <button type="button" class="mine-btnforms" mat-flat-button 
+        (click)="abrirConsulta('tg01_zonas', [], 'idZona', 'zonaDesc')">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
       <div *ngIf="tipoReferente == ('C')" class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -251,10 +271,16 @@
           </mat-hint>
         </mat-form-field>
       </div>
-      <div *ngIf="tipoReferente == ('C')" class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_vendedores', 'idVendedor')">
+      <!-- <div *ngIf="tipoReferente == ('C')" class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_vendedores', 'idVendedor')">
         <a class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </a>
+      </div> -->
+      <div class="col s1 m1 l1" style="margin-top:10px;" *ngIf="tipoReferente == ('C')" >
+        <button type="button" class="mine-btnforms" mat-flat-button 
+        (click)="abrirConsulta('tg01_vendedores', [], 'idVendedor', 'vendedorDesc')">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
       <div *ngIf="tipoReferente == ('C')" class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -275,10 +301,16 @@
           </mat-hint>
         </mat-form-field>
       </div> 
-      <div *ngIf="tipoReferente == ('C')" class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_vendedores', 'idCobrador')">
+      <!-- <div *ngIf="tipoReferente == ('C')" class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_vendedores', 'idCobrador')">
         <a class="mine-btnforms" mat-flat-button>
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </a>
+      </div> -->
+      <div class="col s1 m1 l1" style="margin-top:10px;" *ngIf="tipoReferente == ('C')">
+        <button type="button" class="mine-btnforms" mat-flat-button 
+        (click)="abrirConsulta('tg01_vendedores', [], 'idCobrador', 'cobradorDesc')">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
       <div *ngIf="tipoReferente == ('C')" class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -301,15 +333,21 @@
             </mat-hint>
           </mat-form-field>
         </div>
-        <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tglp_tg_listasprecios', 'idlistaPrecios')">
+        <!-- <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tglp_tg_listasprecios', 'idlistaPrecios')">
           <a class="mine-btnforms" mat-flat-button>
             <i class="material-icons" style="font-size:20px;">more_horiz</i>
           </a>
+        </div> -->
+        <div class="col s1 m1 l1" style="margin-top:10px;">
+          <button type="button" class="mine-btnforms" mat-flat-button 
+          (click)="abrirConsulta('tglp_tg_listasprecios', [], 'idlistaPrecios', 'descListaPrecios')">
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
         </div>
         <div class="col s6 m3 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Nombre Lista</mat-label>
-            <input matInput placeholder="" formControlName="descListaPrecios" value="{{listaPrecios?.name}}">
+            <input matInput readonly placeholder="" formControlName="descListaPrecios" value="{{listaPrecios?.name}}">
           </mat-form-field>
         </div>
       </div>
@@ -327,15 +365,22 @@
             </mat-hint>
           </mat-form-field>
         </div>
-        <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_condicioncomercial', 'condComercial')">
+        <!-- <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('c_condicioncomercial', 'condComercial')">
           <a class="mine-btnforms" mat-flat-button>
             <i class="material-icons" style="font-size:20px;">more_horiz</i>
           </a>
+        </div> -->
+        <div class="col s1 m1 l1" style="margin-top:10px;">
+          <button type="button" class="mine-btnforms" mat-flat-button 
+          (click)="abrirConsulta('c_condicioncomercial', [], 'condComercial', 'descCondComercial')">
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
         </div>
         <div class="col s6 m3 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Descripción Condición</mat-label>
-            <input matInput placeholder="" formControlName="descCondComercial" value="{{condicionComercial?.name}}" >
+            <input matInput readonly placeholder="" formControlName="descCondComercial" value="{{condicionComercial?.name}}" >
+            <!-- <input matInput readonly placeholder="" formControlName="descCondComercial"> -->
           </mat-form-field>
         </div>
       </div>
@@ -354,15 +399,22 @@
           </mat-form-field>
         </div>
         <!-- <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_partidaspresupuestarias', 'idPartidaPresupuestaria')"> -->
-        <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg05_partidas_presupuestaria', 'idPartidaPresupuestaria')">
+        <!-- <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg05_partidas_presupuestaria', 'idPartidaPresupuestaria')">
           <a class="mine-btnforms" mat-flat-button>
             <i class="material-icons" style="font-size:20px;">more_horiz</i>
           </a>
+        </div> -->
+        <div class="col s1 m1 l1" style="margin-top:10px;">
+          <button type="button" class="mine-btnforms" mat-flat-button 
+          (click)="abrirConsulta('tg05_partidas_presupuestaria', [], 'idPartidaPresupuestaria', 'descPartidaPresupuestaria')">
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
         </div>
         <div class="col s6 m3 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Desc. Partida Presupuestaria</mat-label>
-            <input matInput placeholder="" formControlName="descPartidaPresupuestaria" value="{{partidaPresupuestaria?.NAME}}">
+            <input matInput readonly placeholder="" formControlName="descPartidaPresupuestaria" value="{{partidaPresupuestaria?.NAME}}">
+            <!-- <input matInput readonly placeholder="" formControlName="descPartidaPresupuestaria" > -->
           </mat-form-field>
         </div>
       </div>  
@@ -380,15 +432,22 @@
             </mat-hint>
           </mat-form-field>
         </div>
-        <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_referenciascontables', 'refContable')">
+        <!-- <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_referenciascontables', 'refContable')">
           <a class="mine-btnforms" mat-flat-button>
             <i class="material-icons" style="font-size:20px;">more_horiz</i>
           </a>
+        </div> -->
+        <div class="col s1 m1 l1" style="margin-top:10px;">
+          <button type="button" class="mine-btnforms" mat-flat-button 
+          (click)="abrirConsulta('tg01_referenciascontables', [], 'refContable', 'descRefContable')">
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
         </div>
         <div class="col s6 m3 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Desc. Referencia Contable</mat-label>
-            <input matInput placeholder="" formControlName="descRefContable" value="{{referenciaContable?.name}}">
+            <input matInput readonly placeholder="" formControlName="descRefContable" value="{{referenciaContable?.name}}">
+            <!-- <input matInput readonly placeholder="" formControlName="descRefContable"> -->
           </mat-form-field>
         </div>      
       </div>
@@ -406,10 +465,16 @@
             </mat-hint>
           </mat-form-field>
         </div>
-        <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_tipocomprobante', 'idTipoComprobante')">
+        <!-- <div class="col s1 m1 l1" style="margin-top:10px;" (click)="abrirConsulta('tg01_tipocomprobante', 'idTipoComprobante')">
           <a class="mine-btnforms" mat-flat-button>
             <i class="material-icons" style="font-size:20px;">more_horiz</i>
           </a>
+        </div> -->
+        <div class="col s1 m1 l1" style="margin-top:10px;">
+          <button type="button" class="mine-btnforms" mat-flat-button 
+          (click)="abrirConsulta('tg01_tipocomprobante', [], 'idTipoComprobante', 'descTipoComprobante')">
+            <i class="material-icons" style="font-size:20px;">more_horiz</i>
+          </button>
         </div>
         <div class="col s6 m3 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -493,7 +558,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Estado</mat-label>
-          <mat-select placeholder="Elija una opción">
+          <mat-select placeholder="Elija una opción" formControlName="estado">
             <mat-option value="1">Pendiente</mat-option>
             <mat-option value="2">Activo</mat-option>
             <mat-option value="3">Inactivo</mat-option>
@@ -588,8 +653,8 @@
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Tipo</mat-label>
                 <mat-select placeholder="Elija una opción..." formControlName="tipo">
-                  <!-- <mat-option *ngFor="let aux of impuestosAll" [value]="aux.id"> -->
-                  <mat-option *ngFor="let aux of impuestosAll" [value]="aux.idtipoimpuesto">
+                  <mat-option *ngFor="let aux of impuestosAll" [value]="aux.id">
+                  <!-- <mat-option *ngFor="let aux of impuestosAll" [value]="aux.idtipoimpuesto"> -->
                     {{aux.name}}
                   </mat-option>
                 </mat-select>
@@ -818,7 +883,7 @@
           <div class="col s3 m2 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>ID Artículo</mat-label>
-              <input matInput (keyup)="buscarArticulo(i)" placeholder="" #artId formControlName="artID">
+              <input matInput (keyup)="buscarArticulo(i)" type="number" #artId formControlName="artID">
               <!-- <mat-hint *ngIf="forma.controls.articulos[i].controls['artID'].status == 'PENDING'"> -->
               <!-- <mat-hint *ngIf="forma.controls.articulos.value[i]['artID'].status == 'PENDING'"> -->
               <mat-hint *ngIf="art.controls['artID'].status == 'PENDING'">
@@ -829,16 +894,22 @@
               </mat-hint>
             </mat-form-field>
           </div>
-          <div class="col s1 m1 l1" style="margin-top:10px;">
+          <!-- <div class="col s1 m1 l1" style="margin-top:10px;">
             <a class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_articulos', 'artID')">
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </a>
+          </div> -->
+          <div class="col s1 m1 l1" style="margin-top:10px;">
+            <button type="button" class="mine-btnforms" mat-flat-button 
+            (click)="abrirConsulta('c_articulos', ['articulos', i], 'artID', 'artDesc')">
+              <i class="material-icons" style="font-size:20px;">more_horiz</i>
+            </button>
           </div>
           <div class="col s5 m6 l4">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Descripción Artículo</mat-label>
               <!-- <input matInput placeholder="" disabled formControlName="artDesc" value="{{articulo?.descripcion}}"> -->
-              <input matInput placeholder="" disabled formControlName="artDesc" value="">
+              <input matInput placeholder="" readonly formControlName="artDesc" value="">
             </mat-form-field>
           </div>
           <div class="col s5 m3 l3">

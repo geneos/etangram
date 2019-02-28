@@ -34,4 +34,15 @@ export class EvidenciasService {
 
     return this.http.post( url, body, { headers } );
   }
+  delEvidencia( body:string, token:string){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/proc/SP_ET_EvidenciaOP_DEL`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url, body, { headers } );
+  }
 }

@@ -714,7 +714,7 @@ export class AltaProveedorComponent implements OnInit {
     const arts = this.forma.controls.articulos as FormArray;
     let art = <FormGroup>arts.controls[indice];
     if (art.controls['fecha_creacion'].value != null){
-      this.estadosArticulos.eliminados.push(art.controls['fecha_creacion'].value);
+      this.estadosArticulos.eliminados.push(art.controls['artID'].value);
     }
     arts.removeAt(indice);
     console.log('lista de articulos eliminados: ', this.estadosArticulos.eliminados);
@@ -1352,7 +1352,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.forma.controls['idVendedor'].setValue(this.provCabecera.id_vendedor);
                 this.forma.controls['idCobrador'].setValue(this.provCabecera.id_cobrador);
                 this.forma.controls['limiteCredito'].setValue(this.provCabecera.limitecredito);
-                //las busquedas no hacen falta porque están las suscripciones
+                
                 if (this.provCabecera.listaprecios != null){
                   this.forma.controls['idlistaPrecios'].setValue(this.provCabecera.listaprecios);
                   this.buscarListaPrecios();
@@ -1480,7 +1480,7 @@ export class AltaProveedorComponent implements OnInit {
                 cImpuesto.controls['tipo'].setValue(impuesto.ID_Impuestos) ;
                 cImpuesto.controls['modelo'].setValue(impuesto.ID_Modelo_impuestos) ;
                 cImpuesto.controls['situacion'].setValue(impuesto.Situacion) ;
-                // cImpuesto.controls['codInscripcion'].setValue(impuesto.ID_Impuestos) ;
+                cImpuesto.controls['codInscripcion'].setValue(impuesto.Codigo_inscripcion) ;
                 cImpuesto.controls['fechaInscripcion'].setValue(this.nuevaFecha(impuesto.Fecha_inscripcion));
                 cImpuesto.controls['observaciones'].setValue(impuesto.Observaciones) ;
                 cImpuesto.controls['poseeExenciones'].setValue((impuesto.Exenciones == 1 ? true : false)) ;
@@ -1568,13 +1568,14 @@ export class AltaProveedorComponent implements OnInit {
                 let cArticulo: FormGroup = <FormGroup>this.forma.get(['articulos', index]);
                 //todo agregar lo que falta cuando esté en la api
                 // cImpuesto.controls['tipo'].setValue(impuesto.) ;
-                // cArticulo.controls['artID'].setValue(articulo.id_art);
+                cArticulo.controls['artID'].setValue(articulo.id_articulo);
                 //todo verificar funcionamiento de busqueda, cuando funcione la api
+                // cArticulo.controls['artDesc'].setValue(articulo.NAME);
                 this.buscarArticulo(index);
-                // cArticulo.controls['artDesc'].setValue(articulo);
+
                 cArticulo.controls['ultimaFecha'].setValue(this.nuevaFecha(articulo.fecha_ultima_compra));
-                // cArticulo.controls['ultimoPrecio'].setValue(articulo.);
-                // cArticulo.controls['codArtProv'].setValue(articulo.id_prov);//id de proveedor
+                cArticulo.controls['ultimoPrecio'].setValue(articulo.precioultimacompra);
+                cArticulo.controls['codArtProv'].setValue(articulo.codigo_articulo_proveedor);//id de proveedor
                 cArticulo.controls['barrasArtProv'].setValue(articulo.codigobarra);
                 cArticulo.controls['moneda'].setValue(articulo.id_moneda);
                 cArticulo.controls['fecha_creacion'].setValue(articulo.fecha_creacion);
@@ -2603,7 +2604,7 @@ export class AltaProveedorComponent implements OnInit {
         "p_imp_tipo" : formGroupImpuesto.controls['tipo'].value, // id de tabla tg01_impuestos
         "p_imp_modelo" : formGroupImpuesto.controls['modelo'].value, // id de tabla  tg01_modeloimpuestos
         "p_imp_situacion" : formGroupImpuesto.controls['situacion'].value,
-        // "p_imp_codigo" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
+        "p_imp_nro_inscripcion" : formGroupImpuesto.controls['codInscripcion'].value,//"1",
         "p_imp_fecha_insc" : this.extraerFecha(<FormControl>formGroupImpuesto.controls['fechaInscripcion']),//"1997-05-05",
         "p_imp_excenciones" : formGroupImpuesto.controls['poseeExenciones'].value.toString(),//"false",
         "p_imp_fecha_comienzo_excencion" : this.extraerFecha(<FormControl>formGroupImpuesto.controls['fechaDesde'], false), // → si es true
@@ -2631,7 +2632,6 @@ export class AltaProveedorComponent implements OnInit {
   }
 
   armarJSONArticulo(articulo: any){
-    //todo cambiar cuando corrijan la api
     let formgroupArticulo = <FormGroup>articulo;
     let jsonbodyArt, jsbodyArt;
     console.log('control de articulo a usar: ', formgroupArticulo)
@@ -2642,10 +2642,18 @@ export class AltaProveedorComponent implements OnInit {
       "p_stock_id_art": formgroupArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
       // "p_stock_fecha_ult_compra": this.extraerFecha(formgroupArticulo.controls['ultimaFecha'].value), //"1997-05-05",
       "p_stock_fecha_ult_compra": this.extraerFecha(<FormControl>formgroupArticulo.controls['ultimaFecha']), //"1997-05-05",
+      "p_stock_precio_ult_compra": formgroupArticulo.controls['ultimoPrecio'].value,
       "p_stock_moneda": formgroupArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
       "p_stock_codigo_barra_prov": formgroupArticulo.controls['barrasArtProv'].value, //Código de barra
-      //ultimoPrecio
-      //codArtProv
+      
+      //todo corregir cuando corrijan la api
+      // "p_stock_codigo_art_prov": formgroupArticulo.controls['codArtProv'].value,
+      // "p_stock_nombre_art": formgroupArticulo.controls['artDesc'].value,
+
+      // fecha_creacion: string;
+      // fecha_ult_modificacion: string;
+      // id_usuario_creador: string;
+      // id_usuario_modificador: string;
     }
     // }
     // else{
@@ -2981,11 +2989,12 @@ export class AltaProveedorComponent implements OnInit {
 
   eliminarArticulo(codigo: string){
     let jsbody = {
-      "prov_codigo": this.id, 
+      // "prov_codigo": this.id, 
+      "Id_Proveedor": this.id, 
       "p_stock_id_art": codigo //"078ty2MejUSVC1h2..." id de consulta dinámica a tabla aos_products
       }
     let jsonbody = JSON.stringify(jsbody);
-
+    
     this._proveedoresService.deleteArticulo(jsonbody, this.token )
       .subscribe( data => {
         //console.log(dataRC);
@@ -2998,7 +3007,7 @@ export class AltaProveedorComponent implements OnInit {
           } else {
             if (this.respData.returnset[0].RCode != 1){
               this.openSnackBar('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
-              console.log('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt);
+              console.log('Error al eliminar Articulo: ' + this.respData.returnset[0].RTxt, jsonbody);
             }
             else{
               this.openSnackBar('Articulo eliminado con exito');

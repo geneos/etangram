@@ -18,6 +18,8 @@ import { CentroCosto } from 'src/app/interfaces/cen-costo.interface';
 import { CentrosCostosService } from 'src/app/services/i2t/cen-costos.service';
 import { MinContablesService } from 'src/app/services/i2t/min-contables.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { Subscription } from 'rxjs';
 import { CdkRowDef } from '@angular/cdk/table';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
@@ -114,6 +116,7 @@ datos =
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('tableReferencias') table: MatTable<any>;
+  @ViewChild('codRef') refContableId: any;
   //dataSource = new MatTableDataSource(this.refContableItemData)
   dataSource = new MatTableDataSource(this.refContableItemData)
  // displayedColumns: string[] = ['opciones', 'refContable', 'centroDeCosto', 'debe', 'haber'];
@@ -167,6 +170,11 @@ datos =
   refeCont: any[] = [];
   forma:FormGroup;
   formaReferencias:FormGroup;
+
+  //Para consulta Dinamica
+  suscripcionConsDin: Subscription;
+  itemDeConsulta: any;
+  // Fin Para consulta dinamica
 /*
   totalneto:number = 0;
   impuestosalicuotas:number = 0;
@@ -194,6 +202,7 @@ datos =
               private route:ActivatedRoute,
               private router: Router,
               public snackBar: MatSnackBar,
+              public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService) {
 
                 console.log(this.storage.get(TOKEN) || 'Local storage is empty');
@@ -268,10 +277,21 @@ datos =
       }
 
       //this.forma.controls['nomenclador'].disable();
+      
 
+    });
+   
+
+    this.formaReferencias.controls['refContable'].valueChanges.subscribe(() => {
+      setTimeout(() => {
+        console.log('hubo un cambio')
+    //    console.log('estado después de timeout ',this['provinciaEnv'])  
+        this.refContableId.nativeElement.dispatchEvent(new Event('keyup'));
+      })
     });
   }
 
+  
   ngOnInit() {}
 
   test(){
@@ -1696,5 +1716,61 @@ console.log('json armado: ');
     //console.log(this.compraArticulo);
     this.auxEditingArt=ind;
   };
+
+  abrirConsulta(consulta: string, control: string){
+    this.itemDeConsulta = null;
+    console.clear();
+    let datosModal : {
+      consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'consDinModal'
+    }
+    
+    let atributoAUsar: string;
+    switch (consulta) {
+      case 'tg01_referenciascontables':
+        atributoAUsar = 'idreferenciacontable';
+        break;
+    }
+
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionConsDin = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+        this.formaReferencias.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+        this.itemDeConsulta = respuesta.selection[0];
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionConsDin.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
+  }
 
 }

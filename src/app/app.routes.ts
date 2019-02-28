@@ -28,6 +28,7 @@ const APP_ROUTES: Routes = [
   { path: 'compra', component: AbmComprasComponent },
   { path: 'compra/:id', component: AbmComprasComponent },
   { path: 'compra/:id/:expediente', component: AbmComprasComponent },
+  { path: 'compra/:id/:expediente/:orden', component: AbmComprasComponent },
   { path: 'articulos', component: AbmArticulosComponent },
   { path: 'articulos/:id', component: AltaArticuloComponent },
   { path: 'proveedores', component: AbmProveedoresComponent },
@@ -49,6 +50,7 @@ const APP_ROUTES: Routes = [
   { path: 'consulta-ord-pago/:id', component: ConsultaOrdPagosComponent },
   { path: 'datos-proveedores/:id', component: DatosProveedoresComponent },
   { path: 'ordenes-publicidad/:id', component: OrdenesPublicidadComponent },
+  { path: 'ordenes-publicidad/:id/:ord', component: OrdenesPublicidadComponent },
   { path: 'registo-evidencia', component: RegistroEvidenciaComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }

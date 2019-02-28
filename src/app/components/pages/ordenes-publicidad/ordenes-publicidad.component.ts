@@ -68,6 +68,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   proveedorData: any;
   id: any;
   token: string;
+  ordenPub: string;
   cuit: any;
   loginData: any;
   razonSocial: string;
@@ -94,6 +95,10 @@ export class OrdenesPublicidadComponent implements OnInit {
     //this.token = parametros['token'];
     //this.Controles['proveedor'].setValue(this.id);
     this.buscarProveedor();
+    this.ordenPub = parametros['ord'];
+    if(this.ordenPub != null){
+      this.actualizaOrden();
+    }
 
     });
 
@@ -102,6 +107,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   
   ngOnInit() {
     this.mostrarDatos();
+    
   }
 
   openSnackBar(message: string) {
@@ -236,22 +242,20 @@ export class OrdenesPublicidadComponent implements OnInit {
         }) 
    }
 
-   abrirConsulta(consulta){
+   abrirConsulta(proveedor,ordPub){
     this.itemDeConsulta = null;
     console.clear();
     let datosModal : {
-      consulta: string;
-      permiteMultiples: boolean;
-      selection: any;
       modal: string;
-      // valores: any;
-      // columnSelection: any
+      proveedorId: any;
+      ordPublicidadId: any;
+      nuevo: boolean;
     }
     datosModal = {
-      consulta: consulta,
-      permiteMultiples: false,
-      selection: null,
-      modal: 'evidenciasModal'
+      modal: 'evidenciasModal',
+      proveedorId: proveedor,
+      ordPublicidadId: ordPub,
+      nuevo: false
     }
     
 
@@ -264,13 +268,14 @@ export class OrdenesPublicidadComponent implements OnInit {
     this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
     
     this.suscripcionEvidencias = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
-      console.log('Cerrado el modal de consulta dinamica: ', modal.getData());
+      console.log('Cerrado el modal de evidencias: ', modal.getData());
 
       let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
       console.log('Respuesta del modal: ', respuesta);
 
       if (respuesta.estado === 'cancelado'){
         this.openSnackBar('Se canceló la selección');
+        respuesta.nuevo === true;
       }
       else{
         this.itemDeConsulta = respuesta.selection[0];
@@ -280,13 +285,27 @@ export class OrdenesPublicidadComponent implements OnInit {
       // this.establecerColumnas();
       // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
       this.suscripcionEvidencias.unsubscribe();
-      console.log('se desuscribió al modal de consulta dinamica');
+      console.log('se desuscribió al modal de evidencias');
     });
     this.ngxSmartModalService.open(datosModal.modal);
+    
   }   
 
-  cargaFactura(exp){
+  cargaFactura(exp,ord){
     this.dynamicParameter = this.id;
-    this.router.navigate(['compra', this.id, exp])
+    this.router.navigate(['compra', this.id, exp, ord])
+  }
+  actualizaOrden(){
+    let jsbodyUpdOrd = {
+      "id_op": this.ordenPub,
+	    "user_id": "1",
+    	"estado_op": 50
+    }
+    console.log('armado de json upd de orden')
+    let jsonbodyUpdOrd = JSON.stringify(jsbodyUpdOrd);
+    this._ordPublicidadService.updOrden( jsonbodyUpdOrd, this.token)
+      .subscribe( respUpd => {
+        console.log(respUpd)
+      })
   }
 }

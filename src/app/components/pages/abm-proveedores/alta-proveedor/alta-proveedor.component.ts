@@ -1802,9 +1802,10 @@ export class AltaProveedorComponent implements OnInit {
 
   // abrirConsulta(consulta: string, control: string){
   //usa el mismo formato que los get de formcontrol: ej ['coleccion', indice_en_array...]
-  /** @description Abre el modal de consulta y establece una suscripción para usar el o los objetos seleccionados
+  /** @description Abre el modal de consulta y establece una suscripción para usar el objeto seleccionado. 
+   * @example abrirConsulta('c_articulos', ['articulos', i], 'artID', 'artDesc'); //usar consulta dinámica de artículos, ir al objeto número 'i' del FormArray 'articulos', escribir el id en 'artID' y su descripción en 'artDesc'.
    * @param {string} consulta Nombre del reporte. Por ahora también el endpoint que contiene los datos
-   * @param {any[]} ubicacion Camino hacia los controles a actualizar. Si está vacío se actualizan los controles al nivel base del form. 
+   * @param {any[]} ubicacion Camino hacia los controles a actualizar. Si está vacío se actualizan los controles al nivel base del form. Para ver cómo se muestran los FormArray buscar formArrayName y formGroupName en el html.
    * @param {string} controlID Nombre del FormControl donde se pegará el id del objeto seleccionado
    * @param {string} controlDesc (Opcional) Nombre del FormControl donde se pegará el Nombre o Descripción del objeto seleccionado
    * @param {string} funcion (Opcional) [NO IMPLEMENTADO] Nombre de la función a ejecutar luego de la selección.

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver, ViewChildren, ViewContainerRef, QueryList, AfterViewInit, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver, ViewChildren, ViewContainerRef, QueryList, AfterViewInit, ViewEncapsulation, Inject, Injectable} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort, MatPaginator, MatTable, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
@@ -13,8 +13,13 @@ import { AnclaParaColumnasDirective } from 'src/app/directives/ancla-para-column
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PermisosService } from 'src/app/services/i2t/permisos.service';
+import { ModalInstance } from 'ngx-smart-modal/src/services/modal-instance';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
+// key that is used to access the data in local storage
+const TOKEN = '';
 
+@Injectable()
 @Component({
   selector: 'app-consulta-dinamica',
   templateUrl: './consulta-dinamica.component.html',
@@ -28,10 +33,11 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   @ViewChild('tableDatos') table: MatTable<any>;
 
   @Input() nivel: number;
+  @Input() public consulta: string;
 
   selection = new SelectionModel(true, []);
   loading:boolean;
-  token: string = "a";
+  token: string;
   loginData: any;
 
   reportesAll: Reporte[] = [];
@@ -87,8 +93,13 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               private componentFactoryResolver: ComponentFactoryResolver,
               private generadorDeComponentes: CompGenService,
               public ngxSmartModalService: NgxSmartModalService,
+              @Inject(SESSION_STORAGE) private storage: StorageService,
               private _permisosService: PermisosService) {
     this.loading = true;
+    
+    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    this.token = this.storage.get(TOKEN);
+
 
     if (this.nivel == null){
       this.nivel = 1;
@@ -229,7 +240,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     }); */
 
 
-    console.log('suscripcion propia');
+    console.log('suscripcion propia, nombre de modal: ' + nombreModalActual);
     // suscribir a los datos del modal
     /* datosModal : {
       consulta: string;
@@ -240,24 +251,45 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     } */
     //
 
-    this.ngxSmartModalService.getModal(nombreModalActual).onOpen.subscribe(() => {
-      this.inputParam = this.ngxSmartModalService.getModalData(nombreModalActual);
-      console.log('configuracion del modal de consulta din(suscripcion) n' + this.nivel +': ', this.inputParam);
-      // this.openSnackBar('Preparando consulta n' + this.nivel +': ' + this.inputParam)
-      if (this.inputParam.permiteMultiples ==null)
-      {
-        this.inputParam = {permiteMultiples: true, selection: []};
-      }
-      //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
+    // todo manejar carga como listado principal
+    console.log('Lista de modales: ', this.ngxSmartModalService.getModalStack());
+    let listaModales = this.ngxSmartModalService.getModalStack();
+    let modalBuscado = listaModales.find(modal => modal.id == 'consDinModal');
+
+    //si se abrió como modal
+    if (modalBuscado != null){
+      this.ngxSmartModalService.getModal(nombreModalActual).onOpen.subscribe(() => {
+        this.inputParam = this.ngxSmartModalService.getModalData(nombreModalActual);
+        console.log('configuracion del modal de consulta din(suscripcion) n' + this.nivel +': ', this.inputParam);
+        // this.openSnackBar('Preparando consulta n' + this.nivel +': ' + this.inputParam)
+        if (this.inputParam.permiteMultiples ==null)
+        {
+          this.inputParam = {permiteMultiples: true, selection: []};
+        }
+        //establecer modo (múltiple o simple), inicializar con lo establecido al llamar
+        this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
+        console.log('reporte a usar: ', this.nombreReporte)
+        if ((this.nombreReporte == null)||(this.nombreReporte != this.inputParam.consulta)){
+          this.nombreReporte = this.inputParam.consulta;
+
+        }
+        this.buscarReportes();
+      });
+    }
+    //si se abrio normal
+    else{
+      this.inputParam = {permiteMultiples: true, selection: []};
       this.selection = new SelectionModel(this.inputParam.permiteMultiples, this.inputParam.selection);
-      console.log('reporte a usar: ', this.nombreReporte)
-      if ((this.nombreReporte == null)||(this.nombreReporte != this.inputParam.consulta)){
-        this.nombreReporte = this.inputParam.consulta;
-
+      if(this.consulta != null){
+        this.nombreReporte = this.consulta;
+        console.log('Buscando reporte para consulta dinámica según input en elemento: ', this.consulta);
+        this.buscarReportes();
       }
-      this.buscarReportes();
-    });
-
+      else{
+        console.log('Valor de @input(Nombre de consulta): ' + this.consulta);
+        setTimeout(() => console.log('No se ha configurado la consulta dinámica'));
+      }
+    }
 
 
 
@@ -365,13 +397,14 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       nivel: this.nivel//todo obtener
     }
 
-    console.log('enviando datosModal: ', datosModal);
     // if (nombreModal != 'cdTablaModal'){
     if (!(nombreModalCorregido.includes('cdTablaModal'))){
       // this.ngxSmartModalService.resetModalData('cdFiltrosModal');
       // this.ngxSmartModalService.setModalData(datosModal, 'cdFiltrosModal');
       // this.ngxSmartModalService.open('cdFiltrosModal');
       nombreModalCorregido = nombreModalCorregido.replace('Avanzado', 'Filtros');
+      console.log('enviando datosModal: ', datosModal);
+
       this.ngxSmartModalService.resetModalData(nombreModalCorregido);
       this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
       this.ngxSmartModalService.open(nombreModalCorregido);
@@ -403,6 +436,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         */
         // datosModal.valores = columnas;
         datosModal.valores = this.columnasDisponibles;
+        console.log('enviando datosModal: ', datosModal);
+
         this.ngxSmartModalService.resetModalData(nombreModalCorregido);
         this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
         this.ngxSmartModalService.open(nombreModalCorregido);
@@ -457,7 +492,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
           //auxProvData = this.proveedorData.dataset.length;
           if(this.pData.returnset[0].RCode=="-6003"){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._consultaDinamicaService.login(jsonbody)
               .subscribe( dataL => {
@@ -465,9 +500,11 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.habilitarAcciones();
-              });
+              }); */
+              this.openSnackBar('Sesion expirada.');
             } else {
-              console.log('respuesta===> ', this.pData.returnset[0])
+              console.log('Permiso '+ this.reportesAll[this.reporteSeleccionado][permiso] +
+                          'para reporte ' + this.reporteSeleccionado + ', respuesta===> ', this.pData.returnset[0])
               if(this.pData.returnset[0].RCode=="200"){
                 this.permisos[permiso] = true;
               }
@@ -493,7 +530,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
           if(this.rData.returnset[0].RCode=="-6003"){
             //token invalido
             this.reportesAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._consultaDinamicaService.login(jsonbody)
               .subscribe( dataL => {
@@ -501,7 +538,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarReportes();
-              });
+              }); */
+              this.openSnackBar('Sesion expirada.');
             } else {
               if(this.rData.dataset.length>0){
                 this.reportesAll = this.rData.dataset;
@@ -553,7 +591,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
           if(this.attData.returnset[0].RCode=="-6003"){
             //token invalido
             this.reportesAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._consultaDinamicaService.login(jsonbody)
               .subscribe( dataL => {
@@ -561,7 +599,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarAtributos();
-              });
+              }); */
+              this.openSnackBar('Sesion expirada.');
             } else {
               if(this.attData.dataset.length>0){
                 this.atributosAll = this.attData.dataset;
@@ -604,7 +643,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
           if(this.consData.returnset[0].RCode=="-6003"){
             //token invalido
             this.datosAll = null;
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
+            /* let jsbody = {"usuario":"usuario1","pass":"password1"}
             let jsonbody = JSON.stringify(jsbody);
             this._consultaDinamicaService.login(jsonbody)
               .subscribe( dataL => {
@@ -612,7 +651,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
                 this.buscarDatos();
-              });
+              }); */
+              this.openSnackBar('Sesion expirada.');
             } else {
               if(this.consData.dataset.length>0){
                 this.datosAll = this.consData.dataset;
@@ -701,12 +741,14 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     let columnasAMostrar: string;
     columnasAMostrar = '';
     // this.columnasDisponibles = this.columnasDisponibles.splice(0, this.columnasDisponibles.length);
-    this.columnasDisponibles.length = 0;
+    //movido abajo, en este momento borraría la lista de columnas antes de abrir el modal de columnas por 2da vez
+    // this.columnasDisponibles.length = 0;
 
     if ((this.columnSelection == null)||(this.reporteCambiado == true)){
 
       this.reporteCambiado = false;
       console.log('armando lista de columnas inicial:')
+      this.columnasDisponibles.length = 0;
 
       //armar lista de columnas disponibles
       let indice: number = 0;

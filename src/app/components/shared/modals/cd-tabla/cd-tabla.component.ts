@@ -48,7 +48,7 @@ export class CdTablaComponent implements AfterViewInit {
    this.ngxSmartModalService.getModal('cdTablaModal').onOpen.subscribe(() => {
      this.inputParam = this.ngxSmartModalService.getModalData('cdTablaModal');
     //  this._inputParam = angular.copy(this.inputParam);
-    console.log('asignando a var privada')
+    console.log('Abierto modal de columnas (componente tipo tabla)')
     /* this._inputParam = {
       modal: '',
       datos: null,
@@ -81,8 +81,7 @@ export class CdTablaComponent implements AfterViewInit {
      this.loading = true;
      this.generarTabla();
      
-     console.log('Your param is:', this.inputParam);
-     this.loading = false;
+    //  this.loading = false;
    });
 
  };
@@ -90,7 +89,7 @@ export class CdTablaComponent implements AfterViewInit {
  generarTabla(){
    //Crear tabla con checkboxes de columnas
     // this.columnasSelectas = new SelectionModel(true, []);
-    
+    console.log('generando componente de tabla')
     if (this.viewContainerRefColumnas == null){
       this.viewContainerRefColumnas = this.contenedorColumnas.viewContainerRef;
       console.log('guardada referencia de columnas');
@@ -106,8 +105,10 @@ export class CdTablaComponent implements AfterViewInit {
       let componentRef = this.viewContainerRefColumnas.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
 
-    console.log('probando leer la lista de selección de las columnas:');
-    console.log((<CompGen>componentRef.instance).data);
+    // console.log('probando leer la lista de selección de las columnas:');
+    // console.log((<CompGen>componentRef.instance).data);
+    
+    this.loading = false;
  }
  
  aplicar(){

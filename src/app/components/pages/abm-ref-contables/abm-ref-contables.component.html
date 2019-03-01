@@ -4,6 +4,7 @@
 </button>
 
   <app-loading *ngIf="loading"></app-loading>
+  <app-consulta-dinamica [consulta]="'tg01_referenciascontables'"></app-consulta-dinamica>
 
   <div class="row" style="margin-top:10px; margin-bottom:5px;" [ngStyle]="{'display':loading ? 'none' : 'block' }">
     <table #tableRefContables mat-table [dataSource]="constRefContables" matSort class="mat-elevation-z1"

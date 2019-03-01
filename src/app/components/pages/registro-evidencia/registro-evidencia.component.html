@@ -87,7 +87,9 @@
        </div>
     </div> 
   </form>
-  
-  <button class="mine-btnbig" mat-flat-button *ngIf="!nuevo" (click)="agregarEvidencia()" style="margin:15px;">NUEVO</button>
-  <button class="mine-btnbig" mat-flat-button *ngIf="nuevo" (click)="guardarEvidencia()">GUARDAR</button>  
+  <div style="margin-top: 10px; width: 100%; text-align: right;">
+    <button class="mine-btnbig" mat-flat-button *ngIf="!nuevo" (click)="agregarEvidencia()" style="margin:15px;">NUEVO</button>
+    <button class="mine-btnbig" mat-flat-button *ngIf="nuevo" (click)="guardarEvidencia()">GUARDAR</button>  
+    <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
+  </div>
 </mat-expansion-panel>

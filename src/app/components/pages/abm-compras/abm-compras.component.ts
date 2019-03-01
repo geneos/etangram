@@ -623,7 +623,9 @@ export class AbmComprasComponent implements OnInit {
         this.respCabecera = resp;
         this.cabeceraId = this.respCabecera.returnset[0].RId;
       });
-
+    if(this.retorna = true){
+        this.router.navigate(['ordenes-publicidad', this.idParam, this.ordPub])
+      }
     this.forma.controls['proveedor'].disable();
     this.forma.controls['tipoComprobante'].disable();
     this.forma.controls['nroComprobante'].disable();
@@ -633,9 +635,7 @@ export class AbmComprasComponent implements OnInit {
     this.forma.controls['totalCabecera'].disable();
     this.forma.controls['expediente'].disable();
   }
-  if(this.retorna = true){
-    this.router.navigate(['ordenes-publicidad', this.idParam, this.ordPub])
-  }
+  
 }
   guardarArticulo(){
     this.compraArticulo.cantidad = this.formaArticulos.controls['cantidad'].value;

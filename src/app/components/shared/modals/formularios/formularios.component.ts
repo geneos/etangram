@@ -47,6 +47,12 @@ export class FormulariosComponent implements OnInit {
     });
   }
 
+  guardar(){
+    console.log(this.inputParam.url)
+   // this.ngxSmartModalService.resetModalData('formulariosModal');
+    this.ngxSmartModalService.setModalData({estado: 'guardado'}, 'formulariosModal');
+    this.ngxSmartModalService.close('formulariosModal');
+  }
   cancelar(){
     this.ngxSmartModalService.resetModalData('formulariosModal');
     this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'formulariosModal');

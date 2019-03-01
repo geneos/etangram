@@ -13,14 +13,18 @@
             <input matInput type="text"  placeholder="" formControlName="fechVenci" value="{{ fechaVencimiento | date: 'dd-MM-yyyy' }}" readonly>
             </mat-form-field>
         </div>
-        <div class="col s6 m3 l3" style="display: inline-block">
+        <!-- <div class="col s6 m3 l3" style="display: inline-block">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%; display: inline-block">
             <mat-label>URL</mat-label>
             <input matInput type="text"  placeholder="" formControlName="url" value="{{ urlImagen }}" readonly>
             </mat-form-field>
-        </div>
+        </div> -->
     </div>
 </form>
 <p><input type="file" #attachment name="attachment" (change)="cargar(attachment)" id="attachment"></p>
+
 <!-- <p><button class="mine-btnbig" mat-flat-button (click)="subirFoto()">SUBIR ARCHIVO</button></p> -->
-<button class="mine-btnbig" mat-flat-button (click)="guardar()"> Guardar</button>
+<div style="margin-top: 10px; width: 100%; text-align: right;">
+    <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="guardar()">GUARDAR</button>
+    <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
+</div>

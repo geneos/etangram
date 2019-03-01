@@ -50,6 +50,17 @@ export class ProveedoresService {
     return this.http.get( url , { headers });
   }
 
+  getCProveedores( token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/c_proveedores`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
+
   getCabeceraProveedor(idProveedor:string, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token,

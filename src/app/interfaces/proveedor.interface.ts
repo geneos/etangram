@@ -75,9 +75,10 @@ export interface RelacionComercial{
 export interface Impuesto{
   Impuesto: number;
   ID_Modelo_impuestos: string;
-  Situacion: string;
   ID_Impuestos: string;
+  Situacion: string;
   Fecha_inscripcion: string;
+  Codigo_inscripcion: string;
   Exenciones: number;
   Fecha_Desde_Exenciones: string;
   Fecha_Hasta_Exenciones: string;
@@ -105,18 +106,11 @@ export interface ArticuloProv{
   fecha_ult_modificacion: string;
   id_usuario_creador: string;
   id_usuario_modificador: string;
+  id_articulo: string;
+  precioultimacompra: number;
+  codigo_articulo_proveedor: string;
 }//proveedores_articulo_GET_SP
-/* "id_prov": "7319e575-2e21-11e9-bbe8-d050990fe081",
-"NAME": null,
-"fecha_ultima_compra": "1997-05-05",
-"id_moneda": "1",
-"codigobarra": "",
-"fecha_creacion": "2019-02-15 09:49:54",
-"fecha_ult_modificacion": "2019-02-15 09:49:54",
-"id_usuario_creador": "7319e575-2e21-11e9-bbe8-d050990fe081",
-"id_usuario_modificador": "7319e575-2e21-11e9-bbe8-d050990fe081" */
 
-/* 
 export interface AFIPProv{
 
 }//proveedores_afip_GET_SP */

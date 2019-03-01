@@ -32,6 +32,7 @@ import { CategoriasBloqueoService } from 'src/app/services/i2t/cat-bloqueo.servi
 import { FormulariosService } from 'src/app/services/i2t/formularios.service';
 import { PartidasPresupuestariasService } from 'src/app/services/i2t/part-presupuestaria.service';
 import { isUndefined, isNullOrUndefined } from 'util';
+import { ImageService } from "src/app/services/i2t/image.service";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
 // key that is used to access the data in local storage
@@ -55,6 +56,11 @@ var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
 })
 export class AltaProveedorComponent implements OnInit {
 
+  fechaActual: Date = new Date();
+  fechaVenci: Date = new Date();
+
+  urlImagen:string = "";
+  adjunto: any;
   token: string;
   loading: boolean;
 
@@ -72,6 +78,8 @@ export class AltaProveedorComponent implements OnInit {
   articulosStock:any[]=[{'nroArticulosStock':0},];
 
   constProveedores = PROVEEDORES;
+  formTipo: any;
+  formData: formDatos[] = [];
 
   forma:FormGroup;
   formaCtaBancaria:FormGroup;
@@ -217,6 +225,7 @@ export class AltaProveedorComponent implements OnInit {
               private _proveedoresService: ProveedoresService,
               private _categoriasBloqueoService: CategoriasBloqueoService,
               private _formulariosService: FormulariosService,
+              private _imageService: ImageService,
               private _partidasPresupuestariasService: PartidasPresupuestariasService,
               public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService,
@@ -2562,17 +2571,34 @@ export class AltaProveedorComponent implements OnInit {
 
   armarJSONFormulario(formulario: any){
     let formgroupFormulario = <FormGroup>formulario;
+  //  this.buscarTipForm(formgroupFormulario.controls['codForm'].value)
+    if(this.formData[0].periodicidad === "M"){
+      this.fechaVenci.setMonth(this.fechaVenci.getMonth() + this.formData[0].periodo)
+      formgroupFormulario.controls['fechaPres'].setValue(this.fechaActual)
+   //   this.fechaVencimiento = this.fechaVenci; 
+    } else if(this.formData[0].periodicidad === "A"){
+      this.fechaVenci.setFullYear(this.fechaVenci.getFullYear() + this.formData[0].periodo)
+      console.log(this.fechaVenci.toString())
+    //  this.fechaVencimiento = this.fechaVenci; 
+    } else if(this.formData[0].periodicidad === "D"){
+      this.fechaVenci.setDate(this.fechaVenci.getDate() + this.formData[0].periodo)
+      console.log(this.fechaVenci.toString())
+   //   this.fechaVencimiento = this.fechaVenci; 
+    }
+
     let jsonbodyF, jsbodyF;
     console.log('control de formulario a usar: ', formgroupFormulario)
     //if suspendido, no hay update de formulario
     //todo agregar cuando lo agreguen a la api
     if (formgroupFormulario.controls['ID_Form_Proveedor'].value == null){
+      
+      
       jsbodyF = {
         "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
         "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
-        "p_form_fecha_pres" : this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
-        "p_form_fecha_vto" : this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
-        "url": formgroupFormulario.controls['url'].value,
+        "p_form_fecha_pres" : this.fechaActual, // this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
+        "p_form_fecha_vto" :  this.fechaVenci,//this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
+        "url": this.urlImagen,// formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
@@ -2583,9 +2609,9 @@ export class AltaProveedorComponent implements OnInit {
         "Id_Proveedor": this.id,
         "Id_FormularioCte": formgroupFormulario.controls['ID_Form_Proveedor'].value,
         // "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
-        "p_form_fecha_pres" : this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
-        "p_form_fecha_vto" : this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
-        "url": formgroupFormulario.controls['url'].value,
+        "p_form_fecha_pres" : this.fechaActual,// this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
+        "p_form_fecha_vto" : this.fechaVenci,// this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
+        "url": this.urlImagen,// formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
@@ -3194,4 +3220,38 @@ export class AltaProveedorComponent implements OnInit {
         break;
     }
   }
+  buscarTipForm(codForm){
+    this._formulariosService.getFormulario(codForm, this.token)
+      .subscribe(dataF => {
+        console.log(dataF)
+        this.formTipo = dataF;
+        this.formData = this.formTipo.dataset
+        console.log(codForm)
+      })
+  }
+
+  cargar(attachment){
+    this.adjunto = attachment.files[0];
+    console.clear();
+    //this.urlImagen = "url sigue vacia"
+     //console.log(formData.getAll('file'));
+     //console.log(formData);
+     this._imageService.postImage( this.adjunto, this.token )
+       .subscribe( resp => {
+         console.log(resp);
+         this.urlImagen = resp.toString();
+      //   this.inputParam.url = this.urlImagen
+       });
+    //   this.guardar();
+  }
+
+}
+export interface formDatos{
+  "id": string,
+  "name": string,
+  "deleted": number,
+  "codigo": number,
+  "fechavigencia": string,
+  "periodicidad": string,
+  "periodo": number
 }

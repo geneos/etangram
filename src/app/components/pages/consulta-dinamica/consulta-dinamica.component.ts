@@ -251,7 +251,6 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     } */
     //
 
-    // todo manejar carga como listado principal
     console.log('Lista de modales: ', this.ngxSmartModalService.getModalStack());
     let listaModales = this.ngxSmartModalService.getModalStack();
     let modalBuscado = listaModales.find(modal => modal.id == 'consDinModal');
@@ -335,6 +334,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     }); */
   }
 
+  //#region otros
   selectionChanged(){
     console.log('llamado al cambio nuevo de items seleccionados');
     console.log(this.selection.selected);
@@ -372,80 +372,67 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     }
   } */
 
-  abrirModal(nombreModal: string){
-    console.clear();
-    let nombreModalCorregido: string;
-    if (this.nivel != 1){
-      nombreModalCorregido = nombreModal + 'N' + this.nivel.toString();
-    }
-    else{
-      nombreModalCorregido = nombreModal;
-    }
-
-    let datosModal : {
-      modal: string;
-      datos: any;
-      valores: any;
-      columnSelection: any;
-      nivel: number
-    }
-    datosModal = {
-      modal: nombreModalCorregido,
-      datos: this.atributosAll,
-      valores: this.filtros,
-      columnSelection: null,
-      nivel: this.nivel//todo obtener
-    }
-
-    // if (nombreModal != 'cdTablaModal'){
-    if (!(nombreModalCorregido.includes('cdTablaModal'))){
-      // this.ngxSmartModalService.resetModalData('cdFiltrosModal');
-      // this.ngxSmartModalService.setModalData(datosModal, 'cdFiltrosModal');
-      // this.ngxSmartModalService.open('cdFiltrosModal');
-      nombreModalCorregido = nombreModalCorregido.replace('Avanzado', 'Filtros');
-      console.log('enviando datosModal: ', datosModal);
-
-      this.ngxSmartModalService.resetModalData(nombreModalCorregido);
-      this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
-      this.ngxSmartModalService.open(nombreModalCorregido);
-    }
-    else{
-      datosModal.columnSelection = this.columnSelection;
-      //todo agregar if en caso de que no haya datos
-      // datosModal.valores = Object.keys(this.datosAll[0]);
-      if(this.datosAll == null){
-        this.openSnackBar('Error al obtener las columnas')
-      }
-      else{
-        /*
-        let columnas : [{id: number, name: string, title: string}] = [];
-        let indice: number = 0;
-        Object.keys(this.datosAll[0]).forEach(column => {
-          let descripcion: string;
-          let resultado = this.atributosAll.find(atributo => atributo.atributo_bd === column);
-
-          if (resultado == null){
-            descripcion = column;
-          }
-          else{
-            descripcion = resultado.desc_atributo;
-          }
-          columnas.push({id: indice, name: column, title: descripcion});
-          indice = indice + 1;
-        });
-        */
-        // datosModal.valores = columnas;
-        datosModal.valores = this.columnasDisponibles;
-        console.log('enviando datosModal: ', datosModal);
-
-        this.ngxSmartModalService.resetModalData(nombreModalCorregido);
-        this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
-        this.ngxSmartModalService.open(nombreModalCorregido);
-      }
-    }
-    console.log('nombre modal usado: '+ nombreModalCorregido + ' ')
+  irDetalle(id:any){
+    console.log('se intentó ir a: '||id);
+    this.irADetalle = true;
   }
 
+  //de https://stackoverflow.com/a/4760279
+  dynamicSort(property) {
+    var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
+  }
+/*
+  dynamicSortMultiple(argumentos: any) {
+    /*
+     * save the arguments object as it will be overwritten
+     * note that arguments object is an array-like object
+     * consisting of the names of the properties to sort by
+     *
+    var props = argumentos;
+    return function (obj1, obj2) {
+        var i = 0, result = 0, numberOfProperties = props.length;
+        /* try getting a different result from 0 (equal)
+         * as long as we have extra properties to compare
+         *
+        while(result === 0 && i < numberOfProperties) {
+            console.log(props, i, obj1, obj2)
+            // result = this.dynamicSort(props[i])(obj1, obj2);
+            result = this.columnSelection.selected.sort(this.dynamicSort(props[i])(obj1, obj2));
+
+
+            i++;
+        }
+        return result;
+    }
+  }
+*/
+
+  handleRowClick(row: any){
+    console.log('se clickeo: ');
+    console.log(row);
+    if (this.irADetalle === true){
+      this.irADetalle = false;
+      //todo agregar enrutamiento al objeto correspondiente
+      console.log('Se intentará ir al objeto correspondiente de id: ');
+      console.log(row['id']);
+      if (this.router.url.includes('/ref-contables')){
+        console.log('navegando');
+        this.router.navigate(['/ref-contables',row['id']])
+      }
+    }
+  }
+
+  //#endregion otros
+
+  //#region permisos
   limpiarDatos(){
     //ocultar botones, impedir filtrado/selección de columnas
     this.nivel = 0;
@@ -520,7 +507,86 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     });
     console.log(this.reportesAll[this.reporteSeleccionado]);
   }
- 
+  //#endregion permisos
+
+  //#region principal
+  abrirModal(nombreModal: string){
+    console.clear();
+    let nombreModalCorregido: string;
+    if (this.nivel != 1){
+      nombreModalCorregido = nombreModal + 'N' + this.nivel.toString();
+    }
+    else{
+      nombreModalCorregido = nombreModal;
+    }
+
+    let datosModal : {
+      modal: string;
+      datos: any;
+      valores: any;
+      defaults: any;
+      columnSelection: any;
+      nivel: number
+    }
+    datosModal = {
+      modal: nombreModalCorregido,
+      datos: this.atributosAll,
+      valores: this.filtros,
+      defaults: null,
+      columnSelection: null,
+      nivel: this.nivel//todo obtener
+    }
+
+    // if (nombreModal != 'cdTablaModal'){
+    if (!(nombreModalCorregido.includes('cdTablaModal'))){
+      // this.ngxSmartModalService.resetModalData('cdFiltrosModal');
+      // this.ngxSmartModalService.setModalData(datosModal, 'cdFiltrosModal');
+      // this.ngxSmartModalService.open('cdFiltrosModal');
+      nombreModalCorregido = nombreModalCorregido.replace('Avanzado', 'Filtros');
+      console.log('enviando datosModal: ', datosModal);
+
+      this.ngxSmartModalService.resetModalData(nombreModalCorregido);
+      this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
+      this.ngxSmartModalService.open(nombreModalCorregido);
+    }
+    else{
+      datosModal.columnSelection = this.columnSelection;
+      //todo agregar if en caso de que no haya datos
+      // datosModal.valores = Object.keys(this.datosAll[0]);
+      if(this.datosAll == null){
+        this.openSnackBar('Error al obtener las columnas')
+      }
+      else{
+        /*
+        let columnas : [{id: number, name: string, title: string}] = [];
+        let indice: number = 0;
+        Object.keys(this.datosAll[0]).forEach(column => {
+          let descripcion: string;
+          let resultado = this.atributosAll.find(atributo => atributo.atributo_bd === column);
+
+          if (resultado == null){
+            descripcion = column;
+          }
+          else{
+            descripcion = resultado.desc_atributo;
+          }
+          columnas.push({id: indice, name: column, title: descripcion});
+          indice = indice + 1;
+        });
+        */
+        // datosModal.valores = columnas;
+        datosModal.valores = this.columnasDisponibles;
+        datosModal.defaults = this.reportesAll[this.reporteSeleccionado].columnas;
+        console.log('enviando datosModal: ', datosModal);
+
+        this.ngxSmartModalService.resetModalData(nombreModalCorregido);
+        this.ngxSmartModalService.setModalData(datosModal, nombreModalCorregido);
+        this.ngxSmartModalService.open(nombreModalCorregido);
+      }
+    }
+    console.log('nombre modal usado: '+ nombreModalCorregido + ' ')
+  }
+
   buscarReportes(){
     this._consultaDinamicaService.getReportes(this.token)
       .subscribe( dataR => {
@@ -693,48 +759,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       });
   }
 
-  irDetalle(id:any){
-    console.log('se intentó ir a: '||id);
-    this.irADetalle = true;
-  }
-
-  //de https://stackoverflow.com/a/4760279
-  dynamicSort(property) {
-    var sortOrder = 1;
-    if(property[0] === "-") {
-        sortOrder = -1;
-        property = property.substr(1);
-    }
-    return function (a,b) {
-        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-        return result * sortOrder;
-    }
-  }
-/*
-  dynamicSortMultiple(argumentos: any) {
-    /*
-     * save the arguments object as it will be overwritten
-     * note that arguments object is an array-like object
-     * consisting of the names of the properties to sort by
-     *
-    var props = argumentos;
-    return function (obj1, obj2) {
-        var i = 0, result = 0, numberOfProperties = props.length;
-        /* try getting a different result from 0 (equal)
-         * as long as we have extra properties to compare
-         *
-        while(result === 0 && i < numberOfProperties) {
-            console.log(props, i, obj1, obj2)
-            // result = this.dynamicSort(props[i])(obj1, obj2);
-            result = this.columnSelection.selected.sort(this.dynamicSort(props[i])(obj1, obj2));
-
-
-            i++;
-        }
-        return result;
-    }
-  }
-*/
+  
   establecerColumnas(){
     //asignar las seleccionadas, como "['select', 'opciones', 'codigo', 'nombre']"
     this.displayedColumns = [];
@@ -777,6 +802,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         console.log('lista traida del reporte: ');
         console.log(this.reportesAll[this.reporteSeleccionado].columnas);
         //todo quitar if y descomentar cuando arreglen los datos
+        //limpiado de string que contiene la lista de columnas
         let listaColumnas : string[] = (this.reportesAll[this.reporteSeleccionado].columnas.split(','));
 
         let itemActual: string;
@@ -909,16 +935,6 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     // Object.keys(repo).forEach(att => console.log(att, typeof repo[att]));
     //
   }
-
-  handleRowClick(row: any){
-    console.log('se clickeo: ');
-    console.log(row);
-    if (this.irADetalle === true){
-      this.irADetalle = false;
-      //todo agregar enrutamiento al objeto correspondiente
-      console.log('Se intentará ir al objeto correspondiente de id: ');
-      console.log(row['id']);
-    }
-  }
-
+  
+  //#endregion principal
 }

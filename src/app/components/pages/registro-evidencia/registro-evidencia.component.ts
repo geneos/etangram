@@ -5,6 +5,7 @@ import { EvidenciasService } from "src/app/services/i2t/evidencias.service"
 import { MatTable, MatHint, MatPaginator, MatSnackBar, MatTableDataSource} from '@angular/material';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { Router, ActivatedRoute } from "@angular/router";
+import { ImageService } from "src/app/services/i2t/image.service";
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 const TOKEN = '';
@@ -21,6 +22,8 @@ export class RegistroEvidenciaComponent implements OnInit {
 
   suscripcionesModal: Subscription[] = [];
   inputParam: any;
+  adjunto: any;
+  urlImagen:string = "";
 
   token: any;
   forma: FormGroup;
@@ -40,8 +43,10 @@ export class RegistroEvidenciaComponent implements OnInit {
               private route:ActivatedRoute,private router: Router,
               public snackBar: MatSnackBar,
               @Inject(SESSION_STORAGE) private storage: StorageService,
+              private _imageService: ImageService,
               private _evidenciasService: EvidenciasService) { 
-              this.forma = new FormGroup({
+
+    this.forma = new FormGroup({
       'fecha': new FormControl(),
       'descripcion': new FormControl(),
       'image': new FormControl(),
@@ -81,17 +86,38 @@ export class RegistroEvidenciaComponent implements OnInit {
     });
   }
 
+  cargar(attachment){
+    this.adjunto = attachment.files[0];
+    console.clear();
+    //this.urlImagen = "url sigue vacia"
+     //console.log(formData.getAll('file'));
+     //console.log(formData);
+     this._imageService.postImage( this.adjunto, this.token )
+       .subscribe( resp => {
+         console.log(resp);
+         this.urlImagen = resp.toString();
+      //   this.inputParam.url = this.urlImagen
+       });
+    //   this.guardar();
+  }
+
   agregarEvidencia(){
     this.nuevo = true;
-    this.forma.controls['descripcion'].setValue('')
-    this.mostrarEvidencias();
+    this.forma.controls['descripcion'].setValue("")
+    this.urlImagen = "";
+   // this.mostrarEvidencias();
   }
   guardarEvidencia(){
+    if(this.urlImagen === ""){
+      this.openSnackBar('No se selecionó ninguna imagen')
+    } else if(this.forma.controls['descripcion'].value === ""){
+      this.openSnackBar('El campo descripción no puede estar vació');
+    } else {
     this.nuevo = false;
     let jsbody = {
       "id_op": this.inputParam.ordPublicidadId,
 	    "name_evidencia": this.forma.controls['descripcion'].value,
-	    "url_evidencia": "https://google.com/",
+	    "url_evidencia": this.urlImagen,
 	    "id_proveedor": this.inputParam.proveedorId
     }
     let jsonbody = JSON.stringify(jsbody)
@@ -101,6 +127,8 @@ export class RegistroEvidenciaComponent implements OnInit {
       })
       this.forma.controls['descripcion'].setValue('')
       this.mostrarEvidencias();
+      this.openSnackBar('Evidencia Guardada')
+    }
   }
 
   mostrarEvidencias(){
@@ -129,6 +157,12 @@ export class RegistroEvidenciaComponent implements OnInit {
         console.log(dataEv);
         this.mostrarEvidencias();
       })
+  }
+
+  cancelar(){
+    this.ngxSmartModalService.resetModalData('evidenciasModal');
+    this.ngxSmartModalService.setModalData({estado: 'cancelado', nuevo: false}, 'evidenciasModal');
+    this.ngxSmartModalService.close('evidenciasModal');
   }
 }
 export interface evidenciasdata{

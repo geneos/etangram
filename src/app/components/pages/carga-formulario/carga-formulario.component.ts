@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable, Inject } from '@angular/core';
+import { Component, OnInit, Injectable, Inject, ViewChild } from '@angular/core';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormulariosService} from 'src/app/services/i2t/formularios.service';
@@ -7,9 +7,11 @@ import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ImageService } from "src/app/services/i2t/image.service";
 import { ProveedorCabecera, RelacionComercial, Impuesto, Formulario, ArticuloProv } from 'src/app/interfaces/proveedor.interface';
 import { FormGroup, FormControl } from '@angular/forms';
+import { MatSnackBar} from '@angular/material';
 
 const TOKEN = '';
 @Injectable()
+
 @Component({
   selector: 'app-carga-formulario',
   templateUrl: './carga-formulario.component.html',
@@ -17,27 +19,34 @@ const TOKEN = '';
 })
 export class CargaFormularioComponent implements OnInit {
 
-  urlImagen:string = "url vacia aun";
+  @ViewChild('attachment') file: any;
+  urlImagen:string = "";
   adjunto: any;
   token: string = "a";
 
   fechaActual: Date = new Date();
+  fechaVenci: Date = new Date();
 
   respData:any; //respuestas de servicio proveedores
   formulariosAll:any[];
   formulariosProvAll:Formulario[];
+  formTipo: any;
+  formData: formDatos[] = [];
   id:any;
   forma: FormGroup;
   inputParam: any;
   fechaPresenta: string;
   fechaVencimiento: Date = new Date();
+  urlAnterior: string;
+  
 
   constructor(private route:ActivatedRoute,
               private _imageService:ImageService,
               public ngxSmartModalService: NgxSmartModalService,
               private _formulariosService: FormulariosService,
               private _proveedoresService: ProveedoresService,
-              @Inject(SESSION_STORAGE) private storage: StorageService) {
+              @Inject(SESSION_STORAGE) private storage: StorageService,
+              public snackBar: MatSnackBar) {
   
     this.token = this.storage.get(TOKEN);
 
@@ -48,14 +57,14 @@ export class CargaFormularioComponent implements OnInit {
     this.forma = new FormGroup({
       'fechPresenta': new FormControl(),
       'fechVenci': new FormControl(),
-      'url': new FormControl()
+      'url': new FormControl(),
     })
     
   }
 
   ngOnInit() {
     this.fechaActual.setDate(this.fechaActual.getDate());
-    
+  //  console.log(this.fechaActual)
   }
 
   ngAfterViewInit(){
@@ -67,33 +76,20 @@ export class CargaFormularioComponent implements OnInit {
       // this.forma.controls['fechPresenta'].setValue(this.inputParam.fechaPresen);
       // this.forma.controls['fechVenci'].setValue(this.inputParam.fechaVenci);
       this.forma.controls['url'].setValue(this.inputParam.url)
-     // let fechaVenci = this.fechaActual.getDate() + 60
-   // console.log(fechaVenci)
-   if(this.inputParam.formNombre = "1dfffdda-bb81-a81d-aa45-5c35080aafd5"){
-  //   this.fechaVencimiento.setDate(this.fechaActual.getDate() + 12 )
-   
-   }
+      this.urlAnterior = this.inputParam.url;
+      this.file.nativeElement.value = "";
+      this.buscaForm()
+      
     });
   }
-  
-  subirFoto(){
-    console.clear();
-    //this.urlImagen = "url sigue vacia"
-     //console.log(formData.getAll('file'));
-     //console.log(formData);
-     this._imageService.postImage( this.adjunto, this.token )
-       .subscribe( resp => {
-         console.log(resp);
-         this.urlImagen = resp.toString();
-       });
-   }
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
+  }
 
   cargar(attachment){
     this.adjunto = attachment.files[0];
-  }
-
-  guardar(){
-
     console.clear();
     //this.urlImagen = "url sigue vacia"
      //console.log(formData.getAll('file'));
@@ -102,10 +98,29 @@ export class CargaFormularioComponent implements OnInit {
        .subscribe( resp => {
          console.log(resp);
          this.urlImagen = resp.toString();
+      //   this.inputParam.url = this.urlImagen
        });
+    //   this.guardar();
+  }
+
+  guardar(){
+  if(this.urlImagen === "" || this.urlImagen === this.urlAnterior){
+    this.openSnackBar('No se selecionó ninguna imagen')
+  } else {
+    if(this.formData[0].periodicidad === "M"){
+      this.fechaVenci.setMonth(this.fechaVenci.getMonth() + this.formData[0].periodo)
+      console.log(this.fechaVenci.toString())
+      this.fechaVencimiento = this.fechaVenci; 
+    } else if(this.formData[0].periodicidad === "A"){
+      this.fechaVenci.setFullYear(this.fechaVenci.getFullYear() + this.formData[0].periodo)
+      console.log(this.fechaVenci.toString())
+      this.fechaVencimiento = this.fechaVenci; 
+    } else if(this.formData[0].periodicidad === "D"){
+      this.fechaVenci.setDate(this.fechaVenci.getDate() + this.formData[0].periodo)
+      console.log(this.fechaVenci.toString())
+      this.fechaVencimiento = this.fechaVenci; 
+    }
     
-       this.fechaVencimiento.setMonth(this.fechaActual.getMonth() + 12);
-       console.log(this.fechaVencimiento.toString())
     let jsbody = {
       "Id_Proveedor": this.inputParam.provId,
       "Id_FormularioCte"	:	this.inputParam.form,
@@ -132,6 +147,34 @@ export class CargaFormularioComponent implements OnInit {
             }
           }
       });
+      this.ngxSmartModalService.resetModalData('formulariosModal');
+      this.ngxSmartModalService.setModalData({estado: 'guardado'}, 'formulariosModal');
+      this.ngxSmartModalService.close('formulariosModal');
+    }
+
+      
+  }
+  cancelar(){
+    this.ngxSmartModalService.resetModalData('formulariosModal');
+    this.ngxSmartModalService.setModalData({estado: 'cancelado'}, 'formulariosModal');
+    this.ngxSmartModalService.close('formulariosModal');
+  }
+  buscaForm(){
+    this._formulariosService.getFormulario(this.inputParam.formNombre, this.token)
+      .subscribe(dataF => {
+        console.log(dataF)
+        this.formTipo = dataF;
+        this.formData = this.formTipo.dataset
+
+      })
   }
 }
-
+export interface formDatos{
+  "id": string,
+  "name": string,
+  "deleted": number,
+  "codigo": number,
+  "fechavigencia": string,
+  "periodicidad": string,
+  "periodo": number
+}

@@ -1,5 +1,5 @@
 <ngx-smart-modal #formulariosModal 
-                 customClass="overlay-evidencias" 
+                 customClass="overlay-formulario" 
                  [identifier]="'formulariosModal'"
                  [closable]="false"
                  [dismissable]="false"
@@ -10,7 +10,8 @@
     <app-carga-formulario></app-carga-formulario>
   </div>
 
-  <div style="margin-top: 10px; width: 100%; text-align: right;">
-      <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
-  </div>
+<!-- <div style="margin-top: 10px; width: 100%; text-align: right;">
+  <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="guardar()">CERRAR</button>
+  <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
+</div> -->
 </ngx-smart-modal>

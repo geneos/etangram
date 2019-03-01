@@ -138,6 +138,9 @@ h6 {
 .overlay-cons-din2 .nsm-content
   { min-height: 500px}
 
+.overlay-formulario .nsm-content
+  { min-height: 300px 
+  }
 .overlay-filtros .nsm-content,
 .overlay-columnas .nsm-content,
 .overlay-filtros-n2 .nsm-content,
@@ -146,10 +149,10 @@ h6 {
 
 /* .overlay-cons-din.nsm-dialog { width: 85% !important; max-width: 2000px !important; */
 .overlay-cons-din.nsm-dialog,
-.overlay-evidencias.nsm-dialog { width: 85vw !important; max-width: 2000px !important;
-  
-  /*  border-radius: 10px !important; padding: 12px 0 0 0 ; background-color: thistle */
+.overlay-evidencias.nsm-dialog { width: 85vw !important; max-width: 2000px !important
 }
+.overlay-formulario.nsm-dialog { width: 55vw !important; max-width: 800px !important }
+
 
 
 

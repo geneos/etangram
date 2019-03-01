@@ -422,7 +422,8 @@ export class DatosProveedoresComponent implements OnInit {
         this.openSnackBar('Se canceló la selección');
       }
       else{
-        this.itemDeConsulta = respuesta.selection[0];
+        this.ngxSmartModalService.resetModalData('formulariosModal');
+        this.getCabecera();
         // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
         // this.buscarProveedor();
       }

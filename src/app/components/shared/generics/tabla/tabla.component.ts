@@ -26,7 +26,7 @@ export class TablaComponent implements CompGen {
 
     this._data = value;
     if (this._data != null) {
-      console.log('Datos recibidos en componente tabla: ');
+      /* console.log('Datos recibidos en componente tabla: ');
       console.log('-- data --');
       console.log(this._data);
       console.log('-- datos --');
@@ -37,7 +37,7 @@ export class TablaComponent implements CompGen {
       console.log(this._data.datos.valores);
       // this.constDatos = this._data.datos;
 
-      console.log('fin datos recibidos');
+      console.log('fin datos recibidos'); */
 
       //
       /* var transpose = this._data.datos.datos.reduce(function(arr, obj) {
@@ -73,11 +73,11 @@ export class TablaComponent implements CompGen {
       // console.log('array para tabla de columnas: ', datos)
       // this.constDatos = new MatTableDataSource(this._data.datos.valores.map(valor => valor.title))
       this.constDatos = new MatTableDataSource(this._data.datos.valores);
-      console.log('mattabledatasource: ', this.constDatos);
+      // console.log('mattabledatasource: ', this.constDatos);
       
       this.constDatos.sort = this.sort;
       this.constDatos.paginator = this.paginator;
-      console.log('seleccionado inicial: ', this._data.datos.selection)
+      // console.log('seleccionado inicial: ', this._data.datos.selection)
       this.selection  = this._data.datos.selection;
 
       
@@ -144,8 +144,8 @@ export class TablaComponent implements CompGen {
     let p2 = opcion.substr(opcion.indexOf(':')+1);
     this.options.push({key: p1, value: p2});
   });
-  console.log('Lista armada en control: ');
-  console.log(this.options);
+  // console.log('Lista armada en control: ');
+  // console.log(this.options);
   }
 
   // ngOnInit() {}

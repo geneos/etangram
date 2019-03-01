@@ -1,4 +1,4 @@
-<h2 style="margin-bottom:15px;">{{reportesAll && reportesAll[this.reporteSeleccionado]?.titulo}}</h2>
+<h2 style="margin-bottom:15px;">{{reportesAll && reportesAll[this.reporteSeleccionado]?.titulo | uppercase }}</h2>
 {{records && (records[0] | json)}}
 <!-- <h2>{{reportesAll[this.reporteSeleccionado]?.titulo || "Consulta Dinámica (Cargando)" }}</h2> -->
 <button *ngIf="nivel == 1" class="mine-btnbig-grey" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu">
@@ -6,19 +6,19 @@
 </button>
 <mat-menu #rootMenu="matMenu">
   <!-- <button mat-menu-item (click)="$event.stopPropagation();" [matMenuTriggerFor]="subMenu"> -->
- <button *ngIf="permisos.permiso_crear" mat-menu-item>
+ <button type="button" *ngIf="permisos.permiso_crear" mat-menu-item>
     NUEVO
   </button>
-  <button *ngIf="permisos.permiso_editar" mat-menu-item>
+  <button type="button" *ngIf="permisos.permiso_editar" mat-menu-item>
     EDITAR
   </button>
-  <button *ngIf="permisos.permiso_mostrar" mat-menu-item>
+  <button type="button" *ngIf="permisos.permiso_mostrar" mat-menu-item>
     VISUALIZAR
   </button>
-  <button *ngIf="permisos.permiso_borrar" mat-menu-item>
+  <button type="button" *ngIf="permisos.permiso_borrar" mat-menu-item>
     ELIMINAR
   </button>
-  <button *ngIf="permisos.permiso_exportar" mat-menu-item>
+  <button type="button" *ngIf="permisos.permiso_exportar" mat-menu-item>
     EXPORTAR
   </button>
 </mat-menu>
@@ -29,17 +29,17 @@
   </ng-template>
 </mat-menu> -->
 
-<button *ngIf="nivel == 1" class="mine-btnbig-grey" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu2" style="margin-left:5px">
+<button type="button" *ngIf="nivel == 1" class="mine-btnbig-grey" (click)="$event.stopPropagation();" mat-flat-button [matMenuTriggerFor]="rootMenu2" style="margin-left:5px">
   FILTROS
 </button>
 <mat-menu #rootMenu2="matMenu">
-  <button mat-menu-item (click)="abrirModal('cdFiltrosModal')">
+  <button type="button" mat-menu-item (click)="abrirModal('cdFiltrosModal')">
     BASICO
   </button>
-  <button mat-menu-item (click)="abrirModal('cdAvanzadoModal')">
+  <button type="button" mat-menu-item (click)="abrirModal('cdAvanzadoModal')">
     AVANZADO
   </button>
-  <button mat-menu-item (click)="abrirModal('cdTablaModal')">
+  <button type="button" mat-menu-item (click)="abrirModal('cdTablaModal')">
     COLUMNAS
   </button>
 </mat-menu>

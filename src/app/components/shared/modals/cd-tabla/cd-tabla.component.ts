@@ -17,12 +17,14 @@ export class CdTablaComponent implements AfterViewInit {
     modal: string;
     datos: any;
     valores: any;
-    columnSelection: any
+    defaults: any;
+    columnSelection: any;
   }
   _inputParam: {
     modal: string;
     datos: any;
     valores: any;
+    defaults: any;
     columnSelection: any
   }
   modal: string;
@@ -48,13 +50,13 @@ export class CdTablaComponent implements AfterViewInit {
    this.ngxSmartModalService.getModal('cdTablaModal').onOpen.subscribe(() => {
      this.inputParam = this.ngxSmartModalService.getModalData('cdTablaModal');
     //  this._inputParam = angular.copy(this.inputParam);
-    console.log('Abierto modal de columnas (componente tipo tabla)')
+    // console.log('Abierto modal de columnas (componente tipo tabla)')
     /* this._inputParam = {
       modal: '',
       datos: null,
       columnSelection : null
     }; */
-    this._inputParam = {modal: '', datos: {}, valores: {}, columnSelection: []};
+    this._inputParam = {modal: '', datos: {}, valores: {}, defaults: {}, columnSelection: []};
     // this._inputParam.modal = '';
     // this._inputParam.columnSelection = [];
     // this._inputParam.datos = {};
@@ -63,7 +65,7 @@ export class CdTablaComponent implements AfterViewInit {
     // this._inputParam = Object.assign({}, this.inputParam);
     
     // this._inputParam = JSON.parse(JSON.stringify(this.inputParam));
-    console.log('asignando: ',this.inputParam);
+    // console.log('asignando: ',this.inputParam);
     this.modal = this.inputParam.modal;
     this.datos = [...this.inputParam.datos];
     this.valores = [...this.inputParam.valores]
@@ -84,15 +86,48 @@ export class CdTablaComponent implements AfterViewInit {
     //  this.loading = false;
    });
 
- };
+  };
 
- generarTabla(){
+  limpiarLista(listaSucia: string){
+    let ListaLimpia: string = '';
+    let listaColumnas : string[] = (listaSucia.split(','));
+
+    let itemActual: string;
+    // console.log('Cantidad de columnas: ' + listaColumnas.length)
+    for (let index = 0; index < listaColumnas.length; index++) {
+      itemActual = listaColumnas[index].trim();
+
+      ListaLimpia = ListaLimpia.concat(itemActual, ',');
+    }
+    ListaLimpia = ListaLimpia.substr(0, ListaLimpia.length-1);
+    // console.log('Lista rearmada: ');
+    // console.log(ListaLimpia);
+    return ListaLimpia;
+  }
+
+  reset(){
+    this.loading = true;
+    // this.inputParam.valores = this.inputParam.defaults;
+    console.log('seleccionados antes de reseteo: ', this.inputParam.columnSelection)
+    let listaLimpia = this.limpiarLista(this.inputParam.defaults);
+    console.log('lista a armar (string): ', listaLimpia)
+    this.inputParam.columnSelection = new SelectionModel(true, this.valores
+      .filter(columnaDisponible =>
+        listaLimpia.includes(columnaDisponible.name) == true
+        ));
+    this.columnSelection = null;
+    this.columnSelection = [this.inputParam.columnSelection];
+    console.log('seleccionados después de reseteo: ', this.inputParam.columnSelection)
+    this.generarTabla();
+  }
+
+  generarTabla(){
    //Crear tabla con checkboxes de columnas
     // this.columnasSelectas = new SelectionModel(true, []);
-    console.log('generando componente de tabla')
+    // console.log('generando componente de tabla')
     if (this.viewContainerRefColumnas == null){
       this.viewContainerRefColumnas = this.contenedorColumnas.viewContainerRef;
-      console.log('guardada referencia de columnas');
+      // console.log('guardada referencia de columnas');
     }
     this.viewContainerRefColumnas.clear();
 
@@ -113,7 +148,9 @@ export class CdTablaComponent implements AfterViewInit {
  
  aplicar(){
     console.log('aplicando seleccion de columnas');
-    console.log('seleccionado al aplicar: ', this.inputParam.columnSelection);
+    console.log('seleccionado al aplicar: ', this.inputParam.columnSelection, this.columnSelection);
+    console.log('this.inputParam.columnSelection: ', this.inputParam.columnSelection)
+    console.log('this.columnSelection: ', this.columnSelection)
     this.inputParam.modal = this.modal;
     this.inputParam.datos = [...this.datos];
     this.inputParam.columnSelection = [...this.columnSelection];

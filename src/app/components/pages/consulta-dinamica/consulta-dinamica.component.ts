@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PermisosService } from 'src/app/services/i2t/permisos.service';
 import { ModalInstance } from 'ngx-smart-modal/src/services/modal-instance';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -168,12 +169,12 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     //suscribir a los cambios en los otros modales
     //modal de selección de columnas
     this.ngxSmartModalService.getModal('cdTablaModal').onClose.subscribe((modal: NgxSmartModalComponent) => {
-      console.log('Cerrado el modal de tabla: ', modal);
+      // console.log('Cerrado el modal de tabla: ', modal);
 
       let datostemp = this.ngxSmartModalService.getModalData('cdTablaModal');
-      console.log('temp: ', datostemp);
+      /* console.log('temp: ', datostemp);
       console.log('temp.estado', datostemp.estado)
-      console.log('test cancelado: ', (this.ngxSmartModalService.getModalData('cdTablaModal').estado !== 'cancelado'))
+      console.log('test cancelado: ', (this.ngxSmartModalService.getModalData('cdTablaModal').estado !== 'cancelado')) */
 
       if(this.ngxSmartModalService.getModalData('cdTablaModal').estado !== 'cancelado'){
 
@@ -827,6 +828,12 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     }
     else{
       console.log('Selección de columnas: ', this.columnSelection.selected);
+      //
+      let columnasDeModal = this.ngxSmartModalService.getModalData('cdTablaModal').columnSelection[0];
+      console.log('datos traidos de modla: ', columnasDeModal);
+      this.columnSelection = new SelectionModel(true, columnasDeModal.selected);
+      console.log('seleccion de columnas 2, ', this.columnSelection)
+      //
       this.columnSelection.selected.forEach(atributo => {
         columnasAMostrar = columnasAMostrar.concat(atributo.atributo_bd, ',');
       });
@@ -834,10 +841,13 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);
       console.log('el usuario seleccionó las columnas: ');
       console.log(columnasAMostrar);
+      
     }
 
     let listaColumnas : string[] = (columnasAMostrar.split(','));
     this.columns = [];
+
+
 
     //extraer los que vienen con orden valido, y ordenarlos
     let listaColumnasOrdenada = this.columnSelection.selected.filter(column => column.order != -1)
@@ -914,22 +924,22 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
     this.loading = false;
 
-    console.log('columnas por defecto: ');
+    /* console.log('columnas por defecto: ');
     console.log(this.columnSelection);
     console.log('todos:');
     console.log(this.atributosAll);
     console.log('filtrado: ');
-    console.log(this.atributosAll.filter(tipo => tipo.grupo == 'Filtros'));
+    console.log(this.atributosAll.filter(tipo => tipo.grupo == 'Filtros')); */
 
     // this.buscarDatos();
     //
-    console.log('lista de columnas: ');
-    console.log(this.displayedColumns);
+    /* console.log('lista de columnas MOSTRANDO: ');
+    console.log(this.displayedColumns); */
     //
     //
-    let repo: Reporte;
+    /* let repo: Reporte;
     repo = this.reportesAll[this.reporteSeleccionado];
-    console.log('estructura de Reporte: ');
+    console.log('estructura de Reporte: '); */
     // console.log(Object.keys(repo));
     //obtener lista de atributos y tipos reales de la entidad
     // Object.keys(repo).forEach(att => console.log(att, typeof repo[att]));

@@ -297,13 +297,13 @@ export class DatosProveedoresComponent implements OnInit {
                 this.getCabecera();
               });
             } else {
+              this.getFormulario();
+              this.getImpuesto();
               if(this.respCabecera.dataset.length>0){
                 this.datosCabecera = this.respCabecera.dataset;
                 this.loading = false;
                 if(this.datosCabecera[0].Domicilio == null){
                   this.direccionFac = null;
-                } else{
-
                 }
                 if(this.datosCabecera[0].Domicilio_envio == "") {
                   this.direccionEnv = null;
@@ -311,27 +311,7 @@ export class DatosProveedoresComponent implements OnInit {
                 this.direccionEnv = this.datosCabecera[0].Domicilio_envio +', '+'('+this.datosCabecera[0].Codigo_Postal_envio+')'+', '+this.datosCabecera[0].Ciudad_envio;
                 }
                 this.telefonos = this.datosCabecera[0].Telefono_Oficina + ' - ' + this.datosCabecera[0].Telefono_Movil;
-
-                //TRAE IMPUESTOS
-                this._DatosProveedorService.getImpuesto( jsonbodyCab, this.token)
-                .subscribe(dataI => {
-                  console.log(dataI);
-                  this.respImpuesto = dataI;
-                  if(this.respImpuesto.dataset.length>0){
-                    this.datosImpuesto = this.respImpuesto.dataset;
-                    this.dataSource = new MatTableDataSource(this.datosImpuesto);
-                  }
-                })
-                //TRAE FORMULARIOS
-                this._DatosProveedorService.getFormulario( jsonbodyCab, this.token)
-                .subscribe(dataF => {
-                  console.log(dataF);
-                  this.respFormulario = dataF;
-                  if(this.respFormulario.dataset.length>0){
-                    this.datosFormularios = this.respFormulario.dataset;
-                    this.dataSource2 = new MatTableDataSource(this.datosFormularios);
-                  }
-                })
+                
               } else {
                 this.datosCabecera = null;
 
@@ -342,6 +322,46 @@ export class DatosProveedoresComponent implements OnInit {
 
   }
 
+   //TRAE IMPUESTOS
+   getImpuesto(){
+    let jsbodyCab = {
+      "Id_Proveedor": this.idProv//"4081"
+    }
+    let jsonbodyCab= JSON.stringify(jsbodyCab);
+    this._DatosProveedorService.getImpuesto( jsonbodyCab, this.token)
+    .subscribe(dataI => {
+      console.log(dataI);
+      this.respImpuesto = dataI;
+      if(this.respImpuesto.dataset.length>0){
+        this.datosImpuesto = this.respImpuesto.dataset;
+        this.dataSource = new MatTableDataSource(this.datosImpuesto);
+      } else {
+        this.dataSource = this.respImpuesto.dataset.length;
+        console.log(this.dataSource)
+      }
+    })
+   }
+  
+   //TRAE FORMULARIOS
+   getFormulario(){
+    let jsbodyCab = {
+      "Id_Proveedor": this.idProv//"4081"
+    }
+    let jsonbodyCab= JSON.stringify(jsbodyCab);
+    this._DatosProveedorService.getFormulario( jsonbodyCab, this.token)
+    .subscribe(dataF => {
+      console.log(dataF);
+      this.respFormulario = dataF;
+      if(this.respFormulario.dataset.length>0){
+        this.datosFormularios = this.respFormulario.dataset;
+        this.dataSource2 = new MatTableDataSource(this.datosFormularios);
+      } else {
+        this.dataSource2 = this.respFormulario.dataset.length;
+       
+      }
+    })
+   }
+   
   obtenerIDUsuario(){
     //todo: traer usuario de login, ahora no tienen relación en la base
     this._usuariosService.getUsuarioPorUsername('usuario1', this.token)

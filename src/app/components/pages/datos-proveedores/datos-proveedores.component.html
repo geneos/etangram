@@ -85,6 +85,9 @@
         <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'situacion', 'inscripcion', 'excencion'] ;"></tr>
 
       </table>
+      <div class="col s12" style="margin-top:5px;" *ngIf="dataSource < 1">
+          <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No hay impuestos cargados.</i></mat-card>
+      </div>
     </div>
     
       <!-- <mat-paginator [pageSizeOptions]="[20]"></mat-paginator> -->
@@ -135,6 +138,9 @@
         <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'presentacion', 'vencimiento', 'opciones'] ;"></tr>
 
       </table>
+      <div class="col s12" style="margin-top:5px;" *ngIf="dataSource2 < 1">
+          <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No hay formularios cargados.</i></mat-card>
+      </div>
     </div>
       <!-- <mat-paginator [pageSizeOptions]="[20]"></mat-paginator> -->
     <!-- </mat-expansion-panel> -->

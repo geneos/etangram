@@ -1209,6 +1209,7 @@ construirFoto(){
         "tiposustituto": fgSustituto.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
       }
     }
+    
     else{
       jsbodyP = {
         // "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica

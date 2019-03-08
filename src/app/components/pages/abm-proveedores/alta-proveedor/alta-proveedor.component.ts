@@ -2163,6 +2163,8 @@ export class AltaProveedorComponent implements OnInit {
         "p_stock_fecha_ult_compra": this.extraerFecha(<FormControl>articuloActual.controls['ultimaFecha']), //"1997-05-05",
         "p_stock_moneda": articuloActual.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
         "p_stock_codigo_barra_prov": articuloActual.controls['barrasArtProv'].value, //Código de barra
+        "p_stock_precio_ult_compra": 120.33,
+        "p_stock_codigo_articulo_prov": "PROD 1"
         //ultimoPrecio
         //codArtProv
       }
@@ -2669,9 +2671,10 @@ export class AltaProveedorComponent implements OnInit {
       "p_stock_id_art": formgroupArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
       // "p_stock_fecha_ult_compra": this.extraerFecha(formgroupArticulo.controls['ultimaFecha'].value), //"1997-05-05",
       "p_stock_fecha_ult_compra": this.extraerFecha(<FormControl>formgroupArticulo.controls['ultimaFecha']), //"1997-05-05",
-      "p_stock_precio_ult_compra": formgroupArticulo.controls['ultimoPrecio'].value,
       "p_stock_moneda": formgroupArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
       "p_stock_codigo_barra_prov": formgroupArticulo.controls['barrasArtProv'].value, //Código de barra
+      "p_stock_precio_ult_compra": formgroupArticulo.controls['ultimoPrecio'].value,
+      "p_stock_codigo_articulo_prov": "PROD X"
       
       //todo corregir cuando corrijan la api
       // "p_stock_codigo_art_prov": formgroupArticulo.controls['codArtProv'].value,

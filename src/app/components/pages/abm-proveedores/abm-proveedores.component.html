@@ -1,10 +1,11 @@
-<h2>PROVEEDORES</h2>
+<!-- <h2>PROVEEDORES</h2> -->
 <button [routerLink]="['/proveedores','nuevo']" class="mine-btnbig" mat-flat-button>
   NUEVO
 </button>
 
-  <app-loading *ngIf="loading"></app-loading>
-
+  <!-- <app-loading *ngIf="loading"></app-loading> -->
+  <app-consulta-dinamica [consulta]="'c_proveedores'"></app-consulta-dinamica>
+<div style="display: none">
   <div class="row" style="margin-top:10px; margin-bottom:5px;" [ngStyle]="{'display':loading ? 'none' : 'block' }">
     <table #tableProveedores mat-table [dataSource]="constProveedores" matSort class="mat-elevation-z1"
       style="font-family: 'Lato', sans-serif !important;">
@@ -56,3 +57,4 @@
       <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen proveedores</i></mat-card>
     </div>
   </div>
+</div>

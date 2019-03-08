@@ -1,5 +1,5 @@
 
-<h2>ARTÍCULOS</h2>
+<!-- <h2>ARTÍCULOS</h2> -->
 <button [routerLink]="['/articulos','nuevo']" class="mine-btnbig" mat-flat-button>
   NUEVO
 </button>
@@ -10,7 +10,9 @@
       LISTA DE ARTÍCULOS
     </mat-panel-title>
   </mat-expansion-panel-header>-->
-
+   <!-- <app-loading *ngIf="loading"></app-loading> -->
+   <app-consulta-dinamica [consulta]="'c_articulos'"></app-consulta-dinamica>
+ <div style="display: none"> 
   <div class="row" style="margin-top:10px; margin-bottom:5px;">
     <table #tableArticulos mat-table [dataSource]="constArticulos" matSort class="mat-elevation-z1"
       style="font-family: 'Lato', sans-serif !important;">
@@ -72,5 +74,5 @@
       <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen artículos</i></mat-card>
     </div>
   </div>
-
+</div>
 <!--</mat-expansion-panel>-->

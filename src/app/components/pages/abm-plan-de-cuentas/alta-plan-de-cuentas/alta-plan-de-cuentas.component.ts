@@ -51,6 +51,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   cdadniveles: number;
   cdadnivelespadre: any;
   urla: string;
+  strpadre: string;
   //
 
   constructor(
@@ -82,7 +83,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
 
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
-      this.urla = this.id;
+      //this.urla = this.strpadre;
       this.padre = parametros['padre'];
       this.existe = false;
 
@@ -162,8 +163,9 @@ export class AltaPlanDeCuentasComponent implements OnInit {
                   var strnivel = this.planDeCuentas.id;
                   var niveles = strnivel.split(".");
 
-                  var strpadre = this.planDeCuentas.nomenclador;
-                  var nivelespadre = strpadre.split(".");
+                  this.strpadre = this.planDeCuentas.nomenclador;
+                  this.urla = this.strpadre;
+                  var nivelespadre = this.strpadre.split(".");
                   this.cdadniveles = nivelespadre.length;
                   console.log(this.cdadniveles);
 

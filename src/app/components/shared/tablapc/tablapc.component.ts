@@ -41,11 +41,14 @@ export class TablapcComponent implements OnInit {
 
   @ViewChild('compHija') compHija:TablapcComponent;
   @Input() padreId:string = "";
+  @Input() vueltaId:string = "";
   test:string = "test";
 
   @ViewChild('tablePlanesCuentas') table: MatTable<any>;
 
   selection = new SelectionModel(false, []);
+  restVuelta: string;
+  estaVuelta: string;
 
   constructor(private _planCuentasService:PlanCuentasService,
     @Inject(SESSION_STORAGE) private storage: StorageService) {
@@ -58,6 +61,49 @@ export class TablapcComponent implements OnInit {
 
   ngOnInit() {
     console.log('ngoninit: '+this.padreId);
+    console.log('vuelve de: '+this.vueltaId);
+    var nivelesPadre;
+    var niveles;
+    var nivelesPadreLength;
+    var strEntera = "";
+
+    if(this.padreId.length>0){
+      nivelesPadre = this.padreId.split(".");
+      nivelesPadreLength=nivelesPadre.length;
+    } else {
+      nivelesPadreLength=0;
+    }
+    //console.log("niv padre: "+nivelesPadreLength);
+    
+    if(this.vueltaId!=null){
+      niveles = this.vueltaId.split(".");
+      //console.log("niv total: "+niveles.length);
+
+      if(nivelesPadreLength<(niveles.length-1)){
+
+        for(var i=0;i<=nivelesPadreLength;i++){
+          if(i>0){
+            strEntera += ".";
+          }
+          strEntera += niveles[i];
+        }
+        this.estaVuelta = strEntera;
+        console.log(this.estaVuelta);
+      }
+
+      this.restVuelta = this.vueltaId;
+    }
+    
+
+    /*var strEntera = "";
+    for(var i=0;i<(niveles.length-1);i++){
+      if(i>0){
+        strEntera += ".";
+      }
+      strEntera += niveles[i];
+    }
+    console.log("strentera: "+strEntera);*/
+    
     this.buscarPlanCuentas();
   }
 
@@ -90,6 +136,8 @@ export class TablapcComponent implements OnInit {
               if(this.pcData.dataset.length>0){
                 this.planesDeCuotasAll = this.pcData.dataset;
                 console.log(this.planesDeCuotasAll);
+                //LA POSTA :
+                this.expandedElement = this.planesDeCuotasAll.find(aa => aa.nomenclador === this.estaVuelta);
                 this.loading = false;
                 if(this.padreId.length<1){
                   this.constPlanesCuentas = new MatTableDataSource(this.planesDeCuotasAll.filter(aa => aa.nomencladorpadre === ''));

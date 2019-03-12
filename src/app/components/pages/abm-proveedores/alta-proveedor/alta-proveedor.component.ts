@@ -299,7 +299,20 @@ export class AltaProveedorComponent implements OnInit {
       articulos: this.FormBuilder.array([]),
       }
     );
-    
+    this.forma.controls['envCodigoPostal'].valueChanges.subscribe(() => {
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['provinciaEnv'])  
+        this.elEnvCodigoPostal.nativeElement.dispatchEvent(new Event('keyup'));
+      })
+    });
+    this.forma.controls['facCodigoPostal'].valueChanges.subscribe(() => {
+      setTimeout(() => {
+        console.log('hubo un cambio')
+        console.log('estado después de timeout ',this['provinciaFac'])  
+        this.elFacCodigoPostal.nativeElement.dispatchEvent(new Event('keyup'));
+      })
+    });
     /*
     this.forma = new FormGroup({
       //FILIATORIOS Y GEOGRÁFICOS
@@ -975,6 +988,7 @@ export class AltaProveedorComponent implements OnInit {
             } else {
               if(this.fcpData.dataset.length>0){
                 this.localidadFac = this.fcpData.dataset[0];
+                this.forma.controls['facCiudad'].setValue(this.localidadFac.name)
                 //this.loading = false;
                 // this.buscarProvinciaFac(this.localidadFac.tg01_provincias_id_c, this.token)
                 this.buscarProvinciaFac();
@@ -1002,6 +1016,7 @@ export class AltaProveedorComponent implements OnInit {
               if(this.fcpData.dataset.length>0){
                 this.localidadEnv = this.fcpData.dataset[0];
                 //this.loading = false;
+                this.forma.controls['envCiudad'].setValue(this.localidadEnv.name) 
                 this.buscarProvinciaEnv();
 
               } else {
@@ -1929,6 +1944,8 @@ export class AltaProveedorComponent implements OnInit {
     this.ngxSmartModalService.open(datosModal.modal);
   }
 
+  
+
 
   guardarProveedor(){
     if( this.id == "nuevo" ){
@@ -1943,8 +1960,8 @@ export class AltaProveedorComponent implements OnInit {
         "p_tipo_doc": this.forma.controls['tipoDocumento'].value, //Id de la consulta a la tabla tg01_tipodocumento
         "p_nro_doc": this.forma.controls['nroDocumento'].value,
         "p_fac_calle": this.forma.controls['facCalle'].value,
-        "p_fac_ciudad": this.localidadFac.id, //"Lopez", //Id de la consulta dinámica a la tabla tg01_localidades
-        "p_fac_prov": this.provinciaFac.id, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
+        "p_fac_ciudad": this.localidadFac.name, //"Lopez", //Id de la consulta dinámica a la tabla tg01_localidades
+        "p_fac_prov": this.provinciaFac.name, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
         "p_fac_cp": this.forma.controls['facCodigoPostal'].value,
         "p_fac_pais": this.paisFac.id, //Id de la consulta dinámica a la tabla tg01_paises
         "p_env_calle": this.forma.controls['envCalle'].value,
@@ -2282,8 +2299,8 @@ export class AltaProveedorComponent implements OnInit {
       "p_tipo_doc": this.forma.controls['tipoDocumento'].value, //Id de la consulta a la tabla tg01_tipodocumento
       "p_nro_doc": this.forma.controls['nroDocumento'].value,
       "p_fac_calle": this.forma.controls['facCalle'].value,
-      "p_fac_ciudad": this.localidadFac.id, //"Lopez", //Id de la consulta dinámica a la tabla tg01_localidades
-      "p_fac_prov": this.provinciaFac.id, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
+      "p_fac_ciudad": this.localidadFac.name, //"Lopez", //Id de la consulta dinámica a la tabla tg01_localidades
+      "p_fac_prov": this.provinciaFac.name, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
       "p_fac_cp": this.forma.controls['facCodigoPostal'].value,
       "p_fac_pais": this.paisFac.id, //Id de la consulta dinámica a la tabla tg01_paises
       "p_env_calle": this.forma.controls['envCalle'].value,

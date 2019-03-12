@@ -836,18 +836,18 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     else{
       console.log('Selección de columnas: ', this.columnSelection.selected);
       //
-      let columnasDeModal = this.ngxSmartModalService.getModalData('cdTablaModal').columnSelection[0];
-      console.log('datos traidos de modla: ', columnasDeModal);
-      this.columnSelection = new SelectionModel(true, columnasDeModal.selected);
-      console.log('seleccion de columnas 2, ', this.columnSelection)
-      //
-      this.columnSelection.selected.forEach(atributo => {
-        columnasAMostrar = columnasAMostrar.concat(atributo.atributo_bd, ',');
-      });
-      // columnasAMostrar = this.columnSelection
-      columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);
-      console.log('el usuario seleccionó las columnas: ');
-      console.log(columnasAMostrar);
+      // let columnasDeModal = this.ngxSmartModalService.getModalData('cdTablaModal').columnSelection[0];
+      // console.log('datos traidos de modla: ', columnasDeModal);
+      // this.columnSelection = new SelectionModel(true, columnasDeModal.selected);
+      // console.log('seleccion de columnas 2, ', this.columnSelection)
+      // //
+      // this.columnSelection.selected.forEach(atributo => {
+      //   columnasAMostrar = columnasAMostrar.concat(atributo.atributo_bd, ',');
+      // });
+      // // columnasAMostrar = this.columnSelection
+      // columnasAMostrar = columnasAMostrar.substr(0, columnasAMostrar.length-1);
+      // console.log('el usuario seleccionó las columnas: ');
+      // console.log(columnasAMostrar);
       
     }
 

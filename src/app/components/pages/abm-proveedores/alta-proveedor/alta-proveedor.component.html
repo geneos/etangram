@@ -571,7 +571,7 @@
           <mat-label>Categoría de Bloqueo</mat-label>
           <mat-select placeholder="Elija una opción..." formControlName="catBloq">
             <mat-option *ngFor="let aux of catsBloqueoAll" [value]="aux.id">
-              {{aux.codigo}}
+              {{aux.name}}
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -598,13 +598,13 @@
      <div *ngIf="tipoReferente == ('P'||'C')" class="col s12 m6 l4">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>CUIT</mat-label>
-         <input matInput placeholder="" formControlName="cuit">
+         <input (keyup)="verificaCuit()" matInput placeholder="" formControlName="cuit">
        </mat-form-field>
      </div>
      <div class="col s12 m12 l4">
        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
          <mat-label>Estado según AFIP</mat-label>
-         <input matInput placeholder="">
+         <input matInput placeholder="" readonly>
        </mat-form-field>
      </div>
      <div *ngIf="tipoReferente == ('P')" class="col s12 m6 l6">

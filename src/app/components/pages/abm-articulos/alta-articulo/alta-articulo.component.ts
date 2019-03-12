@@ -12,6 +12,7 @@ import { AFIPInternoService } from 'src/app/services/i2t/afip.service';
 import { UnidadMedidaService } from 'src/app/services/i2t/unidad-medida.service';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ArticulosService } from 'src/app/services/i2t/articulos.service';
+import { ImageService } from 'src/app/services/i2t/image.service';
 import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo, cArticulo } from 'src/app/interfaces/articulo.interface';
 
 const ARTICULOS:any[] = [
@@ -37,6 +38,8 @@ const TOKEN = '';
 export class AltaArticuloComponent implements OnInit {
 
   constArticulos = ARTICULOS;
+  adjunto: any;
+  urlImagen: any;
 
   user:string='usuario1';
   pass:string='password1'
@@ -156,6 +159,7 @@ export class AltaArticuloComponent implements OnInit {
               private _categoriasBloqueoService: CategoriasBloqueoService,
               private _AFIPInternoService: AFIPInternoService,
               private _unidadMedidaService: UnidadMedidaService,
+              private _imageService: ImageService,
               private ref: ChangeDetectorRef,
               @Inject(SESSION_STORAGE) private storage: StorageService
               ) {
@@ -2627,5 +2631,20 @@ construirFoto(){
     let fecha = new Date(dateString);
     fecha.setDate(fecha.getDate() +1);
     return fecha;
+  }
+
+  cargarFoto(attachment){
+    this.adjunto = attachment.files[0];
+    console.clear();
+    //this.urlImagen = "url sigue vacia"
+     //console.log(formData.getAll('file'));
+     //console.log(formData);
+     this._imageService.postImage( this.adjunto, this.token )
+       .subscribe( resp => {
+         console.log(resp);
+         this.urlImagen = resp.toString();
+      //   this.inputParam.url = this.urlImagen
+       });
+    //   this.guardar();
   }
 }

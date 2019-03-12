@@ -96,6 +96,8 @@ export class AltaProveedorComponent implements OnInit {
   suscripcionConsDin: Subscription;
   itemDeConsulta: any;
   
+  respCuit: any;
+  
    @ViewChild('tableImpuestos') table: MatTable<any>;
    @ViewChild('tableStock') table2: MatTable<any>;
    //para descripciones
@@ -3246,6 +3248,20 @@ export class AltaProveedorComponent implements OnInit {
       //   this.inputParam.url = this.urlImagen
        });
     //   this.guardar();
+  }
+  verificaCuit(){
+    let jsbody = {
+      "token": "Token",
+       "sign": "Sign",
+       "cuitRepresentada": 30709041483,
+       "idPersona": 20221064233
+    }
+    let jsonbodycuit = JSON.stringify(jsbody);
+    this._afipService.a5GetPersona(this.token, jsonbodycuit)
+      .subscribe( respC => {
+        console.log(respC)
+        this.respCuit = respC
+      })
   }
 
 }

@@ -376,6 +376,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   irDetalle(id:any){
     console.log('se intentó ir a: '||id);
     this.irADetalle = true;
+
   }
 
   //de https://stackoverflow.com/a/4760279
@@ -427,6 +428,12 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       if (this.router.url.includes('/ref-contables')){
         console.log('navegando');
         this.router.navigate(['/ref-contables',row['id']])
+      }
+      if (this.router.url.includes('/articulos')){
+        this.router.navigate(['/articulos',row['id']])
+      }
+      if (this.router.url.includes('/proveedores')){
+        this.router.navigate(['/proveedores',row['id']])
       }
     }
   }

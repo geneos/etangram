@@ -762,6 +762,11 @@ construirFoto(){
     console.log('ejecutando buscarArticulo');
     console.log('todo')
 
+    this._articulosService.getArticulo(this.id, this.token)
+      .subscribe( respA => {
+        console.log(respA)
+        console.log(this.id)
+      })
     this.obtenerDatosArrays();
   }
   obtenerDatosArrays(){
@@ -1015,11 +1020,11 @@ construirFoto(){
       "IName" : this.forma.controls['descripcion'].value,
       "C_alternativo": this.forma.controls['codigoAlternativo'].value,
       "C_barra": this.forma.controls['codigoBarra'].value,
-      "Grupo": this.forma.controls['idGrupo'].value,//id de tabla grupos-consulta dinamica
+      "idGrupo": this.forma.controls['idGrupo'].value,//id de tabla grupos-consulta dinamica
 
       "Tipo": this.forma.controls['idTipoArticulo'].value,// id de la tabla tipo de articulos consulta dinamica //todo revisar
       "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
-      "marca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
+     // "marca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
       "campo1": this.forma.controls['idCampo1'].value,
       "campo2": this.forma.controls['idCampo2'].value,
       "campo3": this.forma.controls['idCampo3'].value,
@@ -1038,16 +1043,16 @@ construirFoto(){
 
       "precio_UCpa":this.forma.controls['precioUltCompra'].value,// 200,
       "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
-      "moneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
+     // "moneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
       "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
       "PrecioU_vta": this.forma.controls['precioUltVenta'].value,
       "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
-      "moneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
+    //  "moneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
 
       //datos impositivos
-      "ref_contable": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica
-      "alicuota": this.forma.controls['idAlicuotaIva'].value,//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
-      "alicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
+     // "ref_contable": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica
+     // "alicuota": this.forma.controls['idAlicuotaIva'].value,//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
+      //"alicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
       "Area_AAII":this.forma.controls['IIAreaAplicacionAlicuota'].value,// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
       "Area_AIFII":this.forma.controls['IIAreaAplicacionImporteFijo'].value,//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
       "incorporaCosto":this.forma.controls['IncorporarIIalCosto'].value,// 0, 0 false , 1 true
@@ -1065,11 +1070,11 @@ construirFoto(){
       "dimensiones": this.forma.controls['Dimensiones'].value,
       "pesable":this.forma.controls['Pesable'].value,
       "pesableE":this.forma.controls['Pesable_Estandar'].value, 
-      "unidad_medida":this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
-      "unidad_medida1":this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
+    //  "unidad_medida":this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
+    //  "unidad_medida1":this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
       "largo":this.forma.controls['largo'].value,
       "ancho":this.forma.controls['ancho'].value,
-      "profundidad":this.forma.controls['profundidad'].value,
+    //  "profundidad":this.forma.controls['profundidad'].value,
       "m3": this.forma.controls['m3'].value
     };
     console.log('stringifeando esto: ', jsbody)
@@ -1350,7 +1355,7 @@ construirFoto(){
       //actualizando
 
       //todo descomentar
-      /*
+      
       let jsbody = {
         "ArticuloItem" : this.forma.controls['tipo'].value,
         "IPart_number" : this.forma.controls['nroArticulo'].value,
@@ -1362,9 +1367,9 @@ construirFoto(){
         "Tipo":"",// id de la tabla tipo de articulos consulta dinamica
         "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
         "marca":"",// id de marcas ->consulta dinamica
-        "campo1": this.forma.controls['campo1'].value,
-        "campo2": this.forma.controls['campo2'].value,
-        "campo3": this.forma.controls['campo3'].value,
+        // "campo1": this.forma.controls['campo1'].value,
+        // "campo2": this.forma.controls['campo2'].value,
+        // "campo3": this.forma.controls['campo3'].value,
         "estado": this.forma.controls['estado'].value,// "Activo", 
         "cat_b": this.forma.controls['categoria_bloqueo'].value,
         "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
@@ -1411,7 +1416,7 @@ construirFoto(){
         "profundidad":this.forma.controls['profundidad'].value,
         "m3": this.forma.controls['m3'].value
       }
-      */
+      
      this.guardarDatosArticulo();
     }
   }

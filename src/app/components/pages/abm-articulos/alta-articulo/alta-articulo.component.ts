@@ -1024,7 +1024,7 @@ construirFoto(){
 
       "Tipo": this.forma.controls['idTipoArticulo'].value,// id de la tabla tipo de articulos consulta dinamica //todo revisar
       "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
-     // "marca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
+      "idmarca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
       "campo1": this.forma.controls['idCampo1'].value,
       "campo2": this.forma.controls['idCampo2'].value,
       "campo3": this.forma.controls['idCampo3'].value,
@@ -1043,16 +1043,16 @@ construirFoto(){
 
       "precio_UCpa":this.forma.controls['precioUltCompra'].value,// 200,
       "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
-     // "moneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
+      "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
       "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
       "PrecioU_vta": this.forma.controls['precioUltVenta'].value,
       "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
-    //  "moneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
+      "idmoneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
 
       //datos impositivos
-     // "ref_contable": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica
-     // "alicuota": this.forma.controls['idAlicuotaIva'].value,//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
-      //"alicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
+      "idRefC": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica
+      "idalicuota": this.forma.controls['idAlicuotaIva'].value,//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
+      "idalicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
       "Area_AAII":this.forma.controls['IIAreaAplicacionAlicuota'].value,// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
       "Area_AIFII":this.forma.controls['IIAreaAplicacionImporteFijo'].value,//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
       "incorporaCosto":this.forma.controls['IncorporarIIalCosto'].value,// 0, 0 false , 1 true
@@ -1070,11 +1070,11 @@ construirFoto(){
       "dimensiones": this.forma.controls['Dimensiones'].value,
       "pesable":this.forma.controls['Pesable'].value,
       "pesableE":this.forma.controls['Pesable_Estandar'].value, 
-    //  "unidad_medida":this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
-    //  "unidad_medida1":this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
+      "idUM":this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
+      "idUM1":this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
       "largo":this.forma.controls['largo'].value,
       "ancho":this.forma.controls['ancho'].value,
-    //  "profundidad":this.forma.controls['profundidad'].value,
+      "profundo":this.forma.controls['profundidad'].value,
       "m3": this.forma.controls['m3'].value
     };
     console.log('stringifeando esto: ', jsbody)

@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MatPaginator, MatSort } from '@angular/material';
 import { MonedasService } from 'src/app/services/i2t/monedas.service';
 import { TiposComprobanteService } from 'src/app/services/i2t/tipos-comprobante.service';
-import { ActivatedRoute, Router, RouterLinkWithHref } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { ParametrosService } from 'src/app/services/i2t/parametros.service';
 import { Parametros } from 'src/app/interfaces/parametros.interface';
 import { TipoComprobante } from 'src/app/interfaces/tipo-comprobante.interface';
@@ -22,12 +22,15 @@ import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription } from 'rxjs';
 import { CdkRowDef } from '@angular/cdk/table';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { filter } from "rxjs/operators";
+//import { resetApplicationState } from '@angular/core/src/render3/instructions';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
-
+var auxDetId:number;
 var auxRefConData,auxCCostoData:any;
-
+var auxdatasource = new MatTableDataSource
+var auxDebe, auxHaber:any;
 @Injectable()
 
 @Component({
@@ -37,6 +40,8 @@ var auxRefConData,auxCCostoData:any;
 })
 
 export class AltaMinContableComponent implements OnInit {
+  history: History;
+  dataDet: any;
 /*
 //todo borrar, cambiar por lo real
 datos =
@@ -147,7 +152,7 @@ datos =
   cData: any;
   cajasAll: any[]= [{ id: 0, name: 'Cargando'}]
   //
-
+ // auxdatasource = new MatTableDataSource(this.refContableItemData)
   minutaContable: MinContable;
   detallesAll: MinContableDet[];
   mcData: any;
@@ -189,7 +194,7 @@ datos =
   // @ViewChild('tableArticulos') table: MatTable<any>;//
 
   //todo cambiar
-
+urlAnterior: string;
   constructor(public dialogArt: MatDialog,
               private  _minContableService: MinContablesService,
               private _refContableService: RefContablesService,
@@ -201,13 +206,25 @@ datos =
               private _cajasService: CajasService,
               private route:ActivatedRoute,
               private router: Router,
+              private activatedRoute: ActivatedRoute,
               public snackBar: MatSnackBar,
               public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService) {
 
+                this.router.events.pipe(
+                  filter(event => event instanceof NavigationEnd)
+                  ).subscribe(() => {
+                    if(this.router.url.includes('/min-contables/nuevo')){
+                     // this.forma.reset()
+                     
+                    }
+                  
+                  });
+
                 console.log(this.storage.get(TOKEN) || 'Local storage is empty');
                 this.token = this.storage.get(TOKEN);
 
+   
     this.forma = new FormGroup({
       'fecha': new FormControl('',Validators.required),
       'tipo': new FormControl(),
@@ -223,6 +240,8 @@ datos =
     this.forma.controls['numero'].disable();
     this.forma.controls['organizacion'].disable();
     this.forma.controls['moneda'].disable();
+    this.forma.controls['fecha'].enable();
+        
 
     this.formaReferencias = new FormGroup({
       'refContable': new FormControl('',Validators.required,this.existeRefContable),
@@ -233,6 +252,7 @@ datos =
     })
 
     this.formaReferencias.controls['refContable'].disable();
+  
     this.formaReferencias.controls['nombreRefContable'].disable();
     this.formaReferencias.controls['centroDeCosto'].disable();
     this.formaReferencias.controls['debe'].disable();
@@ -240,12 +260,12 @@ datos =
 
     //cargar listas para combobox
     this.buscarCajas();
-
+   
     this.route.params.subscribe( parametros=>{
       this.cabeceraId = parametros['id'];
       this.existe = false;
-
-      if( this.cabeceraId !== "nuevo" ){
+      
+      if( this.cabeceraId !== 'nuevo' ){
         this.editingCabecera=true;
         this.buscarMinutasContables(this.cabeceraId);
         //cargar lista de referencias contables
@@ -257,15 +277,16 @@ datos =
           this.formaReferencias.controls['centroDeCosto'].enable();
           this.formaReferencias.controls['debe'].enable();
           this.formaReferencias.controls['haber'].enable();
+          
         }
-      } else {
+      } else  {
         this.loading = false;
         //todo borrar console
         console.log('Obtener parametros');
 
         //obtener valores parametrizados
         this.buscarParametros(true);
-
+        
         //establecer valores de salida
         //this.buscarTipoComprobante(this.parametrosSistema.tg01_tipocomprobante_id_c);
         //this.forma.controls['tipo'].setValue(this.tipoComprobante.name);
@@ -274,26 +295,31 @@ datos =
         //this.buscarMoneda(this.parametrosSistema.tg01_monedas_id2_c);
         //this.forma.controls['moneda'].setValue(this.moneda.name);
         this.forma.controls['fecha'].setValue(new Date());
+        
+       // this.dataSource = null;
       }
 
       //this.forma.controls['nomenclador'].disable();
       
 
     });
-   
 
-    this.formaReferencias.controls['refContable'].valueChanges.subscribe(() => {
-      setTimeout(() => {
-        console.log('hubo un cambio')
-    //    console.log('estado después de timeout ',this['provinciaEnv'])  
-        this.refContableId.nativeElement.dispatchEvent(new Event('keyup'));
-      })
-    });
+    // this.formaReferencias.controls['refContable'].valueChanges.subscribe(() => {
+    //   setTimeout(() => {
+    //     console.log('hubo un cambio')
+    // //    console.log('estado después de timeout ',this['provinciaEnv'])  
+    //     this.refContableId.nativeElement.dispatchEvent(new Event('keyup'));
+    //   })
+    // });
+
+  }
+
+
+  ngOnInit() {
+
   }
 
   
-  ngOnInit() {}
-
   test(){
     //console.log(this.forma.controls['caicae'].errors)
   }
@@ -303,6 +329,7 @@ datos =
       duration: 3000,
     });
   }
+  
 
   buscarParametros(incluirOrg: boolean){
     this._parametrosService.getParametros( this.token )
@@ -550,6 +577,7 @@ console.log('json armado: ');
                   // this.forma.controls['caja'].setValue(this.minutaContable.caja);
 
                   this.forma.controls['numero'].setValue(this.minutaContable.name);
+                  
 
                   console.log('pidiendo tipo op con: ');
                   console.log(this.minutaContable);
@@ -652,23 +680,57 @@ console.log('json armado: ');
               });
             } else {
               if(this.mcdData.dataset.length>0){
-                this.detallesAll = this.mcdData.dataset[0];
+                this.detallesAll = this.mcdData.dataset;
                 this.existenDetalles = true;
+                
                 if (this.existenDetalles == true){
                   console.log('lista de detalles obtenida: ', this.detallesAll);
 
                   //todo agregar cargado de detalles
-                  // this.detallesAll.forEach(detalle => {
-                  //   let referencia: number;
-                  //   referencia = this._refContableService.getRefContablesPorNombre(detalle.name, this.token)
-                  //   this.refContableItemData.push(
-                  //     {
-                  //       refContable: detalle.
+                  let detAll: any =  JSON.stringify([this.detallesAll])
+                  detAll = JSON.parse(detAll)
+                  console.log(detAll)
+                  console.log(detAll[0].length)
 
-                  //     }
-                  //   );
-                  // });
-
+                  for (let i = 0; i < detAll[0].length; i++) {
+                    detAll.forEach(detalle => {
+                      let referencia: any;
+                      
+                      console.log(detalle[i].name)
+                  
+                      this._refContableService.getRefContablesPorNombre(this.token, detalle[i].name)
+                        .subscribe(dataD => {
+                         console.log(dataD)
+                          this.dataDet = dataD
+                          auxDetId = this.dataDet.dataset[0].id
+                          if(detalle[i].precio > 0){
+                            auxHaber = detalle[i].precio;
+                            auxDebe = null;
+                            this.totalhaber = this.totalhaber + auxHaber
+                          } else if(detalle[i].precio < 0){
+                            auxDebe = detalle[i].precio*-1
+                            auxHaber = null;
+                            this.totaldebe = this.totaldebe + auxDebe
+                          }
+                          this.refContableItemData.push({
+                              refContable: auxDetId,
+                              nombreRefContable: detalle[i].name,
+                              centroDeCosto: '',
+                              debe: auxDebe,
+                              haber: auxHaber,
+                              idEnMinuta: this.renglonId
+                              });
+                              this.dataSource = new MatTableDataSource(this.refContableItemData)
+                              this.table.renderRows();
+                              console.log(auxDetId)
+                              console.log(i)
+                      })
+                    });
+  
+                  };  
+                  let i: number = 0;
+                  
+                  
                   /*
                   this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
                   nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value,
@@ -855,7 +917,7 @@ console.log('json armado: ');
                 console.log(dataL);
                 this.loginData = dataL;
                 this.token = this.loginData.dataset[0].jwt;
-                this.buscarRefContable();
+            //    this.buscarRefContable();
               });
             } else {
               //validar que se haya encontrado 1 referencia
@@ -1139,12 +1201,14 @@ console.log('json armado: ');
             this.dataSource = new MatTableDataSource(this.refContableItemData)
             this.table.renderRows();
             console.log(this.dataSource);
+            auxdatasource = this.dataSource
             this.totaldebe = Number(this.totaldebe) + Number(this.formaReferencias.controls['debe'].value);
             this.totalhaber = Number(this.totalhaber) + Number(this.formaReferencias.controls['haber'].value);
             this.addingReferencia = false;
             this.editingAI = false;
 
             this.openSnackBar('Datos guardados');
+            
             // this.forma.controls['numero'].setValue(this.cabeceraId);
           }
           else{
@@ -1437,7 +1501,7 @@ console.log('json armado: ');
         else{
           console.log(this.respCabecera);
 
-          if (this.respCabecera.returnset[0].RCode === 1){
+          if (this.respCabecera.returnset[0].RCode === 0){
             this.openSnackBar('Se confirmó la Minuta Contable');
           }
           else{
@@ -1736,9 +1800,11 @@ console.log('json armado: ');
     }
     
     let atributoAUsar: string;
+    let atributoAUsar2: string;
     switch (consulta) {
       case 'tg01_referenciascontables':
         atributoAUsar = 'idreferenciacontable';
+        atributoAUsar2 = 'name'
         break;
     }
 
@@ -1761,6 +1827,8 @@ console.log('json armado: ');
       }
       else{
         this.formaReferencias.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+        this.formaReferencias.controls['nombreRefContable'].setValue(respuesta.selection[0][atributoAUsar2]);
+        this.formaReferencias.controls['nombreRefContable'].disable()
         this.itemDeConsulta = respuesta.selection[0];
         // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
         // this.buscarProveedor();

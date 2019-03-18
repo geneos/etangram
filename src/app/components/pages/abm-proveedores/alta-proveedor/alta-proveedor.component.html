@@ -884,7 +884,7 @@
           <div class="col s3 m2 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>ID Artículo</mat-label>
-              <input matInput (keyup)="buscarArticulo(i)" type="number" #artId formControlName="artID">
+              <input matInput (keyup)="buscarArticulo(i)"  #artId formControlName="artID">
               <!-- <mat-hint *ngIf="forma.controls.articulos[i].controls['artID'].status == 'PENDING'"> -->
               <!-- <mat-hint *ngIf="forma.controls.articulos.value[i]['artID'].status == 'PENDING'"> -->
               <mat-hint *ngIf="art.controls['artID'].status == 'PENDING'">
@@ -963,7 +963,9 @@
 
   <div class="row" style="margin-top:25px;">
     <div class="col s12" style="text-align: right;">
-      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" >
+      <!-- <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" > -->
+      <!-- <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid || forma.pristine"> -->
+      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="forma.pristine">
         GUARDAR
       </button>
       <button type="reset" class="mine-btnbig-grey" mat-flat-button>

@@ -231,6 +231,7 @@ export class AltaProveedorComponent implements OnInit {
               private _partidasPresupuestariasService: PartidasPresupuestariasService,
               public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService,
+              private router: Router,
               public snackBar: MatSnackBar,) 
   {
     console.log(this.storage.get(TOKEN) || 'Local storage is empty');
@@ -264,8 +265,8 @@ export class AltaProveedorComponent implements OnInit {
         catRef: new FormControl('', Validators.required),//requerido al menos en proveedor
         idZona: new FormControl('', [], this.existeZona), 
         zonaDesc: new FormControl(),
-        // idVendedor: new FormControl('', [], this.existeVendedor), 
-        idVendedor: new FormControl('', [Validators.required], this.existeVendedor), 
+        idVendedor: new FormControl('', [], this.existeVendedor), 
+        // idVendedor: new FormControl('', [Validators.required], this.existeVendedor), 
         vendedorDesc: new FormControl(),
         idCobrador: new FormControl('', [], this.existeCobrador),
         cobradorDesc: new FormControl(),
@@ -662,7 +663,7 @@ export class AltaProveedorComponent implements OnInit {
     if (imp.controls['impuesto'].value != null){
       // this.estadosImpuestos.eliminados.push(imp.controls['impuesto'].value);
       this.estadosImpuestos.eliminados.push({tipo: imp.controls['tipo'].value, modelo: imp.controls['modelo'].value });
-
+      this.forma.markAsDirty();
     }
     imps.removeAt(indice);
     console.log('lista de impuestos eliminados: ', this.estadosImpuestos.eliminados)
@@ -718,6 +719,7 @@ export class AltaProveedorComponent implements OnInit {
     let formABorrar = (<FormGroup>forms.controls[ind]);
     if (formABorrar.controls['ID_Form_Proveedor'].value != null){
       this.estadosFormularios.eliminados.push(formABorrar.controls['ID_Form_Proveedor'].value);
+      this.forma.markAsDirty();
     }
     forms.removeAt(ind);
     // console.log('Lista de formularios ', forms.length, forms);
@@ -731,14 +733,13 @@ export class AltaProveedorComponent implements OnInit {
     const arts = this.forma.controls.articulos as FormArray;
     // console.log('arts: ', arts)
     arts.push(this.construirArticulo());
-
-
   }
   deleteArticulosStock(indice: number){
     const arts = this.forma.controls.articulos as FormArray;
     let art = <FormGroup>arts.controls[indice];
     if (art.controls['fecha_creacion'].value != null){
       this.estadosArticulos.eliminados.push(art.controls['artID'].value);
+      this.forma.markAsDirty();
     }
     arts.removeAt(indice);
     console.log('lista de articulos eliminados: ', this.estadosArticulos.eliminados);
@@ -758,6 +759,7 @@ export class AltaProveedorComponent implements OnInit {
     // this.estadosCuentas.eliminados.push((<FormGroup>ctas[indice]).controls['rcCbu'].value);
     if (cta.controls['ID_Relacion_Comercial'].value != null){
       this.estadosCuentas.eliminados.push(cta.controls['ID_Relacion_Comercial'].value);
+      this.forma.markAsDirty();
     }
     ctas.removeAt(indice);
   }
@@ -1289,7 +1291,8 @@ export class AltaProveedorComponent implements OnInit {
     // this._articulosService.getArticulo(this.formaArticulo.controls['artID'].value, this.token )
     // this._articulosService.getArticulo(id , this.token )
     // this._articulosService.getcArticulo(id , this.token )
-    this._articulosService.getcArticuloPorPartNumber(id , this.token )
+    // this._articulosService.getcArticuloPorPartNumber(id , this.token )
+    this._articulosService.getcArticulo(id , this.token )
       .subscribe( data => {
           this.aData = data;
           auxArticulo = this.aData.dataset.length;
@@ -1327,6 +1330,7 @@ export class AltaProveedorComponent implements OnInit {
   //#endregion autocompletado
 
   //cargar datos en modificacion
+  //#region carga
   obtenerProveedor(){
     console.log('buscando proveedor con: ', this.id);
     this._proveedoresService.getCabeceraProveedor(this.id , this.token )
@@ -1597,7 +1601,8 @@ export class AltaProveedorComponent implements OnInit {
                 cArticulo.controls['artID'].setValue(articulo.id_articulo);
                 //todo verificar funcionamiento de busqueda, cuando funcione la api
                 // cArticulo.controls['artDesc'].setValue(articulo.NAME);
-                this.buscarArticulo(index);
+                cArticulo.controls['artDesc'].setValue(articulo.nombre_articulo);
+                // this.buscarArticulo(index);
 
                 cArticulo.controls['ultimaFecha'].setValue(this.nuevaFecha(articulo.fecha_ultima_compra));
                 cArticulo.controls['ultimoPrecio'].setValue(articulo.precioultimacompra);
@@ -1630,7 +1635,7 @@ export class AltaProveedorComponent implements OnInit {
             console.log('respuesta consulta de afip asociadas: ', this.respData)
             if(this.respData.dataset.length>0){
               this.datosAFIP = this.respData.dataset[0];
-              let index = 0;
+              // let index = 0;
               console.log('afip recuperadas: ', this.datosAFIP);
               // todo completar
               /*
@@ -1657,13 +1662,14 @@ export class AltaProveedorComponent implements OnInit {
                 cArticulo.controls[''].setValue(articulo.id_usuario_creador);
                 cArticulo.controls[''].setValue(articulo.id_usuario_modificador); */
 
-                index = index +1;
+                // index = index +1;
               // });
             }
 
           }
     });
   }
+  //#endregion carga
   //fin carga de datos
   
 
@@ -1858,9 +1864,9 @@ export class AltaProveedorComponent implements OnInit {
     let atributoAUsar: string;
     let atributoDesc:  string = 'name';
     switch (consulta) {
-      case 'c_articulos':
-        atributoAUsar = 'part_number';
-        break;
+      // case 'c_articulos':
+      //   atributoAUsar = 'part_number';
+      //   break;
       case 'tg01_localidades':
         atributoAUsar = 'cpostal';
         break;
@@ -2017,11 +2023,13 @@ export class AltaProveedorComponent implements OnInit {
               else{
                 this.openSnackBar('Cabecera de proveedor guardada con exito, continuando.');
                 this.idCabecera = this.respData.returnset[0].RId;
+                this.id = this.respData.returnset[0].RId;
                 console.log('ID de proveedor recibido: ' + this.idCabecera);
+                setTimeout(() => {
+                  this.router.navigate(['/proveedores', this.id]);
+                });
                 this.guardarDatosProveedor(this.respData.returnset[0].RId);
                 // this.openSnackBar('Proveedor guardado con exito, redireccionando.');
-
-                //todo agregar redirección
               }
             }
             //console.log(this.refContablesAll);
@@ -2173,7 +2181,7 @@ export class AltaProveedorComponent implements OnInit {
     this.guardarFormularios();
 
     //ARTICULOS
-    (<FormArray>this.forma.controls.articulos).controls.forEach( articulo => {
+    /* (<FormArray>this.forma.controls.articulos).controls.forEach( articulo => {
       let articuloActual: FormGroup = <FormGroup>articulo;
 
       let jsbodyArticulo = {
@@ -2212,7 +2220,8 @@ export class AltaProveedorComponent implements OnInit {
             }
             //console.log(this.refContablesAll);
       });
-    });// fin foreach articulos
+    });// fin foreach articulos */
+    this.guardarArticulos();
 
     //AFIP
     //todo terminar
@@ -2233,7 +2242,7 @@ export class AltaProveedorComponent implements OnInit {
     let jsonbodyAFIP = JSON.stringify(jsbodyAFIP);
     console.log('json afip', jsonbodyAFIP);
 
-    this._proveedoresService.postImpuesto(jsonbodyAFIP, this.token )
+    this._proveedoresService.postAFIP(jsonbodyAFIP, this.token )
       .subscribe( data => {
         //console.log(dataRC);
         this.respData = data;
@@ -2609,8 +2618,6 @@ export class AltaProveedorComponent implements OnInit {
 
     let jsonbodyF, jsbodyF;
     console.log('control de formulario a usar: ', formgroupFormulario)
-    //if suspendido, no hay update de formulario
-    //todo agregar cuando lo agreguen a la api
     if (formgroupFormulario.controls['ID_Form_Proveedor'].value == null){
       
       
@@ -2632,7 +2639,8 @@ export class AltaProveedorComponent implements OnInit {
         // "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
         "p_form_fecha_pres" : this.fechaActual,// this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
         "p_form_fecha_vto" : this.fechaVenci,// this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
-        "url": this.urlImagen,// formgroupFormulario.controls['url'].value,
+        // "url": this.urlImagen,// formgroupFormulario.controls['url'].value,
+        "URL": this.urlImagen,// formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
@@ -2684,19 +2692,17 @@ export class AltaProveedorComponent implements OnInit {
     let jsonbodyArt, jsbodyArt;
     console.log('control de articulo a usar: ', formgroupArticulo)
     //condicion para saber si es update o insert
+    if (formgroupArticulo.controls['fecha_creacion'].value == null){
     // if (??){
       jsbodyArt = {
       "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
-      "p_stock_id_art": formgroupArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulos
-      // "p_stock_fecha_ult_compra": this.extraerFecha(formgroupArticulo.controls['ultimaFecha'].value), //"1997-05-05",
+      "p_stock_id_art": formgroupArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulo      
       "p_stock_fecha_ult_compra": this.extraerFecha(<FormControl>formgroupArticulo.controls['ultimaFecha']), //"1997-05-05",
       "p_stock_moneda": formgroupArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
       "p_stock_codigo_barra_prov": formgroupArticulo.controls['barrasArtProv'].value, //Código de barra
       "p_stock_precio_ult_compra": formgroupArticulo.controls['ultimoPrecio'].value,
-      "p_stock_codigo_articulo_prov": "PROD X"
+      "p_stock_codigo_articulo_prov": formgroupArticulo.controls['codArtProv'].value,
       
-      //todo corregir cuando corrijan la api
-      // "p_stock_codigo_art_prov": formgroupArticulo.controls['codArtProv'].value,
       // "p_stock_nombre_art": formgroupArticulo.controls['artDesc'].value,
 
       // fecha_creacion: string;
@@ -2704,10 +2710,26 @@ export class AltaProveedorComponent implements OnInit {
       // id_usuario_creador: string;
       // id_usuario_modificador: string;
     }
-    // }
-    // else{
+    }
+    else{
+      jsbodyArt = {
+      "Id_Proveedor": this.id, //"b16c0362-fee6-11e8-9ad0-d050990fe081",
+      "p_stock_id_art": formgroupArticulo.controls['artID'].value, //id de consulta dinámica a tabla articulo      
+      "p_stock_fecha_ult_compra": this.extraerFecha(<FormControl>formgroupArticulo.controls['ultimaFecha']), //"1997-05-05",
+      "p_stock_moneda": formgroupArticulo.controls['moneda'].value, //id de consulta dinámica a tabla tg01_monedas
+      "p_stock_codigo_barra_prov": formgroupArticulo.controls['barrasArtProv'].value, //Código de barra
+      "p_stock_precio_ult_compra": formgroupArticulo.controls['ultimoPrecio'].value,
+      "p_stock_codigo_articulo_prov": formgroupArticulo.controls['codArtProv'].value,
+      
+      // "p_stock_nombre_art": formgroupArticulo.controls['artDesc'].value,
 
-    // }
+      /* "fecha_creacion": formgroupArticulo.controls['fecha_creacion'].value,
+      // "fecha_ult_modificacion": formgroupArticulo.controls['fecha_ult_modificacion'].value,
+      "fecha_ult_modificacion": formgroupArticulo.controls['fecha_ult_modificacion'].value,
+      "id_usuario_creador": formgroupArticulo.controls['id_usuario_creador'].value,
+      // "id_usuario_modificador": formgroupArticulo.controls['id_usuario_modificador'].value, */
+      }
+    }
     jsonbodyArt= JSON.stringify(jsbodyArt);
     return jsonbodyArt;
 
@@ -2722,6 +2744,8 @@ export class AltaProveedorComponent implements OnInit {
     // }
     // let jsonbodyArticulo = JSON.stringify(jsbodyArticulo);
   }
+
+  
   //#endregion jsons
 
   guardarRelacion(cuenta: any){
@@ -2735,7 +2759,7 @@ export class AltaProveedorComponent implements OnInit {
     }
     let jsonbodyRC= JSON.stringify(jsbodyRC); */
     let jsonbodyRC = this.armarJSONRelacionComercial(cuenta);
-    console.log('body modificacion de relacion: ', jsonbodyRC);
+    console.log('body insertado de relacion: ', jsonbodyRC);
 
     this._proveedoresService.postRelComercial(jsonbodyRC, this.token )
       .subscribe( data => {
@@ -2754,6 +2778,8 @@ export class AltaProveedorComponent implements OnInit {
             else{
               // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
               console.log('Relacion Comercial ID (insert): ' + this.respData.returnset[0].RId);
+              (<FormGroup>cuenta).controls['ID_Relacion_Comercial'].setValue(this.respData.returnset[0].RId);
+              (<FormGroup>cuenta).markAsPristine();
             }
           }
           //console.log(this.refContablesAll);
@@ -2790,6 +2816,7 @@ export class AltaProveedorComponent implements OnInit {
             else{
               // this.openSnackBar('Proveedor eliminado con exito, redireccionando.');
               console.log('Relacion Comercial ID (update): ' + this.respData.returnset[0].RId);
+              (<FormGroup>cuenta).markAsPristine();
             }
           }
           //console.log(this.refContablesAll);
@@ -2813,6 +2840,8 @@ export class AltaProveedorComponent implements OnInit {
             }
             else{
               console.log('Formulario ID (insert): ' + this.respData.returnset[0].RId);
+              (<FormGroup>formulario).controls['ID_Formulario'].setValue(this.respData.returnset[0].RId);
+              (<FormGroup>formulario).markAsPristine();              
             }
           }
       });
@@ -2835,6 +2864,7 @@ export class AltaProveedorComponent implements OnInit {
             }
             else{
               console.log('Formulario ID (update): ' + this.respData.returnset[0].RId);
+              (<FormGroup>formulario).markAsPristine();
             }
           }
       });
@@ -2857,6 +2887,8 @@ export class AltaProveedorComponent implements OnInit {
             }
             else{
               console.log('Impuesto ID (insert): ' + this.respData.returnset[0].RId);
+              (<FormGroup>impuesto).controls['impuesto'].setValue(this.respData.returnset[0].RId);
+              (<FormGroup>impuesto).markAsPristine();
             }
           }
       });
@@ -2879,6 +2911,7 @@ export class AltaProveedorComponent implements OnInit {
             }
             else{
               console.log('Impuesto ID (update): ' + this.respData.returnset[0].RId);
+              (<FormGroup>impuesto).markAsPristine();
             }
           }
       });
@@ -2901,6 +2934,8 @@ export class AltaProveedorComponent implements OnInit {
             }
             else{
               console.log('Articulo ID (insert): ' + this.respData.returnset[0].RId);
+              (<FormGroup>articulo).controls['fecha_creacion'].setValue(this.respData.returnset[0].RId);//no importa que sea, sólo que tenga valor ya que no se envía por json (es generado por el backend)
+              (<FormGroup>articulo).markAsPristine();
             }
           }
       });
@@ -2923,6 +2958,7 @@ export class AltaProveedorComponent implements OnInit {
             }
             else{
               console.log('Articulo ID (update): ' + this.respData.returnset[0].RId);
+              (<FormGroup>articulo).markAsPristine();
             }
           }
       });
@@ -3276,7 +3312,7 @@ export class AltaProveedorComponent implements OnInit {
     let jsonbodycuit = JSON.stringify(jsbody);
     this._afipService.a5GetPersona(this.token, jsonbodycuit)
       .subscribe( respC => {
-        console.log(respC)
+        console.log("Respuesta de verificaCuit: ", respC)
         this.respCuit = respC
       })
   }

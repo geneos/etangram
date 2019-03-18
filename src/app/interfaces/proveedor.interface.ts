@@ -98,7 +98,8 @@ export interface Formulario{
 export interface ArticuloProv{
   id_prov: string;
   // id_art: string;
-  NAME: string;
+  // NAME: string;
+  nombre_articulo: string;
   fecha_ultima_compra: string;
   id_moneda: string;
   codigobarra: string;

@@ -23,7 +23,7 @@ const ARTICULOS:any[] = [
   {'nroArticulo':4,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40}
 ];
 
-var auxProvData,auxArtiData,auxUnidadData,auxGrupoData, auxMarcaData, auxDepData:any;
+var auxProvData,auxArtiData,auxUnidadData,auxGrupoData, auxMarcaData, auxDepData, auxInd:any;
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -40,6 +40,7 @@ export class AltaArticuloComponent implements OnInit {
   constArticulos = ARTICULOS;
   adjunto: any;
   urlImagen: any;
+  indFoto: any = 0;
 
   user:string='usuario1';
   pass:string='password1'
@@ -2638,7 +2639,7 @@ construirFoto(){
     return fecha;
   }
 
-  cargarFoto(attachment){
+  cargarFoto(attachment, i){
     this.adjunto = attachment.files[0];
     console.clear();
     //this.urlImagen = "url sigue vacia"
@@ -2648,6 +2649,10 @@ construirFoto(){
        .subscribe( resp => {
          console.log(resp);
          this.urlImagen = resp.toString();
+  
+         let fgFoto: FormGroup = <FormGroup>this.forma.get(['fotos', i]);
+         fgFoto.controls['foto'].setValue(this.urlImagen);
+    
       //   this.inputParam.url = this.urlImagen
        });
     //   this.guardar();

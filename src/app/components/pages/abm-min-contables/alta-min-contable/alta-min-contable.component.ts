@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MatPaginator, MatSort } from '@angular/material';
 import { MonedasService } from 'src/app/services/i2t/monedas.service';
 import { TiposComprobanteService } from 'src/app/services/i2t/tipos-comprobante.service';
-import { ActivatedRoute, Router, RouterLinkWithHref, NavigationEnd, ActivationEnd } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { ParametrosService } from 'src/app/services/i2t/parametros.service';
 import { Parametros } from 'src/app/interfaces/parametros.interface';
 import { TipoComprobante } from 'src/app/interfaces/tipo-comprobante.interface';
@@ -27,10 +27,10 @@ import { filter } from "rxjs/operators";
 
 // key that is used to access the data in local storage
 const TOKEN = '';
-
+var auxDetId:number;
 var auxRefConData,auxCCostoData:any;
 var auxdatasource = new MatTableDataSource
-
+var auxDebe, auxHaber:any;
 @Injectable()
 
 @Component({
@@ -41,6 +41,7 @@ var auxdatasource = new MatTableDataSource
 
 export class AltaMinContableComponent implements OnInit {
   history: History;
+  dataDet: any;
 /*
 //todo borrar, cambiar por lo real
 datos =
@@ -193,7 +194,7 @@ datos =
   // @ViewChild('tableArticulos') table: MatTable<any>;//
 
   //todo cambiar
-
+urlAnterior: string;
   constructor(public dialogArt: MatDialog,
               private  _minContableService: MinContablesService,
               private _refContableService: RefContablesService,
@@ -205,9 +206,20 @@ datos =
               private _cajasService: CajasService,
               private route:ActivatedRoute,
               private router: Router,
+              private activatedRoute: ActivatedRoute,
               public snackBar: MatSnackBar,
               public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService) {
+
+                this.router.events.pipe(
+                  filter(event => event instanceof NavigationEnd)
+                  ).subscribe(() => {
+                    if(this.router.url.includes('/min-contables/nuevo')){
+                     // this.forma.reset()
+                     
+                    }
+                  
+                  });
 
                 console.log(this.storage.get(TOKEN) || 'Local storage is empty');
                 this.token = this.storage.get(TOKEN);
@@ -248,12 +260,12 @@ datos =
 
     //cargar listas para combobox
     this.buscarCajas();
-
+   
     this.route.params.subscribe( parametros=>{
       this.cabeceraId = parametros['id'];
       this.existe = false;
-
-      if( this.cabeceraId !== "nuevo" ){
+      
+      if( this.cabeceraId !== 'nuevo' ){
         this.editingCabecera=true;
         this.buscarMinutasContables(this.cabeceraId);
         //cargar lista de referencias contables
@@ -267,7 +279,7 @@ datos =
           this.formaReferencias.controls['haber'].enable();
           
         }
-      } else {
+      } else  {
         this.loading = false;
         //todo borrar console
         console.log('Obtener parametros');
@@ -304,12 +316,7 @@ datos =
 
 
   ngOnInit() {
-    if(this.forma.controls['caja'].value === ""){
-      console.log(this.forma.controls['caja'].value)
-    } else {
-      window.location.reload()
-    }
-    
+
   }
 
   
@@ -673,28 +680,57 @@ console.log('json armado: ');
               });
             } else {
               if(this.mcdData.dataset.length>0){
-                this.detallesAll = this.mcdData.dataset[0];
+                this.detallesAll = this.mcdData.dataset;
                 this.existenDetalles = true;
                 
                 if (this.existenDetalles == true){
                   console.log('lista de detalles obtenida: ', this.detallesAll);
 
                   //todo agregar cargado de detalles
-                  this.detallesAll.forEach(detalle => {
-                    let referencia: any;
-                    referencia = this._refContableService.getRefContablesPorNombre(detalle.name, this.token)
-                    this.refContableItemData.push({
-                        refContable: referencia,
-                        nombreRefContable: detalle.name,
-                        centroDeCosto: '',
-                        debe: 1,
-                        haber: 1,
-                        idEnMinuta: this.renglonId
-                      });
-                      this.dataSource = new MatTableDataSource(this.refContableItemData)
-                      this.table.renderRows();
-                  });
+                  let detAll: any =  JSON.stringify([this.detallesAll])
+                  detAll = JSON.parse(detAll)
+                  console.log(detAll)
+                  console.log(detAll[0].length)
 
+                  for (let i = 0; i < detAll[0].length; i++) {
+                    detAll.forEach(detalle => {
+                      let referencia: any;
+                      
+                      console.log(detalle[i].name)
+                  
+                      this._refContableService.getRefContablesPorNombre(this.token, detalle[i].name)
+                        .subscribe(dataD => {
+                         console.log(dataD)
+                          this.dataDet = dataD
+                          auxDetId = this.dataDet.dataset[0].id
+                          if(detalle[i].precio > 0){
+                            auxHaber = detalle[i].precio;
+                            auxDebe = null;
+                            this.totalhaber = this.totalhaber + auxHaber
+                          } else if(detalle[i].precio < 0){
+                            auxDebe = detalle[i].precio*-1
+                            auxHaber = null;
+                            this.totaldebe = this.totaldebe + auxDebe
+                          }
+                          this.refContableItemData.push({
+                              refContable: auxDetId,
+                              nombreRefContable: detalle[i].name,
+                              centroDeCosto: '',
+                              debe: auxDebe,
+                              haber: auxHaber,
+                              idEnMinuta: this.renglonId
+                              });
+                              this.dataSource = new MatTableDataSource(this.refContableItemData)
+                              this.table.renderRows();
+                              console.log(auxDetId)
+                              console.log(i)
+                      })
+                    });
+  
+                  };  
+                  let i: number = 0;
+                  
+                  
                   /*
                   this.refContableItemData.push({ refContable: this.formaReferencias.controls['refContable'].value,
                   nombreRefContable: this.formaReferencias.controls['nombreRefContable'].value,

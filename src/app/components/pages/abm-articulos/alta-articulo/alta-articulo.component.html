@@ -264,6 +264,9 @@
                   <!--<mat-hint>Hint</mat-hint>-->
                 </mat-form-field>
               </div>
+              <div class="col s4 m4 l3">
+                <p><input type="file" #attachment name="attachment" (change)="cargarFoto(attachment,i)" id="attachment"></p>
+              </div>
               <div class="col s4 m4 l3" *ngIf="tipoArt.value!=2">
                 <button type="button" (click)="deleteFoto(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
                   -

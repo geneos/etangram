@@ -814,7 +814,7 @@
               <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
                 <mat-label>Formulario</mat-label>
                 <mat-select placeholder="Elija una opción..." formControlName="codForm">
-                  <mat-option (onSelectionChange)="buscarTipForm(aux.id)" *ngFor="let aux of formulariosAll" [value]="aux.id">
+                  <mat-option (click)="buscarTipForm(aux.id,j)" *ngFor="let aux of formulariosAll" [value]="aux.id">
                     {{aux.name}}
                   </mat-option>
                 </mat-select>
@@ -848,7 +848,7 @@
                 <textarea matInput placeholder="" formControlName="descripcion"></textarea>
               </mat-form-field>
             </div>
-            <p><input type="file" #attachment name="attachment" (change)="cargar(attachment)" id="attachment"></p>
+            <p><input type="file" #attachment name="attachment" (change)="cargar(attachment,j)" id="attachment"></p>
             <div class="col s1 m1 l1">
               <a (click)="deleteFormulario(j)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
                 -

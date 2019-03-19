@@ -44,7 +44,7 @@ const PROVEEDORES:any[] = [
   {'numero':2,'razonSocial':'Lunix S.R.L.','cuit':'30-987654321-0','posicionFiscal':'IVA Responsable Inscripto'},
 ];
 
-var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
+var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,auxFormCod,
     auxListaPrecios,auxCondComercial,auxPartidaPresupuestaria,auxRefContable,auxTipoComprobante: any;
 
   @Injectable()
@@ -59,7 +59,7 @@ export class AltaProveedorComponent implements OnInit {
   fechaActual: Date = new Date();
   fechaVenci: Date = new Date();
 
-  urlImagen:string = "";
+  urlImagen:string = '';
   adjunto: any;
   token: string;
   loading: boolean;
@@ -2601,20 +2601,7 @@ export class AltaProveedorComponent implements OnInit {
 
   armarJSONFormulario(formulario: any){
     let formgroupFormulario = <FormGroup>formulario;
-  //  this.buscarTipForm(formgroupFormulario.controls['codForm'].value)
-    if(this.formData[0].periodicidad === "M"){
-      this.fechaVenci.setMonth(this.fechaVenci.getMonth() + this.formData[0].periodo)
-      formgroupFormulario.controls['fechaPres'].setValue(this.fechaActual)
-   //   this.fechaVencimiento = this.fechaVenci; 
-    } else if(this.formData[0].periodicidad === "A"){
-      this.fechaVenci.setFullYear(this.fechaVenci.getFullYear() + this.formData[0].periodo)
-      console.log(this.fechaVenci.toString())
-    //  this.fechaVencimiento = this.fechaVenci; 
-    } else if(this.formData[0].periodicidad === "D"){
-      this.fechaVenci.setDate(this.fechaVenci.getDate() + this.formData[0].periodo)
-      console.log(this.fechaVenci.toString())
-   //   this.fechaVencimiento = this.fechaVenci; 
-    }
+    
 
     let jsonbodyF, jsbodyF;
     console.log('control de formulario a usar: ', formgroupFormulario)
@@ -2626,7 +2613,7 @@ export class AltaProveedorComponent implements OnInit {
         "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
         "p_form_fecha_pres" : this.fechaActual, // this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
         "p_form_fecha_vto" :  this.fechaVenci,//this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
-        "url": this.urlImagen,// formgroupFormulario.controls['url'].value,
+        "url": formgroupFormulario.controls['url'].value,// formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
@@ -2640,7 +2627,7 @@ export class AltaProveedorComponent implements OnInit {
         "p_form_fecha_pres" : this.fechaActual,// this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
         "p_form_fecha_vto" : this.fechaVenci,// this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
         // "url": this.urlImagen,// formgroupFormulario.controls['url'].value,
-        "URL": this.urlImagen,// formgroupFormulario.controls['url'].value,
+        "URL": formgroupFormulario.controls['url'].value,// formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
@@ -3278,17 +3265,48 @@ export class AltaProveedorComponent implements OnInit {
         break;
     }
   }
-  buscarTipForm(codForm){
-    this._formulariosService.getFormulario(codForm, this.token)
+  buscarTipForm(codForm,j){
+    let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
+    if(cFormulario.controls['codForm'].value != null){
+      this._formulariosService.getFormulario(codForm, this.token)
       .subscribe(dataF => {
         console.log(dataF)
         this.formTipo = dataF;
         this.formData = this.formTipo.dataset
         console.log(codForm)
+        auxFormCod = codForm;
+        if(cFormulario.controls['url'].value != null){
+          this.cargaFechas(auxFormCod,j)
+          
+        }
+        
       })
+    }
+    console.log('formulario: ', cFormulario.controls['codForm'].value)
+    
   }
 
-  cargar(attachment){
+  cargaFechas(auxFormCod,j){
+    let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
+  //  this.buscarTipForm(auxFormCod,j)
+    if(this.formData[0].periodicidad === "M"){
+      this.fechaVenci = new Date();
+      this.fechaVenci.setMonth(this.fechaVenci.getMonth() + this.formData[0].periodo)
+      cFormulario.controls['fechaPres'].setValue(this.fechaActual)
+      cFormulario.controls['fechaVenc'].setValue(this.fechaVenci)
+   //   this.fechaVencimiento = this.fechaVenci; 
+    } else if(this.formData[0].periodicidad === "A"){
+      this.fechaVenci = new Date();
+      this.fechaVenci.setFullYear(this.fechaVenci.getFullYear() + this.formData[0].periodo)
+      cFormulario.controls['fechaVenc'].setValue(this.fechaVenci)
+    //  this.fechaVencimiento = this.fechaVenci; 
+    } else if(this.formData[0].periodicidad === "D"){
+      this.fechaVenci = new Date();
+      this.fechaVenci.setDate(this.fechaVenci.getDate() + this.formData[0].periodo)
+   //   this.fechaVencimiento = this.fechaVenci; 
+    }
+  }
+  cargar(attachment,j){
     this.adjunto = attachment.files[0];
     console.clear();
     //this.urlImagen = "url sigue vacia"
@@ -3298,9 +3316,12 @@ export class AltaProveedorComponent implements OnInit {
        .subscribe( resp => {
          console.log(resp);
          this.urlImagen = resp.toString();
-      //   this.inputParam.url = this.urlImagen
+         let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
+         cFormulario.controls['url'].setValue(this.urlImagen)
+         if (cFormulario.controls['codForm'].value != null){
+           this.cargaFechas(cFormulario.controls['codForm'].value,j)
+         }
        });
-    //   this.guardar();
   }
   verificaCuit(){
     let jsbody = {

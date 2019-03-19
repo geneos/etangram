@@ -109,6 +109,7 @@ export class AbmMinContablesComponent implements OnInit {
 
   ngOnInit() {
     this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
+    
   }
 
   /** Whether the number of selected elements matches the total number of rows. */

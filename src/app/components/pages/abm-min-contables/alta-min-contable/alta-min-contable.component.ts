@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar, MatPaginator, MatSort } from '@angular/material';
 import { MonedasService } from 'src/app/services/i2t/monedas.service';
 import { TiposComprobanteService } from 'src/app/services/i2t/tipos-comprobante.service';
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd, RouterLink } from '@angular/router';
 import { ParametrosService } from 'src/app/services/i2t/parametros.service';
 import { Parametros } from 'src/app/interfaces/parametros.interface';
 import { TipoComprobante } from 'src/app/interfaces/tipo-comprobante.interface';
@@ -23,6 +23,10 @@ import { Subscription } from 'rxjs';
 import { CdkRowDef } from '@angular/cdk/table';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { filter } from "rxjs/operators";
+import { PlatformLocation } from '@angular/common';
+import { TestBed } from '@angular/core/testing';
+import { ResourceLoader } from '@angular/compiler';
+import { componentRefresh } from '@angular/core/src/render3/instructions';
 //import { resetApplicationState } from '@angular/core/src/render3/instructions';
 
 // key that is used to access the data in local storage
@@ -196,6 +200,7 @@ datos =
   //todo cambiar
 urlAnterior: string;
   constructor(public dialogArt: MatDialog,
+              public location: PlatformLocation,
               private  _minContableService: MinContablesService,
               private _refContableService: RefContablesService,
               private _centroCostoService: CentrosCostosService,
@@ -211,20 +216,14 @@ urlAnterior: string;
               public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService) {
 
-                this.router.events.pipe(
-                  filter(event => event instanceof NavigationEnd)
-                  ).subscribe(() => {
-                    if(this.router.url.includes('/min-contables/nuevo')){
-                     // this.forma.reset()
-                     
-                    }
-                  
-                  });
 
                 console.log(this.storage.get(TOKEN) || 'Local storage is empty');
                 this.token = this.storage.get(TOKEN);
 
-   
+                window.onbeforeunload = function() {
+                  
+                    return "¿Estás seguro que deseas salir de la actual página?"
+                }
     this.forma = new FormGroup({
       'fecha': new FormControl('',Validators.required),
       'tipo': new FormControl(),
@@ -234,6 +233,7 @@ urlAnterior: string;
       'caja': new FormControl('',Validators.required),
       'observaciones': new FormControl()
     })
+
 
     //atributos de salida, no se pueden editar
     this.forma.controls['tipo'].disable();
@@ -260,7 +260,8 @@ urlAnterior: string;
 
     //cargar listas para combobox
     this.buscarCajas();
-   
+    
+    
     this.route.params.subscribe( parametros=>{
       this.cabeceraId = parametros['id'];
       this.existe = false;
@@ -277,7 +278,7 @@ urlAnterior: string;
           this.formaReferencias.controls['centroDeCosto'].enable();
           this.formaReferencias.controls['debe'].enable();
           this.formaReferencias.controls['haber'].enable();
-          
+  
         }
       } else  {
         this.loading = false;
@@ -285,8 +286,10 @@ urlAnterior: string;
         console.log('Obtener parametros');
 
         //obtener valores parametrizados
+        this.forma.reset()
+        this.forma.controls['caja'].enable();
         this.buscarParametros(true);
-        
+        console.log(this.editingCabecera)
         //establecer valores de salida
         //this.buscarTipoComprobante(this.parametrosSistema.tg01_tipocomprobante_id_c);
         //this.forma.controls['tipo'].setValue(this.tipoComprobante.name);
@@ -294,8 +297,12 @@ urlAnterior: string;
         //this.forma.controls['organizacion'].setValue(this.organizacion.NAME);
         //this.buscarMoneda(this.parametrosSistema.tg01_monedas_id2_c);
         //this.forma.controls['moneda'].setValue(this.moneda.name);
+        this.forma.controls['fecha'].enable();
         this.forma.controls['fecha'].setValue(new Date());
+      //  this.editingCabecera = true;
+        this.formaReferencias.reset()
         
+
        // this.dataSource = null;
       }
 
@@ -311,16 +318,19 @@ urlAnterior: string;
     //     this.refContableId.nativeElement.dispatchEvent(new Event('keyup'));
     //   })
     // });
-
+    location.onPopState(() => {
+      console.log('Atras')
+      this.router.navigate(["/min-conables"]); 
+      });
   }
 
 
   ngOnInit() {
-
+    
   }
-
   
   test(){
+    
     //console.log(this.forma.controls['caicae'].errors)
   }
 
@@ -330,7 +340,7 @@ urlAnterior: string;
     });
   }
   
-
+  
   buscarParametros(incluirOrg: boolean){
     this._parametrosService.getParametros( this.token )
     //this._refContableService.getProveedores()

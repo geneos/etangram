@@ -526,8 +526,7 @@ urlAnterior: string;
     console.log(this.minutaContable.tg01_cajas_id_c);
     //habilitar edición de renglones
     this.editingCabecera = false; */
-console.log('json armado: ');
-    console.log(jsonbody);
+    console.log('json armado: ', jsonbody);
 
     this._minContableService.getMinContables( jsonbody, this.token )
     //this._refContableService.getProveedores()
@@ -573,8 +572,8 @@ console.log('json armado: ');
                   //descripción no está siendo guardada por la api
                   // this.forma.controls['observaciones'].setValue(this.minutaContable.description);
 
-                  //caja no está siendo guardada por la api
-                  // this.forma.controls['caja'].setValue(this.minutaContable.caja);
+                  this.forma.controls['caja'].setValue(this.minutaContable.idcajaorigen);
+                  this.forma.controls['caja'].disable();
 
                   this.forma.controls['numero'].setValue(this.minutaContable.name);
                   

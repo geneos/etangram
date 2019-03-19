@@ -13,6 +13,7 @@ export interface MinContable{
   nombre_fantasia_c: string;
   account_id_c: string;
   fecha: string;
+  idcajaorigen: string;
   /*
   numero: number;
   tg01_centrocosto_id_c: string;

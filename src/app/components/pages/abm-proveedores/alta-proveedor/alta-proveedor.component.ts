@@ -44,7 +44,7 @@ const PROVEEDORES:any[] = [
   {'numero':2,'razonSocial':'Lunix S.R.L.','cuit':'30-987654321-0','posicionFiscal':'IVA Responsable Inscripto'},
 ];
 
-var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
+var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,auxFormCod,
     auxListaPrecios,auxCondComercial,auxPartidaPresupuestaria,auxRefContable,auxTipoComprobante: any;
 
   @Injectable()
@@ -2601,20 +2601,7 @@ export class AltaProveedorComponent implements OnInit {
 
   armarJSONFormulario(formulario: any){
     let formgroupFormulario = <FormGroup>formulario;
-  //  this.buscarTipForm(formgroupFormulario.controls['codForm'].value)
-    if(this.formData[0].periodicidad === "M"){
-      this.fechaVenci.setMonth(this.fechaVenci.getMonth() + this.formData[0].periodo)
-      formgroupFormulario.controls['fechaPres'].setValue(this.fechaActual)
-   //   this.fechaVencimiento = this.fechaVenci; 
-    } else if(this.formData[0].periodicidad === "A"){
-      this.fechaVenci.setFullYear(this.fechaVenci.getFullYear() + this.formData[0].periodo)
-      console.log(this.fechaVenci.toString())
-    //  this.fechaVencimiento = this.fechaVenci; 
-    } else if(this.formData[0].periodicidad === "D"){
-      this.fechaVenci.setDate(this.fechaVenci.getDate() + this.formData[0].periodo)
-      console.log(this.fechaVenci.toString())
-   //   this.fechaVencimiento = this.fechaVenci; 
-    }
+    
 
     let jsonbodyF, jsbodyF;
     console.log('control de formulario a usar: ', formgroupFormulario)
@@ -3278,17 +3265,23 @@ export class AltaProveedorComponent implements OnInit {
         break;
     }
   }
-  buscarTipForm(codForm){
+  buscarTipForm(codForm,j){
+    let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
+    
+    console.log('formulario: ', cFormulario.controls['codForm'].value)
     this._formulariosService.getFormulario(codForm, this.token)
       .subscribe(dataF => {
         console.log(dataF)
+        
         this.formTipo = dataF;
         this.formData = this.formTipo.dataset
         console.log(codForm)
+        auxFormCod = codForm;
+        
       })
   }
 
-  cargar(attachment){
+  cargar(attachment,j){
     this.adjunto = attachment.files[0];
     console.clear();
     //this.urlImagen = "url sigue vacia"
@@ -3298,9 +3291,25 @@ export class AltaProveedorComponent implements OnInit {
        .subscribe( resp => {
          console.log(resp);
          this.urlImagen = resp.toString();
-      //   this.inputParam.url = this.urlImagen
+         let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
+      this.buscarTipForm(auxFormCod,j)
+    if(this.formData[0].periodicidad === "M"){
+      this.fechaVenci = new Date();
+      this.fechaVenci.setMonth(this.fechaVenci.getMonth() + this.formData[0].periodo)
+      cFormulario.controls['fechaPres'].setValue(this.fechaActual)
+      cFormulario.controls['fechaVenc'].setValue(this.fechaVenci)
+   //   this.fechaVencimiento = this.fechaVenci; 
+    } else if(this.formData[0].periodicidad === "A"){
+      this.fechaVenci = new Date();
+      this.fechaVenci.setFullYear(this.fechaVenci.getFullYear() + this.formData[0].periodo)
+      cFormulario.controls['fechaVenc'].setValue(this.fechaVenci)
+    //  this.fechaVencimiento = this.fechaVenci; 
+    } else if(this.formData[0].periodicidad === "D"){
+      this.fechaVenci = new Date();
+      this.fechaVenci.setDate(this.fechaVenci.getDate() + this.formData[0].periodo)
+   //   this.fechaVencimiento = this.fechaVenci; 
+    }
        });
-    //   this.guardar();
   }
   verificaCuit(){
     let jsbody = {

@@ -59,7 +59,7 @@ export class AltaProveedorComponent implements OnInit {
   fechaActual: Date = new Date();
   fechaVenci: Date = new Date();
 
-  urlImagen:string = "";
+  urlImagen:string = '';
   adjunto: any;
   token: string;
   loading: boolean;
@@ -2613,7 +2613,7 @@ export class AltaProveedorComponent implements OnInit {
         "p_form_codigo" : formgroupFormulario.controls['codForm'].value,
         "p_form_fecha_pres" : this.fechaActual, // this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
         "p_form_fecha_vto" :  this.fechaVenci,//this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
-        "url": this.urlImagen,// formgroupFormulario.controls['url'].value,
+        "url": formgroupFormulario.controls['url'].value,// formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
@@ -2627,7 +2627,7 @@ export class AltaProveedorComponent implements OnInit {
         "p_form_fecha_pres" : this.fechaActual,// this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaPres']),//"1997-05-05",
         "p_form_fecha_vto" : this.fechaVenci,// this.extraerFecha(<FormControl>formgroupFormulario.controls['fechaVenc']),//"1997-05-05"
         // "url": this.urlImagen,// formgroupFormulario.controls['url'].value,
-        "URL": this.urlImagen,// formgroupFormulario.controls['url'].value,
+        "URL": formgroupFormulario.controls['url'].value,// formgroupFormulario.controls['url'].value,
         "form_descripcion": formgroupFormulario.controls['descripcion'].value,
       }
     }
@@ -3267,32 +3267,28 @@ export class AltaProveedorComponent implements OnInit {
   }
   buscarTipForm(codForm,j){
     let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
-    
-    console.log('formulario: ', cFormulario.controls['codForm'].value)
-    this._formulariosService.getFormulario(codForm, this.token)
+    if(cFormulario.controls['codForm'].value != null){
+      this._formulariosService.getFormulario(codForm, this.token)
       .subscribe(dataF => {
         console.log(dataF)
-        
         this.formTipo = dataF;
         this.formData = this.formTipo.dataset
         console.log(codForm)
         auxFormCod = codForm;
+        if(cFormulario.controls['url'].value != null){
+          this.cargaFechas(auxFormCod,j)
+          
+        }
         
       })
+    }
+    console.log('formulario: ', cFormulario.controls['codForm'].value)
+    
   }
 
-  cargar(attachment,j){
-    this.adjunto = attachment.files[0];
-    console.clear();
-    //this.urlImagen = "url sigue vacia"
-     //console.log(formData.getAll('file'));
-     //console.log(formData);
-     this._imageService.postImage( this.adjunto, this.token )
-       .subscribe( resp => {
-         console.log(resp);
-         this.urlImagen = resp.toString();
-         let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
-      this.buscarTipForm(auxFormCod,j)
+  cargaFechas(auxFormCod,j){
+    let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
+  //  this.buscarTipForm(auxFormCod,j)
     if(this.formData[0].periodicidad === "M"){
       this.fechaVenci = new Date();
       this.fechaVenci.setMonth(this.fechaVenci.getMonth() + this.formData[0].periodo)
@@ -3309,6 +3305,22 @@ export class AltaProveedorComponent implements OnInit {
       this.fechaVenci.setDate(this.fechaVenci.getDate() + this.formData[0].periodo)
    //   this.fechaVencimiento = this.fechaVenci; 
     }
+  }
+  cargar(attachment,j){
+    this.adjunto = attachment.files[0];
+    console.clear();
+    //this.urlImagen = "url sigue vacia"
+     //console.log(formData.getAll('file'));
+     //console.log(formData);
+     this._imageService.postImage( this.adjunto, this.token )
+       .subscribe( resp => {
+         console.log(resp);
+         this.urlImagen = resp.toString();
+         let cFormulario: FormGroup = <FormGroup>this.forma.get(['formularios',j]);
+         cFormulario.controls['url'].setValue(this.urlImagen)
+         if (cFormulario.controls['codForm'].value != null){
+           this.cargaFechas(cFormulario.controls['codForm'].value,j)
+         }
        });
   }
   verificaCuit(){

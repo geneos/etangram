@@ -156,7 +156,6 @@ export class CdTablaComponent implements AfterViewInit {
     this.inputParam.columnSelection = [...this.columnSelection];
 
     setTimeout(() => {
-      
       this.ngxSmartModalService.setModalData(this.inputParam, 'cdTablaModal');
       console.log('datos en modal:' ,this.ngxSmartModalService.getModalData('cdTablaModal'));
       this.ngxSmartModalService.close('cdTablaModal');

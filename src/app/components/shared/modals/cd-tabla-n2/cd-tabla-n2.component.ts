@@ -17,12 +17,14 @@ export class CdTablaN2Component implements AfterViewInit {
     modal: string;
     datos: any;
     valores: any;
+    defaults: any;
     columnSelection: any
   }
   _inputParam: {
     modal: string;
     datos: any;
     valores: any;
+    defaults: any;
     columnSelection: any
   }
   modal: string;
@@ -54,7 +56,7 @@ export class CdTablaN2Component implements AfterViewInit {
       datos: null,
       columnSelection : null
     }; */
-    this._inputParam = {modal: '', datos: {}, valores: {}, columnSelection: []};
+    this._inputParam = {modal: '', datos: {}, valores: {}, defaults: {}, columnSelection: []};
     // this._inputParam.modal = '';
     // this._inputParam.columnSelection = [];
     // this._inputParam.datos = {};
@@ -63,7 +65,7 @@ export class CdTablaN2Component implements AfterViewInit {
     // this._inputParam = Object.assign({}, this.inputParam);
     
     // this._inputParam = JSON.parse(JSON.stringify(this.inputParam));
-    console.log('asignando: ',this.inputParam);
+    // console.log('asignando: ',this.inputParam);
     this.modal = this.inputParam.modal;
     this.datos = [...this.inputParam.datos];
     this.valores = [...this.inputParam.valores]
@@ -81,13 +83,45 @@ export class CdTablaN2Component implements AfterViewInit {
      this.loading = true;
      this.generarTabla();
      
-     console.log('Your param is:', this.inputParam);
-     this.loading = false;
+    //  this.loading = false;
    });
 
- };
+  };
 
- generarTabla(){
+  limpiarLista(listaSucia: string){
+    let ListaLimpia: string = '';
+    let listaColumnas : string[] = (listaSucia.split(','));
+
+    let itemActual: string;
+    // console.log('Cantidad de columnas: ' + listaColumnas.length)
+    for (let index = 0; index < listaColumnas.length; index++) {
+      itemActual = listaColumnas[index].trim();
+
+      ListaLimpia = ListaLimpia.concat(itemActual, ',');
+    }
+    ListaLimpia = ListaLimpia.substr(0, ListaLimpia.length-1);
+    // console.log('Lista rearmada: ');
+    // console.log(ListaLimpia);
+    return ListaLimpia;
+  }
+
+  reset(){
+    this.loading = true;
+    // this.inputParam.valores = this.inputParam.defaults;
+    console.log('seleccionados antes de reseteo: ', this.inputParam.columnSelection)
+    let listaLimpia = this.limpiarLista(this.inputParam.defaults);
+    console.log('lista a armar (string): ', listaLimpia)
+    this.inputParam.columnSelection = new SelectionModel(true, this.valores
+      .filter(columnaDisponible =>
+        listaLimpia.includes(columnaDisponible.name) == true
+        ));
+    this.columnSelection = null;
+    this.columnSelection = [this.inputParam.columnSelection];
+    console.log('seleccionados después de reseteo: ', this.inputParam.columnSelection)
+    this.generarTabla();
+  }
+
+  generarTabla(){
    //Crear tabla con checkboxes de columnas
     // this.columnasSelectas = new SelectionModel(true, []);
     
@@ -106,21 +140,26 @@ export class CdTablaN2Component implements AfterViewInit {
       let componentRef = this.viewContainerRefColumnas.createComponent(componentFactory);
       (<CompGen>componentRef.instance).data = control.data;
 
-    console.log('probando leer la lista de selección de las columnas:');
-    console.log((<CompGen>componentRef.instance).data);
- }
+    // console.log('probando leer la lista de selección de las columnas:');
+    // console.log((<CompGen>componentRef.instance).data);
+    
+    this.loading = false;
+  }
  
- aplicar(){
+  aplicar(){
     console.log('aplicando seleccion de columnas');
     console.log('seleccionado al aplicar: ', this.inputParam.columnSelection);
+    console.log('this.inputParam.columnSelection: ', this.inputParam.columnSelection)
+    console.log('this.columnSelection: ', this.columnSelection)
     this.inputParam.modal = this.modal;
     this.inputParam.datos = [...this.datos];
     this.inputParam.columnSelection = [...this.columnSelection];
 
-    
-    this.ngxSmartModalService.setModalData(this.inputParam, 'cdTablaModalN2');
-    console.log('datos en modal:' ,this.ngxSmartModalService.getModalData('cdTablaModalN2'));
-    this.ngxSmartModalService.close('cdTablaModalN2');
+    setTimeout(() => {
+      this.ngxSmartModalService.setModalData(this.inputParam, 'cdTablaModalN2');
+      console.log('datos en modal:' ,this.ngxSmartModalService.getModalData('cdTablaModalN2'));
+      this.ngxSmartModalService.close('cdTablaModalN2');
+    });
  }
 
  cancelar(){

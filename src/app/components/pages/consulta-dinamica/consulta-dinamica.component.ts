@@ -191,10 +191,11 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       //si cambiaron los datos:
       let datostemp = this.ngxSmartModalService.getModalData('cdFiltrosModal');
       console.log('temp: ', datostemp);
-      console.log('temp.estado', datostemp.estado)
-      console.log('test cancelado: ', (this.ngxSmartModalService.getModalData('cdFiltrosModal').estado !== 'cancelado'))
+      // console.log('temp.estado', datostemp.estado)
+      // console.log('test cancelado: ', (this.ngxSmartModalService.getModalData('cdFiltrosModal').estado !== 'cancelado'))
 
-      if(this.ngxSmartModalService.getModalData('cdFiltrosModal').estado !== 'cancelado'){
+      // if(()||(this.ngxSmartModalService.getModalData('cdFiltrosModal').estado !== 'cancelado')){
+      if((datostemp == null)||(this.ngxSmartModalService.getModalData('cdFiltrosModal').estado !== 'cancelado')){
 
         this.filtrosAnteriores = null;
         console.log('reiniciado filtros anteriores', this.filtrosAnteriores);
@@ -202,13 +203,15 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
         this.filtrosAnteriores = this.filtros;
         console.log('copiado filtros actuales a filtros anteriores', this.filtrosAnteriores);
         this.filtros = this.ngxSmartModalService.getModalData('cdFiltrosModal');
-        //comprobar que sea un mapa
-        if (!(this.filtros instanceof Map)){
-          this.filtros = this.filtros.valores;
-        }
-        console.log('traidos filtros nuevos', this.filtros);
-        console.log('comparacion', (this.filtrosAnteriores !== this.filtros));
 
+        if (this.filtros != null){
+          //comprobar que sea un mapa
+          if (!(this.filtros instanceof Map)){
+            this.filtros = this.filtros.valores;
+          }
+          console.log('traidos filtros nuevos', this.filtros);
+          console.log('comparacion', (this.filtrosAnteriores !== this.filtros));
+        }
         // if(nuevo != anterior)
         if(this.filtrosAnteriores !== this.filtros)
         {

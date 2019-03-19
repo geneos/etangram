@@ -60,6 +60,13 @@ export class CdFiltrosN2Component implements AfterViewInit, OnInit {
 
   };
 
+  reset(){
+    this.datosFiltros = null;
+    this.inputParam.valores = null;
+    this.generarFiltros();
+  }
+
+  // generarFiltros(porDefecto?: boolean){
   generarFiltros(){
     //Crear filtros
     if (this.viewContainerRefFiltros == null){
@@ -86,6 +93,7 @@ export class CdFiltrosN2Component implements AfterViewInit, OnInit {
     let atributosFiltro = this.inputParam.datos.filter(atributoActual => atributoActual.grupo === 'Filtros');
     atributosFiltro.forEach(atributoActual => {
       // console.log((Map<string, string>)this.inputParam.valores.get(atributoActual.atributo_bd));
+      // if ((temp != null)&&(porDefecto!=true)){
       if (temp != null){
         console.log('valor para llenar ' +  atributoActual.atributo_bd + ': '+ temp.get(atributoActual.atributo_bd));
         valorAEnviar = temp.get(atributoActual.atributo_bd);
@@ -207,7 +215,7 @@ export class CdFiltrosN2Component implements AfterViewInit, OnInit {
     //   console.log(element.componentType);
     //   element.changeDetectorRef.detectChanges();
     // });
-    console.log(this.datosFiltros);
+    console.log('Estado de los filtros a aplicar: ', this.datosFiltros);
     // console.log('---');    
     // console.log(this.componentesFiltros[0]);
     // console.log(this.componentesFiltros[0].instance);

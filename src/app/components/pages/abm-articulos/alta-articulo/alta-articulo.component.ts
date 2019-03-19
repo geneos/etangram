@@ -134,13 +134,14 @@ export class AltaArticuloComponent implements OnInit {
   } = {nuevos: [],
        modificados: [],
        eliminados: []};       
-  estadosUnidadesAlternativas:{
+  // todo limpiar
+  /* estadosUnidadesAlternativas:{
     nuevos: any[],
     modificados: any[],
     eliminados: any[]
   } = {nuevos: [],
        modificados: [],
-       eliminados: []};  
+       eliminados: []}; */  
 
   @ViewChild('codProv', { read: ElementRef}) elCodProv: any;
   @ViewChild('codArtProv', { read: ElementRef}) elcodArtProv: any;
@@ -249,7 +250,17 @@ export class AltaArticuloComponent implements OnInit {
       profundidad: new FormControl(),
       m3: new FormControl(),
         //Unidades de medida alternativas
-        unidadesAlternativas: this.FormBuilder.array([]),
+        // unidadesAlternativas: this.FormBuilder.array([]),
+        umCompras: new FormControl(),
+          umComprasDesc: new FormControl(),
+        umOCompra: new FormControl(),
+          umOCompraDesc: new FormControl(),
+        umPCompra: new FormControl(),
+          umPCompraDesc: new FormControl(),
+        umPVenta: new FormControl(),
+          umPVentaDesc: new FormControl(),
+        umVentas: new FormControl(),
+          umVentasDesc: new FormControl(),
 
       /*'articulo': new FormControl('',Validators.required),
       'unidadMedida': new FormControl('',Validators.required),
@@ -347,7 +358,9 @@ construirProveedor(){
   return new FormGroup({ 
     'idProveedor': new FormControl(null,Validators.required,this.existeProveedor),
     'razonSocial': new FormControl(),
-    'artDeProveedor': new FormControl(null,Validators.required,this.existeArticulo),
+    'artCodigoInt': new FormControl(),
+    // 'artDeProveedor': new FormControl(null,Validators.required,this.existeArticulo),
+    'artDeProveedor': new FormControl(),
     'artDesc': new FormControl(),
     'artCodBarra': new FormControl(),
     'idMonedaUltCompra': new FormControl(),
@@ -358,7 +371,7 @@ construirProveedor(){
     'date_modified': new FormControl(),
     'created_by': new FormControl(),
     'modified_user_id': new FormControl(),
-    'description': new FormControl(),
+    // 'description': new FormControl(),
     'deleted': new FormControl(),
     'assigned_user_id': new FormControl(),
     'currency_id': new FormControl(),
@@ -544,7 +557,8 @@ construirFoto(){
     console.log('lista de hijos eliminados: ', this.estadosArticulosHijos.eliminados)
   }
 
-  addUMAlt(){
+  // todo limpiar
+  /* addUMAlt(){
     const ums = this.forma.controls.unidadesAlternativas as FormArray;
     ums.push(this.construirUnidadMedida());
   }
@@ -553,10 +567,10 @@ construirFoto(){
     let um = <FormGroup>ums.controls[ind];
     /* if (um.controls[''].value != null){
       this.estadosUnidadesAlternativas.eliminados.push(um.controls[''].value);
-    } */
+    } *
     ums.removeAt(ind);
     console.log('lista de unidades eliminados: ', this.estadosUnidadesAlternativas.eliminados)
-  } 
+  }  */
 
   addDeposito(){
     const deps = this.forma.controls.depositos as FormArray;
@@ -777,7 +791,8 @@ construirFoto(){
     this.forma.controls.articulosSustitutos.reset();
     this.forma.controls.articulosHijos.reset();
     this.forma.controls.fotos.reset();
-    this.forma.controls.unidadesAlternativas.reset();
+    // cambiado por una cantidad determinada
+    // this.forma.controls.unidadesAlternativas.reset();
     
     //cargar datos de fotos
     this._articulosService.getFotos(this.auxRid , this.token )
@@ -813,10 +828,13 @@ construirFoto(){
                 fgFoto.controls['deleted'].setValue(foto.deleted);
                 fgFoto.controls['assigned_user_id'].setValue(foto.assigned_user_id);
                 fgFoto.controls['aos_products_id_c'].setValue(foto.aos_products_id_c);
-                fgFoto.controls['foto'].setValue(foto.id);
+                fgFoto.controls['foto'].setValue(foto.foto);
 
                 index = index +1;
               });
+            }
+            else{
+              console.log('No se encontraron fotos.')
             }
           }
     });
@@ -835,9 +853,8 @@ construirFoto(){
             if(this.respData.dataset.length>0){
               this.depositosAll = this.respData.dataset;
               let index = 0;
-              //todo revisar
               this.forma.controls['administraStock'].setValue(true);
-              //
+              
               console.log('depositos recuperadas: ', this.depositosAll)
               this.depositosAll.forEach(deposito => {
                 console.log('se va a armar el formgroup para deposito: ', deposito)
@@ -862,6 +879,9 @@ construirFoto(){
                 fgDeposito.controls['stockreposicion'].setValue(deposito.stockreposicion);
                 index = index +1;
               });
+            }
+            else{
+              this.forma.controls['administraStock'].setValue(false);
             }
           }
     });
@@ -890,23 +910,27 @@ construirFoto(){
                 let fgProveedor: FormGroup = <FormGroup>this.forma.get(['proveedores', index]);
                 fgProveedor.controls['idProveedor'].setValue(proveedor.id);
                 fgProveedor.controls['razonSocial'].setValue(proveedor.name);
+                if ((proveedor.name == null)||(proveedor.name == "null")){
+                  this.buscarProveedor(index);
+                }
                 fgProveedor.controls['date_entered'].setValue(proveedor.date_entered);
                 fgProveedor.controls['date_modified'].setValue(proveedor.date_modified);
                 fgProveedor.controls['modified_user_id'].setValue(proveedor.modified_user_id);
                 fgProveedor.controls['created_by'].setValue(proveedor.created_by);
-                fgProveedor.controls['description'].setValue(proveedor.description);
+                // fgProveedor.controls['description'].setValue(proveedor.description);
+                // if ((proveedor.description == null)||(proveedor.description == "null")){
+                //   this.buscarArtProveedor(index);
+                // }
                 fgProveedor.controls['deleted'].setValue(proveedor.deleted);
                 fgProveedor.controls['assigned_user_id'].setValue(proveedor.assigned_user_id);
                 fgProveedor.controls['artDeProveedor'].setValue(proveedor.aos_products_id_c);
+                // fgProveedor.controls['artCodigoInt'].setValue(proveedor.codigo__);
                 fgProveedor.controls['account_id_c'].setValue(proveedor.account_id_c);//id objeto proveedor
                 fgProveedor.controls['artCodBarra'].setValue(proveedor.codigobarra);
                 fgProveedor.controls['idMonedaUltCompra'].setValue(proveedor.tg01_monedas_id_c);
                 fgProveedor.controls['precioUltCompra'].setValue(proveedor.precioultimacompra);
                 fgProveedor.controls['fechaUltCompra'].setValue(this.nuevaFecha(proveedor.ultimacompra));
                 fgProveedor.controls['esPorDefecto'].setValue(proveedor.pordefecto);
-                //datos a mostrar
-                  //nombre del articulo
-                  this.buscarArtProveedor(index);
                 index = index +1;              
               });
             }
@@ -965,9 +989,7 @@ construirFoto(){
   }
 
   //todo
-  //cargar datos de fotos
   //cargar datos de articulos hijos
-  //cargar datos de fotos
   //#endregion cargaDatos
 
   //#region armadoJSONs

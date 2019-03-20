@@ -241,6 +241,7 @@ urlAnterior: string;
     this.forma.controls['organizacion'].disable();
     this.forma.controls['moneda'].disable();
     this.forma.controls['fecha'].enable();
+    this.forma.controls['observaciones'].enable();
         
 
     this.formaReferencias = new FormGroup({
@@ -317,11 +318,6 @@ urlAnterior: string;
 
   ngOnInit() {
 
-  }
-
-  
-  test(){
-    //console.log(this.forma.controls['caicae'].errors)
   }
 
   openSnackBar(message: string) {
@@ -569,8 +565,8 @@ urlAnterior: string;
                   fecha.setDate(fecha.getDate() + 1);
                   this.forma.controls['fecha'].setValue(fecha);
 
-                  //descripción no está siendo guardada por la api
-                  // this.forma.controls['observaciones'].setValue(this.minutaContable.description);
+                  this.forma.controls['observaciones'].setValue(this.minutaContable.description);
+                  this.forma.controls['observaciones'].disable();
 
                   this.forma.controls['caja'].setValue(this.minutaContable.idcajaorigen);
                   this.forma.controls['caja'].disable();
@@ -1368,7 +1364,7 @@ urlAnterior: string;
     let auxObs = this.forma.controls['observaciones'].value;
 
     if (this.forma.controls['observaciones'].value == null){auxObs = "''"};
-      console.log(auxObs)
+      console.log('observacion: "' + auxObs +'"');
     let jsbody = {
       // "ID_TipoComp":this.forma.controls['tipo'].value,
       "ID_TipoComp":this.tipoComprobante.id,
@@ -1442,6 +1438,7 @@ urlAnterior: string;
               this.forma.controls['organizacion'].disable();
               this.forma.controls['moneda'].disable();
               this.forma.controls['caja'].disable();
+              this.forma.controls['observaciones'].disable();
               setTimeout(() => {
                 // this.router.navigate(['nextRoute']);
                 this.editingCabecera = false;

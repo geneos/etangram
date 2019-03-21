@@ -13,7 +13,7 @@ import { UnidadMedidaService } from 'src/app/services/i2t/unidad-medida.service'
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ArticulosService } from 'src/app/services/i2t/articulos.service';
 import { ImageService } from 'src/app/services/i2t/image.service';
-import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo, cArticulo } from 'src/app/interfaces/articulo.interface';
+import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo, cArticulo, datosArticulos } from 'src/app/interfaces/articulo.interface';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -57,6 +57,8 @@ export class AltaArticuloComponent implements OnInit {
   sustitutos:any[]=[{'nroSustituto':0},];
   artRelaciones:any[]=[{'nroArtRelacion':0},];
   umAlt:any[]=[{'nroUMAlt':0},];
+  datosArticulos: datosArticulos[] = [];
+  datosArt: any;
   auxRid:any;
   loginData: any;
   
@@ -234,6 +236,7 @@ export class AltaArticuloComponent implements OnInit {
         depositos: this.FormBuilder.array([]),
         //Productos sustitutos
         articulosSustitutos: this.FormBuilder.array([]),
+        articulosRelacionados: this.FormBuilder.array([]),
         // artSust: new FormControl(),
         //Productos Relacionados
         articulosHijos: this.FormBuilder.array([]),
@@ -428,9 +431,15 @@ construirDeposito(){
 
 construirArticuloHijo(){
   return new FormGroup({ 
-    'idArtHijo': new FormControl(null,Validators.required,this.existeArticulo),
-    'artDesc': new FormControl(),
-    'cantidad': new FormControl(null, Validators.required),
+    // 'idArtHijo': new FormControl(null,Validators.required,this.existeArticulo),
+    // 'artDesc': new FormControl(),
+    // 'cantidad': new FormControl(null, Validators.required),
+    "art_rel_id_usuario": new FormControl(),
+    "art_rel_nombre": new FormControl(),
+    "art_rel_descripcion": new FormControl(),
+    "art_rel_id_articulo": new FormControl(null,Validators.required,this.existeArticulo),
+    "art_rel_id_articulo_padre": new FormControl(),
+    "art_rel_cantidad": new FormControl(null, Validators.required),
   });
 }
 
@@ -457,6 +466,7 @@ construirFoto(){
     'foto': new FormControl(null,Validators.required), //"www.i2t-sa.com/fotoJcabreraEDIT"
   })
 }
+
 //#endregion FormArrays
 
   ngOnInit() {
@@ -781,7 +791,11 @@ construirFoto(){
       .subscribe( respA => {
         console.log(respA)
         console.log(this.id)
+        this.datosArt = respA
+        this.datosArticulos = this.datosArt.dataset
+        console.log(this.datosArticulos[0])
       })
+      
     this.obtenerDatosArrays();
   }
   obtenerDatosArrays(){
@@ -1091,10 +1105,15 @@ construirFoto(){
       "stockRepo":this.forma.controls['stockReposicion'].value,
       //unidad de medida
       "dimensiones": this.forma.controls['Dimensiones'].value,
-      "pesable":this.forma.controls['Pesable'].value,
-      "pesableE":this.forma.controls['Pesable_Estandar'].value, 
-      "idUM":this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
-      "idUM1":this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
+      "pesable": this.forma.controls['Pesable'].value,
+      "pesableE": this.forma.controls['Pesable_Estandar'].value,
+      "idUM":'1', // this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
+      "idUM1":'2',//this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
+      "idUM2": '2',
+      "idUM3": '2',
+      "idUM4": '2',
+      "idUM5": '2',
+      "IdUM6": '2',
       "largo":this.forma.controls['largo'].value,
       "ancho":this.forma.controls['ancho'].value,
       "profundo":this.forma.controls['profundidad'].value,
@@ -1261,6 +1280,60 @@ construirFoto(){
         "tg01_unidadmedida_id1_c": fgSustituto.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
         "idsustituto": fgSustituto.controls['idsustituto'].value, //, codigo de articulo //todo revisar si es part number
         "tiposustituto": fgSustituto.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
+      }
+    }
+
+    jsonbodyP = JSON.stringify(jsbodyP);
+    return jsonbodyP;
+  }
+  armarJSONHijo(hijo: any){
+    let fgHijo = <FormGroup>hijo;
+    let jsonbodyP, jsbodyP;
+    console.log('control de hijo a usar: ', fgHijo)
+    var d = new Date();
+
+    if(fgHijo.controls['date_entered'].value == null){
+      //nuevo
+      jsbodyP = {
+        
+        "id": fgHijo.controls['idArtHijo'].value,//todo revisar si se duplica
+        "name": fgHijo.controls['artDesc'].value,
+        "date_entered":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "modified_user_id": 1,//usuario logueado por ahora 1
+        "created_by": 1, //,usuario logueado por ahora 1
+        "description": null,
+        "deleted": 0,
+        "assigned_user_id": 1,//usuario logueado por ahora 1
+        "aos_products_id_c": this.auxRid,
+        "aos_products_id1_c": fgHijo.controls['idArtSust'].value, //1, //todo: Id del producto sustituto (Consulta dinámica a aos_products)
+        "cantidad": fgHijo.controls['cantidad'].value, //100, Cantidad
+        "tg01_unidadmedida_id_c": fgHijo.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "tg01_unidadmedida_id1_c": fgHijo.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "idsustituto": fgHijo.controls['idsustituto'].value, //, codigo de articulo //todo revisar si es part number
+        "tiposustituto": fgHijo.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
+      }
+    }
+    
+    else{
+      jsbodyP = {
+        // "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica
+        // "name": fgSustituto.controls['razonSocial'].value,
+        "name": fgHijo.controls['artDesc'].value,
+        "date_entered": fgHijo.controls['date_entered'].value,
+        "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
+        "modified_user_id": 1,//usuario logueado por ahora 1
+        "created_by": fgHijo.controls['created_by'].value,
+        "description": null,
+        "deleted": 0,
+        "assigned_user_id": 1,//usuario logueado por ahora 1
+        "aos_products_id_c": this.auxRid,
+        "aos_products_id1_c": fgHijo.controls['idArtSust'].value, //1, //todo: Id del producto sustituto (Consulta dinámica a aos_products)
+        "cantidad": fgHijo.controls['cantidad'].value, //100, Cantidad
+        "tg01_unidadmedida_id_c": fgHijo.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "tg01_unidadmedida_id1_c": fgHijo.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
+        "idsustituto": fgHijo.controls['idsustituto'].value, //, codigo de articulo //todo revisar si es part number
+        "tiposustituto": fgHijo.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
       }
     }
 
@@ -1587,6 +1660,49 @@ construirFoto(){
                           eliminados: []};
   }
 
+  guardarHijos(){
+    this.estadosArticulosHijos.nuevos = [];
+    this.estadosArticulosHijos.modificados = [];
+
+    let listaHijos = <FormArray>this.forma.get(['articulosHijos']);
+    (listaHijos.controls).forEach(element => {
+      let hijo = <FormGroup>element;
+      console.log('sustituto ', hijo);
+      // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
+      if (hijo.dirty){
+        //si tiene x es modificación
+        if (hijo.controls['date_entered'].value != null){
+          this.estadosArticulosHijos.modificados.push(hijo);
+        }
+        else{
+          this.estadosArticulosHijos.nuevos.push(hijo);
+        }
+      }
+      else{
+        //nada porque no fue tocado
+      }
+    });
+
+    console.log('Lista de hijos a procesar: ', this.estadosArticulosHijos);
+
+    this.estadosArticulosHijos.nuevos.forEach(formHijo => {
+      console.log('se agregará hijo: ', formHijo);
+      this.guardarArticuloSustituto(formHijo);
+    });
+
+    this.estadosArticulosHijos.modificados.forEach(formHijo => {
+      this.modificarArticuloSustituto(formHijo);
+    });
+
+    this.estadosArticulosHijos.eliminados.forEach(hijoEliminado => {
+      this.eliminarArticuloSustituto(hijoEliminado);
+    });
+
+    //reiniciar listas
+    this.estadosArticulosHijos ={nuevos: [],
+                          modificados: [],
+                          eliminados: []};
+  }
   //#endregion sincronizarListas
 
   //#region abm
@@ -1812,6 +1928,81 @@ construirFoto(){
         });
     }
     //#endregion abmArticulosSustitutos
+    //#region abmArticulosHijos
+    guardarArticuloHijo(hijo: any){
+      let jsonbodyD = this.armarJSONHijo(hijo);
+      console.log('body guardado de hijo: ', jsonbodyD);
+
+      this._articulosService.postArticuloHijo(jsonbodyD, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            console.log('respuesta insert hijo: ', this.respData);
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Token invalido insertando hijo')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al agregar hijo: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('hijo ID (insert): ' + this.respData.returnset[0].RId);
+              }
+            }
+        });
+    }
+
+    modificarArticuloHijo(hijo: any){
+      let jsonbodyD = this.armarJSONHijo(hijo);
+      console.log('body modificado de hijo: ', jsonbodyD);
+      let id = (<FormGroup>hijo).controls['idArtHijo'].value;
+      this._articulosService.updateArticuloHijo( jsonbodyD, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            console.log('respuesta modificar hijo: ', this.respData);
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Token invalido modificando hijo')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al modificar hijo: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('hijo ID (update): ' + this.respData.returnset[0].RId);
+              }
+            }
+        });
+    }
+
+    eliminarArticuloHijo(hijo: any){
+      console.log('Eliminando sust: ', hijo);
+      let jsbody = { 
+        "deleted": 1,
+        "tg01_unidadmedida_id_c": hijo.um,
+        "tg01_unidadmedida_id1_c": hijo.um2
+      };
+      let jsonbody = JSON.stringify(jsbody);
+
+      this._articulosService.deleteArticuloHijo(jsonbody, this.token )
+        .subscribe( data => {
+            this.respData = data;
+            if(this.respData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.forma.disable();
+              this.openSnackBar('Sesión expirada.')
+            } else {
+              if (this.respData.returnset[0].RCode != 1){
+                console.log('Error al eliminar hijo: ' + this.respData.returnset[0].RTxt, this.respData);
+              }
+              else{
+                console.log('hijo ID (eliminado): ' + hijo);
+              }
+            }
+        });
+    }
+
+    //#endregion abmArticulosHijos
   //#endregion abm
 
   /* +++++++++++

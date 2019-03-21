@@ -36,15 +36,19 @@ export class ArticulosService {
     return this.http.get( url , { headers });
   }
 
-  getArticulo( id:number, token:string ){
+  getArticulo( idArticulo: string, token:string ){
     const headers = new HttpHeaders({
-      'x-access-token': token
+      'x-access-token': token,
+      'Content-Type': 'application/json'
     });
+    let jsbody = {"idProduct": idArticulo}
+    let body = JSON.stringify(jsbody)
 
-    let query = `api/articulo?codigo=eq[${ id }]`;
+    let query = `api/proc/ArticuloGET`;
     let url = this.preUrl + query;
+    console.log(url)
 
-    return this.http.get( url , { headers });
+    return this.http.post( url, body, { headers });
   }
 
   getcArticulos( token:string ){
@@ -230,6 +234,19 @@ export class ArticulosService {
   
       return this.http.get( url , { headers });
     }
+    
+    getProductosHijos(jsonbody: string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = `api/proc/articuloRelacionadoGET`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url , jsonbody, { headers });
+    }
+
     //#endregion gets
 
     //#region baja
@@ -292,6 +309,21 @@ export class ArticulosService {
       // let jsonbody = JSON.stringify(jsbody);
 
       let query = `api/tg08_articulossustitutos/${id}`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, jsonbody, { headers } );
+    }
+
+    deleteArticuloHijo( jsonbody: string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+      
+      // let jsbody = { "deleted": 1 };
+      // let jsonbody = JSON.stringify(jsbody);
+
+      let query = `api/proc/articuloRelacionadoDEL`;
       let url = this.preUrl + query;
   
       return this.http.put( url, jsonbody, { headers } );
@@ -359,6 +391,18 @@ export class ArticulosService {
   
       return this.http.post( url, body, { headers } );
     }
+
+    postArticuloHijo( body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = "api/proc/articuloRelacionadoINS";
+      let url = this.preUrl + query;
+  
+      return this.http.post( url, body, { headers } );
+    }
     //#endregion alta
 
     //#region mod
@@ -420,6 +464,18 @@ export class ArticulosService {
       let url = this.preUrl + query;
   
       return this.http.put( url, body, { headers } );
+    }
+
+    updateArticuloHijo( body:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+  
+      let query = "api/proc/articuloRelacionadoUPD";
+      let url = this.preUrl + query;
+  
+      return this.http.post( url, body, { headers } );
     }
 
     //#endregion mod

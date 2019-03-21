@@ -63,6 +63,8 @@ export class AltaProveedorComponent implements OnInit {
   adjunto: any;
   token: string;
   loading: boolean;
+  partesACargar: number = 8; //listas desplegables: 8
+  partesCargadas: number;
 
   tipoReferente: string;
 
@@ -238,6 +240,8 @@ export class AltaProveedorComponent implements OnInit {
     this.token = this.storage.get(TOKEN);
 
     this.loading = true;
+    this.partesCargadas = 0;
+
     this.forma = this.FormBuilder.group({ 
       tipoReferente: new FormControl('',Validators.required),
       numero: new FormControl('',Validators.required),
@@ -788,6 +792,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.tiposDocumentoAll = this.tdData.dataset;
                 // console.log('Tipos de documento para lista desp: ', this.tiposDocumentoAll);
                 //this.loading = false;
+                this.partesCargadas = this.partesCargadas +1;
 
               } else {
                 this.tiposDocumentoAll = null;
@@ -812,6 +817,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.catIVAAll = this.civaData.dataset;
                 // console.log('Categorias para lista desp: ',this.catIVAAll);
                 //this.loading = false;
+                this.partesCargadas = this.partesCargadas +1;
 
               } else {
                 this.catIVAAll = null;
@@ -837,6 +843,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.catsReferenteAll = this.crefData.dataset;
                 // console.log('Cat. de referente para lista desp: ',this.catsReferenteAll);
                 //this.loading = false;
+                this.partesCargadas = this.partesCargadas +1;
 
               } else {
                 this.catsReferenteAll = null;
@@ -862,6 +869,7 @@ export class AltaProveedorComponent implements OnInit {
               if(this.mData.dataset.length>0){
                 this.monedasAll = this.mData.dataset;
                 // this.forma.controls['moneda'].setValue(this.moneda.name);
+                this.partesCargadas = this.partesCargadas +1;
               }
               else{
                 this.monedasAll = null;
@@ -887,6 +895,7 @@ export class AltaProveedorComponent implements OnInit {
               if(this.impData.dataset.length>0){
                 this.impuestosAll = this.impData.dataset;
                 // this.forma.controls['moneda'].setValue(this.moneda.name);
+                this.partesCargadas = this.partesCargadas +1;
               }
               else{
                 this.impuestosAll = null;
@@ -912,6 +921,7 @@ export class AltaProveedorComponent implements OnInit {
               if(this.mimpdata.dataset.length>0){
                 this.modelosImpAll = this.mimpdata.dataset;
                 // this.forma.controls['moneda'].setValue(this.moneda.name);
+                this.partesCargadas = this.partesCargadas +1;
               }
               else{
                 this.modelosImpAll = null;
@@ -939,6 +949,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.catsBloqueoAll = this.cbData.dataset;
                 // console.log('obtenidos bloqueos', this.catsBloqueoAll);
                 //this.loading = false;
+                this.partesCargadas = this.partesCargadas +1;
 
               } else {
                 this.catsBloqueoAll = null;
@@ -964,7 +975,7 @@ export class AltaProveedorComponent implements OnInit {
                 this.formulariosAll = this.fData.dataset;
                 // console.log('obtenidos formularios', this.formulariosAll);
                 //this.loading = false;
-
+                this.partesCargadas = this.partesCargadas +1;
               } else {
                 this.formulariosAll = null;
               }
@@ -1350,6 +1361,9 @@ export class AltaProveedorComponent implements OnInit {
                 this.idCabecera = this.id;
                 console.log('proveedor encontrado: ', this.provCabecera);
 
+                this.partesACargar = this.partesACargar + 6; //principal + afip + 4 arrays
+                this.partesCargadas = this.partesCargadas +1;
+
                 //mostrar datos
                 this.forma.controls['tipoReferente'].setValue(this.provCabecera.tiporeferente);
                 this.forma.controls['numero'].setValue(this.provCabecera.codigo_prov);
@@ -1476,8 +1490,9 @@ export class AltaProveedorComponent implements OnInit {
                 cCuenta.controls['rcTipo'].setValue(cuenta.Tipo_Cuenta) ;
                 index = index +1;
               });
+              this.partesCargadas = this.partesCargadas + 1;
             }
-
+            else{ this.partesCargadas = this.partesCargadas + 1; }
           }
     });
 
@@ -1523,8 +1538,9 @@ export class AltaProveedorComponent implements OnInit {
                 
                 index = index +1;
               });
+              this.partesCargadas = this.partesCargadas + 1;
             }
-
+            else{ this.partesCargadas = this.partesCargadas + 1; }
           }
     });
 
@@ -1566,8 +1582,9 @@ export class AltaProveedorComponent implements OnInit {
                 
                 index = index +1;
               });
+              this.partesCargadas = this.partesCargadas + 1;
             }
-
+            else{ this.partesCargadas = this.partesCargadas + 1; }
           }
     });
 
@@ -1616,8 +1633,9 @@ export class AltaProveedorComponent implements OnInit {
 
                 index = index +1;
               });
+              this.partesCargadas = this.partesCargadas + 1;
             }
-
+            else{ this.partesCargadas = this.partesCargadas + 1; }
           }
     });
 
@@ -1664,8 +1682,9 @@ export class AltaProveedorComponent implements OnInit {
 
                 // index = index +1;
               // });
+              this.partesCargadas = this.partesCargadas + 1;
             }
-
+            else{ this.partesCargadas = this.partesCargadas + 1; }
           }
     });
   }

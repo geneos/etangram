@@ -766,6 +766,38 @@ construirFoto(){
         this.datosArt = respA
         this.datosArticulos = this.datosArt.dataset
         console.log('Datos de articulo: ', this.datosArticulos[0])
+        this.forma.controls['tipo'].setValue(this.datosArticulos[0].tipo);
+   //     this.forma.controls['nroArticulo'].setValue(this.datosArticulos[0].part_number);
+   //     this.forma.controls['descripcion'].setValue(this.datosArticulos[0].nombre_producto);
+   //     this.forma.controls['codigoAlternativo'].setValue(this.datosArticulos[0].codigo_alternativo);
+    //     this.forma.controls['codigoBarra'].setValue(this.datosArticulos[0].codigobarra);
+    //     this.forma.controls['idGrupo'].setValue(this.datosArticulos[0].categoriaproducto);
+    //  //   this.forma.controls['idTipoArticulo'].setValue(this.datosArticulos[0].id)
+    //     this.forma.controls['procedencia'].setValue(this.datosArticulos[0].procedencia);
+    //     this.forma.controls['idMarca'].setValue(this.datosArticulos[0].id_marcas);
+    //     this.forma.controls['estado'].setValue(this.datosArticulos[0].estado);
+    //     this.forma.controls['categoria_bloqueo'].setValue(this.datosArticulos[0].id_categoriabloqueo);
+    //     this.forma.controls['categoriaVenta'].setValue(this.datosArticulos[0].categoriaventa);
+    //     this.forma.controls['categoriaInventario'].setValue(this.datosArticulos[0].categoriainventario);
+    //     this.forma.controls['categoriaCompra'].setValue(this.datosArticulos[0].categoriacompra);
+    //     // DATOS OBSERVACIONES
+    //     this.forma.controls['obsRegistroAutoVta'].setValue(this.datosArticulos[0].obsregistroautovta);
+    //     this.forma.controls['obsRegistroAutoCpa'].setValue(this.datosArticulos[0].obsauditoriacpa);
+    //     this.forma.controls['obsIngresoVta'].setValue(this.datosArticulos[0].obsingresovta);
+    //     this.forma.controls['obsIngresoCpa'].setValue(this.datosArticulos[0].obsingresocpa);
+    //     this.forma.controls['obsImprimeVta'].setValue(this.datosArticulos[0].obsimprimevta);
+    //     this.forma.controls['obsAuditoriaVta'].setValue(this.datosArticulos[0].obsauditoriavta);
+    //     this.forma.controls['obsAuditoriaCpa'].setValue(this.datosArticulos[0].obsauditoriacpa);
+    //     //DATOS COMPRAS Y VENTAS
+    //     this.forma.controls['precioUltCompra'].setValue(this.datosArticulos[0].precioultcompra);
+    //     this.forma.controls['fechaUltCompra'].setValue(this.datosArticulos[0].fechaultcompra);
+    //     this.forma.controls['idMonedaUltCompra'].setValue(this.datosArticulos[0].id_monedas);
+    //     this.forma.controls['cantidadOptimaDeCompra'].setValue(this.datosArticulos[0].cantidadoptimadecompra);
+    //     this.forma.controls['precioUltVenta'].setValue(this.datosArticulos[0].precioultventa);
+    //     this.forma.controls['fechaUltVenta'].setValue(this.datosArticulos[0].fechaultventa);
+    //     this.forma.controls['idMonedaUltVenta'].setValue(this.datosArticulos[0].id_monedas_1);
+    //     //DATOS IMPOSITIVOS
+        
       })
       
     this.obtenerDatosArrays();

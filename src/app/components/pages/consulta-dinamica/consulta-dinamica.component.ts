@@ -165,6 +165,17 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     }
     // this.habilitarAcciones();
 
+    console.log('suscribiendo al modal de confirmar');
+    this.ngxSmartModalService.getModal('confirmar').onClose.subscribe((modal: NgxSmartModalComponent) => {
+      if (this.ngxSmartModalService.getModalData('confirmar').estado == 'confirmado') {
+        console.log('redireccionando a eliminar en "' + this.reportesAll[this.reporteSeleccionado].accion_borrar) + '"';
+      }
+      else{
+        //cancelado
+        console.log('El usuario no confirmó');
+      }
+    });
+
     console.log('suscribiendo al modal de tabla')
     //suscribir a los cambios en los otros modales
     //modal de selección de columnas
@@ -257,7 +268,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
     console.log('Lista de modales: ', this.ngxSmartModalService.getModalStack());
     let listaModales = this.ngxSmartModalService.getModalStack();
-    let modalBuscado = listaModales.find(modal => modal.id == 'consDinModal');
+    // let modalBuscado = listaModales.find(modal => modal.id == 'consDinModal');
+    let modalBuscado = listaModales.find(modal => modal.id == nombreModalActual);
 
     //si se abrió como modal
     if (modalBuscado != null){
@@ -769,7 +781,6 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
             //console.log(this.refContablesAll);
       });
   }
-
   
   establecerColumnas(){
     //asignar las seleccionadas, como "['select', 'opciones', 'codigo', 'nombre']"
@@ -957,4 +968,51 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   }
   
   //#endregion principal
+
+  //#region acciones
+  nuevo(){
+    console.log('redireccionando a nuevo en "' + this.reportesAll[this.reporteSeleccionado].accion_crear) + '"';
+    this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_crear]);
+    // this.router.navigate(['ref-contables/nuevo']);
+  }
+  editar(){
+    console.log('redireccionando a editar en "' + this.reportesAll[this.reporteSeleccionado].accion_editar) + '"';
+    console.log('seleccionado: ', this.selection.selected);
+    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_editar]);
+    if (this.selection.selected.length != 0){
+      // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+      this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+    }
+    else{
+      this.openSnackBar('Debe seleccionar un elemento a editar.')
+    }
+  }
+  ver(){
+    // console.log('redireccionando a editar en "' + this.reportesAll[this.reporteSeleccionado].accion_editar) + '"';
+    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_editar]);
+    console.log('todo boton de "ver"');
+    this.editar();
+  }
+  eliminar(){
+    if (this.selection.selected.length != 0){
+      // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+      console.log('confirmando con el usuario');
+      this.ngxSmartModalService.resetModalData('confirmar');
+      this.ngxSmartModalService.setModalData('¿Está seguro de que desea eliminar el o los elementos seleccionados?', 'confirmar');
+      this.ngxSmartModalService.open('confirmar');
+    }
+    else{
+      this.openSnackBar('Debe seleccionar uno o más elementos a eliminar.')
+    }
+    
+    // console.log('redireccionando a eliminar en "' + this.reportesAll[this.reporteSeleccionado].accion_borrar) + '"';
+
+    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_borrar]);
+  }
+  exportar(){
+    console.log('redireccionando a exportar en "' + this.reportesAll[this.reporteSeleccionado].accion_exportar) + '"';
+    console.log('todo boton de "exportar"');
+    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_exportar]);
+  }
+  //#endregion acciones
 }

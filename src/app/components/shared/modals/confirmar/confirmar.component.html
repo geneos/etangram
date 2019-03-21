@@ -1,0 +1,15 @@
+<ngx-smart-modal #confirmarModal
+                 customClass="overlay-filtros"
+                 [identifier]="'confirmar'"
+                 [closable]="false"
+                 [dismissable]="false"
+                 [escapable]="false">
+  <mat-card style="padding:0px">
+    <app-loading *ngIf="loading"></app-loading>
+    <h4>{{mensaje}}</h4>
+  </mat-card>
+  <div style="margin-top: 10px; width: 100%; text-align: right;">
+      <button type="button" mat-flat-button class="mine-btnbig" (click)="aceptar()">ACEPTAR</button>
+      <button type="button" mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
+  </div>
+</ngx-smart-modal>

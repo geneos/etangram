@@ -223,3 +223,17 @@ export interface datosArticulos{
   "m3": string
   "categoriaproducto": string
 }
+
+export interface ArticuloHijo{
+  id_tabla_relaciones: string;
+  nombre: string;
+  fecha_creacion: string;
+  fecha_modificacion: string;
+  id_usuario_creador: string;
+  id_usuario_modificador: string;
+  id_usuario_asignado: string;
+  descripcion: string;
+  id_articulo: string;
+  id_articulo_padre: string;
+  cantidad: string;
+}//proc/articuloRelacionadoGET

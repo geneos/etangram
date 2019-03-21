@@ -235,18 +235,20 @@ export class ArticulosService {
       return this.http.get( url , { headers });
     }
     
-    getProductosHijos(jsonbody: string, token:string ){
+    getProductosHijos(idPadre: string, token:string ){
       const headers = new HttpHeaders({
         'x-access-token': token,
         'Content-Type': 'application/json'
       });
-  
+      
+      let jsbody = {"art_rel_id_articulo_padre": idPadre}; //"ff413af6-ee5c-11e8-ab85-d050990fe081"
+      let body = JSON.stringify(jsbody);
+      console.log('json consulta hijos: ', jsbody)
       let query = `api/proc/articuloRelacionadoGET`;
       let url = this.preUrl + query;
   
-      return this.http.put( url , jsonbody, { headers });
+      return this.http.post( url , body, { headers });
     }
-
     //#endregion gets
 
     //#region baja
@@ -314,6 +316,7 @@ export class ArticulosService {
       return this.http.put( url, jsonbody, { headers } );
     }
 
+    // deleteArticuloHijo( jsonbody: string, token:string ){
     deleteArticuloHijo( jsonbody: string, token:string ){
       const headers = new HttpHeaders({
         'x-access-token': token,
@@ -326,7 +329,7 @@ export class ArticulosService {
       let query = `api/proc/articuloRelacionadoDEL`;
       let url = this.preUrl + query;
   
-      return this.http.put( url, jsonbody, { headers } );
+      return this.http.post( url, jsonbody, { headers } );
     }
     //#endregion baja
 

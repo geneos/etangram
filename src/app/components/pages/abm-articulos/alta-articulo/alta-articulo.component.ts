@@ -13,7 +13,7 @@ import { UnidadMedidaService } from 'src/app/services/i2t/unidad-medida.service'
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ArticulosService } from 'src/app/services/i2t/articulos.service';
 import { ImageService } from 'src/app/services/i2t/image.service';
-import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo, cArticulo, datosArticulos } from 'src/app/interfaces/articulo.interface';
+import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo, cArticulo, datosArticulos, ArticuloHijo } from 'src/app/interfaces/articulo.interface';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -98,7 +98,7 @@ export class AltaArticuloComponent implements OnInit {
   depositosAll:DepostitoArticulo[];
   proveedoresAll:ProveedorArticulo[];
   sustitutosAll:ArticuloSustituto[];
-  // hijosAll:artic
+  hijosAll:ArticuloHijo[];
   fotosAll:FotoArticulo[];
 
   estadosFotos:{
@@ -409,7 +409,6 @@ construirArticuloSust(){
   });
 }
 
-
 construirDeposito(){
   return new FormGroup({
     'id': new FormControl(),
@@ -431,9 +430,19 @@ construirDeposito(){
 
 construirArticuloHijo(){
   return new FormGroup({ 
+    'id_tabla_relaciones': new FormControl(),
+
     'idArtHijo': new FormControl(null,Validators.required,this.existeArticulo),
     'artDesc': new FormControl(),
     'cantidad': new FormControl(null, Validators.required),
+
+    'fecha_creacion': new FormControl(),
+    'fecha_modificacion': new FormControl(),
+    'id_usuario_creador': new FormControl(),
+    'id_usuario_modificador': new FormControl(),
+    'id_usuario_asignado': new FormControl(),
+    'descripcion': new FormControl(),
+    'id_articulo_padre': new FormControl(),
   });
 }
 
@@ -475,23 +484,6 @@ construirFoto(){
   }
 
   //#region botonesArray
-  /* addFoto(){this.fotos.push('nroFoto:'+(this.fotos.length).toString);}
-  deleteFoto(ind){this.fotos.splice(ind, 1);} */
-
-  /* addProveedor(){this.proveedores.push('nroProveedor:'+(this.proveedores.length).toString);}
-  deleteProveedor(ind){this.proveedores.splice(ind, 1);} 
-
-  addDeposito(){this.depositos.push('nroDeposito:'+(this.depositos.length).toString);}
-  deleteDeposito(ind){this.depositos.splice(ind, 1);}
-
-  addSustituto(){this.sustitutos.push('nroSustituto:'+(this.sustitutos.length).toString);}
-  deleteSustituto(ind){this.sustitutos.splice(ind, 1);}
-
-  addArtRelacion(){this.artRelaciones.push('nroArtRelacion:'+(this.artRelaciones.length).toString);}
-  deleteArtRelacion(ind){this.artRelaciones.splice(ind, 1);}
-
-  addUMAlt(){this.umAlt.push('nroUMAlt:'+(this.umAlt.length).toString);}
-  deleteUMAlt(ind){this.umAlt.splice(ind, 1);} */
 
   addFoto(){
     const fotos = this.forma.controls.fotos as FormArray;
@@ -499,9 +491,9 @@ construirFoto(){
   }
   deleteFoto(ind){
     const fotos = this.forma.controls.fotos as FormArray;
-    console.log('fa proveedores a actualizar: ', fotos)
+    console.log('fa fotos a actualizar: ', fotos)
     let foto = <FormGroup>fotos.controls[ind];
-    console.log('fg proveedor a borrar: ', foto)
+    console.log('fg foto a borrar: ', foto)
     if (foto.controls['date_entered'].value != null){
       this.estadosFotos.eliminados.push(foto.controls['foto'].value);
       // this.estadosProveedores.eliminados.push({id: foto.controls['id'].value, moneda: foto.controls['idMonedaUltCompra'].value});
@@ -550,31 +542,17 @@ construirFoto(){
   addArtRelacion(){
     const arts = this.forma.controls.articulosHijos as FormArray;
     arts.push(this.construirArticuloHijo());
+    console.log('array de articulos hijos: ', arts)
   }
   deleteArtRelacion(ind){
     const arts = this.forma.controls.articulosHijos as FormArray;
     let art = <FormGroup>arts.controls[ind];
-    /* if (art.controls[''].value != null){
-      this.estadosArticulosHijos.eliminados.push(art.controls[''].value);
-    } */
+    if (art.controls['id_tabla_relaciones'].value != null){
+      this.estadosArticulosHijos.eliminados.push(art.controls['id_tabla_relaciones'].value);
+    }
     arts.removeAt(ind);
     console.log('lista de hijos eliminados: ', this.estadosArticulosHijos.eliminados)
   }
-
-  // todo limpiar
-  /* addUMAlt(){
-    const ums = this.forma.controls.unidadesAlternativas as FormArray;
-    ums.push(this.construirUnidadMedida());
-  }
-  deleteUMAlt(ind){
-    const ums = this.forma.controls.unidadesAlternativas as FormArray;
-    let um = <FormGroup>ums.controls[ind];
-    /* if (um.controls[''].value != null){
-      this.estadosUnidadesAlternativas.eliminados.push(um.controls[''].value);
-    } *
-    ums.removeAt(ind);
-    console.log('lista de unidades eliminados: ', this.estadosUnidadesAlternativas.eliminados)
-  }  */
 
   addDeposito(){
     const deps = this.forma.controls.depositos as FormArray;
@@ -994,10 +972,51 @@ construirFoto(){
             }
           }
     });
-  }
 
-  //todo
-  //cargar datos de articulos hijos
+    //cargar datos de articulos hijos
+    this._articulosService.getProductosHijos(this.auxRid , this.token )
+      .subscribe( data => {
+          this.respData = data;
+          // auxArticulo = this.aData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.hijosAll = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            console.log('respuesta consulta de relacionados: ', this.respData)
+            if(this.respData.dataset.length>0){
+              this.hijosAll = this.respData.dataset;
+              let index = 0;
+              console.log('relacionados recuperados: ', this.hijosAll)
+              this.hijosAll.forEach(hijo => {
+                console.log('se va a armar el formgroup para relacionado: ', hijo)
+                this.addArtRelacion();
+                console.log('hijo: ' ,this.forma.get(['articulosHijos', index]));
+                console.log('id hijo: ',(this.forma.get(['articulosHijos', index])).value['id']);
+                console.log('hijo como formgroup: ', <FormGroup>this.forma.get(['articulosHijos', index]))
+                let fgHijo: FormGroup = <FormGroup>this.forma.get(['articulosHijos', index]);
+                fgHijo.controls['idArtHijo'].setValue(hijo.id_articulo);
+                fgHijo.controls['artDesc'].setValue(hijo.nombre);
+                fgHijo.controls['cantidad'].setValue(hijo.cantidad);
+
+                fgHijo.controls['id_tabla_relaciones'].setValue(hijo.id_tabla_relaciones);
+
+                fgHijo.controls['fecha_creacion'].setValue(hijo.fecha_creacion);
+                fgHijo.controls['fecha_modificacion'].setValue(hijo.fecha_modificacion);
+                fgHijo.controls['id_usuario_creador'].setValue(hijo.id_usuario_creador);
+                fgHijo.controls['id_usuario_modificador'].setValue(hijo.id_usuario_modificador);
+                fgHijo.controls['id_usuario_asignado'].setValue(hijo.id_usuario_asignado);
+                fgHijo.controls['descripcion'].setValue(hijo.descripcion);
+                fgHijo.controls['id_articulo_padre'].setValue(hijo.id_articulo_padre);
+                
+                index = index +1;
+              });
+
+            }
+          }
+    });
+  }
   //#endregion cargaDatos
 
   //#region armadoJSONs
@@ -1286,11 +1305,11 @@ construirFoto(){
     console.log('control de hijo a usar: ', fgHijo)
     var d = new Date();
 
-    if(fgHijo.controls['date_entered'].value == null){
+    if(fgHijo.controls['id_tabla_relaciones'].value == null){
       //nuevo
       jsbodyP = {
         
-        "id": fgHijo.controls['idArtHijo'].value,//todo revisar si se duplica
+        /* "id": fgHijo.controls['idArtHijo'].value,//todo revisar si se duplica
         "name": fgHijo.controls['artDesc'].value,
         "date_entered":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
         "date_modified":  d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate(),
@@ -1305,13 +1324,20 @@ construirFoto(){
         "tg01_unidadmedida_id_c": fgHijo.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
         "tg01_unidadmedida_id1_c": fgHijo.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
         "idsustituto": fgHijo.controls['idsustituto'].value, //, codigo de articulo //todo revisar si es part number
-        "tiposustituto": fgHijo.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
+        "tiposustituto": fgHijo.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto */
+
+        "art_rel_id_usuario": "ff413af6-ee5c-11e8-ab85-d050990fe081", //todo usar usuario real
+        "art_rel_nombre": fgHijo.controls['artDesc'].value,// "ART REL 1",
+        "art_rel_descripcion": fgHijo.controls['descripcion'].value,//"ARTICULO RELACIONADO 1",
+        "art_rel_id_articulo": fgHijo.controls['idArtHijo'].value,//"1020-I",
+        "art_rel_id_articulo_padre": this.auxRid,//"102-R",
+        "art_rel_cantidad":fgHijo.controls['cantidad'].value, //1.0005
       }
     }
     
     else{
       jsbodyP = {
-        // "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica
+        /* // "id": fgSustituto.controls['idArtSust'].value,//todo revisar si se duplica
         // "name": fgSustituto.controls['razonSocial'].value,
         "name": fgHijo.controls['artDesc'].value,
         "date_entered": fgHijo.controls['date_entered'].value,
@@ -1327,7 +1353,15 @@ construirFoto(){
         "tg01_unidadmedida_id_c": fgHijo.controls['umArticulo'].value, //1, Id consulta dinámica a tg01_unidadmedida
         "tg01_unidadmedida_id1_c": fgHijo.controls['umSustituto'].value, //1, Id consulta dinámica a tg01_unidadmedida
         "idsustituto": fgHijo.controls['idsustituto'].value, //, codigo de articulo //todo revisar si es part number
-        "tiposustituto": fgHijo.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto
+        "tiposustituto": fgHijo.controls['tipoSustituto'].value, //, S simple, C compuesto, P sustituto */
+        
+        "art_rel_id": fgHijo.controls['id_tabla_relaciones'].value,//"e708cba3-4b30-11e9-9a02-d050990fe081",
+        "art_rel_id_usuario": "ff413af6-ee5c-11e8-ab85-d050990fe081", //todo usar usuario real
+        "art_rel_nombre": fgHijo.controls['artDesc'].value,// "ART REL 1",
+        "art_rel_descripcion": fgHijo.controls['descripcion'].value,//"ARTICULO RELACIONADO 1",
+        "art_rel_id_articulo": fgHijo.controls['idArtHijo'].value,//"1020-I",
+        "art_rel_id_articulo_padre": this.auxRid,//"102-R",
+        "art_rel_cantidad":fgHijo.controls['cantidad'].value, //1.0005
       }
     }
 
@@ -1665,7 +1699,7 @@ construirFoto(){
       // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
       if (hijo.dirty){
         //si tiene x es modificación
-        if (hijo.controls['art_rel_id_articulo_padre'].value != null){
+        if (hijo.controls['id_tabla_relaciones'].value != null){
           this.estadosArticulosHijos.modificados.push(hijo);
         }
         else{
@@ -1681,15 +1715,16 @@ construirFoto(){
 
     this.estadosArticulosHijos.nuevos.forEach(formHijo => {
       console.log('se agregará hijo: ', formHijo);
-      this.guardarArticuloSustituto(formHijo);
+      this.guardarArticuloHijo(formHijo);
     });
 
     this.estadosArticulosHijos.modificados.forEach(formHijo => {
-      this.modificarArticuloSustituto(formHijo);
+      console.log('se modificará hijo: ', formHijo);
+      this.modificarArticuloHijo(formHijo);
     });
 
     this.estadosArticulosHijos.eliminados.forEach(hijoEliminado => {
-      this.eliminarArticuloSustituto(hijoEliminado);
+      this.eliminarArticuloHijo(hijoEliminado);
     });
 
     //reiniciar listas
@@ -1969,12 +2004,10 @@ construirFoto(){
         });
     }
 
-    eliminarArticuloHijo(hijo: any){
-      console.log('Eliminando sust: ', hijo);
+    eliminarArticuloHijo(hijo: string){
+      console.log('Eliminando hijo: ', hijo);
       let jsbody = { 
-        "deleted": 1,
-        "tg01_unidadmedida_id_c": hijo.um,
-        "tg01_unidadmedida_id1_c": hijo.um2
+        "art_rel_id": hijo,//"e708cba3-4b30-11e9-9a02-d050990fe081"
       };
       let jsonbody = JSON.stringify(jsbody);
 

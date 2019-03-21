@@ -431,15 +431,9 @@ construirDeposito(){
 
 construirArticuloHijo(){
   return new FormGroup({ 
-    // 'idArtHijo': new FormControl(null,Validators.required,this.existeArticulo),
-    // 'artDesc': new FormControl(),
-    // 'cantidad': new FormControl(null, Validators.required),
-    "art_rel_id_usuario": new FormControl(),
-    "art_rel_nombre": new FormControl(),
-    "art_rel_descripcion": new FormControl(),
-    "art_rel_id_articulo": new FormControl(null,Validators.required,this.existeArticulo),
-    "art_rel_id_articulo_padre": new FormControl(),
-    "art_rel_cantidad": new FormControl(null, Validators.required),
+    'idArtHijo': new FormControl(null,Validators.required,this.existeArticulo),
+    'artDesc': new FormControl(),
+    'cantidad': new FormControl(null, Validators.required),
   });
 }
 
@@ -1667,7 +1661,7 @@ construirFoto(){
     let listaHijos = <FormArray>this.forma.get(['articulosHijos']);
     (listaHijos.controls).forEach(element => {
       let hijo = <FormGroup>element;
-      console.log('sustituto ', hijo);
+      console.log('hijo ', hijo);
       // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
       if (hijo.dirty){
         //si tiene x es modificación

@@ -15,27 +15,27 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Tipo</mat-label>
           <mat-select (selectionChange)="seleccionarTipo($event.value)" #tipoArt placeholder="Elija una opción" formControlName="tipo">
-            <mat-option value="1">Artículo</mat-option>
-            <mat-option value="2">Item</mat-option>
+            <mat-option value="A">Artículo</mat-option>
+            <mat-option value="I">Item</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Número</mat-label>
-          <input #nroArt matInput placeholder="" type="number" formControlName="nroArticulo">
+          <input #nroArt matInput placeholder="" type="number" formControlName="nroArticulo" value="{{ datosArticulos[0]?.part_number }}">
         </mat-form-field>
       </div>
       <div class="col s12 m12 l6">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Descripción</mat-label>
-          <input matInput placeholder="" formControlName="descripcion">
+          <input matInput placeholder="" formControlName="descripcion" value="{{ datosArticulos[0]?.nombre_producto }}">
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Código alternativo</mat-label>
-          <input matInput placeholder="" type="number" formControlName="codigoAlternativo">
+          <input matInput placeholder="" type="number" formControlName="codigoAlternativo" value="{{ datosArticulos[0]?.codigo_alternativo }}">
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
@@ -795,8 +795,14 @@
           </div>
           <div class="col s7 m7 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Descripción</mat-label>
+              <mat-label>Nombre</mat-label>
               <input matInput placeholder="" disabled readonly formControlName="artDesc">
+            </mat-form-field>
+          </div>
+          <div class="col s7 m7 l3">
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+              <mat-label>Descripción</mat-label>
+              <input matInput placeholder="" disabled readonly formControlName="descripcion">
             </mat-form-field>
           </div>
       <!--   <div class="col s12 m6 l2">

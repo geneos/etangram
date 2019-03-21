@@ -79,9 +79,13 @@
       <div class="col s4 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Tipo Artículo</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="idTipoArticulo">
+          <mat-select placeholder="Elija una opción" formControlName="idTipoArticulo" value="I">
+            <!-- <mat-option value="1">Insumos</mat-option>
             <mat-option value="1">Insumos</mat-option>
-            <mat-option value="2">Productos terminados</mat-option>
+            <mat-option value="2">Productos terminados</mat-option> -->
+            <mat-option value="I">Insumo</mat-option>
+            <mat-option value="P">Producto Terminado</mat-option>
+            <mat-option value="T">Producto de Tercero</mat-option>
           </mat-select>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>

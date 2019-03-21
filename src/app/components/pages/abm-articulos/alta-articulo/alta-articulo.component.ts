@@ -783,11 +783,11 @@ construirFoto(){
 
     this._articulosService.getArticulo(this.id, this.token)
       .subscribe( respA => {
-        console.log(respA)
-        console.log(this.id)
+        console.log(' respuesta de buscar articulo: ', respA)
+        console.log(' id de articulo buscado: ', this.id)
         this.datosArt = respA
         this.datosArticulos = this.datosArt.dataset
-        console.log(this.datosArticulos[0])
+        console.log('Datos de articulo: ', this.datosArticulos[0])
       })
       
     this.obtenerDatosArrays();
@@ -1516,8 +1516,8 @@ construirFoto(){
     this.guardarProveedores();
     this.guardarDepositos();
     this.guardarSustitutos();
+    this.guardarHijos();
     //todo agregar
-    // this.guardarHijos();
     // this.guardarFotos();
   }
 
@@ -1665,7 +1665,7 @@ construirFoto(){
       // console.log('Estado del formgroup(sucio?, valido?, status?): ', cuenta.dirty, cuenta.valid, cuenta.status)
       if (hijo.dirty){
         //si tiene x es modificación
-        if (hijo.controls['date_entered'].value != null){
+        if (hijo.controls['art_rel_id_articulo_padre'].value != null){
           this.estadosArticulosHijos.modificados.push(hijo);
         }
         else{
@@ -2658,9 +2658,10 @@ construirFoto(){
       case 'c_proveedores':
         atributoAUsar = 'codigo';
         break;
-      case 'c_articulos':
-        atributoAUsar = 'idcategoria';
-        break;
+      // case 'c_articulos':
+      //   // atributoAUsar = 'idcategoria';
+      //   atributoAUsar = '';
+      //   break;
       default:
         atributoAUsar = 'id';
         // atributoDesc = 'name';

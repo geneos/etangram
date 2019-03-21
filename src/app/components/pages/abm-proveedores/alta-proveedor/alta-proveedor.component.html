@@ -1,9 +1,12 @@
+<!-- <pre>A cargar: {{partesACargar}}</pre>
+<pre>Cargado: {{partesCargadas}}</pre>
+<pre>Son distintos? {{(partesACargar != partesCargadas)}}</pre> -->
 <h2>PROVEEDORES</h2>
 <button [routerLink]="['/proveedores']" class="mine-btnbig-grey" mat-flat-button>
   VOLVER A LISTA
 </button>
 
-<app-loading *ngIf="loading"></app-loading>
+<app-loading *ngIf="loading || (partesACargar != partesCargadas)"></app-loading>
 
 <form [formGroup]="forma" (ngSubmit)="guardarProveedor()" novalidate="novalidate">
 

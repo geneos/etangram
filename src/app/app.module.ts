@@ -77,6 +77,7 @@ import { EvidenciasComponent } from './components/shared/modals/evidencias/evide
 import { RegistroEvidenciaComponent } from './components/pages/registro-evidencia/registro-evidencia.component';
 import { FormulariosComponent } from './components/shared/modals/formularios/formularios.component';
 import { CargaFormularioComponent } from './components/pages/carga-formulario/carga-formulario.component';
+import { ConfirmarComponent } from './components/shared/modals/confirmar/confirmar.component';
 
 
 @NgModule({
@@ -130,6 +131,7 @@ import { CargaFormularioComponent } from './components/pages/carga-formulario/ca
     RegistroEvidenciaComponent,
     FormulariosComponent,
     CargaFormularioComponent,
+    ConfirmarComponent,
   ],
   imports: [
     BrowserModule,

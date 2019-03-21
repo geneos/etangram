@@ -6,19 +6,19 @@
 </button>
 <mat-menu #rootMenu="matMenu">
   <!-- <button mat-menu-item (click)="$event.stopPropagation();" [matMenuTriggerFor]="subMenu"> -->
- <button type="button" *ngIf="permisos.permiso_crear" mat-menu-item>
+  <button type="button" (click)="nuevo()" *ngIf="!permisos.permiso_crear" mat-menu-item>
     NUEVO
   </button>
-  <button type="button" *ngIf="permisos.permiso_editar" mat-menu-item>
+  <button type="button" (click)="editar()" *ngIf="!permisos.permiso_editar" mat-menu-item>
     EDITAR
   </button>
-  <button type="button" *ngIf="permisos.permiso_mostrar" mat-menu-item>
+  <button type="button" (click)="ver()" *ngIf="!permisos.permiso_mostrar" mat-menu-item>
     VISUALIZAR
   </button>
-  <button type="button" *ngIf="permisos.permiso_borrar" mat-menu-item>
+  <button type="button" (click)="eliminar()" *ngIf="!permisos.permiso_borrar" mat-menu-item>
     ELIMINAR
   </button>
-  <button type="button" *ngIf="permisos.permiso_exportar" mat-menu-item>
+  <button type="button" (click)="exportar()" *ngIf="!permisos.permiso_exportar" mat-menu-item>
     EXPORTAR
   </button>
 </mat-menu>
@@ -132,3 +132,4 @@
   <!-- <app-cd-avanzado></app-cd-avanzado> -->
   <app-cd-tabla></app-cd-tabla>
   <!-- <app-cons-din-n2></app-cons-din-n2> -->
+  <app-confirmar></app-confirmar>

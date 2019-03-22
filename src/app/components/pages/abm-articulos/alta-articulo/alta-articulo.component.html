@@ -47,7 +47,7 @@
       <div class="col s3 m3 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo</mat-label>
-          <input (keyup)="buscarGrupo()" (changed)="buscarGrupo()" #codGrupo matInput placeholder="" formControlName="idGrupo">
+          <input (keyup)="buscarGrupo()" (changed)="buscarGrupo()" #codGrupo matInput placeholder="" formControlName="idGrupo" value="{{ datosArticulos[0]?.categoriaproducto }}">
           <mat-hint *ngIf="forma.controls['idGrupo'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
@@ -72,14 +72,14 @@
           <!-- <input matInput placeholder="" formControlName="nombreGrupo" value="{{ resultadoidGrupo?.name }}"> -->
           <!-- <input matInput readonly placeholder="" value="{{ resultadoidGrupo?.name }}"> -->
           <!-- <input matInput readonly placeholder="" value="{{ grupo?.name }}"> -->
-          <input matInput readonly formControlName="nombreGrupo" placeholder="">
+          <input matInput readonly formControlName="nombreGrupo" placeholder="" >
         </mat-form-field>
       </div>
 
       <div class="col s4 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Tipo Artículo</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="idTipoArticulo" value="I">
+          <mat-select placeholder="Elija una opción" formControlName="idTipoArticulo" value="{{ datosArticulos[0]?.tipo }}">
             <!-- <mat-option value="1">Insumos</mat-option>
             <mat-option value="1">Insumos</mat-option>
             <mat-option value="2">Productos terminados</mat-option> -->
@@ -93,7 +93,7 @@
       <div class="col s4 m4 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Procedencia</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="procedencia">
+          <mat-select placeholder="Elija una opción" formControlName="procedencia" value="{{ datosArticulos[0]?.procedencia }}">
             <mat-option value="1">Nacional</mat-option>
             <mat-option value="2">Importado</mat-option>
           </mat-select>
@@ -108,7 +108,7 @@
       <div class="col s3 m3 l1">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;" *ngIf="tipoArt.value!=2">
           <mat-label>Marca</mat-label>
-          <input (keyup)="buscarMarca()" (changed)="buscarMarca()" #codMarca matInput placeholder="" formControlName="idMarca">
+          <input (keyup)="buscarMarca()" (changed)="buscarMarca()" #codMarca matInput placeholder="" formControlName="idMarca" value="{{ datosArticulos[0]?.id_marcas }}">
           <mat-hint *ngIf="forma.controls['idMarca'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
@@ -208,7 +208,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Estado</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="estado">
+          <mat-select placeholder="Elija una opción" formControlName="estado" value="{{ datosArticulos[0]?.estado }}">
             <mat-option value="1">Pendiente</mat-option>
             <mat-option value="2">Activo</mat-option>
             <mat-option value="3">Inactivo</mat-option>
@@ -220,7 +220,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Categoría de Bloqueo</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="categoria_bloqueo">
+          <mat-select placeholder="Elija una opción" formControlName="categoria_bloqueo" value="{{ datosArticulos[0]?.id_categoriabloqueo }}">
             <mat-option *ngFor="let aux of catsBloqueoAll" [value]="aux.id">
               {{aux.name}}
             </mat-option>
@@ -230,13 +230,13 @@
       </div>
       <div class="row">
         <div class="col s12 m4 l4">
-            <mat-checkbox formControlName="categoriaVenta" *ngIf="tipoArt.value!=2">Categoría Ventas</mat-checkbox>
+            <mat-checkbox formControlName="categoriaVenta" *ngIf="tipoArt.value!=2" value="{{ datosArticulos[0]?.categoriaVenta }}">Categoría Ventas</mat-checkbox>
         </div>
         <div class="col s12 m4 l4">
-            <mat-checkbox formControlName="categoriaInventario" *ngIf="tipoArt.value!=2">Categoría Inventario</mat-checkbox>
+            <mat-checkbox formControlName="categoriaInventario" *ngIf="tipoArt.value!=2" value="{{ datosArticulos[0]?.categoriaInventario }}">Categoría Inventario</mat-checkbox>
         </div>
         <div class="col s12 m4 l4">
-            <mat-checkbox formControlName="categoriaCompra" *ngIf="tipoArt.value!=2">Categoría Compra</mat-checkbox>
+            <mat-checkbox formControlName="categoriaCompra" *ngIf="tipoArt.value!=2" value="{{ datosArticulos[0]?.categoriaCompra }}">Categoría Compra</mat-checkbox>
         </div>
       </div>
 
@@ -295,7 +295,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Precio última compra</mat-label>
-          <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltCompra">
+          <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltCompra" value="{{ datosArticulos[0]?.precioultcompra }}">
           <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
@@ -303,7 +303,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Fecha última compra</mat-label>
-          <input matInput readonly [matDatepicker]="picker1" placeholder="" formControlName="fechaUltCompra">
+          <input matInput readonly [matDatepicker]="picker1" placeholder="" formControlName="fechaUltCompra" value="{{ datosArticulos[0]?.fechaultcompra }}">
           <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>
@@ -311,7 +311,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Moneda</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra">
+          <mat-select placeholder="Elija una opción" formControlName="idMonedaUltCompra" value="{{ datosArticulos[0]?.id_monedas }}">
             <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
               {{aux.name}}
             </mat-option>
@@ -322,14 +322,14 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cantidad óptima de compra</mat-label>
-          <input matInput placeholder="" type="number" formControlName="cantidadOptimaDeCompra">
+          <input matInput placeholder="" type="number" formControlName="cantidadOptimaDeCompra" value="{{ datosArticulos[0]?.cantidadoptimadecompra }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Precio última Venta</mat-label>
-            <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltVenta">
+            <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltVenta" value="{{ datosArticulos[0]?.precioultventa }}">
             <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
@@ -337,7 +337,7 @@
       <div class="col s6 m6 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Fecha última venta</mat-label>
-            <input matInput readonly [matDatepicker]="picker2" placeholder="" formControlName="fechaUltVenta">
+            <input matInput readonly [matDatepicker]="picker2" placeholder="" formControlName="fechaUltVenta" value="{{ datosArticulos[0]?.fechaUltVenta }}">
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker #picker2></mat-datepicker>
           </mat-form-field>
@@ -345,7 +345,7 @@
       <div class="col s6 m6 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Moneda</mat-label>
-            <mat-select placeholder="Elija una opción" formControlName="idMonedaUltVenta">
+            <mat-select placeholder="Elija una opción" formControlName="idMonedaUltVenta" value="{{ datosArticulos[0]?.id_monedas_1 }}">
               <mat-option *ngFor="let aux of monedasAll" [value]="aux.id">
                 {{aux.name}}
               </mat-option>
@@ -483,7 +483,7 @@
       <div class="col s6 m6 l3" *ngIf="tipoArt.value!=2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo de referencia contable</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="idGrupoRefContArticulo">
+          <mat-select placeholder="Elija una opción" formControlName="idGrupoRefContArticulo" value="{{ datosArticulos[0]?.idRefC }}">
             <mat-option *ngFor="let aux of gruposRefContableArticuloAll" [value]="aux.id">
               {{aux.name}}
             </mat-option>
@@ -493,7 +493,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Alicuota IVA</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="idAlicuotaIva">
+          <mat-select placeholder="Elija una opción" formControlName="idAlicuotaIva" value="{{ datosArticulos[0]?.idalicuota }}">
             <mat-option *ngFor="let aux of alicuotasAll" [value]="aux.id">
               {{aux.name}}
             </mat-option>
@@ -503,7 +503,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Alicuota Imp. Internos</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="idAlicuotaImpInt">
+          <mat-select placeholder="Elija una opción" formControlName="idAlicuotaImpInt" value="{{ datosArticulos[0]?.idalicuota1 }}">
             <mat-option *ngFor="let aux of alicuotas2All" [value]="aux.id">
               {{aux.name}}
             </mat-option>
@@ -513,7 +513,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Área de aplicación Alicuota II</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionAlicuota">
+          <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionAlicuota" value="{{ datosArticulos[0]?.Area_AAII }}">
             <mat-option value="0">No Aplica</mat-option>
             <mat-option value="1">Compras</mat-option>
             <mat-option value="2">Ventas</mat-option>
@@ -524,7 +524,7 @@
       <div class="col s6 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Área de aplicación de Importe Fijo II</mat-label>
-          <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo">
+          <mat-select placeholder="Elija una opción" formControlName="IIAreaAplicacionImporteFijo" value="{{ datosArticulos[0]?.Area_AIFII }}">
             <mat-option value="0">No Aplica</mat-option>
             <mat-option value="1">Compras</mat-option>
             <mat-option value="2">Ventas</mat-option>
@@ -533,12 +533,12 @@
         </mat-form-field>
       </div>
       <div class="col s6 m4 l4">
-        <mat-checkbox *ngIf="tipoArt.value!=2" formControlName="IncorporarIIalCosto">Incorporar al costo</mat-checkbox>
+        <mat-checkbox *ngIf="tipoArt.value!=2" formControlName="IncorporarIIalCosto" value="{{ datosArticulos[0]?.incorporaCosto }}">Incorporar al costo</mat-checkbox>
       </div>
       <div class="col s12 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Impuesto Interno Fijo</mat-label>
-          <input matInput placeholder="" type="number" formControlName="impuestoInternoFijo">
+          <input matInput placeholder="" type="number" formControlName="impuestoInternoFijo" value="{{ datosArticulos[0]?.impuesto_intFijo }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -552,13 +552,13 @@
     </mat-expansion-panel-header>
     <div class="row" style="margin-top:15px;">
         <div class="col s12 m4 l4">
-            <mat-checkbox formControlName="gestionDespacho">Gestión Despacho</mat-checkbox>
+            <mat-checkbox formControlName="gestionDespacho" value="{{ datosArticulos[0]?.gestion_despacho }}">Gestión Despacho</mat-checkbox>
         </div>
       <div class="col s12 m4 l4">
-          <mat-checkbox formControlName="gestionLote">Gestión Lote</mat-checkbox>
+          <mat-checkbox formControlName="gestionLote" value="{{ datosArticulos[0]?.gestion_lote }}">Gestión Lote</mat-checkbox>
       </div>
       <div class="col s12 m4 l4">
-          <mat-checkbox formControlName="gestionSerie">Gestión Serie</mat-checkbox>
+          <mat-checkbox formControlName="gestionSerie" value="{{ datosArticulos[0]?.gestion_serie }}">Gestión Serie</mat-checkbox>
       </div>
     </div>
   </mat-expansion-panel>
@@ -570,27 +570,27 @@
 
     <div class="row" style="margin-top:15px;">
       <div class="col s12 m4 l3" style="padding-bottom: 15px">
-        <mat-checkbox #adminStock formControlName="administraStock">Administra Stock</mat-checkbox>
+        <mat-checkbox #adminStock formControlName="administraStock" value="{{ datosArticulos[0]?.admStock }}">Administra Stock</mat-checkbox>
       </div>
       <!--  *ngIf="adminStock.checked==true" -->
       <div class="col s6 m4 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Ideal</mat-label>
-          <input matInput placeholder="" type="number" formControlName="stockIdeal">
+          <input matInput placeholder="" type="number" formControlName="stockIdeal" value="{{ datosArticulos[0]?.stockIdeal }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m4 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock Máximo</mat-label>
-          <input matInput placeholder="" type="number" formControlName="stockMaximo">
+          <input matInput placeholder="" type="number" formControlName="stockMaximo" value="{{ datosArticulos[0]?.stockMax }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m4 l3" *ngIf="adminStock.checked">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Stock de Reposición</mat-label>
-          <input matInput placeholder="" type="number" formControlName="stockReposicion">
+          <input matInput placeholder="" type="number" formControlName="stockReposicion" value="{{ datosArticulos[0]?.stockRepo }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -839,7 +839,7 @@
         <div class="col s5 m5 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Dimensiones</mat-label>
-              <mat-select placeholder="Elija una opción" formControlName="Dimensiones">
+              <mat-select placeholder="Elija una opción" formControlName="Dimensiones" value="{{ datosArticulos[0]?.dimensiones }}">
                 <mat-option value="0">No definido</mat-option>
                 <mat-option value="1">2 dimensiones</mat-option>
                 <mat-option value="2">3 dimensiones</mat-option>
@@ -848,12 +848,12 @@
         </div>
         <!-- <div class="col s3 m3 l2" style="margin-bottom:20px;"> -->
         <div class="col s3 m3 l2" style="padding-top:15px;">
-            <mat-checkbox formControlName="Pesable">Pesable</mat-checkbox>
+            <mat-checkbox formControlName="Pesable" value="{{ datosArticulos[0]?.pesable }}">Pesable</mat-checkbox>
         </div>
         <div class="col s4 m4 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Pesable Estandar</mat-label>
-              <mat-select placeholder="Elija una opción" formControlName="Pesable_Estandar">
+              <mat-select placeholder="Elija una opción" formControlName="Pesable_Estandar" value="{{ datosArticulos[0]?.pesableE }}">
                 <mat-option value="1">EAN13</mat-option>
                 <mat-option value="2">EAN14</mat-option>
                 <mat-option value="3">GS1</mat-option>
@@ -863,7 +863,7 @@
         <div class="col s6 m6 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Unidad medida base</mat-label>
-              <mat-select placeholder="Elija una opción" formControlName="unidadMedidaBase">
+              <mat-select placeholder="Elija una opción" formControlName="unidadMedidaBase" value="{{ datosArticulos[0]?.idUM }}">
                 <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
                   {{aux.name}}
                 </mat-option>
@@ -874,7 +874,7 @@
         <div class="col s6 m6 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Unidad medida LP</mat-label>
-              <mat-select placeholder="Elija una opción" formControlName="unidadMedidaLP">
+              <mat-select placeholder="Elija una opción" formControlName="unidadMedidaLP" value="{{ datosArticulos[0]?.idUM1 }}">
                 <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
                   {{aux.name}}
                 </mat-option>
@@ -884,26 +884,26 @@
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Largo</mat-label>
-              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="largo">
+              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="largo" value="{{ datosArticulos[0]?.largo }}">
               <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Ancho</mat-label>
-              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="ancho">
+              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="ancho" value="{{ datosArticulos[0]?.ancho }}">
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Profundidad</mat-label>
-              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="profundidad">
+              <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="profundidad" value="{{ datosArticulos[0]?.profundo }}">
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>m3</mat-label>
-              <input matInput placeholder="" formControlName="m3" readonly>
+              <input matInput placeholder="" formControlName="m3" value="{{ datosArticulos[0]?.m3 }}" readonly >
             </mat-form-field>
         </div>
     </div>

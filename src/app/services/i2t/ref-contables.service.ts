@@ -103,5 +103,19 @@ export class RefContablesService {
     return this.http.put( url, body, { headers });
   }
 
+  deleteRefContable( id:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let jsbody = {"deleted": 1}
+    let jsonbody = JSON.stringify(jsbody);
+
+    let query = `api/tg01_referenciascontables/${ id }`;
+    let url = this.preUrl + query;
+
+    return this.http.put( url, jsonbody, { headers });
+  }
 
 }

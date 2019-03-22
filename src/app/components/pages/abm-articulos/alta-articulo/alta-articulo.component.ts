@@ -172,6 +172,9 @@ export class AltaArticuloComponent implements OnInit {
     
     console.log(this.storage.get(TOKEN) || 'Local storage is empty');
     this.token = this.storage.get(TOKEN);            
+    
+    this.loading = true;
+    this.partesCargadas = 0;  
 
     this.forma = this.FormBuilder.group({
       tipo: new FormControl(1,Validators.required),
@@ -483,6 +486,7 @@ construirFoto(){
     this.buscarUnidades();
     this.buscarAtributos();
       //this.buscarValoresAtributos();
+    this.loading = false;
   }
 
   //#region botonesArray
@@ -756,13 +760,13 @@ construirFoto(){
                 // this['obsValoresAtributos'+indice] = new Observable(this.valoresAtributosArticuloAll[indice]);
                 this['obsValoresAtributos'+indice] = of(this.valoresAtributosArticuloAll[indice] as any);
                 
-                this.partesCargadas = this.partesCargadas +1;
               } else {
                 this.valoresAtributosArticuloAll[indice] = null;
               }
             }
-      });
-    });
+          });
+        });
+        this.partesCargadas = this.partesCargadas +1; 
   }
   //#endregion datosCombobox
 
@@ -775,41 +779,57 @@ construirFoto(){
       .subscribe( respA => {
         console.log(' respuesta de buscar articulo: ', respA)
         console.log(' id de articulo buscado: ', this.id)
-        this.datosArt = respA
-        this.datosArticulos = this.datosArt.dataset
-        console.log('Datos de articulo: ', this.datosArticulos[0])
-        this.forma.controls['tipo'].setValue(this.datosArticulos[0].tipo);
-   //     this.forma.controls['nroArticulo'].setValue(this.datosArticulos[0].part_number);
-   //     this.forma.controls['descripcion'].setValue(this.datosArticulos[0].nombre_producto);
-   //     this.forma.controls['codigoAlternativo'].setValue(this.datosArticulos[0].codigo_alternativo);
-    //     this.forma.controls['codigoBarra'].setValue(this.datosArticulos[0].codigobarra);
-    //     this.forma.controls['idGrupo'].setValue(this.datosArticulos[0].categoriaproducto);
-    //  //   this.forma.controls['idTipoArticulo'].setValue(this.datosArticulos[0].id)
-    //     this.forma.controls['procedencia'].setValue(this.datosArticulos[0].procedencia);
-    //     this.forma.controls['idMarca'].setValue(this.datosArticulos[0].id_marcas);
-    //     this.forma.controls['estado'].setValue(this.datosArticulos[0].estado);
-    //     this.forma.controls['categoria_bloqueo'].setValue(this.datosArticulos[0].id_categoriabloqueo);
-    //     this.forma.controls['categoriaVenta'].setValue(this.datosArticulos[0].categoriaventa);
-    //     this.forma.controls['categoriaInventario'].setValue(this.datosArticulos[0].categoriainventario);
-    //     this.forma.controls['categoriaCompra'].setValue(this.datosArticulos[0].categoriacompra);
-    //     // DATOS OBSERVACIONES
-    //     this.forma.controls['obsRegistroAutoVta'].setValue(this.datosArticulos[0].obsregistroautovta);
-    //     this.forma.controls['obsRegistroAutoCpa'].setValue(this.datosArticulos[0].obsauditoriacpa);
-    //     this.forma.controls['obsIngresoVta'].setValue(this.datosArticulos[0].obsingresovta);
-    //     this.forma.controls['obsIngresoCpa'].setValue(this.datosArticulos[0].obsingresocpa);
-    //     this.forma.controls['obsImprimeVta'].setValue(this.datosArticulos[0].obsimprimevta);
-    //     this.forma.controls['obsAuditoriaVta'].setValue(this.datosArticulos[0].obsauditoriavta);
-    //     this.forma.controls['obsAuditoriaCpa'].setValue(this.datosArticulos[0].obsauditoriacpa);
-    //     //DATOS COMPRAS Y VENTAS
-    //     this.forma.controls['precioUltCompra'].setValue(this.datosArticulos[0].precioultcompra);
-    //     this.forma.controls['fechaUltCompra'].setValue(this.datosArticulos[0].fechaultcompra);
-    //     this.forma.controls['idMonedaUltCompra'].setValue(this.datosArticulos[0].id_monedas);
-    //     this.forma.controls['cantidadOptimaDeCompra'].setValue(this.datosArticulos[0].cantidadoptimadecompra);
-    //     this.forma.controls['precioUltVenta'].setValue(this.datosArticulos[0].precioultventa);
-    //     this.forma.controls['fechaUltVenta'].setValue(this.datosArticulos[0].fechaultventa);
-    //     this.forma.controls['idMonedaUltVenta'].setValue(this.datosArticulos[0].id_monedas_1);
-    //     //DATOS IMPOSITIVOS
-        
+        this.datosArt = respA;
+        if(this.datosArt.returnset[0].RCode=="-6003"){
+          //token invalido
+          this.datosArticulos = null;
+          this.forma.disable();
+          this.openSnackBar('Sesión expirada.')
+        } else {
+          console.log('Datos de articulo: ', this.datosArticulos[0])
+          if(this.datosArt.dataset.length>0){
+            this.datosArticulos = this.datosArt.dataset
+            this.forma.controls['tipo'].setValue(this.datosArticulos[0].tipo);
+            this.partesACargar = this.partesACargar + 6; //principal + 5 arrays
+            this.partesCargadas = this.partesCargadas +1;
+
+      //     this.forma.controls['nroArticulo'].setValue(this.datosArticulos[0].part_number);
+      //     this.forma.controls['descripcion'].setValue(this.datosArticulos[0].nombre_producto);
+      //     this.forma.controls['codigoAlternativo'].setValue(this.datosArticulos[0].codigo_alternativo);
+        //     this.forma.controls['codigoBarra'].setValue(this.datosArticulos[0].codigobarra);
+        //     this.forma.controls['idGrupo'].setValue(this.datosArticulos[0].categoriaproducto);
+        //  //   this.forma.controls['idTipoArticulo'].setValue(this.datosArticulos[0].id)
+        //     this.forma.controls['procedencia'].setValue(this.datosArticulos[0].procedencia);
+        //     this.forma.controls['idMarca'].setValue(this.datosArticulos[0].id_marcas);
+        //     this.forma.controls['estado'].setValue(this.datosArticulos[0].estado);
+        //     this.forma.controls['categoria_bloqueo'].setValue(this.datosArticulos[0].id_categoriabloqueo);
+        //     this.forma.controls['categoriaVenta'].setValue(this.datosArticulos[0].categoriaventa);
+        //     this.forma.controls['categoriaInventario'].setValue(this.datosArticulos[0].categoriainventario);
+        //     this.forma.controls['categoriaCompra'].setValue(this.datosArticulos[0].categoriacompra);
+        //     // DATOS OBSERVACIONES
+        //     this.forma.controls['obsRegistroAutoVta'].setValue(this.datosArticulos[0].obsregistroautovta);
+        //     this.forma.controls['obsRegistroAutoCpa'].setValue(this.datosArticulos[0].obsauditoriacpa);
+        //     this.forma.controls['obsIngresoVta'].setValue(this.datosArticulos[0].obsingresovta);
+        //     this.forma.controls['obsIngresoCpa'].setValue(this.datosArticulos[0].obsingresocpa);
+        //     this.forma.controls['obsImprimeVta'].setValue(this.datosArticulos[0].obsimprimevta);
+        //     this.forma.controls['obsAuditoriaVta'].setValue(this.datosArticulos[0].obsauditoriavta);
+        //     this.forma.controls['obsAuditoriaCpa'].setValue(this.datosArticulos[0].obsauditoriacpa);
+        //     //DATOS COMPRAS Y VENTAS
+        //     this.forma.controls['precioUltCompra'].setValue(this.datosArticulos[0].precioultcompra);
+        //     this.forma.controls['fechaUltCompra'].setValue(this.datosArticulos[0].fechaultcompra);
+        //     this.forma.controls['idMonedaUltCompra'].setValue(this.datosArticulos[0].id_monedas);
+        //     this.forma.controls['cantidadOptimaDeCompra'].setValue(this.datosArticulos[0].cantidadoptimadecompra);
+        //     this.forma.controls['precioUltVenta'].setValue(this.datosArticulos[0].precioultventa);
+        //     this.forma.controls['fechaUltVenta'].setValue(this.datosArticulos[0].fechaultventa);
+        //     this.forma.controls['idMonedaUltVenta'].setValue(this.datosArticulos[0].id_monedas_1);
+        //     //DATOS IMPOSITIVOS
+          }
+          else{
+            this.datosArticulos = null;
+            this.forma.disable();
+            this.openSnackBar('El artículo no existe.')
+          }
+        }
       })
       
     this.obtenerDatosArrays();
@@ -1128,16 +1148,26 @@ construirFoto(){
       "campo3": this.forma.controls['idCampo3'].value,
       "estado": this.forma.controls['estado'].value,// "Activo", 
       "cat_b": this.forma.controls['categoria_bloqueo'].value,
-      "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
-      "Obs_auto_cpa":this.forma.controls['obsRegistroAutoCpa'].value, //,0 false , 1 true
-      "Obs_ingr_cpa":this.forma.controls['obsIngresoCpa'].value, //,0 false , 1 true
-      "Obs_ingr_vta": this.forma.controls['obsIngresoVta'].value,//,0 false , 1 true
-      "Obs_imprime_vta": this.forma.controls['obsImprimeVta'].value,//,0 false , 1 true
-      "Obs_auditoria_cpa": this.forma.controls['obsAuditoriaCpa'].value,//,0 false , 1 true
-      "Obs_auditoria_vta": this.forma.controls['obsAuditoriaVta'].value,//,0 false , 1 true
-      "Categoria_vta": this.forma.controls['categoriaVenta'].value,//,0 false , 1 true
-      "Categoria_inventario": this.forma.controls['categoriaInventario'].value,//,0 false , 1 true
-      "Categoria_cpa": this.forma.controls['categoriaCompra'].value,//,0 false , 1 true
+      // "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
+      // "Obs_auto_cpa":this.forma.controls['obsRegistroAutoCpa'].value, //,0 false , 1 true
+      // "Obs_ingr_cpa":this.forma.controls['obsIngresoCpa'].value, //,0 false , 1 true
+      // "Obs_ingr_vta": this.forma.controls['obsIngresoVta'].value,//,0 false , 1 true
+      // "Obs_imprime_vta": this.forma.controls['obsImprimeVta'].value,//,0 false , 1 true
+      // "Obs_auditoria_cpa": this.forma.controls['obsAuditoriaCpa'].value,//,0 false , 1 true
+      // "Obs_auditoria_vta": this.forma.controls['obsAuditoriaVta'].value,//,0 false , 1 true
+      // "Categoria_vta": this.forma.controls['categoriaVenta'].value,//,0 false , 1 true
+      // "Categoria_inventario": this.forma.controls['categoriaInventario'].value,//,0 false , 1 true
+      // "Categoria_cpa": this.forma.controls['categoriaCompra'].value,//,0 false , 1 true
+      "Obs_auto_vta": (this.forma.controls['obsRegistroAutoVta'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Obs_auto_cpa": (this.forma.controls['obsRegistroAutoCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Obs_ingr_cpa": (this.forma.controls['obsIngresoCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Obs_ingr_vta": (this.forma.controls['obsIngresoVta'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Obs_imprime_vta": (this.forma.controls['obsImprimeVta'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Obs_auditoria_cpa": (this.forma.controls['obsAuditoriaCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Obs_auditoria_vta": (this.forma.controls['obsAuditoriaVta'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Categoria_vta": (this.forma.controls['categoriaVenta'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Categoria_inventario": (this.forma.controls['categoriaInventario'].value == true ? 1 : 0), // , 0 false , 1 true
+      "Categoria_cpa": (this.forma.controls['categoriaCompra'].value == true ? 1 : 0), // , 0 false , 1 true
 
       "precio_UCpa":this.forma.controls['precioUltCompra'].value,// 200,
       "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
@@ -1153,14 +1183,14 @@ construirFoto(){
       "idalicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
       "Area_AAII":this.forma.controls['IIAreaAplicacionAlicuota'].value,// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
       "Area_AIFII":this.forma.controls['IIAreaAplicacionImporteFijo'].value,//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
-      "incorporaCosto":this.forma.controls['IncorporarIIalCosto'].value,// 0, 0 false , 1 true
+      "incorporaCosto":(this.forma.controls['IncorporarIIalCosto'].value == true ? 1 : 0),// 0, 0 false , 1 true
       "impuesto_intFijo": this.forma.controls['impuestoInternoFijo'].value,
-      "gestion_despacho":this.forma.controls['gestionDespacho'].value,//0, 0 false , 1 true
-      "gestion_lote":this.forma.controls['gestionLote'].value,// 0,0 false , 1 true
-      "gestion_serie":this.forma.controls['gestionSerie'].value,//0,0 false , 1 true
+      "gestion_despacho":(this.forma.controls['gestionDespacho'].value == true ? 1 : 0),//0, 0 false , 1 true
+      "gestion_lote":(this.forma.controls['gestionLote'].value == true ? 1 : 0),// 0,0 false , 1 true
+      "gestion_serie":(this.forma.controls['gestionSerie'].value == true ? 1 : 0),//0,0 false , 1 true
 
       //datos de stock
-      "admStock": this.forma.controls['administraStock'].value,//0, 0 false , 1 true
+      "admStock": (this.forma.controls['administraStock'].value == true ? 1 : 0),//0, 0 false , 1 true
       "stockIdeal": this.forma.controls['stockIdeal'].value,
       "stockMax": this.forma.controls['stockMaximo'].value,
       "stockRepo":this.forma.controls['stockReposicion'].value,

@@ -48,7 +48,9 @@ export class AltaArticuloComponent implements OnInit {
 
   forma:FormGroup;
   id:any;
-
+  loading: boolean;
+  partesACargar: number = 8; //listas desplegables: 8
+  partesCargadas: number;
   existe:boolean;
 
   fotos:any[]=[{'nroFoto':0},];
@@ -572,6 +574,7 @@ construirFoto(){
   //#endregion botonesArray
 
   //#region datosCombobox
+  //listas desplegables
   buscarMonedas(){
     this._monedaService.getMonedas(this.token )
       .subscribe( dataM => {
@@ -587,6 +590,7 @@ construirFoto(){
             if(this.mData.dataset.length>0){
               this.monedasAll = this.mData.dataset;
               // this.forma.controls['moneda'].setValue(this.moneda.name);
+                this.partesCargadas = this.partesCargadas +1;
             }
             else{
               this.monedasAll = null;
@@ -608,6 +612,7 @@ construirFoto(){
           } else {
             if(this.cbData.dataset.length>0){
               this.catsBloqueoAll = this.cbData.dataset;
+              this.partesCargadas = this.partesCargadas +1;
             } else {
               this.catsBloqueoAll = null;
             }
@@ -627,6 +632,7 @@ construirFoto(){
           } else {
             if(this.grcaData.dataset.length>0){
               this.gruposRefContableArticuloAll = this.grcaData.dataset;
+              this.partesCargadas = this.partesCargadas +1;
             } else {
               this.gruposRefContableArticuloAll = null;
             }
@@ -646,6 +652,7 @@ construirFoto(){
           } else {
             if(this.aliData.dataset.length>0){
               this.alicuotasAll = this.aliData.dataset;
+              this.partesCargadas = this.partesCargadas +1;
             } else {
               this.alicuotasAll = null;
             }
@@ -665,6 +672,7 @@ construirFoto(){
           } else {
             if(this.ali2Data.dataset.length>0){
               this.alicuotas2All = this.ali2Data.dataset;
+              this.partesCargadas = this.partesCargadas +1;
             } else {
               this.alicuotas2All = null;
             }
@@ -684,6 +692,7 @@ construirFoto(){
           } else {
             if(this.umData.dataset.length>0){
               this.unidadesMedidaAll = this.umData.dataset;
+              this.partesCargadas = this.partesCargadas +1;
             } else {
               this.unidadesMedidaAll = null;
             }
@@ -703,6 +712,7 @@ construirFoto(){
           } else {
             if(this.aaData.dataset.length>0){
               this.atributosArticuloAll = this.aaData.dataset;
+              this.partesCargadas = this.partesCargadas +1;
               this.buscarValoresAtributos();
             } else {
               this.atributosArticuloAll = null;
@@ -745,6 +755,8 @@ construirFoto(){
                 this.valoresAtributosArticuloAll[indice] = this.vaaData.dataset;
                 // this['obsValoresAtributos'+indice] = new Observable(this.valoresAtributosArticuloAll[indice]);
                 this['obsValoresAtributos'+indice] = of(this.valoresAtributosArticuloAll[indice] as any);
+                
+                this.partesCargadas = this.partesCargadas +1;
               } else {
                 this.valoresAtributosArticuloAll[indice] = null;
               }
@@ -754,10 +766,10 @@ construirFoto(){
   }
   //#endregion datosCombobox
 
+        // this.partesACargar = this.partesACargar + 6; //principal + 5 arrays
   //#region cargaDatos
   buscarArticulo(){
     console.log('ejecutando buscarArticulo');
-    console.log('todo')
 
     this._articulosService.getArticulo(this.id, this.token)
       .subscribe( respA => {
@@ -824,6 +836,7 @@ construirFoto(){
             this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de fotos asociadas: ', this.respData)
+            this.partesCargadas = this.partesCargadas +1;
             if(this.respData.dataset.length>0){
               this.fotosAll = this.respData.dataset;
               let index = 0;
@@ -868,6 +881,7 @@ construirFoto(){
             this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de depositos asociadas: ', this.respData)
+            this.partesCargadas = this.partesCargadas +1;
             if(this.respData.dataset.length>0){
               this.depositosAll = this.respData.dataset;
               let index = 0;
@@ -915,6 +929,7 @@ construirFoto(){
             this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de proveedores asociadas: ', this.respData)
+            this.partesCargadas = this.partesCargadas +1;
             if(this.respData.dataset.length>0){
               this.proveedoresAll = this.respData.dataset;
               let index = 0;
@@ -966,6 +981,7 @@ construirFoto(){
             this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de sustitutos asociadas: ', this.respData)
+            this.partesCargadas = this.partesCargadas +1;
             if(this.respData.dataset.length>0){
               this.sustitutosAll = this.respData.dataset;
               let index = 0;
@@ -1004,7 +1020,6 @@ construirFoto(){
             }
           }
     });
-
     //cargar datos de articulos hijos
     this._articulosService.getProductosHijos(this.auxRid , this.token )
       .subscribe( data => {
@@ -1017,6 +1032,7 @@ construirFoto(){
             this.openSnackBar('Sesión expirada.')
           } else {
             console.log('respuesta consulta de relacionados: ', this.respData)
+            this.partesCargadas = this.partesCargadas +1;
             if(this.respData.dataset.length>0){
               this.hijosAll = this.respData.dataset;
               let index = 0;
@@ -1030,7 +1046,7 @@ construirFoto(){
                 let fgHijo: FormGroup = <FormGroup>this.forma.get(['articulosHijos', index]);
                 fgHijo.controls['idArtHijo'].setValue(hijo.id_articulo);
                 fgHijo.controls['artDesc'].setValue(hijo.nombre);
-                fgHijo.controls['cantidad'].setValue(hijo.cantidad);
+                fgHijo.controls['cantidad'].setValue(Math.trunc(Number(hijo.cantidad)));
 
                 fgHijo.controls['id_tabla_relaciones'].setValue(hijo.id_tabla_relaciones);
 

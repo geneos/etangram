@@ -972,34 +972,56 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   //#region acciones
   nuevo(){
     console.log('redireccionando a nuevo en "' + this.reportesAll[this.reporteSeleccionado].accion_crear) + '"';
-    this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_crear]);
+    if ((this.reportesAll[this.reporteSeleccionado].accion_crear != null)&&(this.reportesAll[this.reporteSeleccionado].accion_crear != '')){
+      this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_crear]);
+    }
+    else{
+      this.openSnackBar('No se ha especificado un método para Nuevo.');
+    }
     // this.router.navigate(['ref-contables/nuevo']);
   }
   editar(){
     console.log('redireccionando a editar en "' + this.reportesAll[this.reporteSeleccionado].accion_editar) + '"';
     console.log('seleccionado: ', this.selection.selected);
     // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_editar]);
-    if (this.selection.selected.length != 0){
-      // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
-      this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+    if ((this.reportesAll[this.reporteSeleccionado].accion_editar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_editar != '')){
+      if (this.selection.selected.length != 0){
+        // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+        this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+      }
+      else{
+        this.openSnackBar('Debe seleccionar un elemento a editar.')
+      }
     }
     else{
-      this.openSnackBar('Debe seleccionar un elemento a editar.')
+      this.openSnackBar('No se ha especificado un método para Editar.');
     }
   }
   ver(){
-    // console.log('redireccionando a editar en "' + this.reportesAll[this.reporteSeleccionado].accion_editar) + '"';
-    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_editar]);
-    console.log('todo boton de "ver"');
-    this.editar();
+    // console.log('redireccionando a editar en "' + this.reportesAll[this.reporteSeleccionado].accion_mostrar) + '"';
+    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_mostrar]);
+    if ((this.reportesAll[this.reporteSeleccionado].accion_mostrar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_mostrar != '')){
+      // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_mostrar, this.selection.selected[0]['id']]);
+      console.log('todo boton de "ver", usando "editar"');
+      this.editar();
+    }
+    else{
+      this.openSnackBar('No se ha especificado un método para Ver.');
+    }
   }
   eliminar(){
     if (this.selection.selected.length != 0){
       // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
-      console.log('confirmando con el usuario');
-      this.ngxSmartModalService.resetModalData('confirmar');
-      this.ngxSmartModalService.setModalData('¿Está seguro de que desea eliminar el o los elementos seleccionados?', 'confirmar');
-      this.ngxSmartModalService.open('confirmar');
+      if ((this.reportesAll[this.reporteSeleccionado].accion_borrar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_borrar != '')){
+        // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_borrar]);
+        console.log('confirmando con el usuario');
+        this.ngxSmartModalService.resetModalData('confirmar');
+        this.ngxSmartModalService.setModalData('¿Está seguro de que desea eliminar el o los elementos seleccionados?', 'confirmar');
+        this.ngxSmartModalService.open('confirmar');
+      }
+      else{
+        this.openSnackBar('No se ha especificado un método para Borrar.');
+      }
     }
     else{
       this.openSnackBar('Debe seleccionar uno o más elementos a eliminar.')
@@ -1010,9 +1032,14 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_borrar]);
   }
   exportar(){
-    console.log('redireccionando a exportar en "' + this.reportesAll[this.reporteSeleccionado].accion_exportar) + '"';
-    console.log('todo boton de "exportar"');
-    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_exportar]);
+    if ((this.reportesAll[this.reporteSeleccionado].accion_exportar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_exportar != '')){
+      console.log('redireccionando a exportar en "' + this.reportesAll[this.reporteSeleccionado].accion_exportar) + '"';
+      console.log('todo boton de "exportar"');
+      // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_exportar]);
+    }
+    else{
+      this.openSnackBar('No se ha especificado un método para Exportar.');
+    }
   }
   //#endregion acciones
 }

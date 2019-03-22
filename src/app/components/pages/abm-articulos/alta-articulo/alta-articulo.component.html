@@ -3,6 +3,8 @@
   VOLVER A LISTA
 </button>
 
+<app-loading *ngIf="loading || (partesACargar != partesCargadas)"></app-loading>
+
 <form [formGroup]="forma" (ngSubmit)="guardarArticulo()" novalidate="novalidate">
 
   <mat-expansion-panel [expanded]=true [disabled]=false style="margin-top:10px;">
@@ -802,7 +804,7 @@
           <div class="col s7 m7 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Descripción</mat-label>
-              <input matInput placeholder="" disabled readonly formControlName="descripcion">
+              <input matInput placeholder="" disabled formControlName="descripcion">
             </mat-form-field>
           </div>
       <!--   <div class="col s12 m6 l2">
@@ -818,7 +820,7 @@
               <input matInput placeholder="" type="number" formControlName="cantidad">
             </mat-form-field>
           </div>
-          <div class="col s4 m4 l2">
+          <div class="col s1 m1 l1">
             <button type="button" (click)="deleteArtRelacion(i)" class="mine-btnbig" mat-mini-fab style="font-size:20px !important;">
               -
             </button>

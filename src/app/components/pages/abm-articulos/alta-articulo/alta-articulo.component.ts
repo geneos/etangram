@@ -798,7 +798,12 @@ construirFoto(){
             this.forma.controls['idAlicuotaIva'].setValue(this.datosArticulos[0].id_alicuotas);
             this.forma.controls['idAlicuotaImpInt'].setValue(this.datosArticulos[0].id_alicuotas_1);
             this.forma.controls['Pesable'].setValue(this.datosArticulos[0].pesable);
-           
+            
+            setTimeout(() => {
+              this.buscarGrupo();
+              this.buscarMarca();
+            });
+
             this.partesACargar = this.partesACargar + 6; //principal + 5 arrays
             this.partesCargadas = this.partesCargadas +1;
 
@@ -2648,7 +2653,8 @@ construirFoto(){
             this.forma.disable();
             this.openSnackBar('Sesión expirada.')
           } else {
-          // console.log('resultado buscar grupo para base ', this.gData)
+            console.log('buscar grupo para base con :', this.forma.controls['idGrupo'].value)
+          console.log('resultado buscar grupo para base ', this.gData)
 
           if(this.gData.dataset.length>0){
             this.grupo = this.gData.dataset[0];
@@ -2687,7 +2693,8 @@ construirFoto(){
             this.forma.disable();
             this.openSnackBar('Sesión expirada.')
           } else {
-          // console.log('resultado buscar grupo para base ', this.marData)
+            console.log('buscar marca para base con :', this.forma.controls['idMarca'].value)
+          console.log('resultado buscar marca para base :', this.marData)
 
           if(this.marData.dataset.length>0){
             this.marca = this.marData.dataset[0];

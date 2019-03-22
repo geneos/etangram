@@ -2,6 +2,8 @@
 <pre>a cargar: {{partesACargar}}</pre>
 <pre>Cargadas: {{partesCargadas}}</pre>
 <pre>Iguales: {{(partesCargadas==partesACargar)}}</pre> -->
+<pre *ngIf="marca">marca: {{marca}}</pre>
+<!-- <pre>marca: {{marca.name}}</pre> -->
 <h2>ARTÍCULOS</h2>
 <button [routerLink]="['/articulos']" class="mine-btnbig-grey" mat-flat-button>
   VOLVER A LISTA
@@ -54,6 +56,7 @@
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo</mat-label>
           <input (keyup)="buscarGrupo()" (changed)="buscarGrupo()" #codGrupo matInput placeholder="" formControlName="idGrupo">
+          <!-- <input (keyup)="buscarGrupo()" #codGrupo matInput placeholder="" formControlName="idGrupo" value="{{ datosArticulos[0]?. }}"> -->
           <mat-hint *ngIf="forma.controls['idGrupo'].status == 'PENDING'">
             Buscando código...
           </mat-hint>
@@ -301,7 +304,7 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Precio última compra</mat-label>
-          <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltCompra" value="{{ datosArticulos[0]?.precioultcompra }}">
+          <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltCompra" value="{{ datosArticulos[0]?.precioultcompra | number:'1.2-2' }}">
           <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
@@ -328,14 +331,14 @@
       <div class="col s6 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cantidad óptima de compra</mat-label>
-          <input matInput placeholder="" type="number" formControlName="cantidadOptimaDeCompra" value="{{ datosArticulos[0]?.cantidadoptimadecompra }}">
+          <input matInput placeholder="" type="number" formControlName="cantidadOptimaDeCompra" value="{{ datosArticulos[0]?.cantidadoptimadecompra | number:'1.2-2' }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
       <div class="col s6 m6 l3">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Precio última Venta</mat-label>
-            <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltVenta" value="{{ datosArticulos[0]?.precioultventa }}">
+            <input matInput placeholder="" style="text-align:right;" type="number" formControlName="precioUltVenta" value="{{ datosArticulos[0]?.precioultventa | number:'1.2-2' }}">
             <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
@@ -544,7 +547,7 @@
       <div class="col s12 m4 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Impuesto Interno Fijo</mat-label>
-          <input matInput placeholder="" type="number" formControlName="impuestoInternoFijo" value="{{ datosArticulos[0]?.impuestoInternoFijo }}">
+          <input matInput placeholder="" type="number" formControlName="impuestoInternoFijo" value="{{ datosArticulos[0]?.impuestoInternoFijo | number:'1.2-2' }}">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
@@ -633,7 +636,7 @@
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </button> -->
             <button type="button" class="mine-btnforms" mat-flat-button 
-            (click)="abrirConsulta('c_depositos', ['depositos', i], 'tg01_depositos_id_c', 'name', 'openSnackBar', i)">
+            (click)="abrirConsulta('tg01_depositos', ['depositos', i], 'tg01_depositos_id_c', 'name', 'openSnackBar', i)">
               <i class="material-icons" style="font-size:20px;">more_horiz</i>
             </button>
           </div>
@@ -926,7 +929,7 @@
       </div>
       <div class="col s2 m2 l1" style="margin-top:10px;">
         <button type="button" class="mine-btnforms" mat-flat-button 
-         (click)="abrirConsulta('c_unidadmedida', [], 'umCompras', 'umComprasDesc', 'openSnackBar', i)">
+         (click)="abrirConsulta('tg01_unidadmedida', [], 'umCompras', 'umComprasDesc', 'openSnackBar', i)">
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>

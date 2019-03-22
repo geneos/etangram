@@ -1012,6 +1012,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   eliminar(){
     if (this.selection.selected.length != 0){
       // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+      this.reportesAll[this.reporteSeleccionado].accion_borrar = 'nombreServicio';
       if ((this.reportesAll[this.reporteSeleccionado].accion_borrar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_borrar != '')){
         // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_borrar]);
         console.log('confirmando con el usuario');

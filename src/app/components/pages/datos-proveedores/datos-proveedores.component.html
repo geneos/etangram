@@ -59,7 +59,7 @@
         <!-- Fecha Column -->
         <ng-container matColumnDef= "descripcion">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Descripción </th>
-          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Impuesto}} </td>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Observaciones}} </td>
         </ng-container>
 
         <!-- Comprobante Column -->
@@ -77,7 +77,7 @@
         <!-- Impuesto Column -->
         <ng-container matColumnDef="excencion">
           <th mat-header-cell *matHeaderCellDef> Exención </th>
-          <td mat-cell *cdkCellDef="let element"> Desde: {{ element.Fecha_Desde_Exenciones }} Hasta: {{ element.Fecha_Hasta_Exenciones }}</td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_Desde_Exenciones }} - {{ element.Fecha_Hasta_Exenciones }}</td>
         </ng-container>
 
 

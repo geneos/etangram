@@ -68,7 +68,7 @@ export class DatosProveedoresComponent implements OnInit {
     public snackBar: MatSnackBar)
     {
 
-      console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+      console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     //  this.token = this.storage.get(TOKEN);
       this.token = localStorage.getItem(TOKEN)
 
@@ -475,14 +475,16 @@ export interface datosCabecera {
 }
 
 export interface datosImpuesto {
+  "Impuesto": number,
+  "ID_Modelo_impuestos": string,
+  "Situacion": string,
+  "ID_Impuestos": string,
+  "Fecha_inscripcion": string,
+  "Codigo_inscripcion": string,
+  "Observaciones": string,
   "Exenciones": number,
   "Fecha_Desde_Exenciones": string,
-  "Fecha_Hasta_Exenciones": string,
-  "Fecha_inscripcion": string,
-  "ID_Impuestos": string,
-  "ID_Modelo_impuestos": string,
-  "Impuesto": string,
-  "Situacion": string
+  "Fecha_Hasta_Exenciones": string
 }
 export interface datosFormularios{
   "ID_Formulario": string,

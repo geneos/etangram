@@ -98,7 +98,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               private _permisosService: PermisosService) {
     this.loading = true;
     
-    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
   //  this.token = this.storage.get(TOKEN);
     this.token = localStorage.getItem(TOKEN)
 

@@ -56,7 +56,7 @@ export class AltaRefContableComponent implements OnInit {
     public snackBar: MatSnackBar,
     @Inject(SESSION_STORAGE) private storage: StorageService
   ) {
-    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+    console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem(TOKEN)
     //this.token = this.storage.get(TOKEN);
 

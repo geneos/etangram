@@ -10,6 +10,8 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { UsuariosService } from 'src/app/services/i2t/usuarios.service';
 import { Usuario } from 'src/app/interfaces/usuario.interface';
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 // key that is used to access the data in local storage
@@ -20,7 +22,13 @@ var auxLocData: any;
 @Component({
   selector: 'app-datos-proveedores',
   templateUrl: './datos-proveedores.component.html',
-  styleUrls: ['./datos-proveedores.component.css']
+  styleUrls: ['./datos-proveedores.component.css'],
+  providers: [
+    { provide: 'Window',  useValue: window },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+  ],
 })
 export class DatosProveedoresComponent implements OnInit {
 

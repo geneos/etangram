@@ -9,6 +9,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {MatSnackBarModule, MatSnackBar} from '@angular/material/snack-bar';
 import { ConsultaOrdPagosService } from "../../../services/i2t/consulta-ord-pagos.service";
 import { Router, ActivatedRoute } from "@angular/router";
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 
 // key that is used to access the data in local storage
@@ -21,7 +23,13 @@ var auxProvData: any;
 @Component({
   selector: 'app-consulta-ord-pagos',
   templateUrl: './consulta-ord-pagos.component.html',
-  styleUrls: ['./consulta-ord-pagos.component.css']
+  styleUrls: ['./consulta-ord-pagos.component.css'],
+  providers: [
+    { provide: 'Window',  useValue: window },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
+  ],
 })
 export class ConsultaOrdPagosComponent implements OnInit {
 

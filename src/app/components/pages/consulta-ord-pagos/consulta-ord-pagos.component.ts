@@ -72,7 +72,8 @@ export class ConsultaOrdPagosComponent implements OnInit {
           ) {
 
       console.log(this.storage.get(TOKEN) || 'Local storage is empty');
-      this.token = this.storage.get(TOKEN);
+    //  this.token = this.storage.get(TOKEN);
+      this.token = localStorage.getItem(TOKEN)
 
     this.forma = new FormGroup({
       'proveedor': new FormControl(this.existeProveedor),

@@ -66,9 +66,9 @@ export class ConsultaCrdComponent implements OnInit {
       'cuit': new FormControl(),
    })
 
-   console.log(this.storage.get(TOKEN) || 'Local storage is empty');
-   this.token = this.storage.get(TOKEN);
-
+   console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
+  // this.token = this.storage.get(TOKEN);
+   this.token = localStorage.getItem(TOKEN)
    this.route.params.subscribe( parametros=>{
      this.id = parametros['id'];
      //this.token = parametros['token'];

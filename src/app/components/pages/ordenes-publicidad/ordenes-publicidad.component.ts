@@ -87,7 +87,8 @@ export class OrdenesPublicidadComponent implements OnInit {
       'razonSocial': new FormControl(),
       'cuit': new FormControl(),
    })
-   this.token = this.storage.get(TOKEN);
+   this.token = localStorage.getItem(TOKEN)
+   //this.token = this.storage.get(TOKEN);
 
    this.loading = true;
    this.route.params.subscribe( parametros=>{

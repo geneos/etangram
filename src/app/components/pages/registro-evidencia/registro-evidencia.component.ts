@@ -52,7 +52,8 @@ export class RegistroEvidenciaComponent implements OnInit {
       'image': new FormControl(),
       'btn': new FormControl()
     })
-    this.token = this.storage.get(TOKEN);
+    this.token = localStorage.getItem(TOKEN)
+  //  this.token = this.storage.get(TOKEN);
 
     this.loading = true;
     this.route.params.subscribe( parametros=>{

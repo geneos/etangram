@@ -47,8 +47,9 @@ export class CargaFormularioComponent implements OnInit {
               private _proveedoresService: ProveedoresService,
               @Inject(SESSION_STORAGE) private storage: StorageService,
               public snackBar: MatSnackBar) {
-  
-    this.token = this.storage.get(TOKEN);
+    
+                this.token = localStorage.getItem(TOKEN)
+   // this.token = this.storage.get(TOKEN);
 
     this.route.params.subscribe( parametros=>{
     this.id = parametros['id'];

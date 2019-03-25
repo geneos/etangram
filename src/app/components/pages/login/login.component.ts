@@ -48,8 +48,8 @@ export class LoginComponent implements OnInit {
    }
 
    public storeOnLocalStorage(auxtoken: string): void {
-      this.storage.set(TOKEN, auxtoken);
-      console.log(this.storage.get(TOKEN) || 'Local storage is empty');
+      localStorage.setItem(TOKEN, auxtoken);
+      console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     }
 
   ngOnInit() {

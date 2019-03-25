@@ -2,7 +2,7 @@
 <pre>a cargar: {{partesACargar}}</pre>
 <pre>Cargadas: {{partesCargadas}}</pre>
 <pre>Iguales: {{(partesCargadas==partesACargar)}}</pre> -->
-<pre *ngIf="marca">marca: {{marca}}</pre>
+<!-- <pre *ngIf="marca">marca: {{marca}}</pre> -->
 <!-- <pre>marca: {{marca.name}}</pre> -->
 <h2>ARTÍCULOS</h2>
 <button [routerLink]="['/articulos']" class="mine-btnbig-grey" mat-flat-button>
@@ -685,7 +685,6 @@
       </span>
     </div>
 
-    <!-- <div class="row" *ngFor="let item of depositos; let in = index" style="margin:5px !important;"> -->
     <div formArrayName="articulosSustitutos" *ngFor="let art of forma.controls.articulosSustitutos?.controls; let i = index">
       <ng-container [formGroupName]="i">
         <div class="row" style="margin:5px !important;">
@@ -720,8 +719,6 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>U.M. Artículo</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="umArticulo">
-                <!-- <mat-option value="1">1</mat-option> -->
-                <!-- <mat-option value="2">2</mat-option> -->
                 <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
                   {{aux.name}}
                 </mat-option>
@@ -732,8 +729,6 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>U.M. Sustituto</mat-label>
               <mat-select placeholder="Elija una opción" formControlName="umSustituto">
-                <!-- <mat-option value="1">1</mat-option> -->
-                <!-- <mat-option value="2">2</mat-option> -->
                 <mat-option *ngFor="let aux of unidadesMedidaAll" [value]="aux.id">
                   {{aux.name}}
                 </mat-option>
@@ -754,7 +749,6 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Cantidad</mat-label>
               <input matInput placeholder="" type="text" formControlName="cantidad">
-              <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
           </div>
           <div class="col s1 m1 l1">
@@ -894,7 +888,6 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Largo</mat-label>
               <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="largo" value="{{ datosArticulos[0]?.largo | number:'1.2-2' }}">
-              <!--<mat-hint>Hint</mat-hint>-->
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">

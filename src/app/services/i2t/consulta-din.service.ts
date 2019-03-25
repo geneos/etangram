@@ -162,22 +162,40 @@ export class ConsultaDinamicaService {
     return this.http.get( url , { headers });
   }
 
-  getDatos( name:string, filtros: any, token:string ){
+  getDatos( name:string, filtros: any, incluyeEliminados: boolean, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
     });
 
     let query = `api/${name}`;
+    let filtro: string;
     //armado de consulta
     if (filtros != null)
     {
       console.log('armado de consulta aquí =====>>>>');
-      query = query + this.armarConsulta(filtros);
+
+      // query = query + this.armarConsulta(filtros);
+      if (incluyeEliminados){
+        filtro = this.armarConsulta(filtros);
+      }
+      else{
+        filtro = this.armarConsulta(filtros)+ '&deleted=0';
+      }
+
+      query = query + filtro;
       console.log('url final: ' + query);
     }
     //
     else{
       console.log('sin armado de consulta aquí (es nulo) =====>>>>');
+      if (!incluyeEliminados){
+        query = query + '?deleted=0';
+      }
+      // else{
+      //   query = query;
+      // }
+      console.log('url final sin filtros: ' + query);
+
     }
     // this.datosFiltros.value.forEach(element => {
     //   element
@@ -193,8 +211,9 @@ export class ConsultaDinamicaService {
     let apendiceURL: string;
     apendiceURL = '?';
     if (filtros != null){
-      console.log('transformando filtros: ', filtros)
+      console.log('transformando filtros: ', filtros);
       let filtrosMapa = filtros as Map<string, string>;
+      console.log('mapa de filtros: ', filtrosMapa);
 
       console.log('lista de operadores', operadores);
       console.log(operadores.find(operador => operador.condicion == 'equal'));

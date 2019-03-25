@@ -725,7 +725,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
     console.log('filtros a aplicar: ', this.filtros);
     //
-    this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name, this.filtros, this.token)
+    //nombre del reporte/endpoing, filtros, incluir eliminados?, token
+    this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name, this.filtros, false, this.token)
       .subscribe( dataCons => {
         console.log(dataCons);
           this.consData = dataCons;

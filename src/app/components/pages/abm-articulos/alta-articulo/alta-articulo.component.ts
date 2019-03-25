@@ -685,6 +685,7 @@ construirFoto(){
   }
 
   buscarUnidades(){
+    //todo agregar ?deleted=0 si agregan el atributo en api/tg01_unidadmedida
     this._unidadMedidaService.getUnidadMedida(this.token )
       .subscribe( data => {
           this.umData = data;

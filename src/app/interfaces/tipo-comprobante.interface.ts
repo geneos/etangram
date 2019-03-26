@@ -35,3 +35,8 @@ export interface TipoComprobanteAfip{
     descripcion_afip: string;
     codigo_afip: number;
 } 
+
+export interface TipoComprobanteCompras{
+    idtipocomp: string;
+    name: string;
+}//c_tipocomprobante_compras

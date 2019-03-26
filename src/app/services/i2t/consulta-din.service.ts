@@ -188,13 +188,13 @@ export class ConsultaDinamicaService {
     //
     else{
       console.log('sin armado de consulta aquí (es nulo) =====>>>>');
-      if (!incluyeEliminados){
-        query = query + '?deleted=0';
-      }
-      // else{
-      //   query = query;
+      // if (!incluyeEliminados){
+      //   query = query + '?deleted=0';
       // }
-      console.log('url final sin filtros: ' + query);
+      // // else{
+      // //   query = query;
+      // // }
+      // console.log('url final sin filtros: ' + query);
 
     }
     // this.datosFiltros.value.forEach(element => {

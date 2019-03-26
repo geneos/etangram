@@ -236,8 +236,8 @@ export class AltaProveedorComponent implements OnInit {
               private router: Router,
               public snackBar: MatSnackBar,) 
   {
-    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
-    this.token = this.storage.get(TOKEN);
+    console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
+    this.token = localStorage.getItem(TOKEN);
 
     this.loading = true;
     this.partesCargadas = 0;
@@ -962,8 +962,9 @@ export class AltaProveedorComponent implements OnInit {
   buscarFormularios(){
     this._formulariosService.getFormularios( this.token )
       .subscribe( data => {
-        //console.log(dataRC);
+        console.log('NOMBRES FORMULARIOS: ',data);
           this.fData = data;
+          
           //auxProvData = this.proveedorData.dataset.length;
           if(this.fData.returnset[0].RCode=="-6003"){
             //token invalido

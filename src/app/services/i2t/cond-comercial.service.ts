@@ -57,4 +57,15 @@ export class CondicionComercialService {
     return this.http.get( url , { headers });
   }
 
+  //tg01_condicioncomercial, para la condicion de comercializacion. considerar filtro deleted = 0, estado = 0, origen = “COM”
+  getCondicionPorIDCompra( idCondicion:number, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    let query = `api/tg01_condicioncomercial?idcondicion=eq[${ idCondicion }]&estado=0&deleted=0&origen=COM`;
+    let url = this.preUrl + query;
+
+    return this.http.get( url , { headers });
+  }
 }

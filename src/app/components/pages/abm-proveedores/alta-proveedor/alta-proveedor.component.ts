@@ -13,7 +13,7 @@ import { MonedasService } from 'src/app/services/i2t/monedas.service';
 import { CondicionComercialService } from 'src/app/services/i2t/cond-comercial.service';
 import { CondicionComercial } from 'src/app/interfaces/cond-comercial.interface';
 import { RefContable } from 'src/app/interfaces/ref-contable.interface';
-import { TipoComprobante } from 'src/app/interfaces/tipo-comprobante.interface';
+import { TipoComprobante, TipoComprobanteCompras } from 'src/app/interfaces/tipo-comprobante.interface';
 import { RefContablesService } from 'src/app/services/i2t/ref-contables.service';
 import { TiposComprobanteService } from 'src/app/services/i2t/tipos-comprobante.service';
 import { Articulo, cArticulo } from 'src/app/interfaces/articulo.interface';
@@ -205,7 +205,8 @@ export class AltaProveedorComponent implements OnInit {
   listaPrecios: ListaPrecios; 
   partidaPresupuestaria: any;
   referenciaContable: RefContable;
-  tipoComprobante: TipoComprobante;
+  // tipoComprobante: TipoComprobante;
+  tipoComprobante: TipoComprobanteCompras;
   articulo: Articulo;
   carticulo: cArticulo;
   provCabecera: ProveedorCabecera;
@@ -1190,7 +1191,9 @@ export class AltaProveedorComponent implements OnInit {
   }
 
   buscarCondComercial(){
-    this._condicionComercialService.getCondicionPorID(this.forma.controls['condComercial'].value, this.token )
+    // this._condicionComercialService.getCondicionPorID(this.forma.controls['condComercial'].value, this.token )
+    // cambiado por sólo los válidos, con origen COM
+    this._condicionComercialService.getCondicionPorIDCompra(this.forma.controls['condComercial'].value, this.token )
       .subscribe( data => {
           this.ccData = data;
           auxCondComercial = this.ccData.dataset.length;
@@ -1274,8 +1277,28 @@ export class AltaProveedorComponent implements OnInit {
             }
       });
   }
-  buscarTipoComprobante(){
+  /* buscarTipoComprobante(){
     this._tiposComprobanteService.getTipoOperacionPorIdTipoComprobante(this.forma.controls['idTipoComprobante'].value, this.token )
+      .subscribe( data => {
+          this.tcData = data;
+          auxTipoComprobante = this.tcData.dataset.length;
+          if(this.tcData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.tipoComprobante = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+            } else {
+              if(this.tcData.dataset.length>0){
+                this.tipoComprobante = this.tcData.dataset[0];
+                //this.loading = false;
+              } else {
+                this.tipoComprobante = null;
+              }
+            }
+      });
+  } */
+  buscarTipoComprobante(){
+    this._tiposComprobanteService.geTipoComprobanteCompras(this.forma.controls['idTipoComprobante'].value, this.token )
       .subscribe( data => {
           this.tcData = data;
           auxTipoComprobante = this.tcData.dataset.length;

@@ -67,7 +67,20 @@ export class TiposComprobanteService {
     // let query = `api/tg01_tipocomprobante?tg01_tipooperacion_id_c=eq[${ idtipocomp }]`;
     let query = `api/tg01_tipocomprobante?idtipocomp=eq[${ idtipocomp }]`;
     let url = this.preUrl + query;
-    console.log('url consulta partida: ' + url)
+    console.log('url consulta tipo comprobante: ' + url)
+
+    return this.http.get( url , { headers });
+  }
+  
+  geTipoComprobanteCompras( idtipocomp:string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+
+    // let query = `api/tg01_tipocomprobante?tg01_tipooperacion_id_c=eq[${ idtipocomp }]`;
+    let query = `api/c_tipocomprobante_compras?idtipocomp=eq[${ idtipocomp }]`;
+    let url = this.preUrl + query;
+    console.log('url consulta tipo comprobante (compras): ' + url)
 
     return this.http.get( url , { headers });
   }

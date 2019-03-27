@@ -78,6 +78,7 @@ import { RegistroEvidenciaComponent } from './components/pages/registro-evidenci
 import { FormulariosComponent } from './components/shared/modals/formularios/formularios.component';
 import { CargaFormularioComponent } from './components/pages/carga-formulario/carga-formulario.component';
 import { ConfirmarComponent } from './components/shared/modals/confirmar/confirmar.component';
+import { ConsDinService } from './classes/din-service-wrapper';
 
 
 @NgModule({
@@ -158,6 +159,7 @@ import { ConfirmarComponent } from './components/shared/modals/confirmar/confirm
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-AR'},
+    // {provide: ConsDinService, useFactory: devolverServicioFactory('')}
    // { provide: LOCALE_ID, useValue: 'es-AR' }
     // {provide: ErrorHandler, useClass: ErrorHandlerService}
   ],

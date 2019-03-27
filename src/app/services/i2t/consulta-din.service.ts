@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 //import { Http } from '@angular/http';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpHandler } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { stringify } from '@angular/compiler/src/util';
 
@@ -16,6 +16,8 @@ import { stringify } from '@angular/compiler/src/util';
 //   { in: 'in' }//in a set, ídem SQL
 // ]
 import { PreUrl } from './url';
+import { ConsDinService } from 'src/app/classes/din-service-wrapper';
+import { RefContablesService } from './ref-contables.service';
 
 const operadores = [
   { condicion: 'equal',         texto: 'eq'},  //igual que
@@ -38,14 +40,20 @@ const otros = [
   { misc: 'offset'  , texto: '_offset'}
 ]
 
-
+var parametrosServiceFactory;
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
+  // useFactory: serviceFactory,
+  // deps: parametrosServiceFactory,
 })
 export class ConsultaDinamicaService {
 
   //compraProveedores:any [] = [];
   preUrl:string = PreUrl;
+
+  //servicio a usar
+  // servicio: ConsDinService;
+  // servicio: any;
 
   //datos de filtros
   // private datosFiltros = new BehaviorSubject('default message');
@@ -54,10 +62,14 @@ export class ConsultaDinamicaService {
   // datosFiltrosAct = this.datosFiltros.asObservable();
   datosFiltrosAct: Observable<Map<string, string>>;
 
-  constructor( private http:HttpClient ) {
+  constructor(public http:HttpClient,
+              private injectorInstance: Injector) {
     let mapa = new Map<string, string>();
     this.datosFiltros = new BehaviorSubject<Map<string, string>>(mapa);
     this.datosFiltrosAct = this.datosFiltros.asObservable();
+
+    //todo borrar
+    // this.obtenerServicio('test string');
   }
 
   actualizarDatos(datosNuevos: Map<string, string>) {
@@ -162,6 +174,8 @@ export class ConsultaDinamicaService {
     return this.http.get( url , { headers });
   }
 
+  //todo quitar todo lo de incluyeEliminados
+  // getDatos( name:string, listaAtributos: any[], filtros: any, incluyeEliminados: boolean, token:string ){
   getDatos( name:string, filtros: any, incluyeEliminados: boolean, token:string ){
     const headers = new HttpHeaders({
       'x-access-token': token
@@ -175,12 +189,14 @@ export class ConsultaDinamicaService {
       console.log('armado de consulta aquí =====>>>>');
 
       // query = query + this.armarConsulta(filtros);
-      if (incluyeEliminados){
+      // if (incluyeEliminados){
         filtro = this.armarConsulta(filtros);
-      }
-      else{
-        filtro = this.armarConsulta(filtros)+ '&deleted=0';
-      }
+      // }
+      // else{
+        // if (listaAtributos.find(atributo => atributo == 'deleted')){
+          // filtro = this.armarConsulta(filtros)+ '&deleted=0';
+        // }
+      // }
 
       query = query + filtro;
       console.log('url final: ' + query);
@@ -188,9 +204,9 @@ export class ConsultaDinamicaService {
     //
     else{
       console.log('sin armado de consulta aquí (es nulo) =====>>>>');
-      if (!incluyeEliminados){
-        query = query + '?deleted=0';
-      }
+      // if (!incluyeEliminados){
+        // query = query + '?deleted=0';
+      // }
       // else{
       //   query = query;
       // }
@@ -204,7 +220,16 @@ export class ConsultaDinamicaService {
 
     let url = this.preUrl + query;
 
+    // let resultadoTemp = this.http.get( url , { headers });
+    // let resultado: any;
+    // if (){
+    //   resultado = resultadoTemp.
+    // }
+    // else{
+    //   resultado = resultadoTemp;
+    // }
     return this.http.get( url , { headers });
+    // return resultado
   }
 
   armarConsulta(filtros: any){
@@ -237,5 +262,42 @@ export class ConsultaDinamicaService {
     // }
     return apendiceURL;
   }
-}
 
+  /* obtenerServicio(nombreReporte: string){
+    console.log('nombreReporte: ', nombreReporte);
+    parametrosServiceFactory = nombreReporte;
+    // parametrosServiceFactory = proveedorDeServicios;
+    parametrosServiceFactory = {nombre: nombreReporte, http: this.http};
+    console.log('parametrosServiceFactory: ', parametrosServiceFactory);
+
+    // this.servicio = this.injectorInstance.get(parametrosServiceFactory);
+    // this.servicio = this.injectorInstance.get(serviceFactory(parametrosServiceFactory));
+    console.log(this.servicio);
+  } */
+
+}
+//factory de servicios
+// export function serviceFactory(nombreReporte: string){
+  /*
+export function serviceFactory(parametros: any){
+  console.log('Se generará el servicio correspondiente con: ' + parametros);
+  console.log('nombre: ', parametros.nombre);
+  console.log('http: ', parametros.http);
+  // return new ConsDinService();
+  // return new RefContablesService(this.http);
+  return new RefContablesService(parametros.http);
+  // switch (nombreReporte) {
+  //   case '':
+      
+  //     break;
+  
+  //   default:
+  //     break;
+  // } 
+}
+*/
+/* export let proveedorDeServicios =
+  { provide: ConsDinService,
+    useFactory: serviceFactory,
+    deps: parametrosServiceFactory
+  }; */

@@ -210,7 +210,10 @@ export class ConsultaDinamicaService {
       // else{
       //   query = query;
       // }
-      console.log('url final sin filtros: ' + query);
+      // // else{
+      // //   query = query;
+      // // }
+      // console.log('url final sin filtros: ' + query);
 
     }
     // this.datosFiltros.value.forEach(element => {

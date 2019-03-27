@@ -1,0 +1,16 @@
+<ngx-smart-modal #formulariosModal 
+                 customClass="overlay-cons-din" 
+                 [identifier]="'imgModal'"
+                 [closable]="false"
+                 [dismissable]="false"
+                 [escapable]="false"
+                 >
+
+  <div class="modal-body"  style="max-width: 2000px !important;">
+    <img style="align:center; " src="{{ imgUrl }}" style="width:100%; height:100%">
+  </div>
+
+<div style="margin-top: 10px; width: 100%; text-align: right;">
+  <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cerrar()">CERRAR</button>
+</div>
+</ngx-smart-modal>

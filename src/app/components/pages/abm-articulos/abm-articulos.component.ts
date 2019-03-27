@@ -55,8 +55,8 @@ export class AbmArticulosComponent implements OnInit {
               @Inject(SESSION_STORAGE) private storage: StorageService,
                private _consultaDinamicaService: ConsultaDinamicaService,
                public snackBar: MatSnackBar) { 
-    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
-    this.token = this.storage.get(TOKEN);
+    console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
+    this.token = localStorage.getItem(TOKEN);
           
     this.loading = true;             
   }

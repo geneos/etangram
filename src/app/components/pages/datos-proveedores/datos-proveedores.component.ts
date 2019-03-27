@@ -36,8 +36,9 @@ export class DatosProveedoresComponent implements OnInit {
   itemDeConsulta: any;
   @ViewChild('envCodPostal') elEnvCodigoPostal: any;
   suscripcionFormularios: Subscription;
+  suscripcionImg: Subscription;
 
-
+  formDescripcion: any;
   respCabecera: any;
   respUpdCabecera: any;
   respImpuesto: any;
@@ -75,7 +76,6 @@ export class DatosProveedoresComponent implements OnInit {
     public ngxSmartModalService: NgxSmartModalService,
     public snackBar: MatSnackBar)
     {
-
       console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     //  this.token = this.storage.get(TOKEN);
       this.token = localStorage.getItem(TOKEN)
@@ -106,6 +106,7 @@ export class DatosProveedoresComponent implements OnInit {
     });
 
   }
+  
   openSnackBar(message: string) {
     this.snackBar.open(message,"Cerrar", {
       duration: 3000,
@@ -221,6 +222,49 @@ export class DatosProveedoresComponent implements OnInit {
   }
 
   
+  verImagen(urlImagen: string){
+    let datosModal : {
+      url: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      url: urlImagen,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'imgModal'
+    }
+  
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionImg = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de img: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        
+      }
+      else{
+        this.ngxSmartModalService.resetModalData('imgModal');
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionFormularios.unsubscribe();
+      console.log('se desuscribió al modal de consulta dinamica');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
+  }
 
   modificar(){
     
@@ -296,15 +340,15 @@ export class DatosProveedoresComponent implements OnInit {
           this.respCabecera = dataP;
           if(this.respCabecera.returnset[0].RCode== "-6003" ){
             //token invalido
-            let jsbody = {"usuario":"usuario1","pass":"password1"}
-            let jsonbody = JSON.stringify(jsbody);
-            this._DatosProveedorService.login(jsonbody)
-              .subscribe( dataL => {
- //               console.log(dataL);
-                this.loginData = dataL;
-                this.token = this.loginData.dataset[0].jwt;
-                this.getCabecera();
-              });
+            // let jsbody = {"usuario":"usuario1","pass":"password1"}
+            // let jsonbody = JSON.stringify(jsbody);
+            // this._DatosProveedorService.login(jsonbody)
+            //   .subscribe( dataL => {
+                console.log('token invalido');
+                // this.loginData = dataL;
+                // this.token = this.loginData.dataset[0].jwt;
+                // this.getCabecera();
+            //  });
             } else {
               this.getFormulario();
               this.getImpuesto();
@@ -364,6 +408,7 @@ export class DatosProveedoresComponent implements OnInit {
       if(this.respFormulario.dataset.length>0){
         this.datosFormularios = this.respFormulario.dataset;
         this.dataSource2 = new MatTableDataSource(this.datosFormularios);
+        this.formDescripcion = this.datosFormularios[0].Descripcion
       } else {
         this.dataSource2 = this.respFormulario.dataset.length;
        
@@ -408,7 +453,7 @@ export class DatosProveedoresComponent implements OnInit {
     return this.usuario;
   }
 
-  cargarFormulario(formId,formNomId,fechPresen,fechVenci,urlImagen){
+  cargarFormulario(formId,formNomId,fechPresen,fechVenci,urlImagen,descrip){
     this.itemDeConsulta = null;
     console.clear();
     let datosModal : {
@@ -419,6 +464,7 @@ export class DatosProveedoresComponent implements OnInit {
       fechaPresen: string;
       fechaVenci: string;
       url: string;
+      descripcion: string
       // valores: any;
       // columnSelection: any
     }
@@ -429,7 +475,8 @@ export class DatosProveedoresComponent implements OnInit {
       formNombre: formNomId,
       fechaPresen: fechPresen,
       fechaVenci: fechVenci,
-      url: urlImagen
+      url: urlImagen,
+      descripcion: descrip
     }
     
 

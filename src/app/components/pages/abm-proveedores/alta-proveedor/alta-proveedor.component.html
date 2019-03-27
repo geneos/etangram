@@ -374,8 +374,9 @@
           </a>
         </div> -->
         <div class="col s1 m1 l1" style="margin-top:10px;">
+          <!-- {obligatorios: [{atributo: string, valor: any}], porDefecto: [{atributo: string, valor: any}]}; -->
           <button type="button" class="mine-btnforms" mat-flat-button 
-          (click)="abrirConsulta('c_condicioncomercial', [], 'condComercial', 'descCondComercial')">
+          (click)="abrirConsulta('tg01_condicioncomercial', [], 'condComercial', 'descCondComercial', {obligatorios: [{atributo: 'deleted', valor: 0}, {atributo: 'estado', valor: 0}, {atributo: 'origen', valor: 'COM'}] ,porDefecto: []})">
             <i class="material-icons" style="font-size:20px;">more_horiz</i>
           </button>
         </div>

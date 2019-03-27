@@ -131,6 +131,7 @@ export class AltaProveedorComponent implements OnInit {
   impData: any;//impuestos
   mimpdata: any;//modelos impuestos
   ccData:any; //condicion comercial
+    // filtrosObligatoriosCondCom: {obligatorios: [{atributo: string, valor: any}], porDefecto: [{atributo: string, valor: any}]};
   lpData:any;//lista de precios
   ppData:any;//partida presup
   rcData:any;//referencia contable
@@ -628,14 +629,14 @@ export class AltaProveedorComponent implements OnInit {
 
   ngOnInit() {
     this.tipoReferente = 'P';
-    this.buscarTiposDocumento();
+    /* this.buscarTiposDocumento();
     this.buscarCategoriasIVA();
     this.buscarCategoriasRef();
     this.buscarMonedas();
     this.buscarImpuestos();
     this.buscarModelosImp();
     this.buscarCategoriasBloqueo();
-    this.buscarFormularios();
+    this.buscarFormularios(); */
 
     this.forma.controls['tipoReferente'].setValue(this.tipoReferente);
     this.configurarFormulario();
@@ -1882,17 +1883,21 @@ export class AltaProveedorComponent implements OnInit {
    * @param {any[]} ubicacion Camino hacia los controles a actualizar. Si está vacío se actualizan los controles al nivel base del form. Para ver cómo se muestran los FormArray buscar formArrayName y formGroupName en el html.
    * @param {string} controlID Nombre del FormControl donde se pegará el id del objeto seleccionado
    * @param {string} controlDesc (Opcional) Nombre del FormControl donde se pegará el Nombre o Descripción del objeto seleccionado
+   * @param {any} filtros (Opcional) Lista de filtros Obligatorios o por Defecto. Estructura: {obligatorios: [{atributo: string, valor: any}], porDefecto: [{atributo: string, valor: any}]};
    * @param {string} funcion (Opcional) [NO IMPLEMENTADO] Nombre de la función a ejecutar luego de la selección.
    * @param {any} param (Opcional) [NO IMPLEMENTADO] Lista de parámetros para la función a ejecutar.
   */
-  abrirConsulta(consulta: string, ubicacion: any[], controlID: string, controlDesc?: string, funcion?: string, param?: any){
+  // abrirConsulta(consulta: string, ubicacion: any[], controlID: string, controlDesc?: string, funcion?: string, param?: any){
+  //agregado objeto para filtros obligatorios/por defecto. filtros = {obligatorios: [{atributo: string, valor: any}], porDefecto: [{atributo: string, valor: any}]}
+  abrirConsulta(consulta: string, ubicacion: any[], controlID: string, controlDesc?: string, filtros?: any, funcion?: string, param?: any){
     console.clear();
-    console.log(' recibido por abrirconsulta1: ', consulta, controlID, controlDesc, ubicacion, funcion, param);
+    console.log(' recibido por abrirconsulta1: ', consulta, controlID, controlDesc, ubicacion, filtros, funcion, param);
     let datosModal : {
       consulta: string;
       permiteMultiples: boolean;
       selection: any;
       modal: string;
+      filtros: any;
       // valores: any;
       // columnSelection: any
     }
@@ -1900,7 +1905,8 @@ export class AltaProveedorComponent implements OnInit {
       consulta: consulta,
       permiteMultiples: false,
       selection: null,
-      modal: 'consDinModal'
+      modal: 'consDinModal',
+      filtros: filtros
     }
     
     let atributoAUsar: string;

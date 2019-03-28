@@ -78,7 +78,7 @@ import { RegistroEvidenciaComponent } from './components/pages/registro-evidenci
 import { FormulariosComponent } from './components/shared/modals/formularios/formularios.component';
 import { CargaFormularioComponent } from './components/pages/carga-formulario/carga-formulario.component';
 import { ConfirmarComponent } from './components/shared/modals/confirmar/confirmar.component';
-import { ConsDinService } from './classes/din-service-wrapper';
+//import { ConsDinService } from './classes/din-service-wrapper';
 import { ImgComponent } from './components/shared/modals/img/img.component';
 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver, ViewChildren, ViewContainerRef, QueryList, AfterViewInit, ViewEncapsulation, Inject, Injectable} from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ComponentFactoryResolver, ViewChildren, ViewContainerRef, QueryList, AfterViewInit, ViewEncapsulation, Inject, Injectable, Injector} from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatSort, MatPaginator, MatTable, MatTableDataSource, MatSnackBar } from '@angular/material';
 import { Reporte, Atributo } from 'src/app/interfaces/consulta-din.interface';
@@ -16,6 +16,7 @@ import { PermisosService } from 'src/app/services/i2t/permisos.service';
 import { ModalInstance } from 'ngx-smart-modal/src/services/modal-instance';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { ConsDinService } from 'src/app/classes/cons-din-service';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -74,6 +75,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     filtrosObligatoriosAAplicar: any;
 
   //
+  servicioApi: any;
+
   // nivelConsulta: number;
 
   //permisos
@@ -104,7 +107,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               private generadorDeComponentes: CompGenService,
               public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService,
-              private _permisosService: PermisosService) {
+              private _permisosService: PermisosService,
+              private injector: Injector) {
     this.loading = true;
     
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
@@ -178,7 +182,9 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     console.log('suscribiendo al modal de confirmar');
     this.ngxSmartModalService.getModal('confirmar').onClose.subscribe((modal: NgxSmartModalComponent) => {
       if (this.ngxSmartModalService.getModalData('confirmar').estado == 'confirmado') {
+        console.log('se eliminará: ', this.selection.selected[0]);
         console.log('redireccionando a eliminar en "' + this.reportesAll[this.reporteSeleccionado].accion_borrar) + '"';
+        this.servicioApi.eliminar(this.selection.selected[0])
       }
       else{
         //cancelado
@@ -686,7 +692,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                     this.reporteMostrado = this.reporteSeleccionado;
                     this.reporteCambiado = true;
                   }
-                  this.habilitarAcciones();
+                  // this.habilitarAcciones(); todotodo descomentar
 
                   this.buscarAtributos();
                 }
@@ -1116,7 +1122,14 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   eliminar(){
     if (this.selection.selected.length != 0){
       // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+
+      //traer el nombre del servicio
       this.reportesAll[this.reporteSeleccionado].accion_borrar = 'nombreServicio';
+
+      //pedir el servicio al injector
+      this.servicioApi = this.injector.get(ConsDinService);
+      console.log('servicio obtenido: ', this.servicioApi);
+
       if ((this.reportesAll[this.reporteSeleccionado].accion_borrar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_borrar != '')){
         // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_borrar]);
         console.log('confirmando con el usuario');

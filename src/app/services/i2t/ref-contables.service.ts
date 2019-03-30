@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 //import { Http } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
+import { ConsDinService } from 'src/app/classes/cons-din-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RefContablesService {
+export class RefContablesService implements ConsDinService {
 
   //compraProveedores:any [] = [];
   preUrl:string = PreUrl;
@@ -116,6 +117,17 @@ export class RefContablesService {
     let url = this.preUrl + query;
 
     return this.http.put( url, jsonbody, { headers });
+  }
+
+  //devuelve string
+  public eliminar(parametros: any){
+    console.log('No implementado, parametros: ', parametros);
+    return 'No implementado, parametros: ' + parametros;
+  }
+
+  // exportar(parametros: any): any;
+  public exportar(parametros: any){
+    return 'No implementado';
   }
 
 }

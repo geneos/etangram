@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { LOCALE_ID} from '@angular/core';
 
 // rutas
@@ -78,8 +78,9 @@ import { RegistroEvidenciaComponent } from './components/pages/registro-evidenci
 import { FormulariosComponent } from './components/shared/modals/formularios/formularios.component';
 import { CargaFormularioComponent } from './components/pages/carga-formulario/carga-formulario.component';
 import { ConfirmarComponent } from './components/shared/modals/confirmar/confirmar.component';
-//import { ConsDinService } from './classes/din-service-wrapper';
+import { ConsDinService } from './classes/cons-din-service';
 import { ImgComponent } from './components/shared/modals/img/img.component';
+import { RefContablesService } from './services/i2t/ref-contables.service';
 
 
 @NgModule({
@@ -161,7 +162,7 @@ import { ImgComponent } from './components/shared/modals/img/img.component';
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-AR'},
-    // {provide: ConsDinService, useFactory: devolverServicioFactory('')}
+    {provide: ConsDinService, useFactory: ConsDinServiceFactory, deps: [HttpClient]}
    // { provide: LOCALE_ID, useValue: 'es-AR' }
     // {provide: ErrorHandler, useClass: ErrorHandlerService}
   ],
@@ -173,3 +174,12 @@ import { ImgComponent } from './components/shared/modals/img/img.component';
 })
 
 export class AppModule { }
+
+//#region factories
+export function ConsDinServiceFactory(http: HttpClient){
+  
+  console.log('inyectando servicio');
+
+  return new RefContablesService(http);
+}
+//#endregion factories

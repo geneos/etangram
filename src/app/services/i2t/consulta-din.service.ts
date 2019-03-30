@@ -72,6 +72,15 @@ export class ConsultaDinamicaService {
     // this.obtenerServicio('test string');
   }
 
+  resetFiltros(){
+    this.datosFiltros.next(new Map<string, string>());
+  }
+
+  getFiltros(){
+    //futuro: cambiar porque dicen que es mala idea
+    return this.datosFiltros.getValue();
+  }
+
   actualizarDatos(datosNuevos: Map<string, string>) {
     console.log('actualizando datos en servicio');
     let mapaTemp = this.datosFiltros.value;

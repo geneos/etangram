@@ -1892,7 +1892,7 @@ export class AltaProveedorComponent implements OnInit {
   //agregado objeto para filtros obligatorios/por defecto. filtros = {obligatorios: [{atributo: string, valor: any}], porDefecto: [{atributo: string, valor: any}]}
   abrirConsulta(consulta: string, ubicacion: any[], controlID: string, controlDesc?: string, filtros?: any, funcion?: string, param?: any){
     console.clear();
-    console.log(' recibido por abrirconsulta1: ', consulta, controlID, controlDesc, ubicacion, filtros, funcion, param);
+    console.log(' recibido por abrirconsulta: ', consulta, controlID, controlDesc, ubicacion, filtros, funcion, param);
     let datosModal : {
       consulta: string;
       permiteMultiples: boolean;
@@ -1924,6 +1924,9 @@ export class AltaProveedorComponent implements OnInit {
         break;
       case 'tg05_partidas_presupuestaria':
         atributoAUsar = 'codigo_partida';
+        break;
+      case 'c_tipocomprobante_compras':
+        atributoAUsar = 'idtipocomp';
         break;
       default:
         atributoAUsar = 'id';

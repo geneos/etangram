@@ -35,6 +35,10 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
   @Input() nivel: number;
   @Input() public consulta: string;
+  //para filtros obligatorios cuando se inserta el componente en otro
+    @Input() public filtrosDefault: any;
+    @Input() public filtrosObligatorios: any;
+  //
 
   selection = new SelectionModel(true, []);
   loading:boolean;
@@ -65,6 +69,11 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   columnSelection: any;
   filtros: any;
   filtrosAnteriores: any;
+  //para filtros obligatorios
+    filtrosDefaultAAplicar:any;
+    filtrosObligatoriosAAplicar: any;
+
+  //
   // nivelConsulta: number;
 
   //permisos
@@ -289,6 +298,25 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
           this.nombreReporte = this.inputParam.consulta;
 
         }
+        
+        //ver si hay filtros obligatorios o por default para aplicar(incluidos en this.inputparam)
+          //ej(alta proveedor, consulta de condicion comercial):
+          //{obligatorios: [{atributo: 'deleted', valor: 0}, {atributo: 'estado', valor: 0}, {atributo: 'origen', valor: 'COM'}] ,porDefecto: []})
+          if ((this.inputParam.filtros != null)&&(this.inputParam.filtros.porDefecto)){
+            this.filtrosDefaultAAplicar = this.inputParam.filtros.porDefecto;
+          }
+          else{
+            this.filtrosDefaultAAplicar = null;
+          }
+          
+          if ((this.inputParam.filtros != null)&&(this.inputParam.filtros.obligatorios)){
+            this.filtrosObligatoriosAAplicar = this.inputParam.filtros.obligatorios;
+          }
+          else{
+            this.filtrosObligatoriosAAplicar = null;
+          }
+        //
+
         this.buscarReportes();
       });
     }
@@ -299,6 +327,22 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       if(this.consulta != null){
         this.nombreReporte = this.consulta;
         console.log('Buscando reporte para consulta dinámica según input en elemento: ', this.consulta);
+
+        //ver si hay filtros obligatorios o por default para aplicar(en los dos inputs correspondientes)
+          if (this.filtrosDefault != null){
+            this.filtrosDefaultAAplicar = this.filtrosDefault;
+          }
+          else{
+            this.filtrosDefaultAAplicar = null;
+          }
+          
+          if (this.filtrosObligatorios != null){
+            this.filtrosObligatoriosAAplicar = this.filtrosObligatorios;
+          }
+          else{
+            this.filtrosObligatoriosAAplicar = null;
+          }
+        //
         this.buscarReportes();
       }
       else{
@@ -715,6 +759,53 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       });
   }
 
+  establecerFiltros(){
+    //{obligatorios: [{atributo: 'deleted', valor: 0}, {atributo: 'estado', valor: 0}, {atributo: 'origen', valor: 'COM'}] ,porDefecto: []})
+    console.log('filtros antes de establecerFiltros: ', this.filtros);
+    //agregar los filtros por default, sólo si es la primera carga
+      if(this.reporteCambiado == true){
+        this._consultaDinamicaService.resetFiltros();
+        console.log('lista de filtros por defecto: ', this.filtrosDefaultAAplicar)
+        if (this.filtrosDefaultAAplicar != null){
+          this.filtrosDefaultAAplicar.forEach(filtro => {
+            console.log(filtro);
+            let filtroActual= new Map<string, string>();
+            filtroActual.set(filtro.atributo, filtro.valor.toString());
+            this._consultaDinamicaService.actualizarDatos(filtroActual);
+          });
+        }
+        console.log('---------')
+      }
+    //agregar los filtros obligatorios
+      console.log('lista de filtros obligatorios: ', this.filtrosObligatoriosAAplicar);
+      if (this.filtrosObligatoriosAAplicar != null){
+        this.filtrosObligatoriosAAplicar.forEach(filtro => {
+          console.log(filtro);
+          let filtroActual= new Map<string, string>();
+          filtroActual.set(filtro.atributo, filtro.valor.toString());
+          this._consultaDinamicaService.actualizarDatos(filtroActual);
+        });
+      }
+    console.log('---------')
+    //
+    // this.filtros = this._consultaDinamicaService.datosFiltrosAct;
+    //todo: traer el mapa de filtros actualizado
+    this.filtros = this._consultaDinamicaService.getFiltros();
+    console.log('filtros después de establecerFiltros: ', this.filtros);
+    
+
+      // todo borrar
+    /* cambio(){
+    
+      console.log('ejecutando cambio(keyup) texto', this.data);
+      this.datosInternosMap.set(this.data.datos.columna,this.datosInternos);
+      // this.consultaDinService.actualizarDatos(this.datosInternos);
+      this.consultaDinService.actualizarDatos(this.datosInternosMap);
+      console.log('mapeado: ', this.datosInternosMap);
+      console.log('guardado: ', this.datosInternos);
+    } */
+  }
+
   buscarDatos(){
     this.loading = true;
     //
@@ -723,10 +814,13 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     console.log(this.reportesAll)
     console.log(this.reporteSeleccionado)
     console.log(this.reportesAll[this.reporteSeleccionado].name);
+    
+    this.establecerFiltros();
+    //todo asegurar que se borre al cambiar de consulta
 
     console.log('filtros a aplicar: ', this.filtros);
-    //
-    //nombre del reporte/endpoing, filtros, incluir eliminados?, token
+    //nombre del reporte/endpoing, lista de atributos, filtros, incluir eliminados?, token
+    // this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name, attrib, this.filtros, false, this.token)
     this._consultaDinamicaService.getDatos(this.reportesAll[this.reporteSeleccionado].name, this.filtros, false, this.token)
       .subscribe( dataCons => {
         console.log(dataCons);
@@ -747,13 +841,21 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
             } else {
               if(this.consData.dataset.length>0){
                 this.datosAll = this.consData.dataset;
-                console.log('Lista de datos: ');
-                console.log(this.datosAll);
-                //todo borrar, probando dinamico
+                
+                //todo quitar para que se use lo que se pone como default(obligatorio)
+                //si tiene deleted entre las propiedades, quitar los eliminados
                 let objdin: Reporte;
                 objdin = this.datosAll[0];
-                console.log('estructura de Obj. dinamico: ');
-                console.log(Object.keys(objdin));
+                let attrib= Object.keys(objdin);
+                console.log('estructura de Obj. dinamico: ', attrib);
+                if (attrib.find(atributo => atributo == 'deleted') != null){
+                  console.log('encontrado atributo "deleted", quitando los borrados de la lista: ', this.datosAll)
+                  
+                  this.datosAll = this.datosAll.filter(dato => dato.deleted == 0);
+                }
+
+                console.log('Lista de datos final: ');
+                console.log(this.datosAll);
                 //
 
                 this.constDatos = new MatTableDataSource(this.datosAll);

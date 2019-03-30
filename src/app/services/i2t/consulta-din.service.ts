@@ -16,7 +16,7 @@ import { stringify } from '@angular/compiler/src/util';
 //   { in: 'in' }//in a set, ídem SQL
 // ]
 import { PreUrl } from './url';
-import { ConsDinService } from 'src/app/classes/din-service-wrapper';
+//import { ConsDinService } from 'src/app/classes/din-service-wrapper';
 import { RefContablesService } from './ref-contables.service';
 
 const operadores = [

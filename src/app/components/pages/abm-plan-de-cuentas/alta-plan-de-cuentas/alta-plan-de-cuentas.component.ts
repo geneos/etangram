@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone} from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone, Inject, Injectable} from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar,MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSort, MatPaginator } from '@angular/material';
@@ -8,7 +8,12 @@ import { RefContable } from 'src/app/interfaces/ref-contable.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { RefContablesService } from 'src/app/services/i2t/ref-contables.service';
 import { formatDate } from '@angular/common';
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { inject } from "@angular/core/testing";
 
+const TOKEN = '';
+
+@Injectable()
 @Component({
   selector: 'app-alta-plan-de-cuentas',
   templateUrl: './alta-plan-de-cuentas.component.html',
@@ -59,9 +64,13 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     private _PlanCuentasService:PlanCuentasService,
     private router: Router,
     public snackBar: MatSnackBar,
-    private _refContablesService:RefContablesService
+    private _refContablesService:RefContablesService,
+    @Inject(SESSION_STORAGE) private storage: StorageService
   ) {
     this.loading = true;
+
+    console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
+    this.token = localStorage.getItem(TOKEN)
 
     this.forma = new FormGroup({
       //'id': new FormControl('',Validators.required),

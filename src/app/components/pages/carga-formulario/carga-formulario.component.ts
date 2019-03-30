@@ -128,7 +128,7 @@ export class CargaFormularioComponent implements OnInit {
       "p_form_fecha_pres"	:	this.fechaActual,
       "p_form_fecha_vto"	:	this.fechaVencimiento,
       "url": this.urlImagen,
-      "Descripcion": this.inputParam.descripcion
+      "form_descripcion": this.inputParam.descripcion
     }
     let jsonbody = JSON.stringify(jsbody)
     this._proveedoresService.updateFormulario(jsonbody, this.token )

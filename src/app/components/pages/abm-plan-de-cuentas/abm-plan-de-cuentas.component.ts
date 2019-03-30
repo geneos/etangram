@@ -1,8 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { PlanCuentasService } from "../../../services/i2t/plan-cuentas.service";
 import { PlanCuenta } from "../../../interfaces/plan-cuenta.interface";
 import { TablapcComponent } from "../../shared/tablapc/tablapc.component";
 import { Router, ActivatedRoute } from "@angular/router";
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+
+const TOKEN = '';
+
+@Injectable()
 
 @Component({
   selector: 'app-abm-plan-de-cuentas',
@@ -15,16 +20,20 @@ export class AbmPlanDeCuentasComponent implements OnInit {
 
   loading:boolean;
   paramVueltaId: string;
+  token: string = "a";
 
   constructor(private _planCuentasService:PlanCuentasService,
               private route:ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              @Inject(SESSION_STORAGE) private storage: StorageService) {
     //this.loading = true;
     this.route.params.subscribe( parametros=>{
       this.paramVueltaId = parametros['id'];
       //this.urla = this.id;
 
     });
+    console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
+    this.token = localStorage.getItem(TOKEN)
   }
 
   ngOnInit() {  }

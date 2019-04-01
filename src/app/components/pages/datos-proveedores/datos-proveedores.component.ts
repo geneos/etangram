@@ -289,7 +289,26 @@ export class DatosProveedoresComponent implements OnInit {
     this.forma.controls['telefono2'].setValue(this.datosCabecera[0].Telefono_Movil);
     this.forma.controls['telefono3'].setValue(this.datosCabecera[0].Telefono_Fax);
   }
-
+  cancelar(){
+    this.modificando = false;
+    this.forma.controls['email'].setValue(this.datosCabecera[0].Email);
+    this.forma.controls['calleEnv'].setValue(this.datosCabecera[0].Domicilio_envio);
+    this.forma.controls['codPostalEnv'].setValue(this.datosCabecera[0].Codigo_Postal_envio);
+    this.forma.controls['provinciaEnv'].setValue(this.datosCabecera[0].Ciudad_envio);
+    this.forma.controls['telefono1'].setValue(this.datosCabecera[0].Telefono_Oficina);
+    this.forma.controls['telefono2'].setValue(this.datosCabecera[0].Telefono_Movil);
+    this.forma.controls['telefono3'].setValue(this.datosCabecera[0].Telefono_Fax);
+    this.forma.controls['calleFac'].disable();
+    this.forma.controls['codPostalFac'].disable();
+    this.forma.controls['provinciaFac'].disable();
+    this.forma.controls['calleEnv'].disable();
+    this.forma.controls['codPostalEnv'].disable();
+    this.forma.controls['provinciaEnv'].disable();
+    this.forma.controls['telefono1'].disable();
+    this.forma.controls['telefono2'].disable();
+    this.forma.controls['telefono3'].disable();
+    this.forma.controls['email'].disable();
+  }
   actualizar(){
     this.modificando = false;
     

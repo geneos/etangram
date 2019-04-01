@@ -36,10 +36,22 @@ export class ImageComponent implements OnInit {
        .subscribe( resp => {
          console.log(resp);
          this.urlImagen = resp.toString();
+         
        });
    }
 
   cargar(attachment){
     this.adjunto = attachment.files[0];
+    //console.log(this.adjunto.type);
+    if(this.adjunto.type !== "image/png"){
+      if(this.adjunto.type !== "image/jpg"){
+        if(this.adjunto.type !== "application/pdf"){
+          console.log('png','jpg');
+        }
+      }
+    }
+    if(this.adjunto.size > 1000000){
+      console.log('Tamaño superado')
+    }
   }
 }

@@ -255,7 +255,8 @@
        </div>
       </div>
       <button *ngIf="!modificando" (click)="modificar()" class="mine-btnbig-grey" mat-flat-button>MODIFICAR</button>
-      <button *ngIf="modificando" (click)="actualizar()" class="mine-btnbig" mat-flat-button>ACTUALIZAR</button>
+      <button *ngIf="modificando" (click)="actualizar()" class="mine-btnbig" mat-flat-button style="margin-right: 5px">ACTUALIZAR</button>
+      <button *ngIf="modificando" (click)="cancelar()" class="mine-btnbig" mat-flat-button>CANCELAR</button>
     </mat-expansion-panel>
   </div>
 </form>

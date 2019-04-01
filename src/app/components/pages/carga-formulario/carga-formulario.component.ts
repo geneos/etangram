@@ -99,6 +99,8 @@ export class CargaFormularioComponent implements OnInit {
        .subscribe( resp => {
          console.log(resp);
          this.urlImagen = resp.toString();
+         console.log(this.urlImagen.slice(24))
+         this.urlImagen = 'http://devetg.i2tsa.com.ar/files/'+this.urlImagen.slice(24)
       //   this.inputParam.url = this.urlImagen
        });
     //   this.guardar();

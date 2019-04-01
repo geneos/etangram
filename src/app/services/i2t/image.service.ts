@@ -23,6 +23,7 @@ export class ImageService {
     console.log(formData);
     console.log(JSON.stringify(formData));
     console.log(formData.getAll('file'));
+    
 
     let query = `api/imagenes/attachments`;
     let url = this.preUrl + query;

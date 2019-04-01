@@ -18,6 +18,7 @@ import { stringify } from '@angular/compiler/src/util';
 import { PreUrl } from './url';
 //import { ConsDinService } from 'src/app/classes/din-service-wrapper';
 import { RefContablesService } from './ref-contables.service';
+import { Http } from '@angular/http';
 
 const operadores = [
   { condicion: 'equal',         texto: 'eq'},  //igual que
@@ -70,6 +71,15 @@ export class ConsultaDinamicaService {
 
     //todo borrar
     // this.obtenerServicio('test string');
+  }
+
+  resetFiltros(){
+    this.datosFiltros.next(new Map<string, string>());
+  }
+
+  getFiltros(){
+    //futuro: cambiar porque dicen que es mala idea
+    return this.datosFiltros.getValue();
   }
 
   actualizarDatos(datosNuevos: Map<string, string>) {
@@ -281,14 +291,19 @@ export class ConsultaDinamicaService {
 }
 //factory de servicios
 // export function serviceFactory(nombreReporte: string){
-  /*
-export function serviceFactory(parametros: any){
-  console.log('Se generará el servicio correspondiente con: ' + parametros);
-  console.log('nombre: ', parametros.nombre);
-  console.log('http: ', parametros.http);
+  
+// export function serviceFactory(parametros: any){
+export function ConsDinServiceFactory(http: HttpClient){
+  console.log('inyectando servicio');
+
+  return new RefContablesService(http);
+
+  // console.log('Se generará el servicio correspondiente con: ' + parametros);
+  // console.log('nombre: ', parametros.nombre);
+  // console.log('http: ', parametros.http);
   // return new ConsDinService();
   // return new RefContablesService(this.http);
-  return new RefContablesService(parametros.http);
+  // return new RefContablesService(parametros.http);
   // switch (nombreReporte) {
   //   case '':
       
@@ -298,7 +313,7 @@ export function serviceFactory(parametros: any){
   //     break;
   // } 
 }
-*/
+
 /* export let proveedorDeServicios =
   { provide: ConsDinService,
     useFactory: serviceFactory,

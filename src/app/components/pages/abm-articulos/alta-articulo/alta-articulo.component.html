@@ -952,18 +952,6 @@
       </div>
       <div class="col s7 m7 l3">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-          <mat-label>UM P.Venta</mat-label>
-          <input matInput placeholder="" disabled readonly formControlName="umPVentaDesc">
-        </mat-form-field>
-      </div>
-      <div class="col s2 m2 l1" style="margin-top:10px;">
-        <button type="button" class="mine-btnforms" mat-flat-button 
-        (click)="abrirConsulta('tg01_unidadmedida', [], 'umPVenta', 'umPVentaDesc', 'openSnackBar', i)">
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </button>
-      </div>
-      <div class="col s7 m7 l3">
-        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>UM Ventas</mat-label>
           <input matInput placeholder="" disabled readonly formControlName="umVentasDesc">
         </mat-form-field>
@@ -971,6 +959,18 @@
       <div class="col s2 m2 l1" style="margin-top:10px;">
         <button type="button" class="mine-btnforms" mat-flat-button 
          (click)="abrirConsulta('tg01_unidadmedida', [], 'umVentas', 'umVentasDesc', 'openSnackBar', i)">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s7 m7 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>UM P.Venta</mat-label>
+          <input matInput placeholder="" disabled readonly formControlName="umPVentaDesc">
+        </mat-form-field>
+      </div>
+      <div class="col s2 m2 l1" style="margin-top:10px;">
+        <button type="button" class="mine-btnforms" mat-flat-button 
+        (click)="abrirConsulta('tg01_unidadmedida', [], 'umPVenta', 'umPVentaDesc', 'openSnackBar', i)">
           <i class="material-icons" style="font-size:20px;">more_horiz</i>
         </button>
       </div>

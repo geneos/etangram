@@ -37,6 +37,7 @@ export class ArticulosService {
   }
 
   getArticulo( idArticulo: string, token:string ){
+    console.log('buscando cabecera con id, token: ', idArticulo, token)
     const headers = new HttpHeaders({
       'x-access-token': token,
       'Content-Type': 'application/json'
@@ -46,7 +47,7 @@ export class ArticulosService {
 
     let query = `api/proc/ArticuloGET`;
     let url = this.preUrl + query;
-    console.log(url)
+    console.log('url de busqueda de cabecera: ',url)
 
     return this.http.post( url, body, { headers });
   }
@@ -415,7 +416,8 @@ export class ArticulosService {
         'Content-Type': 'application/json'
       });
   
-      let query = "api/proc/SP_ET_ArticuloUDP";
+      // let query = "api/proc/SP_ET_ArticuloUDP";
+      let query = "api/proc/ArticuloUDP";
       let url = this.preUrl + query;
   
       return this.http.put( url, body, { headers } );

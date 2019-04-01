@@ -6,7 +6,9 @@ import { MatTable, MatHint, MatPaginator, MatSnackBar, MatTableDataSource} from 
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { Router, ActivatedRoute } from "@angular/router";
 import { ImageService } from "src/app/services/i2t/image.service";
+import { OrdPublicidadService } from 'src/app/services/i2t/ord-publicidad.service'
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { Services } from '@angular/core/src/view';
 
 const TOKEN = '';
 var auxProvData: any;
@@ -44,7 +46,8 @@ export class RegistroEvidenciaComponent implements OnInit {
               public snackBar: MatSnackBar,
               @Inject(SESSION_STORAGE) private storage: StorageService,
               private _imageService: ImageService,
-              private _evidenciasService: EvidenciasService) { 
+              private _evidenciasService: EvidenciasService,
+              private _ordPublicidadService: OrdPublicidadService) { 
 
     this.forma = new FormGroup({
       'fecha': new FormControl(),
@@ -128,8 +131,23 @@ export class RegistroEvidenciaComponent implements OnInit {
       })
       this.forma.controls['descripcion'].setValue('')
       this.mostrarEvidencias();
-      this.openSnackBar('Evidencia Guardada')
+      this.openSnackBar('Evidencia Guardada');
+      this.actualizaOrden();
     }
+  }
+
+  actualizaOrden(){
+    let jsbodyUpdOrd = {
+      "id_op": this.inputParam.ordPublicidadId,
+	    "user_id": "1",
+    	"estado_op": 45
+    }
+    console.log('armado de json upd de orden')
+    let jsonbodyUpdOrd = JSON.stringify(jsbodyUpdOrd);
+    this._ordPublicidadService.updOrden( jsonbodyUpdOrd, this.token)
+      .subscribe( respUpd => {
+        console.log(respUpd)
+      })
   }
 
   mostrarEvidencias(){
@@ -170,5 +188,6 @@ export interface evidenciasdata{
   id_evidencia: string,
   descripcion: string,
   fecha: string,
-  url_imagen: string
+  url_imagen: string,
+  name_imagen: string
 }

@@ -33,7 +33,7 @@ export class AbmPlanDeCuentasComponent implements OnInit {
 
     });
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
-    this.token = localStorage.getItem(TOKEN)
+    this.token = localStorage.getItem('TOKEN')
   }
 
   ngOnInit() {  }

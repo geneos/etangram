@@ -239,7 +239,7 @@ export class AltaProveedorComponent implements OnInit {
               public snackBar: MatSnackBar,) 
   {
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
-    this.token = localStorage.getItem(TOKEN);
+    this.token = localStorage.getItem('TOKEN');
 
     this.loading = true;
     this.partesCargadas = 0;

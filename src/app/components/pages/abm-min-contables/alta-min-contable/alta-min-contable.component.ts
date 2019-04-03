@@ -218,7 +218,7 @@ urlAnterior: string;
 
 
                 console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
-                this.token = localStorage.getItem(TOKEN)
+                this.token = localStorage.getItem('TOKEN')
                // this.token = this.storage.get(TOKEN);
 
                 window.onbeforeunload = function() {

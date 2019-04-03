@@ -5,6 +5,7 @@ import { MatTable,MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA, 
 import { TiposDocumentoService } from '../../../../services/i2t/tipos-documento.service';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription } from 'rxjs';
+import { ImpresionCompService } from "src/app/services/i2t/impresion-comp.service";
 import { LocalidadesService } from 'src/app/services/i2t/localidades.service';
 import { Localidad, Provincia, Pais } from 'src/app/interfaces/localidades.interface';
 import { AFIPInternoService } from 'src/app/services/i2t/afip.service';
@@ -55,7 +56,8 @@ var auxLocalidadFac,auxLocalidadEnv,auxArticulo,auxZona,auxVendedor,auxCobrador,
   styleUrls: ['./alta-proveedor.component.css']
 })
 export class AltaProveedorComponent implements OnInit {
-
+  
+  datos: any;
   fechaActual: Date = new Date();
   fechaVenci: Date = new Date();
 
@@ -236,7 +238,8 @@ export class AltaProveedorComponent implements OnInit {
               public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService,
               private router: Router,
-              public snackBar: MatSnackBar,) 
+              public snackBar: MatSnackBar,
+              private _impresionCompService: ImpresionCompService) 
   {
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem('TOKEN');
@@ -3374,6 +3377,13 @@ export class AltaProveedorComponent implements OnInit {
          if (cFormulario.controls['codForm'].value != null){
            this.cargaFechas(cFormulario.controls['codForm'].value,j)
          }
+         this._impresionCompService.getBaseDatos( this.token )
+         .subscribe ( dataP => {
+           console.log(dataP)
+          this.datos = dataP
+          this.urlImagen = this.datos.dataset[0].imagenes+this.urlImagen;
+          console.log(this.urlImagen)
+        })
        });
   }
   verificaCuit(){

@@ -56,7 +56,7 @@ export class AbmArticulosComponent implements OnInit {
                private _consultaDinamicaService: ConsultaDinamicaService,
                public snackBar: MatSnackBar) { 
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
-    this.token = localStorage.getItem(TOKEN);
+    this.token = localStorage.getItem('TOKEN');
           
     this.loading = true;             
   }

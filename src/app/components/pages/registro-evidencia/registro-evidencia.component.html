@@ -46,7 +46,13 @@
       <!-- fecha Column -->
       <ng-container matColumnDef="fecha">
         <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Fecha </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.fecha }} </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.fecha | date: 'dd-MM-yyyy' }} </td>
+      </ng-container>
+
+      <!-- fecha Column -->
+      <ng-container matColumnDef="nombre_img">
+        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Imagen </th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> </td>
       </ng-container>
 
        <!-- accion Column -->
@@ -55,20 +61,17 @@
         <td mat-cell *cdkCellDef="let element" style="text-align:center;">
             <!-- <a href='{{ element.url_imagen }}' target="_blank"><span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;"> V </span></a> -->
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)="eliminarEvidencia(element.id_evidencia)"> E </span> -->
-            <a href='{{ element.url_imagen }}' style="color:#000;">
-              <i matTooltip="Ver"
-                 class="material-icons">visibility</i>
-            </a>
-            <a style="color:#000;">
+              <i (click)="verImagen(element.url_imagen)" matTooltip="Ver Imagen" class="material-icons">visibility</i>
+              <a style="color:#000;">
               <i (click)="eliminarEvidencia(element.id_evidencia)"
                  matTooltip="Eliminar"
                  class="material-icons">delete</i>
-            </a>
+              </a>
         </td>
       </ng-container>
       
-      <tr mat-header-row *cdkHeaderRowDef="['descripcion', 'fecha', 'acciones']"></tr>
-      <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'fecha', 'acciones'];"></tr>
+      <tr mat-header-row *cdkHeaderRowDef="['descripcion', 'fecha', 'nombre_img', 'acciones']"></tr>
+      <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'fecha', 'nombre_img', 'acciones'];"></tr>
     </table>
     
   </div>
@@ -102,3 +105,4 @@
     <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
   </div>
 </mat-expansion-panel>
+<app-img></app-img>

@@ -16,7 +16,7 @@ import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
-var auxLocData: any;
+var auxLocData: any, auxSituacion: any;
 @Injectable()
 
 @Component({
@@ -78,7 +78,7 @@ export class DatosProveedoresComponent implements OnInit {
     {
       console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     //  this.token = this.storage.get(TOKEN);
-      this.token = localStorage.getItem(TOKEN)
+      this.token = localStorage.getItem('TOKEN')
 
       this.route.params.subscribe( parametros=>{
         this.idProv = parametros['id'];
@@ -245,7 +245,7 @@ export class DatosProveedoresComponent implements OnInit {
     this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
     
     this.suscripcionImg = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
-      console.log('Cerrado el modal de img: ', modal.getData());
+      console.log('Cerrado el modal de imagen: ', modal.getData());
 
       let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
       console.log('Respuesta del modal: ', respuesta);
@@ -261,7 +261,7 @@ export class DatosProveedoresComponent implements OnInit {
       // this.establecerColumnas();
       // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
       this.suscripcionFormularios.unsubscribe();
-      console.log('se desuscribió al modal de consulta dinamica');
+      console.log('se desuscribió al modal de imagenes');
     });
     this.ngxSmartModalService.open(datosModal.modal);
   }
@@ -406,6 +406,21 @@ export class DatosProveedoresComponent implements OnInit {
       this.respImpuesto = dataI;
       if(this.respImpuesto.dataset.length>0){
         this.datosImpuesto = this.respImpuesto.dataset;
+       this.datosImpuesto.forEach( impuesto => {
+        switch (impuesto.Situacion) {
+          case '1':
+            impuesto.Situacion = 'Exento';
+            break;
+          case '2':
+            impuesto.Situacion = 'Inscripto';
+          default:
+            break;
+          case '3':
+            impuesto.Situacion = "No inscripto";
+            break;  
+        }
+       })
+       
         this.dataSource = new MatTableDataSource(this.datosImpuesto);
       } else {
         this.dataSource = this.respImpuesto.dataset.length;

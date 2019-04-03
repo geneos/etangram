@@ -60,8 +60,8 @@ export class AbmProveedoresComponent implements OnInit {
               private _consultaDinamicaService: ConsultaDinamicaService,
               public snackBar: MatSnackBar,
     ) { 
-      console.log(this.storage.get(TOKEN) || 'Local storage is empty');
-      this.token = this.storage.get(TOKEN);
+      console.log(this.storage.get('TOKEN') || 'Local storage is empty');
+      this.token = this.storage.get('TOKEN');
 
       this.loading = true;
       this.buscarProveedores();

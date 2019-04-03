@@ -84,12 +84,12 @@
         <td mat-cell *cdkCellDef="let element" style="text-align:center;">
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" (click)="expandedElement = expandedElement === element ? null : element"> D </span> -->
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)=print(element.id_op_url)> I </span> -->
-            <a style="color:#000;">
+            <a style="color:#000; cursor: pointer;">
               <i (click)="expandedElement = expandedElement === element ? null : element"
                  matTooltip="Descripcion"
                  class="material-icons">visibility</i>
             </a>
-            <a style="color:#000;">
+            <a style="color:#000; cursor: pointer;">
               <i (click)="print(element.id_op_url)"
                  matTooltip="Imprimir"
                  class="material-icons">print</i>
@@ -166,25 +166,25 @@
         <th mat-header-cell *matHeaderCellDef style="text-align:center;"> Acciones </th>
         <td mat-cell *cdkCellDef="let element" style="text-align:center;">
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" (click)="expandedElement = expandedElement === element ? null : element"> D </span> -->
-            <a style="color:#000;">
+            <a style="color:#000; cursor: pointer;">
               <i (click)="expandedElement = expandedElement === element ? null : element"
                  matTooltip="Descripcion"
                  class="material-icons">visibility</i>
             </a>
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)="print(element.id_op_url)"> I </span> -->
-            <a style="color:#000;">
+            <a style="color:#000; cursor: pointer;">
               <i (click)="print(element.id_op_url)"
                  matTooltip="Imprimir"
                  class="material-icons">print</i>
             </a>
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" (click)="abrirConsulta(id,element.id_op_url)"> E </span> -->
-            <a style="color:#000;">
+            <a style="color:#000; cursor: pointer;">
               <i (click)="abrirConsulta(id,element.id_op_url)"
                  matTooltip="Registro de Evidencia"
                  class="material-icons">fingerprint</i>
             </a>
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)="cargaFactura(element.expediente_nombre,element.id_op_url)"> F </span> -->
-            <a style="color:#000;">
+            <a style="color:#000; cursor: pointer;">
               <i (click)="cargaFactura(element.expediente_nombre,element.id_op_url)" 
                  matTooltip="Registro de Facturas"
                  class="material-icons">receipt</i>
@@ -261,12 +261,12 @@
         <td mat-cell *cdkCellDef="let element" style="text-align:center;">
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;" (click)="expandedElement = expandedElement === element ? null : element"> D </span> -->
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)=print(element.id_op_url)> I </span> -->
-            <a style="color:#000;">
+            <a style="color:#000; cursor: pointer;">
               <i (click)="expandedElement = expandedElement === element ? null : element"
                  matTooltip="Descripcion"
                  class="material-icons">visibility</i>
             </a>
-            <a style="color:#000;">
+            <a style="color:#000; cursor: pointer;">
               <i (click)="print(element.id_op_url)"
                  matTooltip="Imprimir"
                  class="material-icons">print</i>

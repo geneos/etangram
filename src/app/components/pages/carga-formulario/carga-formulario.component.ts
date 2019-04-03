@@ -8,6 +8,7 @@ import { ImageService } from "src/app/services/i2t/image.service";
 import { ProveedorCabecera, RelacionComercial, Impuesto, Formulario, ArticuloProv } from 'src/app/interfaces/proveedor.interface';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar} from '@angular/material';
+import { ImpresionCompService } from "src/app/services/i2t/impresion-comp.service";
 
 const TOKEN = '';
 @Injectable()
@@ -23,6 +24,7 @@ export class CargaFormularioComponent implements OnInit {
   urlImagen:string = "";
   adjunto: any;
   token: string = "a";
+  datos: any;
 
   fechaActual: Date = new Date();
   fechaVenci: Date = new Date();
@@ -46,9 +48,10 @@ export class CargaFormularioComponent implements OnInit {
               private _formulariosService: FormulariosService,
               private _proveedoresService: ProveedoresService,
               @Inject(SESSION_STORAGE) private storage: StorageService,
-              public snackBar: MatSnackBar) {
+              public snackBar: MatSnackBar,
+              private _impresionCompService: ImpresionCompService) {
     
-                this.token = localStorage.getItem(TOKEN)
+                this.token = localStorage.getItem('TOKEN')
    // this.token = this.storage.get(TOKEN);
 
     this.route.params.subscribe( parametros=>{
@@ -92,18 +95,19 @@ export class CargaFormularioComponent implements OnInit {
   cargar(attachment){
     this.adjunto = attachment.files[0];
     console.clear();
-    //this.urlImagen = "url sigue vacia"
-     //console.log(formData.getAll('file'));
-     //console.log(formData);
      this._imageService.postImage( this.adjunto, this.token )
        .subscribe( resp => {
          console.log(resp);
          this.urlImagen = resp.toString();
          console.log(this.urlImagen.slice(24))
-         this.urlImagen = 'http://devetg.i2tsa.com.ar/files/'+this.urlImagen.slice(24)
-      //   this.inputParam.url = this.urlImagen
+         this._impresionCompService.getBaseDatos( this.token )
+         .subscribe ( dataP => {
+           console.log(dataP)
+          this.datos = dataP
+          this.urlImagen = this.datos.dataset[0].imagenes+this.urlImagen;
+          console.log(this.urlImagen)
+        })
        });
-    //   this.guardar();
   }
 
   guardar(){

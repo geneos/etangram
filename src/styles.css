@@ -135,7 +135,8 @@ h6 {
 /* Alto mínimo para que no se achique la lista de filtros */
 .overlay-cons-din .nsm-content,
 .overlay-evidencias .nsm-content,
-.overlay-cons-din2 .nsm-content
+.overlay-cons-din2 .nsm-content,
+.overlay-img .nsm-content
   { min-height: 500px}
 
 .overlay-formulario .nsm-content
@@ -144,7 +145,8 @@ h6 {
 .overlay-filtros .nsm-content,
 .overlay-columnas .nsm-content,
 .overlay-filtros-n2 .nsm-content,
-.overlay-columnas-n2 .nsm-content
+.overlay-columnas-n2 .nsm-content,
+.overlay-img .nsm-content
   { min-height: unset}
 
 /* .overlay-cons-din.nsm-dialog { width: 85% !important; max-width: 2000px !important; */

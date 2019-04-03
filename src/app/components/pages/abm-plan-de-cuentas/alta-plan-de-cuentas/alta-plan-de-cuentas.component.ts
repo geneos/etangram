@@ -70,7 +70,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     this.loading = true;
 
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
-    this.token = localStorage.getItem(TOKEN)
+    this.token = localStorage.getItem('TOKEN')
 
     this.forma = new FormGroup({
       //'id': new FormControl('',Validators.required),

@@ -113,7 +113,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
   //  this.token = this.storage.get(TOKEN);
-    this.token = localStorage.getItem(TOKEN)
+    this.token = localStorage.getItem('TOKEN')
 
 
     if (this.nivel == null){

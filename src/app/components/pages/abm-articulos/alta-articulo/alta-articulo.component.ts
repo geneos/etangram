@@ -1307,7 +1307,7 @@ construirFoto(){
     }
     else{
       jsbody = {
-        // "ArticuloItem" : this.forma.controls['tipo'].value,
+        "ArticuloItem" : this.forma.controls['tipo'].value,
         "IPart_number" : this.forma.controls['nroArticulo'].value,
         "IName" : this.forma.controls['descripcion'].value,
         "C_alternativo": this.forma.controls['codigoAlternativo'].value,
@@ -1338,12 +1338,12 @@ construirFoto(){
         "precio_UCpa": precio_UCpa,//this.forma.controls['precioUltCompra'].value,// 200,
         "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
         // "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
-        "idMony": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
+        "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
         "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
         "PrecioU_vta": PrecioU_vta,//this.forma.controls['precioUltVenta'].value,
         "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
         // "idmoneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
-        "idMony1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
+        "idmoneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
 
         //datos impositivos
         "idRefC": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica

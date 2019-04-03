@@ -16,7 +16,7 @@ import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
-var auxLocData: any;
+var auxLocData: any, auxSituacion: any;
 @Injectable()
 
 @Component({
@@ -406,6 +406,21 @@ export class DatosProveedoresComponent implements OnInit {
       this.respImpuesto = dataI;
       if(this.respImpuesto.dataset.length>0){
         this.datosImpuesto = this.respImpuesto.dataset;
+       this.datosImpuesto.forEach( impuesto => {
+        switch (impuesto.Situacion) {
+          case '1':
+            impuesto.Situacion = 'Exento';
+            break;
+          case '2':
+            impuesto.Situacion = 'Inscripto';
+          default:
+            break;
+          case '3':
+            impuesto.Situacion = "No inscripto";
+            break;  
+        }
+       })
+       
         this.dataSource = new MatTableDataSource(this.datosImpuesto);
       } else {
         this.dataSource = this.respImpuesto.dataset.length;

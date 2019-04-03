@@ -134,7 +134,7 @@
       </div>
     </div>
 
-    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingReferencia || editingAI || editingRenglones)">
+    <div class="row" style="margin-top:25px; margin-bottom:5px;" *ngIf="!editingCabecera && (addingItem || addingReferencia || editingAI )">
       <form [formGroup]="formaReferencias"  novalidate="novalidate">
         <div class="col s8 m3 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
@@ -178,14 +178,14 @@
         <div class="col s4 m2 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Debe</mat-label>
-            <input type="number" (keyup)="esDebeHaberValido()" matInput placeholder=""  formControlName="debe" style="text-align: right;">
+            <input type="number" (keyup)="esDebeHaberValido()" matInput placeholder="0.00" autocomplete="off" formControlName="debe" style="text-align: right;">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
         <div class="col s8 m2 l1">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Haber</mat-label>
-            <input type="number" (keyup)="esDebeHaberValido()" matInput placeholder="" formControlName="haber" style="text-align: right;">
+            <input type="number" (keyup)="esDebeHaberValido()" matInput placeholder="0.00" autocomplete="off" formControlName="haber" style="text-align: right;">
             <!--<mat-hint>Hint</mat-hint>-->
           </mat-form-field>
         </div>
@@ -216,18 +216,30 @@
 
 
 
-<div class="row" style="height:0px;"></div>
+<!-- <div class="row" style="height:0px;"></div> -->
 
-<div class="row" style="text-align: right;" *ngIf="editingCabecera && !existe">
-  <button type="submit" class="mine-btnbig" mat-flat-button [disabled]="!forma.valid">
+<div class="row" style="margin-top: 10px; width: 100%; text-align: right;">
+  <button type="submit" class="mine-btnbig" mat-flat-button 
+    *ngIf="(editingCabecera && !existe) || (!editingCabecera )" [disabled]="!forma.valid">
     GUARDAR
   </button>
+  <a class="mine-btnbig" (click)="confirmar()" mat-flat-button style="margin-left: 10px"
+    *ngIf="!editingCabecera" [disabled]="editingCabecera||addingReferencia||editingAI">
+    CONFIRMAR
+  </a>
+  <a class="mine-btnbig-grey" (click)="cancelar()" mat-flat-button style="margin-left: 10px"
+    *ngIf="!editingCabecera" [disabled]="false">
+    CANCELAR
+  </a>
 </div>
 </form>
 
-<div class="row" style="text-align: right;" *ngIf="!editingCabecera">
+<!-- <div class="row" style="text-align: right;" *ngIf="!editingCabecera">
   <a class="mine-btnbig" (click)="confirmar()" mat-flat-button [disabled]="false">
     CONFIRMAR
   </a>
+</div> -->
+<div class="row" style="text-align: right;" *ngIf="!editingCabecera">
+  
 </div>
 <app-cons-din></app-cons-din>

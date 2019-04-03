@@ -109,8 +109,8 @@ datos =
   }
   /////
 */
-  editingRenglones:boolean = false;
-  agregarReng:boolean = true;
+  // editingRenglones:boolean = false;
+  // agregarReng:boolean = true;
 
   editingCabecera:boolean = true;
   addingReferencia:boolean = false;
@@ -174,6 +174,7 @@ datos =
   debeAnterior: number = 0;
   haberAnterior: number = 0;
   auxDebeHaber: boolean = false;
+  auxDebeHaberMensaje: string = null;
   centroCosto: CentroCosto;
   refContable: RefContable;
   refeCont: any[] = [];
@@ -662,8 +663,7 @@ urlAnterior: string;
     console.log(this.minutaContable.tg01_cajas_id_c);
     //habilitar edición de renglones
     this.editingCabecera = false; */
-    console.log('json armado para detalles: ');
-    console.log(jsonbody);
+    console.log('json armado para detalles: ', jsonbody);
 
     this._minContableService.getMinContablesDet( jsonbody, this.token )
     //this._refContableService.getProveedores()
@@ -711,11 +711,11 @@ urlAnterior: string;
                           auxDetId = this.dataDet.dataset[0].id
                           if(detalle[i].precio > 0){
                             auxHaber = detalle[i].precio;
-                            auxDebe = null;
+                            auxDebe = 0;
                             this.totalhaber = this.totalhaber + auxHaber
                           } else if(detalle[i].precio < 0){
                             auxDebe = detalle[i].precio*-1
-                            auxHaber = null;
+                            auxHaber = 0;
                             this.totaldebe = this.totaldebe + auxDebe
                           }
                           this.refContableItemData.push({
@@ -876,6 +876,7 @@ urlAnterior: string;
     if ((this.formaReferencias.controls['debe'].value > 0) && (this.formaReferencias.controls['haber'].value > 0)){
       //No puede ingresar un Debe y un Haber al mismo tiempo
       console.log("No puede ingresar un Debe y un Haber al mismo tiempo")
+      this.auxDebeHaberMensaje = "No puede ingresar un importe en Debe y Haber al mismo tiempo";
       this.auxDebeHaber = false
       return false;
     }
@@ -883,6 +884,7 @@ urlAnterior: string;
     if ((this.formaReferencias.controls['debe'].value === null || this.formaReferencias.controls['debe'].value === 0) && (this.formaReferencias.controls['haber'].value === null || this.formaReferencias.controls['haber'].value === 0)){
       //Debe ingresar un Debe o un Haber
       console.log('Debe ingresar uno de los dos')
+      this.auxDebeHaberMensaje = "Es necesario ingresar un Importe";
       this.auxDebeHaber = false
       return false;
     }
@@ -892,17 +894,22 @@ urlAnterior: string;
     if (!(this.formaReferencias.controls['haber'].value === null)&&(this.formaReferencias.controls['debe'].value < 0)){
       //Debe ingresar un Debe positivo
       this.auxDebeHaber = false
-      this.openSnackBar('Debe Ingresar un Debe Positivo');
+      console.log("Debe Ingresar un Debe Positivo");
+      this.auxDebeHaberMensaje = "Debe Ingresar un Debe Positivo";
+      // this.openSnackBar('Debe Ingresar un Debe Positivo');
       return false;
     }
 
     if (!(this.formaReferencias.controls['debe'].value === null)&&(this.formaReferencias.controls['haber'].value < 0)){
       //Debe ingresar un Haber positivo
       this.auxDebeHaber = false
-      this.openSnackBar('Debe Ingresar un Haber Positivo');
+      console.log("Debe Ingresar un Haber Positivo");
+      this.auxDebeHaberMensaje = "Debe Ingresar un Haber Positivo";
+      // this.openSnackBar('Debe Ingresar un Haber Positivo');
       return false;
     }
-    this.auxDebeHaber = true
+    this.auxDebeHaber = true;
+    this.auxDebeHaberMensaje = "Debe / Haber Correcto";
     return true;
   }
 
@@ -1013,8 +1020,8 @@ urlAnterior: string;
     this.formaReferencias.controls['debe'].enable();
     this.formaReferencias.controls['haber'].enable();
 
-    this.formaReferencias.controls['haber'].setValue('');
-    this.formaReferencias.controls['debe'].setValue('');
+    this.formaReferencias.controls['haber'].setValue(0);
+    this.formaReferencias.controls['debe'].setValue(0);
     this.formaReferencias.controls['refContable'].setValue('');
     this.formaReferencias.controls['nombreRefContable'].setValue('');
     this.addingReferencia = true;
@@ -1022,10 +1029,10 @@ urlAnterior: string;
 
   guardarReferencia(){
 
-    console.clear();
+    // console.clear();
     console.log('guardando ref');
-
-   if(this.auxDebeHaber){
+    this.esDebeHaberValido();
+    if(this.auxDebeHaber){
     if(this.editingAI){
    //   this.totaldebe = this.totaldebe - this.refContableItemData[this.auxEditingArt].debe
       this.refContableItemData[this.auxEditingArt].refContable = this.formaReferencias.controls['refContable'].value,
@@ -1073,7 +1080,7 @@ urlAnterior: string;
         }
         console.log('stringifeando');
         let jsonbody= JSON.stringify(jsbody);
-        console.log(jsonbody);
+        console.log('String update detalle: ', jsonbody);
         this._minContableService.putMinContablesDet(jsonbody, this.token).subscribe( resp => {
           //console.log(resp.returnset[0].RId);
           this.respRenglon = resp;
@@ -1169,7 +1176,7 @@ urlAnterior: string;
 
       console.log('stringifeando');
       let jsonbody= JSON.stringify(jsbody);
-      console.log(jsonbody);
+      console.log('string insert detalle: ', jsonbody);
       //guardar id de renglon
       this._minContableService.postMinContablesDet(jsonbody, this.token).subscribe( resp => {
         //console.log(resp.returnset[0].RId);
@@ -1229,12 +1236,13 @@ urlAnterior: string;
     }
    }
    else {
-    this.openSnackBar('Se debe ingresar un Debe o un Haber');
+      this.openSnackBar(this.auxDebeHaberMensaje);
+      // this.openSnackBar('Se debe ingresar un Debe o un Haber');
    }
 }
   eliminarReferencia(index){
 
-    console.clear();
+    // console.clear();
     console.log('eliminando ref');
     let jsbody = {
       "ID_ComprobanteCab": this.cabeceraId,
@@ -1281,7 +1289,7 @@ urlAnterior: string;
           // this.forma.controls['numero'].setValue(this.cabeceraId);
         }
         else{
-          this.openSnackBar('No se pudo crear eliminar renglon de Minuta Contable');
+          this.openSnackBar('No se pudo eliminar renglon de Minuta Contable');
         }
 
       }
@@ -1292,7 +1300,7 @@ urlAnterior: string;
 
   editarReferencia(ind:number){
 
-    console.clear();
+    // console.clear();
     console.log('editando referencia');
     this.editingAI = true;
     //this.compraArticulo = this.referenciasData[ind];
@@ -1315,6 +1323,7 @@ urlAnterior: string;
       this.formaReferencias.controls['debe'].disable();
     }
     this.editingID = this.refContableItemData[ind].idEnMinuta;
+    console.log('referencia id: ', this.editingID);
   };
   guardarRenglon(){
     this.refContableItemData.forEach(refContableDet => {
@@ -1353,7 +1362,7 @@ urlAnterior: string;
     ;})
   }
   guardarCabecera(){
-    console.clear();
+    // console.clear();
     console.log('guardando cabecera');
     //this.editingCabecera = false;
     console.log('armando fecha');
@@ -1471,7 +1480,7 @@ urlAnterior: string;
   }
 
   confirmar(  ){
-    console.clear();
+    // console.clear();
     console.log('confirmando');
     console.log(this.totaldebe, this.totalhaber)
     if(Number(this.totaldebe) == Number(this.totalhaber)){

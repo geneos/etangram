@@ -24,6 +24,7 @@ var auxProvData: any, urlBase:any;
 export class RegistroEvidenciaComponent implements OnInit {
 
   suscripcionesModal: Subscription[] = [];
+  suscripcionImg: Subscription;
   inputParam: any;
   adjunto: any;
   urlImagen:string = "";
@@ -187,6 +188,50 @@ export class RegistroEvidenciaComponent implements OnInit {
         console.log(dataEv);
         this.mostrarEvidencias();
       })
+  }
+
+  verImagen(urlImagen: string){
+    let datosModal : {
+      url: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+      url: urlImagen,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'imgModal'
+    }
+  
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionImg = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de img: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        
+      }
+      else{
+        this.ngxSmartModalService.resetModalData('imgModal');
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionImg.unsubscribe();
+      console.log('se desuscribió al modal de imagenes');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
   }
 
   cancelar(){

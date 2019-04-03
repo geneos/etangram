@@ -129,7 +129,7 @@
         <ng-container matColumnDef= "opciones">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:right;">
-            <i (click)="verImagen(element.Url)" class="material-icons" style="cursor:pointer; color:#f08377;">visibility</i>
+            <i  matTooltip="Ver Imagen" (click)="verImagen(element.Url)" class="material-icons" style="cursor:pointer; color:#f08377;">visibility</i>
             <i (click)="cargarFormulario(element.ID_Formulario,element.ID_Formulario_nombre,element.Fecha_presentacion,element.Fecha_vencimiento,element.Url,element.Descripcion)" class="material-icons" style="cursor:pointer; margin-left: 10px; color:#f08377;">edit</i>
           </td>
         </ng-container>

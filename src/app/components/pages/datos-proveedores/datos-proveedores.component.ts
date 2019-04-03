@@ -245,7 +245,7 @@ export class DatosProveedoresComponent implements OnInit {
     this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
     
     this.suscripcionImg = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
-      console.log('Cerrado el modal de img: ', modal.getData());
+      console.log('Cerrado el modal de imagen: ', modal.getData());
 
       let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
       console.log('Respuesta del modal: ', respuesta);
@@ -261,7 +261,7 @@ export class DatosProveedoresComponent implements OnInit {
       // this.establecerColumnas();
       // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
       this.suscripcionFormularios.unsubscribe();
-      console.log('se desuscribió al modal de consulta dinamica');
+      console.log('se desuscribió al modal de imagenes');
     });
     this.ngxSmartModalService.open(datosModal.modal);
   }

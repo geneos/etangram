@@ -61,15 +61,12 @@
         <td mat-cell *cdkCellDef="let element" style="text-align:center;">
             <!-- <a href='{{ element.url_imagen }}' target="_blank"><span style="font-size:12px; font-weight:bold; color:#000; margin-right:5px;margin-left:5px; cursor: pointer;"> V </span></a> -->
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)="eliminarEvidencia(element.id_evidencia)"> E </span> -->
-            <a href='{{ element.url_imagen }}' style="color:#000;">
-              <i matTooltip="Ver"
-                 class="material-icons">visibility</i>
-            </a>
-            <a style="color:#000;">
+              <i (click)="verImagen(element.url_imagen)" matTooltip="Ver Imagen" class="material-icons">visibility</i>
+              <a style="color:#000;">
               <i (click)="eliminarEvidencia(element.id_evidencia)"
                  matTooltip="Eliminar"
                  class="material-icons">delete</i>
-            </a>
+              </a>
         </td>
       </ng-container>
       
@@ -108,3 +105,4 @@
     <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
   </div>
 </mat-expansion-panel>
+<app-img></app-img>

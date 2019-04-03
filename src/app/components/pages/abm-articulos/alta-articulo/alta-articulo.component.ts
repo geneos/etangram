@@ -255,10 +255,10 @@ export class AltaArticuloComponent implements OnInit {
       unidadMedidaBase: new FormControl(),
       aplicaConversionUnidadPrecio: new FormControl(),
       unidadMedidaLP: new FormControl(),
-      largo: new FormControl(),
-      ancho: new FormControl(),
-      profundidad: new FormControl(),
-      m3: new FormControl(),
+      largo: new FormControl(null, [Validators.pattern("^([0-9]{12})$")]),
+      ancho: new FormControl(null, [Validators.pattern("^([0-9]{12})$")]),
+      profundidad: new FormControl(null, [Validators.pattern("^([0-9]{12})$")]),
+      m3: new FormControl(null, [Validators.pattern("^([0-9]{12})$")]),
         //Unidades de medida alternativas
         // unidadesAlternativas: this.FormBuilder.array([]),
         umCompras: new FormControl(),
@@ -1216,6 +1216,10 @@ construirFoto(){
     let num = Number(numString);
     return (Math.round(((num + 0.00001) * 100) / 100).toString());
   }
+  truncar(numString: string){
+    let num = Number(numString);
+    return Math.trunc(num).toString();
+  }
 
   armarJSONArticulo(){
     console.log('armando json articulo con form: ', this.forma);
@@ -1266,7 +1270,7 @@ construirFoto(){
         "precio_UCpa":this.forma.controls['precioUltCompra'].value,// 200,
         "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
         "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
-        "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
+        "Cant_Op_cpa": (this.forma.controls['cantidadOptimaDeCompra'].value == null) ? '0' : this.truncar(this.forma.controls['cantidadOptimaDeCompra'].value),
         "PrecioU_vta": this.forma.controls['precioUltVenta'].value,
         "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
         "idmoneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
@@ -1285,9 +1289,13 @@ construirFoto(){
 
         //datos de stock
         "admStock": (this.forma.controls['administraStock'].value == true ? 1 : 0),//0, 0 false , 1 true
-        "stockIdeal": this.forma.controls['stockIdeal'].value,
+        /* "stockIdeal": this.forma.controls['stockIdeal'].value,
         "stockMax": this.forma.controls['stockMaximo'].value,
-        "stockRepo":this.forma.controls['stockReposicion'].value,
+        "stockRepo":this.forma.controls['stockReposicion'].value, */
+        //todo cambiar
+        "stockIdeal": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockIdeal'].value : '0'),
+        "stockMax": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockMaximo'].value : '0'),
+        "stockRepo": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockReposicion'].value : '0'),
         //unidad de medida
         "dimensiones": this.forma.controls['Dimensiones'].value,
         "pesable": this.forma.controls['Pesable'].value,
@@ -1299,10 +1307,11 @@ construirFoto(){
         "idUM4": this.forma.controls['umPCompra'].value,
         "idUM5": this.forma.controls['umVentas'].value,
         "IdUM6": this.forma.controls['umPVenta'].value,
-        "largo":this.forma.controls['largo'].value,
-        "ancho":this.forma.controls['ancho'].value,
-        "profundo":this.forma.controls['profundidad'].value,
-        "m3": this.forma.controls['m3'].value
+        //todo cambiar si lo cambian en la api, en else también
+        "largo": (this.forma.controls['largo'].value == null) ? '0' : this.truncar(this.forma.controls['largo'].value),
+        "ancho":(this.forma.controls['ancho'].value == null) ? '0' : this.truncar(this.forma.controls['ancho'].value),
+        "profundo":(this.forma.controls['profundidad'].value == null) ? '0' : this.truncar(this.forma.controls['profundidad'].value),
+        "m3": (this.forma.controls['m3'].value == null) ? '0' : this.truncar(this.forma.controls['m3'].value)
       }
     }
     else{
@@ -1339,7 +1348,8 @@ construirFoto(){
         "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
         // "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
         "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
-        "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
+        // "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
+        "Cant_Op_cpa": (this.forma.controls['cantidadOptimaDeCompra'].value == null) ? '0' : this.truncar(this.forma.controls['cantidadOptimaDeCompra'].value),
         "PrecioU_vta": PrecioU_vta,//this.forma.controls['precioUltVenta'].value,
         "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
         // "idmoneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
@@ -1362,9 +1372,10 @@ construirFoto(){
         /* "stockIdeal": this.forma.controls['stockIdeal'].value,
         "stockMax": this.forma.controls['stockMaximo'].value,
         "stockRepo":this.forma.controls['stockReposicion'].value, */
-        "stockIdeal": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockIdeal'].value : 'null'),
-        "stockMax": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockMaximo'].value : 'null'),
-        "stockRepo": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockReposicion'].value : 'null'),
+        //todo cambiar
+        "stockIdeal": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockIdeal'].value : '0'),
+        "stockMax": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockMaximo'].value : '0'),
+        "stockRepo": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockReposicion'].value : '0'),
         //unidad de medida
         "dimensiones": this.forma.controls['Dimensiones'].value,
         "pesable": this.forma.controls['Pesable'].value,
@@ -1376,10 +1387,10 @@ construirFoto(){
         "idUM4": this.forma.controls['umPCompra'].value,
         "idUM5": this.forma.controls['umVentas'].value,
         "IdUM6": this.forma.controls['umPVenta'].value,
-        "largo":this.forma.controls['largo'].value,
-        "ancho":this.forma.controls['ancho'].value,
-        "profundo":this.forma.controls['profundidad'].value,
-        "m3": this.forma.controls['m3'].value
+        "largo": (this.forma.controls['largo'].value == null) ? '0' : this.truncar(this.forma.controls['largo'].value),
+        "ancho":(this.forma.controls['ancho'].value == null) ? '0' : this.truncar(this.forma.controls['ancho'].value),
+        "profundo":(this.forma.controls['profundidad'].value == null) ? '0' : this.truncar(this.forma.controls['profundidad'].value),
+        "m3": (this.forma.controls['m3'].value == null) ? '0' : this.truncar(this.forma.controls['m3'].value)
       }  
     }
     console.log('stringifeando esto: ', jsbody)

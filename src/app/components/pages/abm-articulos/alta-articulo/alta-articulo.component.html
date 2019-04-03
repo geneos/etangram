@@ -888,18 +888,27 @@
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Largo</mat-label>
               <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="largo" value="{{ datosArticulos[0]?.largo | number:'1.2-2' }}">
+              <mat-hint *ngIf="forma.controls['largo'].invalid && forma.controls['largo'].errors?.pattern">
+                Debe ser un número entero
+              </mat-hint>
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Ancho</mat-label>
               <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="ancho" value="{{ datosArticulos[0]?.ancho | number:'1.2-2' }}">
+              <mat-hint *ngIf="forma.controls['ancho'].invalid && forma.controls['ancho'].errors?.pattern">
+                Debe ser un número entero
+              </mat-hint>
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Profundidad</mat-label>
               <input (keyup)="calcularM3()" matInput placeholder="" type="number" formControlName="profundidad" value="{{ datosArticulos[0]?.profundo | number:'1.2-2' }}">
+              <mat-hint *ngIf="forma.controls['profundidad'].invalid && forma.controls['profundidad'].errors?.pattern">
+                Debe ser un número entero
+              </mat-hint>
             </mat-form-field>
         </div>
         <div class="col s6 m3 l3">

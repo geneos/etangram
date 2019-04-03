@@ -419,7 +419,7 @@ export class ArticulosService {
       // let query = "api/proc/SP_ET_ArticuloUDP";
       let query = "api/proc/ArticuloUDP";
       let url = this.preUrl + query;
-  
+      console.log('url de update cabecera: ', url)
       return this.http.put( url, body, { headers } );
     }
     

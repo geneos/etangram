@@ -14,6 +14,7 @@ import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { ArticulosService } from 'src/app/services/i2t/articulos.service';
 import { ImageService } from 'src/app/services/i2t/image.service';
 import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo, cArticulo, datosArticulos, ArticuloHijo } from 'src/app/interfaces/articulo.interface';
+import { UnidadMedida } from 'src/app/interfaces/unidad-medida.interface';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -42,9 +43,9 @@ export class AltaArticuloComponent implements OnInit {
   urlImagen: any;
   indFoto: any = 0;
 
-  user:string='usuario1';
-  pass:string='password1'
-  token: string = "a";
+  // user:string='usuario1';
+  // pass:string='password1'
+  token: string;
 
   forma:FormGroup;
   id:any;
@@ -170,13 +171,14 @@ export class AltaArticuloComponent implements OnInit {
               @Inject(SESSION_STORAGE) private storage: StorageService
               ) {
     
-    console.log(this.storage.get(TOKEN) || 'Local storage is empty');
-    this.token = this.storage.get(TOKEN);            
+    console.log(localStorage.getItem (TOKEN) || 'Local storage is empty');
+    this.token = localStorage.getItem(TOKEN);            
     
     this.loading = true;
     this.partesCargadas = 0;  
 
     this.forma = this.FormBuilder.group({
+      fecha_creacion: new FormControl(),
       tipo: new FormControl(1,Validators.required),
       nroArticulo: new FormControl(null,Validators.required),
       descripcion: new FormControl(null,Validators.required),
@@ -580,11 +582,13 @@ construirFoto(){
   //#region datosCombobox
   //listas desplegables
   buscarMonedas(){
+    console.log('buscando monedas con token: ', this.token);
     this._monedaService.getMonedas(this.token )
       .subscribe( dataM => {
         // console.log(dataM);
           this.mData = dataM;
           //auxRefConData = this.mcData.dataset.length;
+          console.log('datos para lista de monedas: ', this.mData);
           if(this.mData.returnset[0].RCode=="-6003"){
             //token invalido
             this.monedasAll = null;
@@ -608,6 +612,7 @@ construirFoto(){
     this._categoriasBloqueoService.getCategoriasDeUnTipo('A', this.token )
       .subscribe( data => {
           this.cbData = data;
+          console.log('datos para lista de cats bloqueo: ', this.cbData);
           if(this.cbData.returnset[0].RCode=="-6003"){
             //token invalido
             this.catsBloqueoAll = null;
@@ -628,6 +633,7 @@ construirFoto(){
     this._AFIPInternoService.getGruposRefContable( this.token )
       .subscribe( data => {
           this.grcaData = data;
+          console.log('datos para lista de grupos: ', this.grcaData);
           if(this.grcaData.returnset[0].RCode=="-6003"){
             //token invalido
             this.gruposRefContableArticuloAll = null;
@@ -648,6 +654,7 @@ construirFoto(){
     this._AFIPInternoService.getAlicuotasPorTipo('I', this.token )
       .subscribe( data => {
           this.aliData = data;
+          console.log('datos para lista de alicuotas: ', this.aliData);
           if(this.aliData.returnset[0].RCode=="-6003"){
             //token invalido
             this.alicuotasAll = null;
@@ -668,6 +675,7 @@ construirFoto(){
     this._AFIPInternoService.getAlicuotasPorTipo('O', this.token )
       .subscribe( data => {
           this.ali2Data = data;
+          console.log('datos para lista de alicuotas 2: ', this.ali2Data);
           if(this.ali2Data.returnset[0].RCode=="-6003"){
             //token invalido
             this.alicuotas2All = null;
@@ -689,6 +697,7 @@ construirFoto(){
     this._unidadMedidaService.getUnidadMedida(this.token )
       .subscribe( data => {
           this.umData = data;
+          console.log('datos para lista de unidades: ', this.umData);
           if(this.umData.returnset[0].RCode=="-6003"){
             //token invalido
             this.unidadesMedidaAll = null;
@@ -709,6 +718,7 @@ construirFoto(){
     this._articulosService.getAtributos(this.token )
       .subscribe( data => {
           this.aaData = data;
+          console.log('datos para lista de atributos: ', this.aaData);
           if(this.aaData.returnset[0].RCode=="-6003"){
             //token invalido
             this.atributosArticuloAll = null;
@@ -718,7 +728,7 @@ construirFoto(){
             if(this.aaData.dataset.length>0){
               this.atributosArticuloAll = this.aaData.dataset;
               this.partesCargadas = this.partesCargadas +1;
-              this.buscarValoresAtributos();
+              // this.buscarValoresAtributos();
             } else {
               this.atributosArticuloAll = null;
             }
@@ -746,6 +756,7 @@ construirFoto(){
 
     this.atributosArticuloAll.forEach(atributo => {
       //atributo.idatributo comienza en 1
+      console.log('llenando lista de atributos para: ', atributo);
       let indice = atributo.idatributo-1;
       this._articulosService.getValoresAtributo( atributo.idatributo.toString(), this.token )
         .subscribe( data => {
@@ -760,7 +771,25 @@ construirFoto(){
                 this.valoresAtributosArticuloAll[indice] = this.vaaData.dataset;
                 // this['obsValoresAtributos'+indice] = new Observable(this.valoresAtributosArticuloAll[indice]);
                 this['obsValoresAtributos'+indice] = of(this.valoresAtributosArticuloAll[indice] as any);
-                
+                // this.forma.controls['idCampo'+atributo].setValue(this.datosArticulos[0].id_atributosarticulos);
+
+                // id_atributosarticulos,id_atributosarticulos_1,id_atributosarticulos_2
+                //cargar el valor del atributo en su control correspondiente
+                  let numero = atributo.idatributo;
+                  let apendice: string;
+                  if (numero == 1){
+                    apendice = '';
+                  }
+                  else{
+                    apendice = '_'+indice.toString();
+                  }
+                  console.log('llenando atributo con datos: ', numero, atributo.idatributo, apendice, 'id_atributosarticulos'+apendice);
+                  let valor = this.datosArticulos[0]['id_atributosarticulos'+apendice];
+                  console.log('valor para insertar: ', valor)
+                  if (valor != null){
+                    this.forma.controls['idCampo'+atributo.idatributo].setValue(valor);
+                  }
+                //
               } else {
                 this.valoresAtributosArticuloAll[indice] = null;
               }
@@ -774,10 +803,11 @@ construirFoto(){
         // this.partesACargar = this.partesACargar + 6; //principal + 5 arrays
   //#region cargaDatos
   buscarArticulo(){
-    console.log('ejecutando buscarArticulo');
+    console.log('ejecutando buscarArticulo con id:, token: ', this.id, this.token);
 
     this._articulosService.getArticulo(this.id, this.token)
       .subscribe( respA => {
+        console.log('obtenida respuesta de buscarArticulo');
         console.log(' respuesta de buscar articulo: ', respA)
         console.log(' id de articulo buscado: ', this.id)
         this.datosArt = respA;
@@ -790,6 +820,16 @@ construirFoto(){
           console.log('Datos de articulo: ', this.datosArticulos[0])
           if(this.datosArt.dataset.length>0){
             this.datosArticulos = this.datosArt.dataset
+            console.log('articulo recuperado: ', this.datosArticulos);
+            this.forma.controls['nroArticulo'].setValue(this.datosArticulos[0].part_number);
+            this.forma.controls['descripcion'].setValue(this.datosArticulos[0].nombre_producto);
+            this.forma.controls['codigoAlternativo'].setValue(this.datosArticulos[0].codigo_alternativo);
+            this.forma.controls['codigoBarra'].setValue(this.datosArticulos[0].codigobarra);
+            this.forma.controls['idTipoArticulo'].setValue(this.datosArticulos[0].categoriaproducto);
+            this.forma.controls['estado'].setValue(this.datosArticulos[0].estado);
+            
+            this.forma.controls['fecha_creacion'].setValue(this.datosArticulos[0].fecha_creacion);
+
             this.forma.controls['tipo'].setValue(this.datosArticulos[0].tipo);
             this.forma.controls['idGrupoRefContArticulo'].setValue(this.datosArticulos[0].id_gruporefcontablearticulo)
             this.forma.controls['procedencia'].setValue(this.datosArticulos[0].procedencia);
@@ -799,10 +839,67 @@ construirFoto(){
             this.forma.controls['idAlicuotaIva'].setValue(this.datosArticulos[0].id_alicuotas);
             this.forma.controls['idAlicuotaImpInt'].setValue(this.datosArticulos[0].id_alicuotas_1);
             this.forma.controls['Pesable'].setValue(this.datosArticulos[0].pesable);
+
+            this.forma.controls['idGrupo'].setValue(this.datosArticulos[0].categoriaproducto);
+            this.forma.controls['idMarca'].setValue(this.datosArticulos[0].id_marcas);
             
+            this.forma.controls['categoriaVenta'].setValue(this.datosArticulos[0].categoriaventa == '0' ? false : true);
+            this.forma.controls['categoriaInventario'].setValue(this.datosArticulos[0].categoriainventario == '0' ? false : true);
+            this.forma.controls['categoriaCompra'].setValue(this.datosArticulos[0].categoriacompra == '0' ? false : true);
+
+            this.forma.controls['gestionDespacho'].setValue(this.datosArticulos[0].gestiondespacho == '0' ? false : true);
+            this.forma.controls['gestionLote'].setValue(this.datosArticulos[0].gestionlote == '0' ? false : true);
+            this.forma.controls['gestionSerie'].setValue(this.datosArticulos[0].gestionserie == '0' ? false : true);
+            
+            this.forma.controls['administraStock'].setValue(this.datosArticulos[0].administrastock == '0' ? false : true);
+            
+            //todo descomentar cuando lo agreguen
+            // this.forma.controls['IncorporarIIalCosto'].setValue(this.datosArticulos[0].incorporaCosto == '0' ? false : true);
+            
+            this.forma.controls['obsRegistroAutoVta'].setValue(this.datosArticulos[0].obsregistroautovta == '0' ? false : true);
+            this.forma.controls['obsRegistroAutoCpa'].setValue(this.datosArticulos[0].obsregistroautocpa == '0' ? false : true);
+            this.forma.controls['obsIngresoVta'].setValue(this.datosArticulos[0].obsingresovta == '0' ? false : true);
+            this.forma.controls['obsIngresoCpa'].setValue(this.datosArticulos[0].obsingresocpa == '0' ? false : true);
+            this.forma.controls['obsImprimeVta'].setValue(this.datosArticulos[0].obsimprimevta == '0' ? false : true);
+            this.forma.controls['obsAuditoriaVta'].setValue(this.datosArticulos[0].obsauditoriavta == '0' ? false : true);
+            this.forma.controls['obsAuditoriaCpa'].setValue(this.datosArticulos[0].obsauditoriacpa == '0' ? false : true);
+
+            this.forma.controls['unidadMedidaBase'].setValue(this.datosArticulos[0].id_unidadmedida);
+            this.forma.controls['unidadMedidaLP'].setValue(this.datosArticulos[0].id_unidadmedida_1);
+            this.forma.controls['umCompras'].setValue(this.datosArticulos[0].id_unidadmedida_2);
+            this.forma.controls['umOCompra'].setValue(this.datosArticulos[0].id_unidadmedida_3);
+            this.forma.controls['umPCompra'].setValue(this.datosArticulos[0].id_unidadmedida_4);
+            this.forma.controls['umVentas'].setValue(this.datosArticulos[0].id_unidadmedida_5);
+            this.forma.controls['umPVenta'].setValue(this.datosArticulos[0].id_unidadmedida_6);
+            
+            this.forma.controls['Dimensiones'].setValue(this.datosArticulos[0].dimensiones);
+            this.forma.controls['Pesable_Estandar'].setValue(this.datosArticulos[0].pesable_estandar);
+            this.forma.controls['largo'].setValue(this.datosArticulos[0].largo);
+            this.forma.controls['ancho'].setValue(this.datosArticulos[0].ancho);
+            this.forma.controls['profundidad'].setValue(this.datosArticulos[0].profundo);
+            this.forma.controls['m3'].setValue(this.datosArticulos[0].m3);
+
+            this.forma.controls['precioUltCompra'].setValue(this.datosArticulos[0].precioultcompra);
+            this.forma.controls['fechaUltCompra'].setValue(this.nuevaFecha(this.datosArticulos[0].fechaultcompra));
+            this.forma.controls['cantidadOptimaDeCompra'].setValue(this.datosArticulos[0].cantidadoptimadecompra);
+            this.forma.controls['precioUltVenta'].setValue(this.datosArticulos[0].precioultventa);
+            this.forma.controls['fechaUltVenta'].setValue(this.nuevaFecha(this.datosArticulos[0].fechaultventa));
+            this.forma.controls['impuestoInternoFijo'].setValue(this.datosArticulos[0].impuestoInternoFijo);
+            
+            //todo revisar
+              this.forma.controls['stockIdeal'].setValue(this.datosArticulos[0].stockideal);
+              this.forma.controls['stockMaximo'].setValue(this.datosArticulos[0].stockmaximo);
+              this.forma.controls['stockReposicion'].setValue(this.datosArticulos[0].stockreposicion);
+
+            this.forma.controls['IIAreaAplicacionAlicuota'].setValue(this.datosArticulos[0].areaAplicacionAlicuota);
+            this.forma.controls['IIAreaAplicacionImporteFijo'].setValue(this.datosArticulos[0].areaAplicacionImporteFijo);
+
             setTimeout(() => {
               this.buscarGrupo();
               this.buscarMarca();
+              this.buscarUMs();
+              this.obtenerDatosArrays();
+              this.buscarValoresAtributos();
             });
 
             this.partesACargar = this.partesACargar + 6; //principal + 5 arrays
@@ -817,7 +914,7 @@ construirFoto(){
         }
       })
       
-    this.obtenerDatosArrays();
+    // this.obtenerDatosArrays();
   }
   obtenerDatosArrays(){
     console.log(' ejecutando obtenerDatosArrays');
@@ -1115,86 +1212,176 @@ construirFoto(){
     return jsonbodyF;
   }
 
+  redondearA2(numString: string){
+    let num = Number(numString);
+    return (Math.round(((num + 0.00001) * 100) / 100).toString());
+  }
+
   armarJSONArticulo(){
-    console.log('armando json articulo con form: ', this.forma)
-    let jsbody = {
-      "ArticuloItem" : this.forma.controls['tipo'].value,
-      "IPart_number" : this.forma.controls['nroArticulo'].value,
-      "IName" : this.forma.controls['descripcion'].value,
-      "C_alternativo": this.forma.controls['codigoAlternativo'].value,
-      "C_barra": this.forma.controls['codigoBarra'].value,
-      "idGrupo": this.forma.controls['idGrupo'].value,//id de tabla grupos-consulta dinamica
+    console.log('armando json articulo con form: ', this.forma);
+    let jsbody;
 
-      "Tipo": this.forma.controls['idTipoArticulo'].value,// id de la tabla tipo de articulos consulta dinamica //todo revisar
-      "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
-      "idmarca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
-      "campo1": this.forma.controls['idCampo1'].value,
-      "campo2": this.forma.controls['idCampo2'].value,
-      "campo3": this.forma.controls['idCampo3'].value,
-      "estado": this.forma.controls['estado'].value,// "Activo", 
-      "cat_b": this.forma.controls['categoria_bloqueo'].value,
-      // "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
-      // "Obs_auto_cpa":this.forma.controls['obsRegistroAutoCpa'].value, //,0 false , 1 true
-      // "Obs_ingr_cpa":this.forma.controls['obsIngresoCpa'].value, //,0 false , 1 true
-      // "Obs_ingr_vta": this.forma.controls['obsIngresoVta'].value,//,0 false , 1 true
-      // "Obs_imprime_vta": this.forma.controls['obsImprimeVta'].value,//,0 false , 1 true
-      // "Obs_auditoria_cpa": this.forma.controls['obsAuditoriaCpa'].value,//,0 false , 1 true
-      // "Obs_auditoria_vta": this.forma.controls['obsAuditoriaVta'].value,//,0 false , 1 true
-      // "Categoria_vta": this.forma.controls['categoriaVenta'].value,//,0 false , 1 true
-      // "Categoria_inventario": this.forma.controls['categoriaInventario'].value,//,0 false , 1 true
-      // "Categoria_cpa": this.forma.controls['categoriaCompra'].value,//,0 false , 1 true
-      "Obs_auto_vta": (this.forma.controls['obsRegistroAutoVta'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Obs_auto_cpa": (this.forma.controls['obsRegistroAutoCpa'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Obs_ingr_cpa": (this.forma.controls['obsIngresoCpa'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Obs_ingr_vta": (this.forma.controls['obsIngresoVta'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Obs_imprime_vta": (this.forma.controls['obsImprimeVta'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Obs_auditoria_cpa": (this.forma.controls['obsAuditoriaCpa'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Obs_auditoria_vta": (this.forma.controls['obsAuditoriaVta'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Categoria_vta": (this.forma.controls['categoriaVenta'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Categoria_inventario": (this.forma.controls['categoriaInventario'].value == true ? 1 : 0), // , 0 false , 1 true
-      "Categoria_cpa": (this.forma.controls['categoriaCompra'].value == true ? 1 : 0), // , 0 false , 1 true
+    let precio_UCpa = this.redondearA2(this.forma.controls['precioUltCompra'].value);
+    let PrecioU_vta = this.redondearA2(this.forma.controls['precioUltVenta'].value);
+    let impuesto_intFijo  = this.redondearA2(this.forma.controls['impuestoInternoFijo'].value);
 
-      "precio_UCpa":this.forma.controls['precioUltCompra'].value,// 200,
-      "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
-      "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
-      "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
-      "PrecioU_vta": this.forma.controls['precioUltVenta'].value,
-      "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
-      "idmoneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
+    if (this.forma.controls['fecha_creacion'].value == null){
+      jsbody = {
+        "ArticuloItem" : this.forma.controls['tipo'].value,
+        "IPart_number" : this.forma.controls['nroArticulo'].value,
+        "IName" : this.forma.controls['descripcion'].value,
+        "C_alternativo": this.forma.controls['codigoAlternativo'].value,
+        "C_barra": this.forma.controls['codigoBarra'].value,
+        "idGrupo": this.forma.controls['idGrupo'].value,//id de tabla grupos-consulta dinamica
 
-      //datos impositivos
-      "idRefC": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica
-      "idalicuota": this.forma.controls['idAlicuotaIva'].value,//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
-      "idalicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
-      "Area_AAII":this.forma.controls['IIAreaAplicacionAlicuota'].value,// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
-      "Area_AIFII":this.forma.controls['IIAreaAplicacionImporteFijo'].value,//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
-      "incorporaCosto":(this.forma.controls['IncorporarIIalCosto'].value == true ? 1 : 0),// 0, 0 false , 1 true
-      "impuesto_intFijo": this.forma.controls['impuestoInternoFijo'].value,
-      "gestion_despacho":(this.forma.controls['gestionDespacho'].value == true ? 1 : 0),//0, 0 false , 1 true
-      "gestion_lote":(this.forma.controls['gestionLote'].value == true ? 1 : 0),// 0,0 false , 1 true
-      "gestion_serie":(this.forma.controls['gestionSerie'].value == true ? 1 : 0),//0,0 false , 1 true
+        "Tipo": this.forma.controls['idTipoArticulo'].value,// id de la tabla tipo de articulos consulta dinamica //todo revisar
+        "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
+        "idmarca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
+        "campo1": this.forma.controls['idCampo1'].value,
+        "campo2": this.forma.controls['idCampo2'].value,
+        "campo3": this.forma.controls['idCampo3'].value,
+        "estado": this.forma.controls['estado'].value,// "Activo", 
+        "cat_b": this.forma.controls['categoria_bloqueo'].value,
+        // "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
+        // "Obs_auto_cpa":this.forma.controls['obsRegistroAutoCpa'].value, //,0 false , 1 true
+        // "Obs_ingr_cpa":this.forma.controls['obsIngresoCpa'].value, //,0 false , 1 true
+        // "Obs_ingr_vta": this.forma.controls['obsIngresoVta'].value,//,0 false , 1 true
+        // "Obs_imprime_vta": this.forma.controls['obsImprimeVta'].value,//,0 false , 1 true
+        // "Obs_auditoria_cpa": this.forma.controls['obsAuditoriaCpa'].value,//,0 false , 1 true
+        // "Obs_auditoria_vta": this.forma.controls['obsAuditoriaVta'].value,//,0 false , 1 true
+        // "Categoria_vta": this.forma.controls['categoriaVenta'].value,//,0 false , 1 true
+        // "Categoria_inventario": this.forma.controls['categoriaInventario'].value,//,0 false , 1 true
+        // "Categoria_cpa": this.forma.controls['categoriaCompra'].value,//,0 false , 1 true
+        "Obs_auto_vta": (this.forma.controls['obsRegistroAutoVta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_auto_cpa": (this.forma.controls['obsRegistroAutoCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_ingr_cpa": (this.forma.controls['obsIngresoCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_ingr_vta": (this.forma.controls['obsIngresoVta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_imprime_vta": (this.forma.controls['obsImprimeVta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_auditoria_cpa": (this.forma.controls['obsAuditoriaCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_auditoria_vta": (this.forma.controls['obsAuditoriaVta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Categoria_vta": (this.forma.controls['categoriaVenta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Categoria_inventario": (this.forma.controls['categoriaInventario'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Categoria_cpa": (this.forma.controls['categoriaCompra'].value == true ? 1 : 0), // , 0 false , 1 true
 
-      //datos de stock
-      "admStock": (this.forma.controls['administraStock'].value == true ? 1 : 0),//0, 0 false , 1 true
-      "stockIdeal": this.forma.controls['stockIdeal'].value,
-      "stockMax": this.forma.controls['stockMaximo'].value,
-      "stockRepo":this.forma.controls['stockReposicion'].value,
-      //unidad de medida
-      "dimensiones": this.forma.controls['Dimensiones'].value,
-      "pesable": this.forma.controls['Pesable'].value,
-      "pesableE": this.forma.controls['Pesable_Estandar'].value,
-      "idUM":'1', // this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
-      "idUM1":'2',//this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
-      "idUM2": '2',
-      "idUM3": '2',
-      "idUM4": '2',
-      "idUM5": '2',
-      "IdUM6": '2',
-      "largo":this.forma.controls['largo'].value,
-      "ancho":this.forma.controls['ancho'].value,
-      "profundo":this.forma.controls['profundidad'].value,
-      "m3": this.forma.controls['m3'].value
-    };
+        "precio_UCpa":this.forma.controls['precioUltCompra'].value,// 200,
+        "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
+        "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
+        "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
+        "PrecioU_vta": this.forma.controls['precioUltVenta'].value,
+        "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
+        "idmoneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
+
+        //datos impositivos
+        "idRefC": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica
+        "idalicuota": this.forma.controls['idAlicuotaIva'].value,//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
+        "idalicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
+        "Area_AAII":this.forma.controls['IIAreaAplicacionAlicuota'].value,// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
+        "Area_AIFII":this.forma.controls['IIAreaAplicacionImporteFijo'].value,//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
+        "incorporaCosto":(this.forma.controls['IncorporarIIalCosto'].value == true ? 1 : 0),// 0, 0 false , 1 true
+        "impuesto_intFijo": this.forma.controls['impuestoInternoFijo'].value,
+        "gestion_despacho":(this.forma.controls['gestionDespacho'].value == true ? 1 : 0),//0, 0 false , 1 true
+        "gestion_lote":(this.forma.controls['gestionLote'].value == true ? 1 : 0),// 0,0 false , 1 true
+        "gestion_serie":(this.forma.controls['gestionSerie'].value == true ? 1 : 0),//0,0 false , 1 true
+
+        //datos de stock
+        "admStock": (this.forma.controls['administraStock'].value == true ? 1 : 0),//0, 0 false , 1 true
+        "stockIdeal": this.forma.controls['stockIdeal'].value,
+        "stockMax": this.forma.controls['stockMaximo'].value,
+        "stockRepo":this.forma.controls['stockReposicion'].value,
+        //unidad de medida
+        "dimensiones": this.forma.controls['Dimensiones'].value,
+        "pesable": this.forma.controls['Pesable'].value,
+        "pesableE": this.forma.controls['Pesable_Estandar'].value,
+        "idUM": this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
+        "idUM1": this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
+        "idUM2": this.forma.controls['umCompras'].value,
+        "idUM3": this.forma.controls['umOCompra'].value,
+        "idUM4": this.forma.controls['umPCompra'].value,
+        "idUM5": this.forma.controls['umVentas'].value,
+        "IdUM6": this.forma.controls['umPVenta'].value,
+        "largo":this.forma.controls['largo'].value,
+        "ancho":this.forma.controls['ancho'].value,
+        "profundo":this.forma.controls['profundidad'].value,
+        "m3": this.forma.controls['m3'].value
+      }
+    }
+    else{
+      jsbody = {
+        // "ArticuloItem" : this.forma.controls['tipo'].value,
+        "IPart_number" : this.forma.controls['nroArticulo'].value,
+        "IName" : this.forma.controls['descripcion'].value,
+        "C_alternativo": this.forma.controls['codigoAlternativo'].value,
+        "C_barra": this.forma.controls['codigoBarra'].value,
+        "idGrupo": this.forma.controls['idGrupo'].value,//id de tabla grupos-consulta dinamica
+
+        "Tipo": this.forma.controls['idTipoArticulo'].value,// id de la tabla tipo de articulos consulta dinamica //todo revisar
+        "procedencia": this.forma.controls['procedencia'].value,// combo ->0 nacional,1-importado
+        "idmarca": this.forma.controls['idMarca'].value,// id de marcas ->consulta dinamica
+        "campo1": (this.forma.controls['idCampo1'].value != null ? this.forma.controls['idCampo1'].value : 'null'),
+        "campo2": (this.forma.controls['idCampo2'].value != null ? this.forma.controls['idCampo2'].value : 'null'),
+        "campo3": (this.forma.controls['idCampo3'].value != null ? this.forma.controls['idCampo3'].value : 'null'),
+        "estado": this.forma.controls['estado'].value,// "Activo", 
+        // "cat_b": this.forma.controls['categoria_bloqueo'].value,
+        "id_cat_bloqueo": this.forma.controls['categoria_bloqueo'].value,
+
+        "Obs_auto_vta": (this.forma.controls['obsRegistroAutoVta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_auto_cpa": (this.forma.controls['obsRegistroAutoCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_ingr_cpa": (this.forma.controls['obsIngresoCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_ingr_vta": (this.forma.controls['obsIngresoVta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_imprime_vta": (this.forma.controls['obsImprimeVta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_auditoria_cpa": (this.forma.controls['obsAuditoriaCpa'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Obs_auditoria_vta": (this.forma.controls['obsAuditoriaVta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Categoria_vta": (this.forma.controls['categoriaVenta'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Categoria_inventario": (this.forma.controls['categoriaInventario'].value == true ? 1 : 0), // , 0 false , 1 true
+        "Categoria_cpa": (this.forma.controls['categoriaCompra'].value == true ? 1 : 0), // , 0 false , 1 true
+
+        "precio_UCpa": precio_UCpa,//this.forma.controls['precioUltCompra'].value,// 200,
+        "fecha_UCpa": this.forma.controls['fechaUltCompra'].value,
+        // "idmoneda": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
+        "idMony": this.forma.controls['idMonedaUltCompra'].value,// codigo de monedas → lista desplegable con tg01_monedas
+        "Cant_Op_cpa": this.forma.controls['cantidadOptimaDeCompra'].value,
+        "PrecioU_vta": PrecioU_vta,//this.forma.controls['precioUltVenta'].value,
+        "FechaU_vta": this.forma.controls['fechaUltVenta'].value,
+        // "idmoneda1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
+        "idMony1": this.forma.controls['idMonedaUltVenta'].value,//, codigo de monedas-> lista desplegable con tg01_monedas
+
+        //datos impositivos
+        "idRefC": this.forma.controls['idGrupoRefContArticulo'].value,//id de referencia contable ->consulta dinamica
+        "idalicuota": this.forma.controls['idAlicuotaIva'].value,//,id de alicuota-> lista deplegable con metodo tg01_alicuotas  (tipo iva)
+        "idalicuota1": this.forma.controls['idAlicuotaImpInt'].value,//,id de alicuota->consulta dinamica (tipo impuestos internos)
+        "Area_AAII":this.forma.controls['IIAreaAplicacionAlicuota'].value,// ,  0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
+        "Area_AIFII":this.forma.controls['IIAreaAplicacionImporteFijo'].value,//, 0 - No Aplica, 1 - Compras, 2 - Ventas, 3 - Ambas.
+        "incorporaCosto":(this.forma.controls['IncorporarIIalCosto'].value == true ? 1 : 0),// 0, 0 false , 1 true
+        "impuesto_intFijo": impuesto_intFijo,//this.forma.controls['impuestoInternoFijo'].value,
+        "gestion_despacho":(this.forma.controls['gestionDespacho'].value == true ? 1 : 0),//0, 0 false , 1 true
+        "gestion_lote":(this.forma.controls['gestionLote'].value == true ? 1 : 0),// 0,0 false , 1 true
+        "gestion_serie":(this.forma.controls['gestionSerie'].value == true ? 1 : 0),//0,0 false , 1 true
+
+        //datos de stock
+        "admStock": (this.forma.controls['administraStock'].value == true ? 1 : 0),//0, 0 false , 1 true
+        /* "stockIdeal": this.forma.controls['stockIdeal'].value,
+        "stockMax": this.forma.controls['stockMaximo'].value,
+        "stockRepo":this.forma.controls['stockReposicion'].value, */
+        "stockIdeal": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockIdeal'].value : 'null'),
+        "stockMax": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockMaximo'].value : 'null'),
+        "stockRepo": (this.forma.controls['administraStock'].value == true ? this.forma.controls['stockReposicion'].value : 'null'),
+        //unidad de medida
+        "dimensiones": this.forma.controls['Dimensiones'].value,
+        "pesable": this.forma.controls['Pesable'].value,
+        "pesableE": this.forma.controls['Pesable_Estandar'].value,
+        "idUM": this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
+        "idUM1": this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
+        "idUM2": this.forma.controls['umCompras'].value,
+        "idUM3": this.forma.controls['umOCompra'].value,
+        "idUM4": this.forma.controls['umPCompra'].value,
+        "idUM5": this.forma.controls['umVentas'].value,
+        "IdUM6": this.forma.controls['umPVenta'].value,
+        "largo":this.forma.controls['largo'].value,
+        "ancho":this.forma.controls['ancho'].value,
+        "profundo":this.forma.controls['profundidad'].value,
+        "m3": this.forma.controls['m3'].value
+      }  
+    }
     console.log('stringifeando esto: ', jsbody)
     let jsonbody = JSON.stringify(jsbody);
     console.log('json de cabecera stringifeado: ', jsonbody)
@@ -1486,7 +1673,7 @@ construirFoto(){
       // insertando
       let jsonbodyCabecera = this.armarJSONArticulo();
 
-      console.log('json principal', jsonbodyCabecera);
+      console.log('json principal para insertar: ', jsonbodyCabecera);
       this._articulosService.postCabeceraArticulo(jsonbodyCabecera, this.token )
       .subscribe( data => {
         //console.log(dataRC);
@@ -1541,9 +1728,8 @@ construirFoto(){
     }else{
       //actualizando
 
-      //todo descomentar
-      
-      let jsbody = {
+      let jsonbodyCabecera = this.armarJSONArticulo();
+      /* let jsbody = {
         "ArticuloItem" : this.forma.controls['tipo'].value,
         "IPart_number" : this.forma.controls['nroArticulo'].value,
         "IName" : this.forma.controls['descripcion'].value,
@@ -1602,9 +1788,38 @@ construirFoto(){
         "ancho":this.forma.controls['ancho'].value,
         "profundidad":this.forma.controls['profundidad'].value,
         "m3": this.forma.controls['m3'].value
-      }
+      } */
       
-     this.guardarDatosArticulo();
+      console.log('json principal para actualizar: ', jsonbodyCabecera);
+      this._articulosService.updateCabeceraArticulo(jsonbodyCabecera, this.token )
+      .subscribe( data => {
+        //console.log(dataRC);
+          this.respData = data;
+          //auxProvData = this.proveedorData.dataset.length;
+          if(this.respData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+            } else {
+              console.log(this.respData)
+              if (this.respData.returnset[0].RCode != 1){
+                this.openSnackBar('Error al actualizar Articulo: ' + this.respData.returnset[0].RTxt);
+              }
+              else{
+                this.openSnackBar('Cabecera de Articulo actualizada con exito, continuando.');
+                // this.id = this.respData.returnset[0].RId;
+                this.auxRid = this.respData.returnset[0].RId;
+                console.log('ID de Articulo recibido: ' + this.auxRid, this.respData);
+                // this.guardarDatosArticulo(this.respData.returnset[0].RId);
+                this.guardarDatosArticulo();
+                // this.openSnackBar('Proveedor guardado con exito, redireccionando.');
+
+                //todo agregar redirección
+              }
+            }
+            //console.log(this.refContablesAll);
+      });
+
     }
   }
 
@@ -2716,6 +2931,27 @@ construirFoto(){
           }
         }
       });
+  }
+
+  buscarUMs(){
+    if (this.unidadesMedidaAll != null){
+      let listaUMs = [{id: 'umCompras', desc: 'umComprasDesc'},
+                      {id: 'umOCompra', desc: 'umOCompraDesc'},
+                      {id: 'umPCompra', desc: 'umPCompraDesc'},
+                      {id: 'umVentas', desc: 'umVentasDesc'},
+                      {id: 'umPVenta', desc: 'umPVentaDesc'}]
+
+      let unidades = this.unidadesMedidaAll as UnidadMedida[];
+      console.log('buscando unidades alternativas con ', listaUMs, unidades);
+      listaUMs.forEach(um => {
+        let unidadEncontrada = unidades.find(unidad => unidad.id == this.forma.controls[um.id].value);
+        if(unidadEncontrada != null){
+          this.forma.controls[um.desc].setValue(unidadEncontrada.name);
+        }
+        console.log('buscando descripcion para: ', um, unidadEncontrada)
+        // this.forma.controls[um.desc].setValue(unidades.find(unidad => unidad.id == this.forma.controls[um.id].value));
+      });
+    }
   }
   //#endregion busquedasAutocompletado
 

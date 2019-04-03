@@ -629,14 +629,14 @@ export class AltaProveedorComponent implements OnInit {
 
   ngOnInit() {
     this.tipoReferente = 'P';
-    /* this.buscarTiposDocumento();
+    this.buscarTiposDocumento();
     this.buscarCategoriasIVA();
     this.buscarCategoriasRef();
     this.buscarMonedas();
     this.buscarImpuestos();
     this.buscarModelosImp();
     this.buscarCategoriasBloqueo();
-    this.buscarFormularios(); */
+    this.buscarFormularios();
 
     this.forma.controls['tipoReferente'].setValue(this.tipoReferente);
     this.configurarFormulario();
@@ -779,6 +779,7 @@ export class AltaProveedorComponent implements OnInit {
   //#region datosCombos
   //listas desplegables
   buscarTiposDocumento(){
+    console.log('buscando documentos con token: ', this.token);
     this._tiposDocumentoService.getTiposDocumento( this.token )
       .subscribe( data => {
         console.log('Datos recibidos de buscar tipo documento: ', data);

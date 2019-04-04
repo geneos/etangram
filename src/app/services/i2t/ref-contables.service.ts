@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
 import { ConsDinService } from 'src/app/classes/cons-din-service';
+import { RefContable } from 'src/app/interfaces/ref-contable.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -121,13 +122,17 @@ export class RefContablesService implements ConsDinService {
 
   //devuelve string
   public eliminar(parametros: any){
-    console.log('No implementado, parametros: ', parametros);
-    return 'No implementado, parametros: ' + parametros;
+    console.log('Eliminando referencia contable, parametros: ', parametros);
+    // return 'No implementado, parametros: ' + parametros;
+    console.log('id para eliminar: ', parametros.parametros.id)
+    let respuesta = this.deleteRefContable(parametros.parametros.id, parametros.token);
+    console.log('respuesta a devolver: ', respuesta);
+    return respuesta;
   }
 
   // exportar(parametros: any): any;
   public exportar(parametros: any){
-    return 'No implementado';
+    return this.getRefContables( parametros.token )
   }
 
 }

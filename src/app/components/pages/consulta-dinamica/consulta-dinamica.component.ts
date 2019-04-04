@@ -17,6 +17,9 @@ import { ModalInstance } from 'ngx-smart-modal/src/services/modal-instance';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { ConsDinService } from 'src/app/classes/cons-din-service';
+import { ConsDinConfig } from 'src/app/classes/cons-din-config';
+import * as XLSX from 'xlsx';
+import { Subscription } from 'rxjs';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -76,6 +79,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
   //
   servicioApi: any;
+  suscripcionExportar: Subscription;
 
   // nivelConsulta: number;
 
@@ -108,7 +112,10 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
               public ngxSmartModalService: NgxSmartModalService,
               @Inject(SESSION_STORAGE) private storage: StorageService,
               private _permisosService: PermisosService,
-              private injector: Injector) {
+              private injector: Injector, 
+              private configConsulta: ConsDinConfig,
+              // private XLSX: XLSX
+              ) {
     this.loading = true;
     
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
@@ -184,7 +191,14 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       if (this.ngxSmartModalService.getModalData('confirmar').estado == 'confirmado') {
         console.log('se eliminará: ', this.selection.selected[0]);
         console.log('redireccionando a eliminar en "' + this.reportesAll[this.reporteSeleccionado].accion_borrar) + '"';
-        this.servicioApi.eliminar(this.selection.selected[0])
+        
+        // let respuesta; 
+        this.servicioApi.eliminar({parametros: this.selection.selected[0], token: this.token}).subscribe(
+          resp => {
+            console.log('respuesta recibida del servicio injectado para eliminar: ', resp);
+            this.openSnackBar('Resultado de Eliminar: '+ resp.returnset[0].RTxt);
+            this.buscarDatos();
+          });
       }
       else{
         //cancelado
@@ -820,7 +834,9 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     console.log(this.reportesAll)
     console.log(this.reporteSeleccionado)
     console.log(this.reportesAll[this.reporteSeleccionado].name);
-    
+
+    this.selection.clear();
+
     this.establecerFiltros();
     //todo asegurar que se borre al cambiar de consulta
 
@@ -1122,20 +1138,24 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   eliminar(){
     if (this.selection.selected.length != 0){
       // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
-
-      //traer el nombre del servicio
-      this.reportesAll[this.reporteSeleccionado].accion_borrar = 'nombreServicio';
-
-      //pedir el servicio al injector
-      this.servicioApi = this.injector.get(ConsDinService);
-      console.log('servicio obtenido: ', this.servicioApi);
-
+      
+      this.reportesAll[this.reporteSeleccionado].accion_borrar = 'nombreServicio'; //todo borrar
       if ((this.reportesAll[this.reporteSeleccionado].accion_borrar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_borrar != '')){
-        // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_borrar]);
-        console.log('confirmando con el usuario');
-        this.ngxSmartModalService.resetModalData('confirmar');
-        this.ngxSmartModalService.setModalData('¿Está seguro de que desea eliminar el o los elementos seleccionados?', 'confirmar');
-        this.ngxSmartModalService.open('confirmar');
+        //traer el nombre del servicio
+        this.configConsulta.nombreServicio = 'RefContablesService';
+        //pedir el servicio al injector
+        
+        this.servicioApi = this.injector.get(ConsDinService);
+        if (!(this.servicioApi == null)&&!(this.servicioApi == undefined)){
+          console.log('servicio obtenido: ', this.servicioApi);
+
+          // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_borrar]);
+          console.log('confirmando con el usuario');
+          this.ngxSmartModalService.resetModalData('confirmar');
+          this.ngxSmartModalService.setModalData('¿Está seguro de que desea eliminar el o los elementos seleccionados?', 'confirmar');
+          this.ngxSmartModalService.open('confirmar');
+        }
+        else {this.openSnackBar('No se ha podido obtener el servicio necesario.')}
       }
       else{
         this.openSnackBar('No se ha especificado un método para Borrar.');
@@ -1149,15 +1169,65 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
     // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_borrar]);
   }
-  exportar(){
-    if ((this.reportesAll[this.reporteSeleccionado].accion_exportar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_exportar != '')){
+  exportar(objetosAExportar: string){
+    // if ((this.reportesAll[this.reporteSeleccionado].accion_exportar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_exportar != '')){
       console.log('redireccionando a exportar en "' + this.reportesAll[this.reporteSeleccionado].accion_exportar) + '"';
-      console.log('todo boton de "exportar"');
+      let datosAExportar: any;
+      if (objetosAExportar == 'filtrado'){
+        console.log('exportando sólo lo filtrado');
+        //primer item de cada array = primera celda de la columna, etc
+        datosAExportar = [['id'], ... this.datosAll.map(item => [item.id])];
+        console.log('Datos a exportar: ', datosAExportar);
+        this.ExportarCSV(datosAExportar);
+      }
+      else{
+        console.log('exportando todo (volviendo a buscar)');
+        //todo agregar llamada al servicio, que hace la consulta de nuevo, y puede o no incluir eliminados (deleted = 0)
+        //traer el nombre del servicio
+        // this.reportesAll[this.reporteSeleccionado].accion_exportar = 'RefContablesService'; //todo borrar
+        // this.configConsulta.nombreServicio = this.reportesAll[this.reporteSeleccionado].accion_exportar;
+        this.configConsulta.nombreServicio = 'RefContablesService';
+        //pedir el servicio al injector
+        this.servicioApi = this.injector.get(ConsDinService);
+        if (!(this.servicioApi == null)&&!(this.servicioApi == undefined)){
+          console.log('servicio obtenido: ', this.servicioApi);
+
+          this.suscripcionExportar = this.servicioApi.exportar({incluirEliminados: false, token: this.token}).subscribe(datos=>{
+            // datosAExportar = datos;
+            console.log('datos recibidos de busqueda para exportar todo: ', datos)
+            datosAExportar = [['id'], ... datos.dataset.map(item => [item.id])];
+            console.log('Datos a exportar: ', datosAExportar);
+            this.ExportarCSV(datosAExportar);
+            this.suscripcionExportar.unsubscribe();
+          });
+        }
+        else {
+          this.openSnackBar('No se ha podido obtener el servicio necesario.')
+        }
+      }
       // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_exportar]);
-    }
+    /* }
     else{
       this.openSnackBar('No se ha especificado un método para Exportar.');
-    }
+    } */
+  }
+
+  ExportarCSV(datos: any)
+  {
+    // const ws: XLSX.WorkSheet=XLSX.utils.table_to_sheet(this.table.nativeElement);
+    // const ws: XLSX.WorkSheet=XLSX.utils.json_to_sheet(this.datosAll.map(item => item.id));
+    // const ws: XLSX.WorkSheet=XLSX.utils.json_to_sheet(datosAExportar);
+    const ws: XLSX.WorkSheet=XLSX.utils.aoa_to_sheet(datos);
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    // XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.utils.book_append_sheet(wb, ws, this.reportesAll[this.reporteSeleccionado].name);
+    
+    /* save to file */
+    // XLSX.writeFile(wb, 'SheetJS.csv');
+    XLSX.writeFile(wb, this.reportesAll[this.reporteSeleccionado].titulo+'.csv');
+    
+    
   }
   //#endregion acciones
 }

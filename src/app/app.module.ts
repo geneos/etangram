@@ -81,6 +81,10 @@ import { ConfirmarComponent } from './components/shared/modals/confirmar/confirm
 import { ConsDinService } from './classes/cons-din-service';
 import { ImgComponent } from './components/shared/modals/img/img.component';
 import { RefContablesService } from './services/i2t/ref-contables.service';
+import { ConsDinConfig } from './classes/cons-din-config';
+import { ArticulosService } from './services/i2t/articulos.service';
+import { ProveedoresService } from './services/i2t/proveedores.service';
+import { MinContablesService } from './services/i2t/min-contables.service';
 
 
 @NgModule({
@@ -162,7 +166,8 @@ import { RefContablesService } from './services/i2t/ref-contables.service';
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-AR'},
-    {provide: ConsDinService, useFactory: ConsDinServiceFactory, deps: [HttpClient]}
+    {provide: ConsDinService, useFactory: ConsDinServiceFactory, deps: [HttpClient, ConsDinConfig]},
+    ConsDinConfig
    // { provide: LOCALE_ID, useValue: 'es-AR' }
     // {provide: ErrorHandler, useClass: ErrorHandlerService}
   ],
@@ -176,10 +181,28 @@ import { RefContablesService } from './services/i2t/ref-contables.service';
 export class AppModule { }
 
 //#region factories
-export function ConsDinServiceFactory(http: HttpClient){
+export function ConsDinServiceFactory(http: HttpClient, config: ConsDinConfig){
   
-  console.log('inyectando servicio');
+  console.log('inyectando servicio, configuracion recibida: ', config);
 
-  return new RefContablesService(http);
+  let servicio;
+  switch (config.nombreServicio) {
+    case 'RefContablesService':
+      servicio = new RefContablesService(http);
+      break;
+    case 'ArticulosService':
+      servicio = new ArticulosService(http);
+      break;
+    case 'ProveedoresService':
+      servicio = new ProveedoresService(http);
+      break;
+    case 'MinContablesService':
+      servicio = new MinContablesService(http);
+      break;
+    default:
+      break;
+  }
+  // return new RefContablesService(http);
+  return servicio;
 }
 //#endregion factories

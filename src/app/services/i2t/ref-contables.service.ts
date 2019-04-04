@@ -132,7 +132,7 @@ export class RefContablesService implements ConsDinService {
 
   // exportar(parametros: any): any;
   public exportar(parametros: any){
-    return 'No implementado';
+    return this.getRefContables( parametros.token )
   }
 
 }

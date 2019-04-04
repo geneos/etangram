@@ -18,11 +18,24 @@
   <button type="button" (click)="eliminar()" *ngIf="!permisos.permiso_borrar" mat-menu-item>
     ELIMINAR
   </button>
-  <button type="button" (click)="exportar()" *ngIf="!permisos.permiso_exportar" mat-menu-item>
+  <!-- <button type="button" (click)="exportar()" *ngIf="!permisos.permiso_exportar" mat-menu-item>
+    EXPORTAR
+  </button> -->
+  <button type="button" (click)="$event.stopPropagation();" *ngIf="!permisos.permiso_exportar" mat-menu-item [matMenuTriggerFor]="subMenu">
     EXPORTAR
   </button>
 </mat-menu>
 
+<mat-menu #subMenu="matMenu" (click)="$event.stopPropagation();">
+  <ng-template  matMenuContent>
+    <button type="button" (click)="exportar('todo')" *ngIf="!permisos.permiso_borrar" mat-menu-item>
+      TODO
+    </button>
+    <button type="button" (click)="exportar('filtrado')" *ngIf="!permisos.permiso_borrar" mat-menu-item>
+      FILTRADO
+    </button>
+  </ng-template>
+</mat-menu>
 <!-- <mat-menu #subMenu="matMenu" (click)="$event.stopPropagation();">
   <ng-template  matMenuContent>
     <button *ngFor="let x of reportesAll; let i = index" mat-menu-item (click)="menuClickHandler(i)">{{x.titulo}}</button>

@@ -80,6 +80,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   //
   servicioApi: any;
   suscripcionExportar: Subscription;
+  suscripcionesEliminar: {nro: number, item: any, suscripcion: Subscription, estado: any}[];
 
   // nivelConsulta: number;
 
@@ -189,16 +190,94 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     console.log('suscribiendo al modal de confirmar');
     this.ngxSmartModalService.getModal('confirmar').onClose.subscribe((modal: NgxSmartModalComponent) => {
       if (this.ngxSmartModalService.getModalData('confirmar').estado == 'confirmado') {
-        console.log('se eliminará: ', this.selection.selected[0]);
         console.log('redireccionando a eliminar en "' + this.reportesAll[this.reporteSeleccionado].accion_borrar) + '"';
+        this.suscripcionesEliminar = [];
+        // suscripcionesEliminar: {nro: number, item: any, suscripcion: Subscription, estado: any}[];
+
+        let index: number = 0;
+        this.selection.selected.forEach(sel => {
+          console.log('se eliminará: ', sel);
+          this.loading = true;
+          // let respuesta; 
+          // let susc: Subscription = this.servicioApi.eliminar({parametros: this.selection.selected[0], token: this.token}).subscribe(
+          //   resp => {
+          //     console.log('respuesta recibida del servicio injectado para eliminar: ', resp);
+          //     this.openSnackBar('Resultado de Eliminar: '+ resp.returnset[0].RTxt);
+          //     this.buscarDatos();
+          //   });
+          let susc: Subscription = this.servicioApi.eliminar({parametros: sel, token: this.token}).subscribe(
+            resp => {
+              console.log('respuesta recibida del servicio injectado para eliminar: ', sel, resp);
+              // this.openSnackBar('Resultado de Eliminar: '+ resp.returnset[0].RTxt);
+              // this.buscarDatos();
+
+              //buscar la suscripcion correspondiente para desuscribir, y guardar el estado
+              let index2 = this.suscripcionesEliminar.findIndex(objeto => objeto.suscripcion === susc);
+              this.suscripcionesEliminar[index2].suscripcion.unsubscribe();
+              this.suscripcionesEliminar[index2].estado = resp.returnset[0].RTxt;
+
+              //controlar si se terminó
+              if (this.suscripcionesEliminar.length == this.suscripcionesEliminar.filter(suscripcion => suscripcion.estado != 'Enviado').length){
+                
+                if (this.suscripcionesEliminar.length == this.suscripcionesEliminar.filter(suscripcion => suscripcion.estado == 'OK').length){
+                  this.openSnackBar('Eliminado(s) correctamente.');
+                  console.log('resultados: ', this.suscripcionesEliminar);
+                  this.loading = false;
+
+                  //mostrar resultados
+                    /* let filaTitulos = Object.keys(this.suscripcionesEliminar[0].item);
+                    filaTitulos.unshift('Estado'); //unshift agrega al principio del array
+                    //convertir a .map()
+                    let filasDatos: any[] = [];
+                    let fila: any[];
+                    this.suscripcionesEliminar.forEach(suscripcion => {
+                      fila = Object.values(suscripcion.item);
+                      fila.unshift(suscripcion.estado);
+                      filasDatos.push(fila);
+                    });
+                    //
+                    
+                    let datosAExportar = [filaTitulos, ... filasDatos];
+                    console.log('array of arrays para modulo xlsx: ', datosAExportar)
+                    this.ExportarCSV(datosAExportar, 'Resultados Eliminar') */
+                  //
+
+                  this.buscarDatos();
+
+                }
+                else{
+                  this.openSnackBar('Error al eliminar: ver csv.');
+                  console.log('resultados: ', this.suscripcionesEliminar);
+                  this.loading = false;
+                  
+                  //mostrar resultados
+                  let filaTitulos = Object.keys(this.suscripcionesEliminar[0].item);
+                  filaTitulos.unshift('Estado'); //unshift agrega al principio del array
+
+                  //convertir a .map()
+                    let filasDatos: any[] = [];
+                    let fila: any[];
+                    this.suscripcionesEliminar.forEach(suscripcion => {
+                      fila = Object.values(suscripcion.item);
+                      fila.unshift(suscripcion.estado);
+                      filasDatos.push(fila);
+                    });
+                  //
+
+                  // let datosAExportar = [['id'], ... .map(item => [item.id])];
+                  let datosAExportar = [filaTitulos, ... filasDatos];
+                  console.log('array of arrays para modulo xlsx: ', datosAExportar)
+                  this.ExportarCSV(datosAExportar, 'Resultados Eliminar')
+
+                  this.buscarDatos();
+                }
+              }
+              
+            });
+          this.suscripcionesEliminar.push({nro: index, item: sel, suscripcion: susc, estado: 'Enviado'});
+          index = index +1;
+        });
         
-        // let respuesta; 
-        this.servicioApi.eliminar({parametros: this.selection.selected[0], token: this.token}).subscribe(
-          resp => {
-            console.log('respuesta recibida del servicio injectado para eliminar: ', resp);
-            this.openSnackBar('Resultado de Eliminar: '+ resp.returnset[0].RTxt);
-            this.buscarDatos();
-          });
       }
       else{
         //cancelado
@@ -549,8 +628,10 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     this.permiso_borrar	=;
     this.permiso_mostrar	=;
     this.permiso_exportar=; */
+    console.log('this.permisos: ', this.permisos );
+    console.log('this.reportesAll[this.reporteSeleccionado] / this.reportesAll / this.reporteSeleccionado', this.reportesAll[this.reporteSeleccionado], this.reportesAll, this.reporteSeleccionado);
     Object.keys(this.permisos).forEach(permiso => {
-      // console.log(permiso, this.reportesAll[this.reporteSeleccionado][permiso]);
+      console.log('Permiso a evaluar: / this.reportesAll[this.reporteSeleccionado][permiso] / this.reportesAll / this.reporteSeleccionado',permiso, this.reportesAll[this.reporteSeleccionado][permiso], this.reportesAll, this.reporteSeleccionado);
       if (this.reportesAll[this.reporteSeleccionado][permiso] == ''){
         this.permisos[permiso] = true;
         console.log('permiso ' + permiso + ' habilitado por vacio');
@@ -706,7 +787,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                     this.reporteMostrado = this.reporteSeleccionado;
                     this.reporteCambiado = true;
                   }
-                  // this.habilitarAcciones(); todotodo descomentar
+                  this.habilitarAcciones(); 
 
                   this.buscarAtributos();
                 }
@@ -1138,11 +1219,12 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   eliminar(){
     if (this.selection.selected.length != 0){
       // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+      console.log('redireccionando a exportar en "' + this.reportesAll[this.reporteSeleccionado].accion_borrar + '"');      
       
-      this.reportesAll[this.reporteSeleccionado].accion_borrar = 'nombreServicio'; //todo borrar
       if ((this.reportesAll[this.reporteSeleccionado].accion_borrar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_borrar != '')){
         //traer el nombre del servicio
-        this.configConsulta.nombreServicio = 'RefContablesService';
+        this.configConsulta.nombreServicio = this.reportesAll[this.reporteSeleccionado].accion_borrar;
+        // this.configConsulta.nombreServicio = 'RefContablesService';
         //pedir el servicio al injector
         
         this.servicioApi = this.injector.get(ConsDinService);
@@ -1154,6 +1236,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
           this.ngxSmartModalService.resetModalData('confirmar');
           this.ngxSmartModalService.setModalData('¿Está seguro de que desea eliminar el o los elementos seleccionados?', 'confirmar');
           this.ngxSmartModalService.open('confirmar');
+          //goto getModal('confirmar')
         }
         else {this.openSnackBar('No se ha podido obtener el servicio necesario.')}
       }
@@ -1171,7 +1254,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
   }
   exportar(objetosAExportar: string){
     // if ((this.reportesAll[this.reporteSeleccionado].accion_exportar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_exportar != '')){
-      console.log('redireccionando a exportar en "' + this.reportesAll[this.reporteSeleccionado].accion_exportar) + '"';
+      console.log('redireccionando a exportar en "' + this.reportesAll[this.reporteSeleccionado].accion_exportar + '"');
       let datosAExportar: any;
       if (objetosAExportar == 'filtrado'){
         console.log('exportando sólo lo filtrado');
@@ -1182,11 +1265,10 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
       }
       else{
         console.log('exportando todo (volviendo a buscar)');
-        //todo agregar llamada al servicio, que hace la consulta de nuevo, y puede o no incluir eliminados (deleted = 0)
+        //llamada al servicio, que hace la consulta de nuevo, y puede o no incluir eliminados (deleted = 0)
         //traer el nombre del servicio
-        // this.reportesAll[this.reporteSeleccionado].accion_exportar = 'RefContablesService'; //todo borrar
-        // this.configConsulta.nombreServicio = this.reportesAll[this.reporteSeleccionado].accion_exportar;
-        this.configConsulta.nombreServicio = 'RefContablesService';
+        this.configConsulta.nombreServicio = this.reportesAll[this.reporteSeleccionado].accion_exportar;
+        // this.configConsulta.nombreServicio = 'RefContablesService';
         //pedir el servicio al injector
         this.servicioApi = this.injector.get(ConsDinService);
         if (!(this.servicioApi == null)&&!(this.servicioApi == undefined)){
@@ -1212,7 +1294,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     } */
   }
 
-  ExportarCSV(datos: any)
+  ExportarCSV(datos: any, tituloLibro?: string)
   {
     // const ws: XLSX.WorkSheet=XLSX.utils.table_to_sheet(this.table.nativeElement);
     // const ws: XLSX.WorkSheet=XLSX.utils.json_to_sheet(this.datosAll.map(item => item.id));
@@ -1225,7 +1307,15 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     
     /* save to file */
     // XLSX.writeFile(wb, 'SheetJS.csv');
-    XLSX.writeFile(wb, this.reportesAll[this.reporteSeleccionado].titulo+'.csv');
+    let titulo: string;
+    if (tituloLibro != null){
+      titulo = tituloLibro;
+    }
+    else{
+      titulo = this.reportesAll[this.reporteSeleccionado].titulo;
+    }
+    // XLSX.writeFile(wb, this.reportesAll[this.reporteSeleccionado].titulo+'.csv');
+    XLSX.writeFile(wb, titulo+'.csv');
     
     
   }

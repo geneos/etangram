@@ -787,7 +787,8 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                     this.reporteMostrado = this.reporteSeleccionado;
                     this.reporteCambiado = true;
                   }
-                  this.habilitarAcciones(); 
+                  //todo descomentar siguiente cuando arreglen los permisos
+                  // this.habilitarAcciones(); 
 
                   this.buscarAtributos();
                 }
@@ -1194,7 +1195,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     if ((this.reportesAll[this.reporteSeleccionado].accion_editar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_editar != '')){
       if (this.selection.selected.length != 0){
         // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
-        this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+        this.router.navigate(['this.reportesAll[this.reporteSeleccionado].accion_editar', this.selection.selected[0]['id']]);
       }
       else{
         this.openSnackBar('Debe seleccionar un elemento a editar.')

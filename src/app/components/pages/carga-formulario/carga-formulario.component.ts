@@ -95,6 +95,16 @@ export class CargaFormularioComponent implements OnInit {
   cargar(attachment){
     this.adjunto = attachment.files[0];
     console.clear();
+    if(this.adjunto.type !== "image/png"){
+      if(this.adjunto.type !== "image/jpg"){
+        if(this.adjunto.type !== "application/pdf"){
+          this.openSnackBar('El archivo debe ser .jpg, .png o .pdf')
+        }
+      }
+    }
+    if(this.adjunto.size > 1000000){
+      this.openSnackBar('El tamaño de la imagen no puede superar 1 Mb')
+    }
      this._imageService.postImage( this.adjunto, this.token )
        .subscribe( resp => {
          console.log(resp);

@@ -97,9 +97,16 @@ export class RegistroEvidenciaComponent implements OnInit {
   cargar(attachment){
     this.adjunto = attachment.files[0];
     console.clear();
-    //this.urlImagen = "url sigue vacia"
-     //console.log(formData.getAll('file'));
-     //console.log(formData);
+    if(this.adjunto.type !== "image/png"){
+      if(this.adjunto.type !== "image/jpg"){
+        if(this.adjunto.type !== "application/pdf"){
+          console.log('png','jpg');
+        }
+      }
+    }
+    if(this.adjunto.size > 1000000){
+      console.log('Tamaño superado')
+    }
      this._imageService.postImage( this.adjunto, this.token )
        .subscribe( resp => {
          console.log(resp);

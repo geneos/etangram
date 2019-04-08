@@ -1797,6 +1797,87 @@ urlAnterior: string;
     this.auxEditingArt=ind;
   };
 
+  cancelar(){
+    
+    setTimeout(() => {
+      console.log('eliminando ref');
+      let index = 0;
+      this.refContableItemData.forEach( ref => {
+        let jsbody = {
+          "ID_ComprobanteCab": this.cabeceraId,
+          "ID_ComprobanteDet": this.refContableItemData[index].idEnMinuta,
+          "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080' //morecchia //todo cambiar por uno real
+        }
+        for (let i = 0; i < this.refContableItemData.length; i++) {
+          this.refContableItemData.forEach(detalle => {
+            let referencia: any;
+            
+            console.log(detalle[i])
+        
+           
+                 //   this.dataSource = new MatTableDataSource(this.refContableItemData)
+                  //  this.table.renderRows();
+                    console.log(auxDetId)
+                    console.log(i)
+                    i = i + 1
+            })
+            
+          }
+        
+    this.totaldebe = Number(this.totaldebe) - Number(this.refContableItemData[index].debe);
+    this.totalhaber = Number(this.totalhaber) - Number(this.refContableItemData[index].haber);
+    this.refContableItemData.splice(index,1);
+    this.table.renderRows()
+    index = index +1
+    //eliminar del backend
+
+    console.log('stringifeando');
+    let jsonbody= JSON.stringify(jsbody);
+    this._minContableService.delMinContablesDet(jsonbody, this.token)
+    .subscribe( resp => {
+      //console.log(resp.returnset[0].RId);
+      this.respRenglon = resp;
+      if(this.respRenglon.returnset[0].RCode=="-6003"){
+        //token invalido
+        // this.refContable = null;
+        /*let jsbody = {"usuario":"usuario1","pass":"password1"}
+        let jsonbody = JSON.stringify(jsbody);
+        this._minContableService.login(jsonbody)
+          .subscribe( dataL => {
+            console.log(dataL);
+            this.loginData = dataL;
+            this.token = this.loginData.dataset[0].jwt;
+            this._minContableService.postMinContablesDet(jsonbody, this.token);//todo comprobar
+          });*/
+          console.log('token invalido');
+      }
+      else{
+        console.log('respuesta del delete detalle >>');
+        console.log(this.respRenglon);
+        console.log('<< respuesta del delete detalle');
+        if (this.respRenglon.returnset[0].RCode === 1){
+
+          this.openSnackBar('Renglon de Minuta Contable eliminado');
+          // this.cabeceraId = this.respCabecera.returnset[0].RId; //dd6c40e7-127a-11e9-b2de-d050990fe081
+         
+          // this.forma.controls['numero'].setValue(this.cabeceraId);
+        }
+        else{
+          this.openSnackBar('No se pudo eliminar renglon de Minuta Contable');
+        }
+
+      }
+    //  this.table.renderRows();
+    });
+   
+      })
+   
+
+      this.editingCabecera = true;
+      this.router.navigate(['/min-contables', 'nuevo']);
+    }, 1000);  //2s
+  }
+  
   abrirConsulta(consulta: string, control: string){
     this.itemDeConsulta = null;
     console.clear();

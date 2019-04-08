@@ -1,0 +1,186 @@
+<mat-expansion-panel [expanded]=true [disabled]=false style="margin-top:0px;">
+  <mat-expansion-panel-header>
+    <mat-panel-title>FORMULARIOS</mat-panel-title>
+  </mat-expansion-panel-header>
+  <form [formGroup]="formaFormulario" novalidate="novalidate">
+
+  <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Compras: </p>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="['/compra']" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+        <div class="col s12 m4 l3">
+          <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Proveedores: </p>
+        </div>
+        <div class="col s6 m3 l1">
+          <button [routerLink]="['/proveedores']" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+            IR
+          </button>
+        </div>
+      </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Artículos: </p>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="['/articulos']" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Referencias Contables: </p>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="['/ref-contables']" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Plan de Cuentas: </p>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="['/plan-cuentas']" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Minutas Contables: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Minuta Contable</mat-label>
+          <input matInput (keyup)="minCont()" placeholder="" formControlName="idMCont">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m2 l1">
+        <button [routerLink]="['/min-contable',dynamicParameter]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          EDITAR
+        </button>
+      </div>
+      <div class="col s6 m2 l1">
+        <button [routerLink]="['/min-contables/nuevo']" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          NUEVO
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta CRD: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="consCrd()" placeholder="" formControlName="idCrd">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Retenciones: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="consRet()" placeholder="" formControlName="idRet">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Órdenes de Pago: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="OrdPagos()" placeholder="" formControlName="idOrdPagos">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Consulta Comprobantes de Compra: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="compCpa()" placeholder="" formControlName="idCompCpa">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Datos Proveedores en Portal: </p>
+      </div>
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Id Proveedor</mat-label>
+          <input matInput (keyup)="portal()" placeholder="" formControlName="idPortal">
+        </mat-form-field>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="[routerLinkVariable,dynamicParameter]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
+        <div class="col s12 m4 l3">
+          <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Órdenes de Publicidad: </p>
+        </div>
+        <div class="col s6 m3 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Id Proveedor</mat-label>
+            <input matInput (keyup)="ordPubli()" placeholder="" formControlName="idOrdPubli">
+          </mat-form-field>
+        </div>
+        <div class="col s6 m3 l1">
+          <button [routerLink]="[routerLinkVariable,dynamicParameter]" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+            IR
+          </button>
+        </div>
+      </div>
+
+  </form>
+</mat-expansion-panel>

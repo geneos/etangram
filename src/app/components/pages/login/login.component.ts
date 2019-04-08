@@ -1,17 +1,18 @@
-import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable, Input, Output, EventEmitter } from '@angular/core';
 import { LoginService } from 'src/app/services/i2t/login.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { NavbarComponent } from 'src/app/components/shared/navbar/navbar.component';
+import { User } from 'src/app/components/shared/user/user.model';
+import { PlatformLocation } from '@angular/common';
+import { UserService } from 'src/app/services/i2t/user.service';
+import { Router, ActivatedRoute } from "@angular/router";
 
 // key that is used to access the data in local storage
 const TOKEN = '';
+const userName = '';
 
 @Injectable()
-//export class LocalStorageService {
-//    anotherTodolist = [];
-//    constructor(@Inject(SESSION_STORAGE) private storage: StorageService) { }
-
-//}
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,8 @@ const TOKEN = '';
 })
 export class LoginComponent implements OnInit {
 
+  @Output() nombre = new EventEmitter<any>();
+  @ViewChild(NavbarComponent) navBar: NavbarComponent;
   offline: boolean = true;
   loading: boolean = false;
   hide = true;
@@ -27,10 +30,15 @@ export class LoginComponent implements OnInit {
   exp: string ="";
   routerLinkVariable = "/compra";
   loginData: any;
+  loginDatos: login;
   token: string = "a";
   forma: FormGroup;
   formaFormulario: FormGroup;
-  constructor(private _LoginService:LoginService, @Inject(SESSION_STORAGE) private storage: StorageService) {
+  username: any;
+  constructor(private _LoginService:LoginService, @Inject(SESSION_STORAGE) private storage: StorageService,
+              private userService: UserService,
+              private route:ActivatedRoute,private router: Router,
+              private location: PlatformLocation) {
 
     this.forma = new FormGroup({
       'usuario': new FormControl(''),
@@ -45,12 +53,16 @@ export class LoginComponent implements OnInit {
       'idPortal': new FormControl(''),
       'idOrdPubli': new FormControl('')
     })
+
+    
    }
 
-   public storeOnLocalStorage(auxtoken: string): void {
-      localStorage.setItem('TOKEN', auxtoken);
-      console.log(localStorage.getItem('TOKEN') || 'Local storage is empty');
-    }
+  //  public storeOnLocalStorage(auxtoken: string, auxuser: string): void {
+  //     localStorage.setItem('TOKEN', auxtoken);
+  //     localStorage.setItem('userName', auxuser);
+  //     console.log(localStorage.getItem('TOKEN') || 'Local storage is empty');
+  //     console.log(localStorage.getItem('userName') || 'Local storage is empty');
+  //   }
 
   ngOnInit() {
   }
@@ -108,12 +120,27 @@ export class LoginComponent implements OnInit {
     this._LoginService.login(jsonbody)
       .subscribe( dataL => {
  //    console.log(dataL);
+        
     this.loginData = dataL;
+   // let u: User = {username: this.loginData.dataset[0].usuarioNombre, token: this.loginData.dataset[0].jwt}
     this.token = this.loginData.dataset[0].jwt;
+    this.userService.setUserLoggedIn(this.loginData.dataset[0].usuarioNombre, this.loginData.dataset[0].jwt)
+    let saro = new NavbarComponent(this.storage, this.userService, this.router, this.route, this.location);
+
+    saro.user(this.loginData.dataset[0].usuarioNombre)
+    this.router.navigate(['/formularios'])
+    
     console.log(this.loginData);
-    this.storeOnLocalStorage(this.token);
+  //  this.storeOnLocalStorage(this.token, this.loginData.dataset[0].usuarioNombre);
     this.offline = false;
     this.loading = false;
+    this.loginDatos = this.loginData.dataset
+    this.username = this.loginData.dataset[0].usuarioNombre
+    
     });
   }
+}
+export interface login{
+  usuarioNombre: string;
+  jwt: string;
 }

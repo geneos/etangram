@@ -1,13 +1,15 @@
 <mat-toolbar style="background-color:#534d64">
   <span>
     <img src="assets/img/logo_etangram_png.png" style="height: 40px; margin-top: 12px; ">
+
   </span>
   <span style="flex: 1 1 auto;"></span>
-  <span>
-    <button mat-button [matMenuTriggerFor]="menu" style="color:#fff; font-family: 'Lato', sans-serif !important; font-size:16px;">
-      Menú
-    </button>
-    <mat-menu #menu="matMenu">
+  <!-- <p style="color:#fff; font-family: 'Lato', sans-serif !important; font-size:16px;">{{ usuario }}</p> -->
+   <span>
+    <button mat-button style="color:#fff; font-family: 'Lato', sans-serif !important; font-size:16px;">
+      {{ usuario }}
+    </button></span>
+  <!--  <mat-menu #menu="matMenu">
       <button [routerLink]="['/login']" mat-menu-item>Páginas</button>
       <mat-divider></mat-divider>
       <!--<button [routerLink]="['/compra/usuario1/password1']" mat-menu-item>Compra</button>-->
@@ -23,7 +25,7 @@
       <button [routerLink]="['/consulta-ord-pago/4081']" mat-menu-item>Consulta Ordenes de Pago</button>-->
       <!-- prueba interna. borrar
       <button [routerLink]="['/prueba']" mat-menu-item>Prueba</button>
-      -->
+      
     </mat-menu>
   </span>
   <span>
@@ -35,7 +37,7 @@
       <mat-divider></mat-divider>
       <button mat-menu-item>Cerrar sesión</button>
     </mat-menu>
-  </span>
+  </span> -->
 </mat-toolbar>
 <app-cons-din-n2></app-cons-din-n2>
 <app-cd-filtros-n2></app-cd-filtros-n2>

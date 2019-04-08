@@ -85,6 +85,9 @@ import { ConsDinConfig } from './classes/cons-din-config';
 import { ArticulosService } from './services/i2t/articulos.service';
 import { ProveedoresService } from './services/i2t/proveedores.service';
 import { MinContablesService } from './services/i2t/min-contables.service';
+import { UserService } from './services/i2t/user.service';
+import { AccesoFormulariosComponent } from './components/pages/acceso-formularios/acceso-formularios.component';
+
 
 
 @NgModule({
@@ -140,6 +143,7 @@ import { MinContablesService } from './services/i2t/min-contables.service';
     CargaFormularioComponent,
     ConfirmarComponent,
     ImgComponent,
+    AccesoFormulariosComponent,
   ],
   imports: [
     BrowserModule,
@@ -167,9 +171,8 @@ import { MinContablesService } from './services/i2t/min-contables.service';
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-AR'},
     {provide: ConsDinService, useFactory: ConsDinServiceFactory, deps: [HttpClient, ConsDinConfig]},
-    ConsDinConfig
-   // { provide: LOCALE_ID, useValue: 'es-AR' }
-    // {provide: ErrorHandler, useClass: ErrorHandlerService}
+    ConsDinConfig,
+    UserService
   ],
   bootstrap: [AppComponent],
 

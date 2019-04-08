@@ -63,7 +63,7 @@
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)="eliminarEvidencia(element.id_evidencia)"> E </span> -->
               <i (click)="verImagen(element.url_imagen)" matTooltip="Ver Imagen" class="material-icons">visibility</i>
               <a style="color:#000;">
-              <i (click)="eliminarEvidencia(element.id_evidencia)"
+              <i (click)="eliminarEvidencia(element.id_evidencia, element.url_imagen)"
                  matTooltip="Eliminar"
                  class="material-icons">delete</i>
               </a>

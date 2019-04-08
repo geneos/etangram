@@ -177,12 +177,18 @@ export class RegistroEvidenciaComponent implements OnInit {
       })
   }
 
-  eliminarEvidencia(id){
+  eliminarEvidencia(id,url:string){
     let jsbodyEvDel = {
       "id_op": this.inputParam.ordPublicidadId,
       "id_evidencia": id
     }
+    url = url.slice(34)
+    console.log(url)
     let jsonbodyEvDel = JSON.stringify(jsbodyEvDel)
+    this._imageService.delImage(url, this.token)
+      .subscribe(evUrl => {
+        console.log(evUrl)
+      }) 
     this._evidenciasService.delEvidencia( jsonbodyEvDel, this.token)
       .subscribe(dataEv => {
         console.log(dataEv);

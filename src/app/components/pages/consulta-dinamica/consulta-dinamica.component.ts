@@ -1179,7 +1179,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
   //#region acciones
   nuevo(){
-    console.log('redireccionando a nuevo en "' + this.reportesAll[this.reporteSeleccionado].accion_crear) + '"';
+    console.log('redireccionando a nuevo en "' + this.reportesAll[this.reporteSeleccionado].accion_crear + '"');
     if ((this.reportesAll[this.reporteSeleccionado].accion_crear != null)&&(this.reportesAll[this.reporteSeleccionado].accion_crear != '')){
       this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_crear]);
     }
@@ -1189,13 +1189,13 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     // this.router.navigate(['ref-contables/nuevo']);
   }
   editar(){
-    console.log('redireccionando a editar en "' + this.reportesAll[this.reporteSeleccionado].accion_editar) + '"';
+    console.log('redireccionando a editar en "' + this.reportesAll[this.reporteSeleccionado].accion_editar + '"');
     console.log('seleccionado: ', this.selection.selected);
     // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_editar]);
     if ((this.reportesAll[this.reporteSeleccionado].accion_editar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_editar != '')){
       if (this.selection.selected.length != 0){
         // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
-        this.router.navigate(['this.reportesAll[this.reporteSeleccionado].accion_editar', this.selection.selected[0]['id']]);
+        this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_editar, this.selection.selected[0]['id']]);
       }
       else{
         this.openSnackBar('Debe seleccionar un elemento a editar.')
@@ -1206,12 +1206,17 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     }
   }
   ver(){
-    // console.log('redireccionando a editar en "' + this.reportesAll[this.reporteSeleccionado].accion_mostrar) + '"';
-    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_mostrar]);
+    console.log('redireccionando a visualizar en "' + this.reportesAll[this.reporteSeleccionado].accion_mostrar + '"');
+    console.log('seleccionado: ', this.selection.selected);
+    // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_editar]);
     if ((this.reportesAll[this.reporteSeleccionado].accion_mostrar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_mostrar != '')){
-      // this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_mostrar, this.selection.selected[0]['id']]);
-      console.log('todo boton de "ver", usando "editar"');
-      this.editar();
+      if (this.selection.selected.length != 0){
+        // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+        this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_mostrar, this.selection.selected[0]['id']]);
+      }
+      else{
+        this.openSnackBar('Debe seleccionar un elemento a visualizar.')
+      }
     }
     else{
       this.openSnackBar('No se ha especificado un método para Ver.');

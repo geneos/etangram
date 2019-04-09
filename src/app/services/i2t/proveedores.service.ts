@@ -431,7 +431,7 @@ export class ProveedoresService implements ConsDinService {
     // return 'No implementado, parametros: ' + parametros;
     console.log('id para eliminar: ', parametros.parametros.id)
     let jsbody = {
-      "prov_codigo": parametros.parametros.id, 
+      "Id_Proveedor": parametros.parametros.id, 
       }
     let jsonbody = JSON.stringify(jsbody);
     let respuesta = this.deleteCabecera(jsonbody, parametros.token);

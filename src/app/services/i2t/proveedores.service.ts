@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 //import { Http } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
+import { ConsDinService } from 'src/app/classes/cons-din-service';
 
 //const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTQwNDQyMDY0LCJleHAiOjE1NDA0NjAwNjR9.OZ0MRo_fNuVpXx-9SJCUBRud_bR3wNSfNAJUfn9O1i8';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProveedoresService {
+export class ProveedoresService implements ConsDinService {
 
   compraProveedores:any [] = [];
 
@@ -423,5 +424,24 @@ export class ProveedoresService {
 
     return this.http.post( url, body, { headers });
   } */
+  
+  //devuelve string
+  public eliminar(parametros: any){
+    console.log('Eliminando proveedor, parametros: ', parametros);
+    // return 'No implementado, parametros: ' + parametros;
+    console.log('id para eliminar: ', parametros.parametros.id)
+    let jsbody = {
+      "Id_Proveedor": parametros.parametros.id, 
+      }
+    let jsonbody = JSON.stringify(jsbody);
+    let respuesta = this.deleteCabecera(jsonbody, parametros.token);
+    console.log('respuesta a devolver: ', respuesta);
+    return respuesta;
+  }
+
+  // exportar(parametros: any): any;
+  public exportar(parametros: any){
+    return this.getCProveedores( parametros.token )
+  }
 
 }

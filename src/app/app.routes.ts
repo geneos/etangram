@@ -23,6 +23,7 @@ import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicida
 import { RegistroEvidenciaComponent } from './components/pages/registro-evidencia/registro-evidencia.component';
 import { ImageComponent } from './components/pages/prueba/image/image.component';
 import { AccesoFormulariosComponent} from './components/pages/acceso-formularios/acceso-formularios.component';
+import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component'
 
 const APP_ROUTES: Routes = [
   { path: 'test', component: ImageComponent },
@@ -54,6 +55,7 @@ const APP_ROUTES: Routes = [
   { path: 'ordenes-publicidad/:id/:ord', component: OrdenesPublicidadComponent },
   { path: 'registo-evidencia', component: RegistroEvidenciaComponent },
   { path: 'formularios', component: AccesoFormulariosComponent },
+  { path: 'lista-remesas', component: ListaDeRemesasComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

@@ -87,6 +87,7 @@ import { ProveedoresService } from './services/i2t/proveedores.service';
 import { MinContablesService } from './services/i2t/min-contables.service';
 import { UserService } from './services/i2t/user.service';
 import { AccesoFormulariosComponent } from './components/pages/acceso-formularios/acceso-formularios.component';
+import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component';
 
 
 
@@ -144,6 +145,7 @@ import { AccesoFormulariosComponent } from './components/pages/acceso-formulario
     ConfirmarComponent,
     ImgComponent,
     AccesoFormulariosComponent,
+    ListaDeRemesasComponent,
   ],
   imports: [
     BrowserModule,

@@ -34,6 +34,14 @@ urlRuta: any;
               this.portal = false;
              }
           });
+          if (event instanceof NavigationEnd){;
+            if (this.router.url.includes('/login') == true){
+              localStorage.removeItem('currentUser')
+              localStorage.removeItem('TOKEN')
+            } else {
+              this.usuario = localStorage.getItem('currentUser')
+            }
+          }
       }
 
       if (event instanceof NavigationError) {

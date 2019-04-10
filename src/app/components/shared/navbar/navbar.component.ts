@@ -31,6 +31,7 @@ export class NavbarComponent implements OnInit {
                     if (this.router.url.includes('/login') == true){
                       localStorage.removeItem('currentUser')
                       localStorage.removeItem('TOKEN')
+                      this.usuario = '';
                     } else {
                       this.usuario = localStorage.getItem('currentUser')
                     }

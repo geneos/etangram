@@ -297,6 +297,7 @@ export class AltaProveedorComponent implements OnInit {
       catBloq: new FormControl(),
       //IMPUESTOS
       sitIVA: new FormControl(),
+      estadoAfip: new FormControl(),
       cuit: new FormControl(),
       cai: new FormControl(),
       fechaVtoCai: new FormControl(),
@@ -3398,6 +3399,8 @@ export class AltaProveedorComponent implements OnInit {
       .subscribe( respC => {
         console.log("Respuesta de verificaCuit: ", respC)
         this.respCuit = respC
+        this.forma.controls['estadoAfip'].setValue(this.respCuit.personaReturn.datosGenerales.estadoClave)
+        console.log(this.respCuit.personaReturn.datosGenerales.estadoClave)
       })
   }
 

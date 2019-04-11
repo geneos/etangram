@@ -5,7 +5,6 @@
 <button [routerLink]="['/proveedores']" class="mine-btnbig-grey" mat-flat-button>
   VOLVER A LISTA
 </button>
-
 <app-loading *ngIf="loading || (partesACargar != partesCargadas)"></app-loading>
 
 <form [formGroup]="forma" (ngSubmit)="guardarProveedor()" novalidate="novalidate">

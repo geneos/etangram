@@ -28,6 +28,7 @@ export class RegistroEvidenciaComponent implements OnInit {
   inputParam: any;
   adjunto: any;
   urlImagen:string = "";
+  urlImg: any[];
   datos: any;
 
   token: any;
@@ -189,10 +190,13 @@ export class RegistroEvidenciaComponent implements OnInit {
       "id_op": this.inputParam.ordPublicidadId,
       "id_evidencia": id
     }
-    url = url.slice(34)
+   
+    this.urlImg = url.split('/')
+   
+    console.log(this.urlImg[this.urlImg.length-1])
     console.log(url)
     let jsonbodyEvDel = JSON.stringify(jsbodyEvDel)
-    this._imageService.delImage(url, this.token)
+    this._imageService.delImage(this.urlImg[this.urlImg.length-1], this.token)
       .subscribe(evUrl => {
         console.log(evUrl)
       }) 

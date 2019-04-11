@@ -20,7 +20,7 @@ const userName = '';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
+  NOM: any[];
   @Output() nombre = new EventEmitter<any>();
   @ViewChild(NavbarComponent) navBar: NavbarComponent;
   offline: boolean = true;
@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit {
   //   }
 
   ngOnInit() {
+    
   }
 
   compCpa(){

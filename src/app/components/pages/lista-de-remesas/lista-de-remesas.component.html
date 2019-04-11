@@ -31,6 +31,10 @@
         <mat-checkbox [(ngModel)]="checked" formControlName="soloPendientes">Solo Pendientes</mat-checkbox>
     </div>
 </form>
+<button [routerLink]="['/lista-remesas','nuevo']" class="mine-btnbig" mat-flat-button>
+  NUEVO
+</button>
+<!-- [routerLink]="['/proveedores','nuevo']" -->
 <div class="mat-elevation-z8" [ngStyle]="{'display':!loading ? 'block' : 'none' }">
 
     <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
@@ -38,7 +42,7 @@
       <!-- comprobante Column -->
       <ng-container matColumnDef="simbolo">
         <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.Nombre_Comprobante }} </td>
+        <td mat-cell *cdkCellDef="let element">  </td>
       </ng-container>
 
       <!-- fecha Column -->
@@ -69,7 +73,11 @@
        <!-- accion Column -->
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> Acciones </th>
-        <td mat-cell *cdkCellDef="let element"><i (click)="print(element.Id_Comprobante)" class="material-icons" style="cursor: pointer">print</i></td>
+        <td mat-cell *cdkCellDef="let element">
+        <i  class="material-icons" style="cursor: pointer">edit</i>
+        <i  class="material-icons" style="cursor: pointer">visibility</i>
+        <i  class="material-icons" style="cursor: pointer">delete</i>
+        <i class="material-icons" style="cursor: pointer">attach_money</i></td>
       </ng-container>
 
       <tr mat-header-row *cdkHeaderRowDef="['simbolo', 'fecha', 'descripcion', 'pagar', 'estado', 'accion']"></tr>

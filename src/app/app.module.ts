@@ -88,6 +88,7 @@ import { MinContablesService } from './services/i2t/min-contables.service';
 import { UserService } from './services/i2t/user.service';
 import { AccesoFormulariosComponent } from './components/pages/acceso-formularios/acceso-formularios.component';
 import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component';
+import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-remesa/alta-remesa.component';
 
 
 
@@ -146,6 +147,7 @@ import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lis
     ImgComponent,
     AccesoFormulariosComponent,
     ListaDeRemesasComponent,
+    AltaRemesaComponent,
   ],
   imports: [
     BrowserModule,

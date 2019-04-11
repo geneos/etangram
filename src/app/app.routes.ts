@@ -23,7 +23,8 @@ import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicida
 import { RegistroEvidenciaComponent } from './components/pages/registro-evidencia/registro-evidencia.component';
 import { ImageComponent } from './components/pages/prueba/image/image.component';
 import { AccesoFormulariosComponent} from './components/pages/acceso-formularios/acceso-formularios.component';
-import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component'
+import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component';
+import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-remesa/alta-remesa.component';
 
 const APP_ROUTES: Routes = [
   { path: 'test', component: ImageComponent },
@@ -56,6 +57,7 @@ const APP_ROUTES: Routes = [
   { path: 'registo-evidencia', component: RegistroEvidenciaComponent },
   { path: 'formularios', component: AccesoFormulariosComponent },
   { path: 'lista-remesas', component: ListaDeRemesasComponent },
+  { path: 'lista-remesas/:id', component: AltaRemesaComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

@@ -3391,7 +3391,7 @@ export class AltaProveedorComponent implements OnInit {
       "token": "Token",
        "sign": "Sign",
        "cuitRepresentada": 30709041483,
-       "idPersona": 20221064233
+       "idPersona": this.forma.controls['cuit'].value
     }
     let jsonbodycuit = JSON.stringify(jsbody);
     this._afipService.a5GetPersona(this.token, jsonbodycuit)

@@ -89,6 +89,7 @@ import { UserService } from './services/i2t/user.service';
 import { AccesoFormulariosComponent } from './components/pages/acceso-formularios/acceso-formularios.component';
 import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component';
 import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-remesa/alta-remesa.component';
+import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/abm-liquidaciones.component';
 
 
 
@@ -148,6 +149,7 @@ import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-re
     AccesoFormulariosComponent,
     ListaDeRemesasComponent,
     AltaRemesaComponent,
+    AbmLiquidacionesComponent,
   ],
   imports: [
     BrowserModule,

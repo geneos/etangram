@@ -1,0 +1,83 @@
+<h2>LIQUIDACIONES</h2>
+<form [formGroup]="forma" novalidate="novalidate">
+  <div class="row" style="margin-top:10px; margin-bottom:5px;">
+    <div class="col s6 m3 l3">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Desde Fecha</mat-label>
+        <input matInput readonly [matDatepicker]="pickerDesde" placeholder="" formControlName="fechaDesde">
+        <mat-datepicker-toggle matSuffix [for]="pickerDesde"></mat-datepicker-toggle>
+        <mat-datepicker #pickerDesde></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col s6 m3 l3">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Hasta Fecha</mat-label>
+        <input matInput readonly [matDatepicker]="pickerHasta" placeholder="" formControlName="fechaHasta">
+        <mat-datepicker-toggle matSuffix [for]="pickerHasta"></mat-datepicker-toggle>
+        <mat-datepicker #pickerHasta></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:10px; margin-bottom:5px;">
+    <div class="col s4 m2 l2">
+      <!-- <mat-form-field appearance="outline" floatLabel="always" style="width:100%;"> -->
+        <mat-checkbox style="margin-top:12px !important;" #pendientes formControlName="soloPendientes">Solo Pendientes</mat-checkbox>
+      <!-- </mat-form-field> -->
+    </div>
+    <div class="col s8 m10 l10" style="text-align: right;">
+      <button type="button" class="mine-btnbig" mat-flat-button style="margin-right:10px;">
+        NUEVA POR PROVEEDOR
+      </button>
+      <button type="button" class="mine-btnbig" mat-flat-button>
+        NUEVA POR LOTE
+      </button>
+    </div>
+
+  </div>
+</form>
+<app-loading *ngIf="loading || (partesACargar != partesCargadas)"></app-loading>
+<div class="row" style="margin-top:10px; margin-bottom:5px;">
+  <table #tableArticulos mat-table [dataSource]="constLiqs" matSort (matSortChange)="sortData($event)" class="mat-elevation-z1"
+    style="font-family: 'Lato', sans-serif !important;">
+
+    <!-- Columna Fecha de Pago -->
+    <ng-container matColumnDef="fechaPago">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="fechaPago"> Fecha de Pago </th>
+      <td mat-cell *matCellDef="let auxLiquidacion"> {{auxLiquidacion.fechaPago}} </td>
+    </ng-container>
+    <!-- Columna Descripción -->
+    <ng-container matColumnDef="descripcion">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="descripcion"> Descripción </th>
+      <td mat-cell *matCellDef="let auxLiquidacion"> {{auxLiquidacion.descripcion}} </td>
+    </ng-container>
+    <!-- Columna Medio de Pago -->
+    <ng-container matColumnDef="medioPago">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="medioPago"> Medio de Pago </th>
+      <td mat-cell *matCellDef="let auxLiquidacion"> {{ auxLiquidacion.medioPago }} </td>
+    </ng-container>
+    <!-- Columna Monto a Pagar -->
+    <ng-container matColumnDef="monto">
+      <th mat-header-cell *matHeaderCellDef> Monto a Pagar </th>
+      <td mat-cell *matCellDef="let auxLiquidacion"> $ {{ auxLiquidacion.monto | number:'1.2-2'}} </td>
+    </ng-container>
+    <!-- Columna Estado -->
+    <ng-container matColumnDef="estado">
+      <th mat-header-cell *matHeaderCellDef> Estado </th>
+      <td mat-cell *matCellDef="let auxLiquidacion"> {{ auxLiquidacion.estado }} </td>
+    </ng-container>
+    <!-- Columna Acciones -->
+    <ng-container matColumnDef="acciones">
+      <th mat-header-cell *matHeaderCellDef> Acciones </th>
+      <td mat-cell *matCellDef="let auxLiquidacion"> botones </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['fechaPago', 'descripcion', 'medioPago', 'monto', 'estado', 'acciones']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['fechaPago', 'descripcion', 'medioPago', 'monto', 'estado', 'acciones'];"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[3, 5, 10, 20]" showFirstLastButtons class="mat-elevation-z1"></mat-paginator>
+  <div class="col s12" style="margin-top:5px;" *ngIf="constLiqs.length < 1">
+    <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen Liquidaciones</i></mat-card>
+  </div>
+</div>

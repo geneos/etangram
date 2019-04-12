@@ -13,22 +13,23 @@
           <div class="col s6 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Fecha Desde</mat-label>
-              <input matInput [matDatepicker]="picker1" [min]="fechaDesde | date: 'yyyy-MM-dd'" [max]="fechaActualMasUno | date: 'yyyy-MM-dd'" formControlName="fecdesde">
-              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-              <mat-datepicker #picker1></mat-datepicker>
+              <input matInput [matDatepicker]="fecdesde"  formControlName="fecdesde">
+              <mat-datepicker-toggle matSuffix [for]="fecdesde"></mat-datepicker-toggle>
+              <mat-datepicker #fecdesde></mat-datepicker>
             </mat-form-field>
           </div>
           <div class="col s6 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Fecha Hasta</mat-label>
-              <input matInput [matDatepicker]="picker2" [min]="fechaDesde | date: 'yyyy-MM-dd'" [max]="fechaActualMasUno | date: 'yyyy-MM-dd'" formControlName="fechasta">
-              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-              <mat-datepicker #picker2></mat-datepicker>
+              <input matInput [matDatepicker]="fechasta" formControlName="fechasta">
+              <mat-datepicker-toggle matSuffix [for]="fechasta"></mat-datepicker-toggle>
+              <mat-datepicker #fechasta></mat-datepicker>
             </mat-form-field>
-          </div>  
+          </div>
+          <button (click)="applyFilter()">enviar</button>
     </div>
     <div class="row" style="margin-top:15px;" *ngIf="!loading">
-        <mat-checkbox [(ngModel)]="checked" formControlName="soloPendientes">Solo Pendientes</mat-checkbox>
+        <mat-checkbox>Solo Pendientes</mat-checkbox>
     </div>
 </form>
 <button [routerLink]="['/lista-remesas','nuevo']" class="mine-btnbig" mat-flat-button>
@@ -48,20 +49,20 @@
       <!-- fecha Column -->
       <ng-container matColumnDef="fecha">
         <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Fecha Pago </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.fechaPago | date: 'dd-MM-yyyy' }} </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.fecha | date: 'dd-MM-yyyy' }} </td>
       </ng-container>
 
 
       <!-- expediente Column -->
       <ng-container matColumnDef="descripcion">
         <th mat-header-cell *matHeaderCellDef> Descripción </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.descripcion }} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.description }} </td>
       </ng-container>
 
       <!-- observaciones Column -->
       <ng-container matColumnDef="pagar">
         <th mat-header-cell *matHeaderCellDef> Pagar</th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.pagar}} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.pago_previsto}} </td>
       </ng-container>
 
       <!-- importe Column -->

@@ -19,7 +19,7 @@ export class RemesasService {
     const headers = new HttpHeaders({
       'x-access-token': token
     });
-    if (id == null){
+    if (id == ''){
       let query = `api/tg11_remesas`;
       let url = this.preUrl + query;
       return this.http.get( url , { headers });

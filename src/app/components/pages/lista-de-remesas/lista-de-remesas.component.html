@@ -26,10 +26,11 @@
               <mat-datepicker #fechasta></mat-datepicker>
             </mat-form-field>
           </div>
-          <button (click)="applyFilter()">enviar</button>
+          <!-- <button (click)="applyFilter()">Filtrar</button> -->
     </div>
     <div class="row" style="margin-top:15px;" *ngIf="!loading">
-        <mat-checkbox>Solo Pendientes</mat-checkbox>
+
+        <mat-checkbox (click)="applyFilter()" formControlName="soloPendientes">Solo Pendientes</mat-checkbox>
     </div>
 </form>
 <button [routerLink]="['/lista-remesas','nuevo']" class="mine-btnbig" mat-flat-button>
@@ -75,10 +76,10 @@
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> Acciones </th>
         <td mat-cell *cdkCellDef="let element">
-        <i [routerLink]="['/lista-remesas', element.id]" class="material-icons" style="cursor: pointer">edit</i>
-        <i  class="material-icons" style="cursor: pointer">visibility</i>
-        <i  class="material-icons" style="cursor: pointer">delete</i>
-        <i class="material-icons" style="cursor: pointer">attach_money</i></td>
+        <i matTooltip="Editar Remesa" (click)="editarRemesa(element.id,element.estado)" class="material-icons" [ngStyle]="{'cursor': element.estado === 'Provisorio' ? 'pointer' : 'auto'}">edit</i>
+        <i matTooltip="Consulta" class="material-icons" style="cursor: pointer">visibility</i>
+        <i matTooltip="Borrar Remesa" (click)="borrarRemesa(element.id)" class="material-icons" style="cursor: pointer">delete</i>
+        <i matTooltip="Liquidacion" class="material-icons" style="cursor: pointer">attach_money</i></td>
       </ng-container>
 
       <tr mat-header-row *cdkHeaderRowDef="['simbolo', 'fecha', 'descripcion', 'pagar', 'estado', 'accion']"></tr>

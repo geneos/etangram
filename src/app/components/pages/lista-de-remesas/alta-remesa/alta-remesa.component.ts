@@ -97,4 +97,29 @@ export class AltaRemesaComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.remesaComprobantes)
       })
   }
+
+  crearRemesa(){
+    let jsbody = {
+        "Nombre_Remesa":  this.forma.controls['descripcion'].value,
+        "Fecha":  this.forma.controls['fecha'].value,
+        "Pago_Previsto":  this.forma.controls['pagoPrevisto'].value,
+        "ID_Usuario": "1"
+    }
+    let jsonbody = JSON.stringify(jsbody)
+    this._remesasService.postRemesaIns(jsonbody, this.token)
+      .subscribe(resp => {
+        console.log(resp)
+      })
+  }
+  
+  confirmarRemesa(){
+    let jsbody = {
+      "ID_Remesa": this.idRemesa
+    }
+    let jsonbody = JSON.stringify(jsbody);
+    this._remesasService.postRemesaConf( jsonbody, this.token)
+      .subscribe(resp => {
+        console.log(resp)
+      })
+  }
 }

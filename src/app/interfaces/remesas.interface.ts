@@ -14,3 +14,14 @@ export interface Remesas {
     pago_previsto: number,
     pago_restante: number
 }
+export interface RemesaComprobantes {
+    ID_Comprobante: string,
+    Proveedor: string,
+    Categoria_Proveedor: string,
+    Criticidad_Proveedor: string,
+    Comprobante: string
+    Criticidad_Comprobante: string,
+    Fecha_Vencimiento: string,
+    Total: number,
+    Saldo: string
+}

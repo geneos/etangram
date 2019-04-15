@@ -5,8 +5,6 @@ import { RemesasService } from 'src/app/services/i2t/remesas.service'
 import { Remesas} from 'src/app/interfaces/remesas.interface'
 import { Router, ActivatedRoute } from "@angular/router";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
-import * as moment from 'moment';
-import { toDate } from '@angular/common/src/i18n/format_date';
 
 @Component({
   selector: 'app-lista-de-remesas',
@@ -29,8 +27,10 @@ export class ListaDeRemesasComponent implements OnInit {
   listaRemesas: Remesas[] = []
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource(this.listaRemesas);
+
   get fecdesde(): any { return this.forma.get('fecdesde'); }
   get fechasta(): any { return this.forma.get('fechasta'); }
+  
   constructor(private _remesasService: RemesasService,
               private route:ActivatedRoute,private router: Router,
               @Inject(SESSION_STORAGE) private storage: StorageService) { 
@@ -49,7 +49,7 @@ export class ListaDeRemesasComponent implements OnInit {
          
         return Date.parse(data.fecha) >= this.fecdesde && data.fecha <= this.fechasta;
       }
-      return false;
+      return true;
     }
   }
 
@@ -67,25 +67,20 @@ export class ListaDeRemesasComponent implements OnInit {
   }
   
   obtenerRemesas(){
-    this._remesasService.getRemesas(this.token)
+    this._remesasService.getRemesas(null,this.token)
       .subscribe(resp => {
       //  console.log(resp)
         this.remesas = resp
         this.listaRemesas = this.remesas.dataset
         console.log(this.listaRemesas)
+        this.listaRemesas.forEach( data =>{
+          console.log(data.fecha)
+        })
         this.dataSource = new MatTableDataSource(this.listaRemesas)
       //  this.dataSource.filter = 'Pendiente';
       })
   }
   applyFilter() {
     this.dataSource.filter =  ''+Math.random();
-    // if (!this.forma.controls['soloPendientes'].value){
-    //   this.dataSource.filter = 'Pendiente';
-    //   console.log(this.forma.controls['soloPendientes'].value)
-    // } else {
-    //   this.dataSource.filter = ''
-    //   console.log(this.forma.controls['soloPendientes'].value)
-    // }
-    
    }
 }

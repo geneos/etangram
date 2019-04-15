@@ -1,14 +1,29 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router, ActivatedRoute, NavigationEnd, Event } from "@angular/router";
+import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { RemesasService } from 'src/app/services/i2t/remesas.service'
+import { Remesas, RemesaComprobantes} from 'src/app/interfaces/remesas.interface'
 import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatPaginatorIntl} from '@angular/material';
 
+@Injectable()
 @Component({
   selector: 'app-alta-remesa',
   templateUrl: './alta-remesa.component.html',
   styleUrls: ['./alta-remesa.component.css']
 })
 export class AltaRemesaComponent implements OnInit {
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
+
+  token: any;
+  editing: boolean = false;  
+  dataRc: any; //Comprobantes de remesas
+  remesaComprobantes: RemesaComprobantes[] = [];
+  remesas: any; // Datos de la Remesa
+  listaRemesas: Remesas[] = []
+  idRemesa: any;
+  pagoRestante: any;
+  numero: any;
+  dataSource = new MatTableDataSource(this.remesaComprobantes)
 
   loading: boolean = false;
   forma: FormGroup;
@@ -20,7 +35,10 @@ export class AltaRemesaComponent implements OnInit {
 
   @ViewChild(MatSort) sort: MatSort;
  // dataSource = new MatTableDataSource();
-  constructor() {
+  constructor( @Inject(SESSION_STORAGE) private storage: StorageService,
+              private router: Router,
+              private route: ActivatedRoute,
+              private _remesasService: RemesasService) {
     this.forma = new FormGroup({
       'fecha': new FormControl(),
       'numero': new FormControl(),
@@ -29,28 +47,54 @@ export class AltaRemesaComponent implements OnInit {
       'restante': new FormControl(),
       'imputado': new FormControl()
     })
-   }
 
-  ngOnInit() {
+    this.token = localStorage.getItem('TOKEN')
+    router.events.subscribe( (event: Event) => {
+      if (event instanceof NavigationEnd) {;
+        if (!this.router.url.includes('lista-remesas/nuevo')){
+          this.editing = true;
+          
+        } else {
+          this.editing = false;
+        }
+      }
+    })
+
+    this.route.params.subscribe( parametros=>{
+      this.idRemesa = parametros['id'];
+    });
   }
 
-}
-export interface Element {
-  proveedor: string;
-  categoria: string;
-  criticidadProv: string;
-  comprobante: string;
-  criticidadComp: string;
-  vencimiento: string;
-  total: string;
-  saldo: string;
-  pagar: string;
-}
+  ngOnInit() {
+    this.obtenerDatosRemesa()
+  }
 
-const ELEMENT_DATA: Element[] = [
-  { proveedor: '1', categoria: 'Hydrogen', criticidadProv: '1.0079', comprobante: 'H', criticidadComp: "Yes", vencimiento: '01-01-2019', total: '20', saldo: '20', pagar: '' },
-  { proveedor: '1', categoria: 'Hydrogen', criticidadProv: '1.0079', comprobante: 'H', criticidadComp: "Yes", vencimiento: '01-01-2019', total: '20', saldo: '20', pagar: '200' },
-  { proveedor: '1', categoria: 'Hydrogen', criticidadProv: '1.0079', comprobante: 'H', criticidadComp: "Yes", vencimiento: '01-01-2019', total: '20', saldo: '20', pagar: '' },
-  { proveedor: '1', categoria: 'Hydrogen', criticidadProv: '1.0079', comprobante: 'H', criticidadComp: "Yes", vencimiento: '01-01-2019', total: '20', saldo: '20', pagar: '400' },
-  { proveedor: '1', categoria: 'Hydrogen', criticidadProv: '1.0079', comprobante: 'H', criticidadComp: "Yes", vencimiento: '01-01-2019', total: '20', saldo: '20', pagar: '' },
-];
+  obtenerDatosRemesa(){
+    this._remesasService.getRemesas( this.idRemesa, this.token)
+     .subscribe(resp => {
+       this.remesas = resp
+       this.listaRemesas = this.remesas.dataset
+       this.forma.controls['fecha'].setValue(this.listaRemesas[0].fecha)
+       this.forma.controls['descripcion'].setValue(this.listaRemesas[0].name)
+       this.forma.controls['pagoPrevisto'].setValue(this.listaRemesas[0].pago_previsto)
+       this.pagoRestante = this.listaRemesas[0].pago_restante
+       this.numero = this.listaRemesas[0].numero
+      this.obtenerComprobantes();
+       
+     })
+  }
+  obtenerComprobantes(){
+    let jsbody = {
+      "ID_Remesa": this.idRemesa
+    }
+    let jsonbody = JSON.stringify(jsbody)
+    this._remesasService.getRemesaComprobantes(jsonbody, this.token)
+      .subscribe( resp =>{
+        console.log(resp)
+        this.dataRc = resp
+        this.remesaComprobantes = this.dataRc.dataset
+        console.log(this.remesaComprobantes)
+        this.dataSource = new MatTableDataSource(this.remesaComprobantes)
+      })
+  }
+}

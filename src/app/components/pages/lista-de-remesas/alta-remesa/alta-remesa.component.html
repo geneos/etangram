@@ -1,6 +1,7 @@
 <app-loading *ngIf="loading"></app-loading>
 <div [ngStyle]="{'display':loading ? 'none' : 'block' }">
-<h2>NUEVA REMESA</h2>
+<h2 *ngIf="!editing">NUEVA REMESA</h2>
+<h2 *ngIf="editing">EDITAR REMESA</h2>
 <mat-expansion-panel [expanded]=true [disabled]=true>
     <mat-expansion-panel-header>
       <mat-title-panel></mat-title-panel>
@@ -8,9 +9,7 @@
     
   <form [formGroup]="forma" novalidate="novalidate">
 
-      <div class="row" style="margin-top:15px;margin-bottom: 0px" *ngIf="!loading">
-          <!--<h6 style="margin-top:0px !important; margin-bottom: 20px !important; margin-left: 20px !important;">Filtros:</h6>
-    -->
+    <div class="row" style="margin-top:15px;margin-bottom: 0px" *ngIf="!loading">
           <div class="col s6 m3 l2">
             <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
               <mat-label>Fecha</mat-label>
@@ -19,22 +18,37 @@
               <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
           </div>
-          <div class="col s6 m3 l2" style="align-content: right">
-            <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
-              <mat-label>Número</mat-label>
-              <input matInput formControlName="numero">
-            </mat-form-field>
+          <div class="col s3 m2 l9">
+            <p style="font-size:13px;margin-top:0px;margin-bottom:0px;color:#666; text-align: right;">Numero</p>
+            <p style="margin-top:7px; text-align: right;">{{ numero }}</p>
+            <!--<mat-form-field appearance="outline" floatLabel="always" style="width:100%; ">
+              <mat-label>Código Proveedor</mat-label>
+              <input readonly #codProv matInput placeholder="" value="{{id}}">
+            </mat-form-field>-->
           </div>
+  
     </div>
-    <div class="row">
-      <div class="col s6 m3 l2">
+    <div class="row" style="margin-bottom: 0px !important">
+      <div class="col s6 m3 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Descripción</mat-label>
           <input matInput formControlName="descripcion">
         </mat-form-field>
-      </div> 
-    </div>    
+      </div>
+      <div class="col s6 m3 l2" style="float:right;height: 60px;">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%; margin-bottom:0px !important; padding: 0px !important">
+          <mat-label>Pago Previsto</mat-label>
+          <input matInput formControlName="pagoPrevisto">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s6 m3 l2" style="float:right;height: 60px;">
+        <p>Restante: <span style="font-color: red"> {{ pagoRestante }}</span></p>
+      </div>
+    </div>
 </form>
+<span>Imputar Comprobantes</span>
 <div class="mat-elevation-z8" [ngStyle]="{'display':!loading ? 'block' : 'none' }">
 
     <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
@@ -47,51 +61,51 @@
 
       <!-- fecha Column -->
       <ng-container matColumnDef="proveedor">
-        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Proveedor </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.proveedor | date: 'dd-MM-yyyy' }} </td>
+        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Proveedor</th>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Proveedor }} </td>
       </ng-container>
 
 
       <!-- expediente Column -->
       <ng-container matColumnDef="categoria">
         <th mat-header-cell *matHeaderCellDef> Categoria </th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.categoria }} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.Categoria_Proveedor }} </td>
       </ng-container>
 
       <!-- observaciones Column -->
       <ng-container matColumnDef="criticidadProv">
         <th mat-header-cell *matHeaderCellDef> CriticidadProv</th>
-        <td mat-cell *cdkCellDef="let element"> {{ element.criticidadProv}} </td>
+        <td mat-cell *cdkCellDef="let element"> {{ element.Criticidad_Proveedor}} </td>
       </ng-container>
 
       <!-- importe Column -->
       <ng-container matColumnDef="comprobante">
         <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Comprobante </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.comprobante }} </td>
+        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Comprobante }} </td>
       </ng-container>
 
       <!-- importe Column -->
       <ng-container matColumnDef="criticidadComp">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> CriticidadComp </th>
-          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.criticidadComp }} </td>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Criticidad_Comprobante }} </td>
         </ng-container>
 
       <!-- importe Column -->
       <ng-container matColumnDef="vencimiento">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Vencimiento </th>
-          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.vencimiento }} </td>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Fecha_Vencimiento }} </td>
         </ng-container>
 
       <!-- importe Column -->
       <ng-container matColumnDef="total">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Total </th>
-          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.total }} </td>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Total }} </td>
       </ng-container>
 
       <!-- importe Column -->
       <ng-container matColumnDef="saldo">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Saldo </th>
-          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.saldo }} </td>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Saldo }} </td>
       </ng-container>
 
       <!-- importe Column -->
@@ -108,13 +122,27 @@
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> Acciones </th>
         <td mat-cell *cdkCellDef="let element">
-        <i  class="material-icons" style="cursor: pointer">remove_circle</i>
+        <i  class="material-icons" style="cursor: pointer">delete</i>
       </ng-container>
 
       <tr mat-header-row *cdkHeaderRowDef="['simbolo', 'proveedor', 'categoria', 'criticidadProv', 'comprobante', 'criticidadComp', 'vencimiento','total','saldo','pagar', 'accion']"></tr>
       <tr mat-row *cdkRowDef="let row; columns: ['simbolo', 'proveedor', 'categoria', 'criticidadProv', 'comprobante', 'criticidadComp', 'vencimiento','total','saldo','pagar', 'accion'];"></tr>
     </table>
     <!-- <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons [ngStyle]="{'display':loading ? 'none' : 'block' }"></mat-paginator> -->
+  </div>
+  <div style="text-align: right">
+    <span>Imputado: </span>
+  </div>
+  <div class="row" style="margin-top: 10px; width: 100%; text-align: right;">
+    <button class="mine-btnbig" mat-flat-button >
+      CANCELAR
+    </button>
+    <button class="mine-btnbig" mat-flat-button >
+      GUARDAR
+    </button>
+    <button class="mine-btnbig" mat-flat-button >
+      CONFIRMAR
+    </button>
   </div>
 </mat-expansion-panel>
 

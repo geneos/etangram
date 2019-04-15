@@ -75,7 +75,7 @@
       <ng-container matColumnDef="accion">
         <th mat-header-cell *matHeaderCellDef> Acciones </th>
         <td mat-cell *cdkCellDef="let element">
-        <i  class="material-icons" style="cursor: pointer">edit</i>
+        <i [routerLink]="['/lista-remesas', element.id]" class="material-icons" style="cursor: pointer">edit</i>
         <i  class="material-icons" style="cursor: pointer">visibility</i>
         <i  class="material-icons" style="cursor: pointer">delete</i>
         <i class="material-icons" style="cursor: pointer">attach_money</i></td>

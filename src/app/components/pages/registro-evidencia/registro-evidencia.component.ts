@@ -28,6 +28,7 @@ export class RegistroEvidenciaComponent implements OnInit {
   inputParam: any;
   adjunto: any;
   urlImagen:string = "";
+  urlImg: any[];
   datos: any;
 
   token: any;
@@ -97,9 +98,16 @@ export class RegistroEvidenciaComponent implements OnInit {
   cargar(attachment){
     this.adjunto = attachment.files[0];
     console.clear();
-    //this.urlImagen = "url sigue vacia"
-     //console.log(formData.getAll('file'));
-     //console.log(formData);
+    if(this.adjunto.type !== "image/png"){
+      if(this.adjunto.type !== "image/jpg"){
+        if(this.adjunto.type !== "application/pdf"){
+          console.log('png','jpg');
+        }
+      }
+    }
+    if(this.adjunto.size > 1000000){
+      console.log('Tamaño superado')
+    }
      this._imageService.postImage( this.adjunto, this.token )
        .subscribe( resp => {
          console.log(resp);
@@ -177,12 +185,21 @@ export class RegistroEvidenciaComponent implements OnInit {
       })
   }
 
-  eliminarEvidencia(id){
+  eliminarEvidencia(id,url:string){
     let jsbodyEvDel = {
       "id_op": this.inputParam.ordPublicidadId,
       "id_evidencia": id
     }
+   
+    this.urlImg = url.split('/')
+   
+    console.log(this.urlImg[this.urlImg.length-1])
+    console.log(url)
     let jsonbodyEvDel = JSON.stringify(jsbodyEvDel)
+    this._imageService.delImage(this.urlImg[this.urlImg.length-1], this.token)
+      .subscribe(evUrl => {
+        console.log(evUrl)
+      }) 
     this._evidenciasService.delEvidencia( jsonbodyEvDel, this.token)
       .subscribe(dataEv => {
         console.log(dataEv);

@@ -31,5 +31,17 @@ export class ImageService {
 
     return this.http.post( url, formData, { headers } );
   }
+  delImage( nombre, token ){
+    const headers = new HttpHeaders({
+      'x-access-token': token
+    });
+    //'Content-Type': 'application/json'
+    
+    let query = `api/imagenes/attachments/${ nombre }`;
+    let url = this.preUrl + query;
+    console.log(url);
+
+    return this.http.delete( url, { headers } );
+  }
 
 }

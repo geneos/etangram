@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import { PlatformLocation } from '@angular/common';
 import { Router, Route, ActivatedRoute, NavigationEnd, NavigationError, NavigationStart, Event } from "@angular/router";
 
 @Component({
@@ -9,12 +10,15 @@ import { Router, Route, ActivatedRoute, NavigationEnd, NavigationError, Navigati
 })
 export class AppComponent {
 idProv: any;
+usuario: any;
 portal: boolean = false;
 urlRuta: any;
   constructor(public ngxSmartModalService: NgxSmartModalService,
              // private http: Http,
               private router: Router,
-              private route: ActivatedRoute){
+              private route: ActivatedRoute,
+              private location: PlatformLocation){
+
     router.events.subscribe( (event: Event) => {
       if (event instanceof NavigationStart) {;
         //if (this.router.url)
@@ -30,6 +34,14 @@ urlRuta: any;
               this.portal = false;
              }
           });
+          if (event instanceof NavigationEnd){;
+            if (this.router.url.includes('/login') == true){
+              localStorage.removeItem('currentUser')
+              localStorage.removeItem('TOKEN')
+            } else {
+              this.usuario = localStorage.getItem('currentUser')
+            }
+          }
       }
 
       if (event instanceof NavigationError) {
@@ -38,6 +50,8 @@ urlRuta: any;
           console.log(event.error);
       }
   });
+  
+  
   }
   title = 'etangram';
   

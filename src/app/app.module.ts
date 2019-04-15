@@ -85,6 +85,13 @@ import { ConsDinConfig } from './classes/cons-din-config';
 import { ArticulosService } from './services/i2t/articulos.service';
 import { ProveedoresService } from './services/i2t/proveedores.service';
 import { MinContablesService } from './services/i2t/min-contables.service';
+import { UserService } from './services/i2t/user.service';
+import { AccesoFormulariosComponent } from './components/pages/acceso-formularios/acceso-formularios.component';
+import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component';
+import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-remesa/alta-remesa.component';
+import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/abm-liquidaciones.component';
+import { ImputarComprobantesComponent } from './components/pages/imputar-comprobantes/imputar-comprobantes.component';
+
 
 
 @NgModule({
@@ -140,6 +147,11 @@ import { MinContablesService } from './services/i2t/min-contables.service';
     CargaFormularioComponent,
     ConfirmarComponent,
     ImgComponent,
+    AccesoFormulariosComponent,
+    ListaDeRemesasComponent,
+    AltaRemesaComponent,
+    AbmLiquidacionesComponent,
+    ImputarComprobantesComponent,
   ],
   imports: [
     BrowserModule,
@@ -167,9 +179,8 @@ import { MinContablesService } from './services/i2t/min-contables.service';
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-AR'},
     {provide: ConsDinService, useFactory: ConsDinServiceFactory, deps: [HttpClient, ConsDinConfig]},
-    ConsDinConfig
-   // { provide: LOCALE_ID, useValue: 'es-AR' }
-    // {provide: ErrorHandler, useClass: ErrorHandlerService}
+    ConsDinConfig,
+    UserService
   ],
   bootstrap: [AppComponent],
 

@@ -49,11 +49,6 @@
         <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.fecha | date: 'dd-MM-yyyy' }} </td>
       </ng-container>
 
-      <!-- fecha Column -->
-      <ng-container matColumnDef="nombre_img">
-        <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Imagen </th>
-        <td mat-cell *cdkCellDef="let element" style="text-align:left;"> </td>
-      </ng-container>
 
        <!-- accion Column -->
       <ng-container matColumnDef="acciones">
@@ -63,15 +58,15 @@
             <!-- <span style="font-size:12px; font-weight:bold; color:#000; cursor: pointer;" (click)="eliminarEvidencia(element.id_evidencia)"> E </span> -->
               <i (click)="verImagen(element.url_imagen)" matTooltip="Ver Imagen" class="material-icons">visibility</i>
               <a style="color:#000;">
-              <i (click)="eliminarEvidencia(element.id_evidencia)"
+              <i (click)="eliminarEvidencia(element.id_evidencia, element.url_imagen)"
                  matTooltip="Eliminar"
                  class="material-icons">delete</i>
               </a>
         </td>
       </ng-container>
       
-      <tr mat-header-row *cdkHeaderRowDef="['descripcion', 'fecha', 'nombre_img', 'acciones']"></tr>
-      <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'fecha', 'nombre_img', 'acciones'];"></tr>
+      <tr mat-header-row *cdkHeaderRowDef="['descripcion', 'fecha', 'acciones']"></tr>
+      <tr mat-row *cdkRowDef="let row; columns: ['descripcion', 'fecha', 'acciones'];"></tr>
     </table>
     
   </div>

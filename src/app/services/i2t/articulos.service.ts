@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 //import { Http } from '@angular/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
+import { ConsDinService } from 'src/app/classes/cons-din-service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ArticulosService {
+export class ArticulosService implements ConsDinService {
 
   //compraProveedores:any [] = [];
   //preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
@@ -253,8 +254,19 @@ export class ArticulosService {
     //#endregion gets
 
     //#region baja
-    deleteCabeceraArticulo(){
-
+    deleteCabeceraArticulo( id:string, token:string ){
+      const headers = new HttpHeaders({
+        'x-access-token': token,
+        'Content-Type': 'application/json'
+      });
+      
+      let jsbody = { "ID": id };
+      let jsonbody = JSON.stringify(jsbody);
+      
+      let query = `api/proc/SP_ET_ArticuloDEL`;
+      let url = this.preUrl + query;
+  
+      return this.http.put( url, jsonbody, { headers } );
     }
 
     deleteDeposito( id:string, jsonbody: string, token:string ){
@@ -420,7 +432,7 @@ export class ArticulosService {
       let query = "api/proc/ArticuloUDP";
       let url = this.preUrl + query;
       console.log('url de update cabecera: ', url)
-      return this.http.put( url, body, { headers } );
+      return this.http.post( url, body, { headers } );
     }
     
     updateDeposito(id:string, body:string, token:string ){
@@ -485,4 +497,19 @@ export class ArticulosService {
 
     //#endregion mod
   //#endregion abm
+
+  //devuelve string
+  public eliminar(parametros: any){
+    console.log('Eliminando articulo, parametros: ', parametros);
+    // return 'No implementado, parametros: ' + parametros;
+    console.log('id para eliminar: ', parametros.parametros.id)
+    let respuesta = this.deleteCabeceraArticulo(parametros.parametros.id, parametros.token);
+    console.log('respuesta a devolver: ', respuesta);
+    return respuesta;
+  }
+
+  // exportar(parametros: any): any;
+  public exportar(parametros: any){
+    return this.getcArticulos( parametros.token )
+  }
 }

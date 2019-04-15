@@ -22,6 +22,10 @@ import { LoginComponent } from './components/pages/login/login.component';
 import { OrdenesPublicidadComponent } from './components/pages/ordenes-publicidad/ordenes-publicidad.component';
 import { RegistroEvidenciaComponent } from './components/pages/registro-evidencia/registro-evidencia.component';
 import { ImageComponent } from './components/pages/prueba/image/image.component';
+import { AccesoFormulariosComponent} from './components/pages/acceso-formularios/acceso-formularios.component';
+import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component';
+import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-remesa/alta-remesa.component';
+import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/abm-liquidaciones.component';
 
 const APP_ROUTES: Routes = [
   { path: 'test', component: ImageComponent },
@@ -52,6 +56,10 @@ const APP_ROUTES: Routes = [
   { path: 'ordenes-publicidad/:id', component: OrdenesPublicidadComponent },
   { path: 'ordenes-publicidad/:id/:ord', component: OrdenesPublicidadComponent },
   { path: 'registo-evidencia', component: RegistroEvidenciaComponent },
+  { path: 'formularios', component: AccesoFormulariosComponent },
+  { path: 'liquidaciones', component: AbmLiquidacionesComponent },
+  { path: 'lista-remesas', component: ListaDeRemesasComponent },
+  { path: 'lista-remesas/:id', component: AltaRemesaComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

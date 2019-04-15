@@ -1,0 +1,25 @@
+<app-loading *ngIf="loading"></app-loading>
+<div [ngStyle]="{'display':loading ? 'none' : 'block' }">
+<h2>IMPUTAR COMPROBANTES</h2>
+
+<mat-expansion-panel [expanded]=true [disabled]=true>
+  <mat-expansion-panel-header>
+    <mat-title-panel></mat-title-panel>
+  </mat-expansion-panel-header>
+  
+<form [formGroup]="forma" novalidate="novalidate">
+
+  <div class="row" style="margin-top:15px;margin-bottom: 0px" *ngIf="!loading">
+        <div class="col s6 m3 l2">
+          <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+            <mat-label>Tipo</mat-label>
+            <input matInput [matDatepicker]="picker1" formControlName="tipo">
+            
+            <!-- <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker> -->
+          </mat-form-field>
+        </div>
+  </div>
+  </form>
+  </mat-expansion-panel>
+</div>

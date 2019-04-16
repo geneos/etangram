@@ -4,7 +4,9 @@ import { Router, ActivatedRoute, NavigationEnd, Event } from "@angular/router";
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { RemesasService } from 'src/app/services/i2t/remesas.service'
 import { Remesas, RemesaComprobantes} from 'src/app/interfaces/remesas.interface'
-import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialog, MatHint, MatPaginatorIntl} from '@angular/material';
+import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
+import { Subscription } from 'rxjs';
+import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatSnackBar, MatHint, MatPaginatorIntl} from '@angular/material';
 
 @Injectable()
 @Component({
@@ -14,6 +16,8 @@ import { MatTable, MatSort, MatPaginator, MatTableDataSource, MatLabel, MatDialo
 })
 export class AltaRemesaComponent implements OnInit {
 
+  suscripcionImputComp: Subscription;
+  itemDeConsulta: any;
   token: any;
   editing: boolean = false;  
   dataRc: any; //Comprobantes de remesas
@@ -38,7 +42,9 @@ export class AltaRemesaComponent implements OnInit {
   constructor( @Inject(SESSION_STORAGE) private storage: StorageService,
               private router: Router,
               private route: ActivatedRoute,
-              private _remesasService: RemesasService) {
+              private _remesasService: RemesasService,
+              public ngxSmartModalService: NgxSmartModalService,
+              public snackBar: MatSnackBar) {
     this.forma = new FormGroup({
       'fecha': new FormControl(),
       'numero': new FormControl(),
@@ -67,6 +73,11 @@ export class AltaRemesaComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerDatosRemesa()
+  }
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
   }
 
   obtenerDatosRemesa(){
@@ -121,5 +132,54 @@ export class AltaRemesaComponent implements OnInit {
       .subscribe(resp => {
         console.log(resp)
       })
+  }
+
+  imputarComprobantes(){
+    this.itemDeConsulta = null;
+    console.clear();
+    let datosModal : {
+     // consulta: string;
+      permiteMultiples: boolean;
+      selection: any;
+      modal: string;
+      // valores: any;
+      // columnSelection: any
+    }
+    datosModal = {
+   //   consulta: consulta,
+      permiteMultiples: false,
+      selection: null,
+      modal: 'imputCompModal'
+    }
+    
+    console.log('enviando datosModal: ');
+    console.log(datosModal);
+    
+    // datosModal.columnSelection = this.columnSelection;
+    console.log('Lista de modales declarados: ', this.ngxSmartModalService.modalStack);
+    this.ngxSmartModalService.resetModalData(datosModal.modal);
+    this.ngxSmartModalService.setModalData(datosModal, datosModal.modal);
+    
+    this.suscripcionImputComp = this.ngxSmartModalService.getModal(datosModal.modal).onClose.subscribe((modal: NgxSmartModalComponent) => {
+      console.log('Cerrado el modal de Imputar Comprobantes: ', modal.getData());
+
+      let respuesta = this.ngxSmartModalService.getModalData(datosModal.modal);
+      console.log('Respuesta del modal: ', respuesta);
+
+      if (respuesta.estado === 'cancelado'){
+        this.openSnackBar('Se canceló la selección');
+      }
+      else{
+       // this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+        this.itemDeConsulta = respuesta.selection[0];
+        // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
+        // this.buscarProveedor();
+      }
+      // this.establecerColumnas();
+      // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
+      this.suscripcionImputComp.unsubscribe();
+      console.log('se desuscribió al modal de Imputar Comprobantes');
+    });
+    this.ngxSmartModalService.open(datosModal.modal);
   }
 }

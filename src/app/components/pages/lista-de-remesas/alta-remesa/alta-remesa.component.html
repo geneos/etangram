@@ -48,7 +48,7 @@
       </div>
     </div>
 </form>
-<span>Imputar Comprobantes</span>
+<button class="mine-btnbig" mat-flat-button (click)="imputarComprobantes()" style="margin-bottom: 10px">IMPUTAR COMPROBANTES</button>
 <div class="mat-elevation-z8" [ngStyle]="{'display':!loading ? 'block' : 'none' }">
 
     <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
@@ -147,3 +147,4 @@
 </mat-expansion-panel>
 
 </div>
+<app-imput-comp></app-imput-comp>

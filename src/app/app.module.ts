@@ -91,6 +91,7 @@ import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lis
 import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-remesa/alta-remesa.component';
 import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/abm-liquidaciones.component';
 import { ImputarComprobantesComponent } from './components/pages/imputar-comprobantes/imputar-comprobantes.component';
+import { ImputCompComponent } from './components/shared/modals/imput-comp/imput-comp.component';
 
 
 
@@ -152,6 +153,7 @@ import { ImputarComprobantesComponent } from './components/pages/imputar-comprob
     AltaRemesaComponent,
     AbmLiquidacionesComponent,
     ImputarComprobantesComponent,
+    ImputCompComponent,
   ],
   imports: [
     BrowserModule,

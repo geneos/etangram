@@ -4,7 +4,7 @@
 
 <mat-expansion-panel [expanded]=true [disabled]=true>
   <mat-expansion-panel-header>
-    <mat-title-panel></mat-title-panel>
+    <mat-title-panel>COMPROBANTE</mat-title-panel>
   </mat-expansion-panel-header>
   
 <form [formGroup]="forma" novalidate="novalidate">
@@ -13,13 +13,115 @@
         <div class="col s6 m3 l2">
           <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
             <mat-label>Tipo</mat-label>
-            <input matInput [matDatepicker]="picker1" formControlName="tipo">
+            <input matInput type="text" formControlName="tipo">
             
             <!-- <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker> -->
           </mat-form-field>
         </div>
   </div>
+  <div class="row" style="margin-top:15px;margin-bottom: 0px" *ngIf="!loading">
+    <div class="col s6 m3 l2">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Fecha Desde</mat-label>
+        <input matInput [matDatepicker]="fechaDesde" formControlName="tipo">
+        <mat-datepicker-toggle matSuffix [for]="fechaDesde"></mat-datepicker-toggle>
+        <mat-datepicker #fechaDesde></mat-datepicker>
+        <!-- <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker> -->
+      </mat-form-field>
+    </div>
+    <div class="col s6 m3 l2">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Fecha Hasta</mat-label>
+        <input matInput [matDatepicker]="fechaHasta" formControlName="tipo">
+        <mat-datepicker-toggle matSuffix [for]="fechaHasta"></mat-datepicker-toggle>
+        <mat-datepicker #fechaHasta></mat-datepicker>
+        <!-- <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker> -->
+      </mat-form-field>
+    </div>
+  </div>
   </form>
   </mat-expansion-panel>
+
+  <mat-expansion-panel [expanded]=true [disabled]=true>
+    <mat-expansion-panel-header>
+      <mat-title-panel>PROVEEDOR</mat-title-panel>
+    </mat-expansion-panel-header>
+    </mat-expansion-panel>
+    <div class="mat-elevation-z8" [ngStyle]="{'display':!loading ? 'block' : 'none' }">
+
+      <table  mat-table [dataSource]="dataSource" matSort class="mat-elevation-z1" *ngIf="!loading">
+  
+        <!-- comprobante Column -->
+        <ng-container matColumnDef="simbolo">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *cdkCellDef="let element">  </td>
+        </ng-container>
+  
+        <!-- fecha Column -->
+        <ng-container matColumnDef="proveedor">
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Proveedor</th>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Proveedor }} </td>
+        </ng-container>
+  
+  
+        <!-- expediente Column -->
+        <ng-container matColumnDef="categoria">
+          <th mat-header-cell *matHeaderCellDef> Categoria </th>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Categoria_Proveedor }} </td>
+        </ng-container>
+  
+        <!-- observaciones Column -->
+        <ng-container matColumnDef="criticidadProv">
+          <th mat-header-cell *matHeaderCellDef> CriticidadProv</th>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Criticidad_Proveedor}} </td>
+        </ng-container>
+  
+        <!-- importe Column -->
+        <ng-container matColumnDef="comprobante">
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Comprobante </th>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Comprobante }} </td>
+        </ng-container>
+  
+        <!-- importe Column -->
+        <ng-container matColumnDef="criticidadComp">
+            <th mat-header-cell *matHeaderCellDef style="text-align:left;"> CriticidadComp </th>
+            <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Criticidad_Comprobante }} </td>
+          </ng-container>
+  
+        <!-- importe Column -->
+        <ng-container matColumnDef="vencimiento">
+            <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Vencimiento </th>
+            <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Fecha_Vencimiento }} </td>
+          </ng-container>
+  
+        <!-- importe Column -->
+        <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Total </th>
+            <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Total }} </td>
+        </ng-container>
+  
+        <!-- importe Column -->
+        <ng-container matColumnDef="saldo">
+            <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Saldo </th>
+            <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Saldo }} </td>
+        </ng-container>
+  
+        <!-- importe Column -->
+        <ng-container matColumnDef="pagar">
+            <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Pagar </th>
+            <td mat-cell *cdkCellDef="let element" style="text-align:left;"> 
+              <mat-form-field floatLabel="never">
+                <input matInput placeholder="" [value]="element.pagar" [(ngModel)]="element.pagar">
+              </mat-form-field>
+            </td>
+        </ng-container>
+  
+        <tr mat-header-row *cdkHeaderRowDef="['simbolo', 'proveedor', 'categoria', 'criticidadProv', 'comprobante', 'criticidadComp', 'vencimiento','total','saldo','pagar']"></tr>
+        <tr mat-row *cdkRowDef="let row; columns: ['simbolo', 'proveedor', 'categoria', 'criticidadProv', 'comprobante', 'criticidadComp', 'vencimiento','total','saldo','pagar'];"></tr>
+      </table>
+      <!-- <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons [ngStyle]="{'display':loading ? 'none' : 'block' }"></mat-paginator> -->
+    </div>  
 </div>

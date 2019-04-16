@@ -2026,12 +2026,12 @@ export class AltaProveedorComponent implements OnInit {
         "p_fac_ciudad": this.localidadFac.name, //"Lopez", //Id de la consulta dinámica a la tabla tg01_localidades
         "p_fac_prov": this.provinciaFac.name, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
         "p_fac_cp": this.forma.controls['facCodigoPostal'].value,
-        "p_fac_pais": this.paisFac.id, //Id de la consulta dinámica a la tabla tg01_paises
+        "p_fac_pais": this.paisFac.name,//this.paisFac.id, //Id de la consulta dinámica a la tabla tg01_paises
         "p_env_calle": this.forma.controls['envCalle'].value,
         "p_env_ciudad": this.localidadEnv.id, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_localidades
         "p_env_prov": this.provinciaEnv.id, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
         "p_env_cp": this.forma.controls['envCodigoPostal'].value,
-        "p_env_pais":  this.paisEnv.id, //Id de la consulta dinámica a la tabla tg01_paises
+        "p_env_pais":  this.paisEnv.name,//this.paisEnv.id, //Id de la consulta dinámica a la tabla tg01_paises
         "p_tel_1": this.forma.controls['telefono1'].value,
         "p_tel_2": this.forma.controls['telefono2'].value,
         "p_tel_3": this.forma.controls['telefono3'].value,

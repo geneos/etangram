@@ -26,6 +26,7 @@ import { AccesoFormulariosComponent} from './components/pages/acceso-formularios
 import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lista-de-remesas.component';
 import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-remesa/alta-remesa.component';
 import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/abm-liquidaciones.component';
+import { ImputarComprobantesComponent } from './components/pages/imputar-comprobantes/imputar-comprobantes.component';
 
 const APP_ROUTES: Routes = [
   { path: 'test', component: ImageComponent },
@@ -60,6 +61,7 @@ const APP_ROUTES: Routes = [
   { path: 'liquidaciones', component: AbmLiquidacionesComponent },
   { path: 'lista-remesas', component: ListaDeRemesasComponent },
   { path: 'lista-remesas/:id', component: AltaRemesaComponent },
+  { path: 'imputar-comprobantes', component: ImputarComprobantesComponent },
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

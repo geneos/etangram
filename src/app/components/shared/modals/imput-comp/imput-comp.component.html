@@ -1,0 +1,17 @@
+<ngx-smart-modal #imputCompModal 
+                 customClass="overlay-cons-din" 
+                 [identifier]="'imputCompModal'"
+                 [closable]="false"
+                 [dismissable]="false"
+                 [escapable]="false"
+                 >
+
+  <div class="modal-body"  style="max-width: 2000px !important;">
+    <app-imputar-comprobantes></app-imputar-comprobantes>
+  </div>
+
+  <div style="margin-top: 10px; width: 100%; text-align: right;">
+      <button mat-flat-button class="mine-btnbig" (click)="aplicar()">APLICAR</button>
+      <button mat-flat-button class="mine-btnbig-grey" Style="margin-left: 5px" (click)="cancelar()">CANCELAR</button>
+  </div>
+</ngx-smart-modal>

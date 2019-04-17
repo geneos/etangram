@@ -1,6 +1,8 @@
 <h2>COMPRAS</h2>
+<app-loading *ngIf="loading&&logueado"></app-loading>
 
-<form [formGroup]="forma" (ngSubmit)="buscaCbteAfip()" novalidate="novalidate">
+<div [ngStyle]="{'display':loading ? 'none' : 'block' }">
+<form [formGroup]="forma" (ngSubmit)="buscaCbteAfip()" novalidate="novalidate" *ngIf="logueado">
 
 <mat-expansion-panel [expanded]=true [disabled]=true>
   <mat-expansion-panel-header>
@@ -315,5 +317,6 @@
   <button class="mine-btnbig" mat-flat-button [disabled]="false">
     CONFIRMAR
   </button>
+</div>
 </div>
 <app-cons-din></app-cons-din>

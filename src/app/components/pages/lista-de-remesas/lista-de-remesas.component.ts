@@ -64,7 +64,7 @@ export class ListaDeRemesasComponent implements OnInit {
       this.dataSource.filter = ''
     }
     }, 1000);  //2s
-    
+   
   }
   
   openSnackBar(message: string) {
@@ -86,12 +86,11 @@ export class ListaDeRemesasComponent implements OnInit {
           }
         })
         this.dataSource = new MatTableDataSource(this.listaRemesas)
-   //     this.dataSource.filter = 'Provisorio'
+        this.dataSource.filter = 'Provisorio'
       })
   }
   applyFilter() {
 
-    console.log(this.forma.controls['soloPendientes'].value)
     if (!this.forma.controls['soloPendientes'].value ){
       this.dataSource.filter = 'Provisorio'
     } else {

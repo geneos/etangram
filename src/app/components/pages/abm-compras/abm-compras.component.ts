@@ -33,6 +33,8 @@ var auxProvData,auxArtiData,auxExpData,auxFechaAfip,auxfecha:any;
 
 export class AbmComprasComponent implements OnInit {
 
+  loading: boolean = true;
+  logueado: boolean = true;
   editingRenglones:boolean = false;
   agregarReng:boolean = true;
 
@@ -122,6 +124,16 @@ export class AbmComprasComponent implements OnInit {
 
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem('TOKEN')
+    console.log(localStorage.length)
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+        this.openSnackBar('No ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    }
   //  this.token = this.storage.get(TOKEN);
 
     this.forma = new FormGroup({

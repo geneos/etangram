@@ -27,6 +27,7 @@ import { ListaDeRemesasComponent } from './components/pages/lista-de-remesas/lis
 import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-remesa/alta-remesa.component';
 import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/abm-liquidaciones.component';
 import { ImputarComprobantesComponent } from './components/pages/imputar-comprobantes/imputar-comprobantes.component';
+import { LiquidacionPorLoteComponent } from './components/pages/abm-liquidaciones/liquidacion-por-lote/liquidacion-por-lote.component';
 
 const APP_ROUTES: Routes = [
   { path: 'test', component: ImageComponent },
@@ -59,6 +60,8 @@ const APP_ROUTES: Routes = [
   { path: 'registo-evidencia', component: RegistroEvidenciaComponent },
   { path: 'formularios', component: AccesoFormulariosComponent },
   { path: 'liquidaciones', component: AbmLiquidacionesComponent },
+  { path: 'liq-lote', component: LiquidacionPorLoteComponent },
+  { path: 'liq-lote/:id', component: LiquidacionPorLoteComponent },
   { path: 'lista-remesas', component: ListaDeRemesasComponent },
   { path: 'lista-remesas/:id', component: AltaRemesaComponent },
   { path: 'imputar-comprobantes', component: ImputarComprobantesComponent },

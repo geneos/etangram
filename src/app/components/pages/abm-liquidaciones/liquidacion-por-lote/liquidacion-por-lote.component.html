@@ -1,0 +1,101 @@
+<h2>{{titulo}}</h2>
+<app-loading *ngIf="loading || (partesACargar != partesCargadas)"></app-loading>
+<form [formGroup]="forma" novalidate="novalidate">
+  <div class="row" style="margin-top:10px; margin-bottom:5px;">
+    <div class="col s6 m3 l3">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Fecha</mat-label>
+        <input matInput readonly [matDatepicker]="pickerFecha" placeholder="" formControlName="fecha">
+        <mat-datepicker-toggle matSuffix [for]="pickerFecha"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFecha></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>
+  
+  <div class="row" style="margin-top:10px; margin-bottom:5px;">
+    <div class="col s12 m6 l6">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Descripción</mat-label>
+        <input matInput placeholder="" formControlName="descripcion">
+      </mat-form-field>
+    </div>
+  </div>
+  
+  <div class="row" style="margin-top:10px; margin-bottom:5px;">
+    <div class="col s12 m6 l6">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Caja</mat-label>
+        <mat-select placeholder="Elija una Caja" formControlName="caja" >
+          <mat-option *ngFor="let caja of cajasAll" [value]="caja.id">
+            {{ caja.name }}{{ caja.numerocuenta }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- relacion con remesas -->
+  <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">    
+    <span style="display:flex;margin-bottom: 10px !important;">
+      <h5>Remesas</h5>
+    </span>
+    <button type="button" class="mine-btnbig-grey" mat-flat-button>
+      Inputar REMESAS
+    </button>
+  </div>
+
+  <!-- relacion con comprobantes -->
+  <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">    
+    <span style="display:flex;margin-bottom: 10px !important;">
+      <h5>Comprobantes</h5>
+    </span>
+      
+    <!-- <div class="row" style="margin-top:10px; margin-bottom:5px;"> -->
+      <button type="button" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+        Inputar COMPROBANTES
+      </button>
+      <button type="button" class="mine-btnbig-grey" mat-flat-button>
+        Pago a Cuenta
+      </button>
+    <!-- </div> -->
+  </div>
+
+  <!-- relacion con retenciones -->
+  <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">    
+    <span style="display:flex;margin-bottom: 10px !important;">
+      <h6>Retenciones</h6>
+    </span>
+  </div>
+
+  <!-- relacion con medio de pago -->
+  <div class="col s12 m12 l12" style="margin-top:20px !important; margin-bottom: 15px !important;">    
+    <span style="display:flex;">
+      <h5>Medio de Pago</h5>
+    </span>
+    <div class="col s12 m6 l6">
+      <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+        <mat-label>Cuenta Origen</mat-label>
+        <mat-select placeholder="Elija una Cuenta" formControlName="cuenta" >
+          <mat-option *ngFor="let cuenta of cuentasAll" [value]="cuenta.id">
+            {{ cuenta.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+</form>
+
+<div class="row" style="margin-top:25px;">
+  <div class="col s12" style="text-align: right;">
+    <button type="reset" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
+      Cancelar
+    </button>
+    <button type="reset" class="mine-btnbig-grey" mat-flat-button style="margin-right:25px;">
+      Guardar
+    </button>
+    <button type="button" class="mine-btnbig" mat-flat-button>
+      CONFIRMAR
+    </button>
+  </div>
+</div>

@@ -92,6 +92,7 @@ import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-re
 import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/abm-liquidaciones.component';
 import { ImputarComprobantesComponent } from './components/pages/imputar-comprobantes/imputar-comprobantes.component';
 import { ImputCompComponent } from './components/shared/modals/imput-comp/imput-comp.component';
+import { LiquidacionPorLoteComponent } from './components/pages/abm-liquidaciones/liquidacion-por-lote/liquidacion-por-lote.component';
 
 
 
@@ -154,6 +155,7 @@ import { ImputCompComponent } from './components/shared/modals/imput-comp/imput-
     AbmLiquidacionesComponent,
     ImputarComprobantesComponent,
     ImputCompComponent,
+    LiquidacionPorLoteComponent,
   ],
   imports: [
     BrowserModule,

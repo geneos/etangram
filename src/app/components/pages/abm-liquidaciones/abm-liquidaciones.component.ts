@@ -245,6 +245,30 @@ export class AbmLiquidacionesComponent implements OnInit {
     });
     this.constLiqs = new MatTableDataSource(this.sortedLiqs);
   }
+
+  modificar(liquidacion: any){
+    console.log('clickeado modificar', liquidacion);
+    if (liquidacion.estado =="Pendiente"){
+      this.openSnackBar('TODO Modificar');
+    }
+    else{
+      this.openSnackBar('No se puede modificar la liquidación (no es "Pendiente")');
+    }
+  }
+  consultar(liquidacion: any){
+    console.log('clickeado consultar', liquidacion);
+    this.openSnackBar('TODO consultar');
+    
+  }
+  baja(liquidacion: any){
+    console.log('clickeado baja', liquidacion);
+    if (liquidacion.estado =="Pendiente"){
+      this.openSnackBar('TODO baja');
+    }
+    else{
+      this.openSnackBar('No se puede dar de baja a la liquidación (no es "Pendiente")');
+    }
+  }
   //#endregion funcionesTabla
 
   //#region otros
@@ -265,6 +289,12 @@ export class AbmLiquidacionesComponent implements OnInit {
     else{
       return null;
     }
+  }
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message,"Cerrar", {
+      duration: 3000,
+    });
   }
   //#endregion otros
 }

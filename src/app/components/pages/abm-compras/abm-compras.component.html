@@ -1,6 +1,8 @@
-<h2>COMPRAS</h2>
+<div *ngIf="loading&&!logueado">
+ <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+</div>
+<h2 *ngIf="!loading">COMPRAS</h2>
 <app-loading *ngIf="loading&&logueado"></app-loading>
-
 <div [ngStyle]="{'display':loading ? 'none' : 'block' }">
 <form [formGroup]="forma" (ngSubmit)="buscaCbteAfip()" novalidate="novalidate" *ngIf="logueado">
 

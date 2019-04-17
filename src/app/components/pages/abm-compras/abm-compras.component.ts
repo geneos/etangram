@@ -129,7 +129,7 @@ export class AbmComprasComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.logueado = false;     
-        this.openSnackBar('No ha iniciado sesión')
+     //   this.openSnackBar('No ha iniciado sesión')
       }, 1000);  //2s
     } else {
       this.loading = false;

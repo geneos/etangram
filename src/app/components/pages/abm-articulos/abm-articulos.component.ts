@@ -25,7 +25,7 @@ const ARTICULOS:any[] = [
 })
 export class AbmArticulosComponent implements OnInit {
   token: string;
-
+  logueado: boolean = true
   reportesAll: Reporte[] = [];
   nombreReporte: string;
   reporteSeleccionado : number;
@@ -58,7 +58,16 @@ export class AbmArticulosComponent implements OnInit {
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem('TOKEN');
           
-    this.loading = true;             
+    this.loading = true;            
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+     //   this.openSnackBar('No ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    } 
   }
 
   ngOnInit() {

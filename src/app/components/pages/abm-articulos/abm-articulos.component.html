@@ -1,4 +1,7 @@
-
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado"> 
 <!-- <h2>ARTÍCULOS</h2> -->
 <button [routerLink]="['/articulos','nuevo']" class="mine-btnbig" mat-flat-button>
   NUEVO
@@ -76,3 +79,4 @@
   </div>
 </div>
 <!--</mat-expansion-panel>-->
+</div>

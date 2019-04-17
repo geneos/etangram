@@ -24,7 +24,7 @@ const TOKEN = '';
 export class AltaRefContableComponent implements OnInit {
 
   constRefContables ;
-
+  logueado: boolean = true;
   forma:FormGroup;
   id:any;
   existe:boolean;
@@ -58,6 +58,15 @@ export class AltaRefContableComponent implements OnInit {
   ) {
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem('TOKEN')
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+     //   this.openSnackBar('No ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    }
     //this.token = this.storage.get(TOKEN);
 
     this.loading = true;

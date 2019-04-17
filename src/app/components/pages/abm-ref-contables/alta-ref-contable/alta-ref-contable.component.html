@@ -15,44 +15,77 @@
     </mat-expansion-panel-header>
 
     <div class="row" style="margin-top:15px; margin-bottom:0px !important;">
-      <div class="col s12 m4 l3">
+      <div class="col s4 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Código Referencia Contable</mat-label>
           <input matInput placeholder="" type="number" formControlName="id_ref_contable">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s12 m8 l4">
+      <div class="col s8 m8 l4">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Nombre</mat-label>
           <input matInput placeholder="" formControlName="nombre_ref_contable">
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s10 m4 l4">
+    <!-- </div> -->
+    <!-- <div class="row" style="margin-top:15px; margin-bottom:0px !important;"> -->
+      <div class="col s4 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Cuenta Contable</mat-label>
-          <input matInput placeholder="" formControlName="cuenta_contable">
-          <!--<mat-hint>Hint</mat-hint>-->
+          <input readonly (keyup)="buscarCuenta()" #codCuenta matInput placeholder="" formControlName="cuenta_contable">
+          <!-- <input (keyup)="buscarGrupo()" #codGrupo matInput placeholder="" formControlName="idGrupo" value="{{ datosArticulos[0]?. }}"> -->
+          <mat-hint *ngIf="forma.controls['cuenta_contable'].status == 'PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['cuenta_contable'].errors?.noExiste">
+            El Grupo no existe
+          </mat-hint>
         </mat-form-field>
       </div>
-      <div class="col s2 m2 l1" style="margin-top:10px;">
-        <a class="mine-btnforms" mat-flat-button>
-          <i class="material-icons" style="font-size:20px;" (click)="abrirConsulta('tg01_cuentascontables', 'cuenta_contable')">more_horiz</i>
-        </a>
+      <!-- <div class="col s1 m1 l1" style="margin-top:10px;">
+        <button type="button" class="mine-btnforms" mat-flat-button 
+        (click)="abrirConsulta('tg01_cuentascontables', [], 'cuenta_contable', 'nombreCuenta', 'openSnackBar', i)">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div> -->
+      <div class="col s8 m4 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nombre de Cuenta Contable</mat-label>
+          <input matInput readonly formControlName="nombreCuenta" placeholder="" >
+        </mat-form-field>
       </div>
-      <div class="col s10 m4 l3">
+
+      <div class="col s4 m2 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>Grupo Financiero</mat-label>
-          <input matInput placeholder="" formControlName="grupo_financiero">
+          <input (keyup)="buscarGrupo()" #codCuenta matInput placeholder="" formControlName="grupo_financiero">
+          <!-- <input (keyup)="buscarGrupo()" #codGrupo matInput placeholder="" formControlName="idGrupo" value="{{ datosArticulos[0]?. }}"> -->
+          <mat-hint *ngIf="forma.controls['grupo_financiero'].status == 'PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="forma.controls['grupo_financiero'].errors?.noExiste">
+            El Grupo no existe
+          </mat-hint>
           <!--<mat-hint>Hint</mat-hint>-->
         </mat-form-field>
       </div>
-      <div class="col s2 m2 l1" style="margin-top:10px;">
-        <a class="mine-btnforms" mat-flat-button>
-          <i class="material-icons" style="font-size:20px;" (click)="abrirConsulta('tg01_grupofinanciero', 'grupo_financiero')">more_horiz</i>
-        </a>
+      <div class="col s1 m1 l1" style="margin-top:10px;">
+        <button type="button" class="mine-btnforms" mat-flat-button 
+        (click)="abrirConsulta('tg01_grupofinanciero', [], 'grupo_financiero', 'nombreGrupo', 'openSnackBar', i)">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
       </div>
+      <div class="col s7 m3 l3">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nombre de Grupo Financiero</mat-label>
+          <input matInput readonly formControlName="nombreGrupo" placeholder="" >
+        </mat-form-field>
+      </div>
+
+
+      
       <div class="col s5 m4 l2">
         <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
           <mat-label>¿Tiene Centro de Costo?</mat-label>

@@ -10,9 +10,15 @@ import { Subscription } from 'rxjs';
 import { UsuariosService } from '../../../../services/i2t/usuarios.service';
 import { Usuario } from 'src/app/interfaces/usuario.interface';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
+import { GruposFinancierosService } from 'src/app/services/i2t/grupos-financieros.service';
+import { GrupoFinanciero } from 'src/app/interfaces/grupo-financiero.interface';
+import { PlanCuenta } from 'src/app/interfaces/plan-cuenta.interface';
+import { PlanCuentasService } from 'src/app/services/i2t/plan-cuentas.service';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
+
+var auxGFData, auxCCData;
 
 @Injectable()
 
@@ -30,7 +36,11 @@ export class AltaRefContableComponent implements OnInit {
   existe:boolean;
   token: string = "a";
   rcData: any;
+  gfData: any;
+  ccData: any;
   refContable: RefContable;
+  grupoFinanciero: GrupoFinanciero;
+  cuentaContable: PlanCuenta;
   loginData: any;
   tieneCC: boolean;
 
@@ -51,6 +61,8 @@ export class AltaRefContableComponent implements OnInit {
     private route:ActivatedRoute,
     private _refContablesService:RefContablesService,
     private _usuariosService:UsuariosService,
+    private _grupoFinancieroService: GruposFinancierosService,
+    private _cuentasContablesService: PlanCuentasService,
     public ngxSmartModalService: NgxSmartModalService,
     private router: Router,
     public snackBar: MatSnackBar,
@@ -75,7 +87,9 @@ export class AltaRefContableComponent implements OnInit {
       'id_ref_contable': new FormControl('',Validators.required),
       'nombre_ref_contable': new FormControl('',Validators.required),
       'cuenta_contable': new FormControl(),
+        'nombreCuenta': new FormControl(),
       'grupo_financiero': new FormControl(),
+        'nombreGrupo': new FormControl(),
       'tiene_centro_costo': new FormControl('',Validators.required),
       'centro_costo': new FormControl(),
       //'estado_ref_contable': new FormControl('',Validators.required),
@@ -195,6 +209,11 @@ export class AltaRefContableComponent implements OnInit {
                   this.forma.controls['centro_costo'].setValue(this.refContable.tg01_centrocosto_id_c);
                   //this.forma.controls['centro_costo'].disable();
                   //this.forma.controls['estado_ref_contable'].setValue(this.refContable.estado);
+                  
+                  setTimeout(() => {
+                    this.buscarGrupo();
+                    this.buscarCuenta();
+                  });
                 }
               } else {
                 this.refContable = null;
@@ -405,8 +424,11 @@ export class AltaRefContableComponent implements OnInit {
     }
   }
 
-  abrirConsulta(consulta: string, control: string){
+  // abrirConsulta(consulta: string, control: string){
+    //usa el mismo formato que los get de formcontrol: ej ['coleccion', indice_en_array...]
+  abrirConsulta(consulta: string, ubicacion: any[], controlID: string, controlDesc?: string, funcion?: string, param?: any){
     this.itemDeConsulta = null;
+    console.log(' recibido por abrirconsulta: ', consulta, controlID, controlDesc, ubicacion, funcion, param);
     console.clear();
     let datosModal : {
       consulta: string;
@@ -424,12 +446,14 @@ export class AltaRefContableComponent implements OnInit {
     }
     
     let atributoAUsar: string;
+    let atributoDesc:  string = 'name';
     switch (consulta) {
       case 'tg01_cuentascontables':
         atributoAUsar = 'name';
         break;
       case 'tg01_grupofinanciero':
-        atributoAUsar = 'name';
+        atributoAUsar = 'codigo';
+        // atributoDesc = 'Nombre';
         break;
       default:
         atributoAUsar = 'id';
@@ -454,10 +478,58 @@ export class AltaRefContableComponent implements OnInit {
         this.openSnackBar('Se canceló la selección');
       }
       else{
-        this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
-        this.itemDeConsulta = respuesta.selection[0];
+        setTimeout(() => {
+          // this.forma.controls[control].setValue(respuesta.selection[0][atributoAUsar]);
+          // ==>
+          //obtener la base sobre la que se buscará los FormControl
+          let fg: FormGroup;
+          if (ubicacion.length == 0){
+            fg = this.forma;
+          }
+          else{
+            fg = this.forma.get(ubicacion) as FormGroup;
+          }
+
+          //escribir el valor en el primer control, para el id
+          fg.controls[controlID].setValue(respuesta.selection[0][atributoAUsar]);
+
+          //si hay que guardar descripción:
+          if (controlDesc != null){
+            if (respuesta.selection[0][atributoDesc] != null){
+              fg.controls[controlDesc].setValue(respuesta.selection[0][atributoDesc]);
+            }
+            else{
+              fg.controls[controlDesc].setValue('');
+              console.log('Valor de ' + controlDesc + ' vaciado, no se encontró ' + atributoDesc + ' en la seleccion');
+            }
+          }
+
+          //ejecutar función
+          if (funcion != null){
+            console.log('todo llamado a funcion');
+            
+            //lo siguiente funciona:
+            // this[funcion](param);
+          }
+
+          // this['proveedor'] = null;
+          // this['resultado'+control] = respuesta.selection[0];
+          
+          //todo 
+          //disparar detección de cambios, cada parte es un intento distinto
+          // this.proveedor = respuesta.selection[0];
+          
+          // setTimeout(() => this.ref.detectChanges(), 1000);
+          // this.ref.markForCheck();
+        
+          // this.forma.controls['artDeProveedor'].updateValueAndValidity();
+
+          // console.log('seleccionado: ',this.resultadoidGrupo, this['resultado'+control]);
+        });
+
         // this.forma.controls[control].setValue(respuesta.selection[0].cpostal);
         // this.buscarProveedor();
+        
       }
       // this.establecerColumnas();
       // this.ngxSmartModalService.getModal('consDinModal').onClose.unsubscribe();
@@ -465,5 +537,75 @@ export class AltaRefContableComponent implements OnInit {
       console.log('se desuscribió al modal de consulta dinamica');
     });
     this.ngxSmartModalService.open(datosModal.modal);
+  }
+
+  buscarGrupo(){
+    this._grupoFinancieroService.getGrupoFinanciero(this.forma.controls['grupo_financiero'].value, this.token)
+      .subscribe( data => {
+          this.gfData = data;
+          auxGFData = this.gfData.dataset.length;
+          if(this.gfData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.grupoFinanciero = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            console.log('buscar grupo para base con :', this.forma.controls['grupo_financiero'].value)
+            console.log('resultado buscar grupo para base ', this.gfData)
+
+          if(this.gfData.dataset.length>0){
+            this.grupoFinanciero = this.gfData.dataset[0];
+            
+            //rellenar descripcion
+            this.forma.controls['nombreGrupo'].setValue(this.grupoFinanciero.name);
+            /* ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(this.proveedor.name); */
+          } else {
+            this.grupoFinanciero = null;
+            
+            //vaciar descripcion
+            this.forma.controls['nombreGrupo'].setValue(null);
+            /* ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(''); */
+          }
+        }
+      });
+  }
+
+  buscarCuenta(){
+    this._cuentasContablesService.getPlanDeCuentas(this.forma.controls['cuenta_contable'].value, this.token)
+      .subscribe( data => {
+          this.ccData = data;
+          auxGFData = this.ccData.dataset.length;
+          if(this.ccData.returnset[0].RCode=="-6003"){
+            //token invalido
+            this.cuentaContable = null;
+            this.forma.disable();
+            this.openSnackBar('Sesión expirada.')
+          } else {
+            console.log('buscar cuenta contable para base con :', this.forma.controls['cuenta_contable'].value)
+            console.log('resultado buscar cuenta contable para base ', this.ccData)
+
+          if(this.ccData.dataset.length>0){
+            this.cuentaContable = this.ccData.dataset[0];
+            
+            //rellenar descripcion
+            this.forma.controls['nombreCuenta'].setValue(this.cuentaContable.name);
+            /* ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(this.proveedor.name); */
+          } else {
+            this.cuentaContable = null;
+            
+            //vaciar descripcion
+            this.forma.controls['nombreCuenta'].setValue(null);
+            /* ((this.forma.controls.articulosHijos as FormArray).
+              controls[indice] as FormGroup).
+                controls['artDesc'].setValue(''); */
+          }
+        }
+      });
   }
 }

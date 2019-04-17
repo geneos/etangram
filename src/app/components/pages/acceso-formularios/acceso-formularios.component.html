@@ -1,3 +1,6 @@
+<app-loading *ngIf="loading"></app-loading>
+
+<div [ngStyle]="{'display':loading ? 'none' : 'block' }">
 <mat-expansion-panel [expanded]=true [disabled]=false style="margin-top:0px;">
   <mat-expansion-panel-header>
     <mat-panel-title>FORMULARIOS</mat-panel-title>
@@ -196,3 +199,4 @@
 
   </form>
 </mat-expansion-panel>
+</div>

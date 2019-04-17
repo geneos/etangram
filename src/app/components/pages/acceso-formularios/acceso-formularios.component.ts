@@ -14,7 +14,7 @@ import { LoginService } from 'src/app/services/i2t/login.service';
 
 export class AccesoFormulariosComponent implements OnInit {
   offline: boolean = true;
-  loading: boolean = false;
+  loading: boolean = true;
   hide = true;
   dynamicParameter: string = "";
   exp: string ="";
@@ -37,6 +37,14 @@ export class AccesoFormulariosComponent implements OnInit {
       'idOrdPubli': new FormControl('')
     })
 
+    this.token = localStorage.getItem('TOKEN')
+    if (localStorage.length == 0){
+      this.loading = true
+    //  this.openSnackBar('No ha inicado sesión')
+      
+    } else {
+      this.loading = false;
+    }
   }
 
   ngOnInit() {

@@ -71,13 +71,13 @@
         <!-- Expediente Column -->
         <ng-container matColumnDef="inscripcion">
           <th mat-header-cell *matHeaderCellDef> Inscripción </th>
-          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_inscripcion }} </td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_inscripcion | date: 'dd-MM-yyyy' }} </td>
         </ng-container>
 
         <!-- Impuesto Column -->
         <ng-container matColumnDef="excencion">
           <th mat-header-cell *matHeaderCellDef> Exención </th>
-          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_Desde_Exenciones }} - {{ element.Fecha_Hasta_Exenciones }}</td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_Desde_Exenciones | date: 'dd-MM-yyyy' }} - {{ element.Fecha_Hasta_Exenciones | date: 'dd-MM-yyyy' }}</td>
         </ng-container>
 
 
@@ -116,13 +116,13 @@
         <!-- Comprobante Column -->
         <ng-container matColumnDef="presentacion">
           <th mat-header-cell *matHeaderCellDef> Presentación </th>
-          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_presentacion }} </td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_presentacion | date: 'dd-MM-yyyy' }} </td>
         </ng-container>
 
         <!-- Expediente Column -->
         <ng-container matColumnDef="vencimiento">
           <th mat-header-cell *matHeaderCellDef> Vencimiento </th>
-          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_vencimiento }} </td>
+          <td mat-cell *cdkCellDef="let element"> {{ element.Fecha_vencimiento | date: 'dd-MM-yyyy' }} </td>
         </ng-container>
 
         <!-- Opciones -->

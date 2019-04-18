@@ -3399,8 +3399,13 @@ export class AltaProveedorComponent implements OnInit {
       .subscribe( respC => {
         console.log("Respuesta de verificaCuit: ", respC)
         this.respCuit = respC
-        this.forma.controls['estadoAfip'].setValue(this.respCuit.personaReturn.datosGenerales.estadoClave)
-        console.log(this.respCuit.personaReturn.datosGenerales.estadoClave)
+        if(this.respCuit.statusCode == 500){
+          this.forma.controls['estadoAfip'].setValue('');
+          
+        } else {
+          this.forma.controls['estadoAfip'].setValue(this.respCuit.personaReturn.datosGenerales.estadoClave)
+        }
+        
       })
   }
 

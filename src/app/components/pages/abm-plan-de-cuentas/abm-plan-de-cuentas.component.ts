@@ -19,6 +19,7 @@ export class AbmPlanDeCuentasComponent implements OnInit {
   @ViewChild('tablapc') compTablaPC:TablapcComponent;
 
   loading:boolean;
+  logueado: boolean = true;
   paramVueltaId: string;
   token: string = "a";
 
@@ -34,6 +35,15 @@ export class AbmPlanDeCuentasComponent implements OnInit {
     });
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem('TOKEN')
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+     //   this.openSnackBar('No ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    } 
   }
 
   ngOnInit() {  }

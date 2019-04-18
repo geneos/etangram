@@ -1,4 +1,8 @@
 <!-- <h2>REFERENCIAS CONTABLES</h2> -->
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado"> 
 <button [routerLink]="['/ref-contables','nuevo']" class="mine-btnbig" mat-flat-button *ngIf="!permisos.permiso_crear">
   NUEVO
 </button>
@@ -59,4 +63,5 @@
         <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No hay referencias contables cargadas.</i></mat-card>
       </div>
     </div>
+  </div>
   </div>

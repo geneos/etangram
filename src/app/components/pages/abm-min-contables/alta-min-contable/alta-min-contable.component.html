@@ -1,3 +1,7 @@
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado"> 
 <h2 *ngIf="!existe">NUEVA MINUTA CONTABLE</h2>
 <h2 *ngIf="existe">EDITANDO MINUTA CONTABLE</h2>
 
@@ -243,3 +247,4 @@
   
 </div>
 <app-cons-din></app-cons-din>
+</div>

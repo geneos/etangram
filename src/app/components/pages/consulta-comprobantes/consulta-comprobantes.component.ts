@@ -60,6 +60,7 @@ export class ConsultaComprobantesComponent implements OnInit {
   compraProveedor: CompraProveedor;
   loginData: any;
   token: string;
+  logueado:boolean = true
   proveedorData: any;
   consultaComprobantes: consultaComprobantes[] = [];
   respCabecera: any;
@@ -107,7 +108,15 @@ export class ConsultaComprobantesComponent implements OnInit {
     this.token = localStorage.getItem('TOKEN')
     //this.token = this.storage.get(TOKEN);
 
-    this.loading = true;
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+     //   this.openSnackBar('No ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    };
 
     this.forma = new FormGroup({
       'proveedor': new FormControl(),

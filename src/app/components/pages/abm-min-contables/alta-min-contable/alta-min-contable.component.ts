@@ -138,6 +138,7 @@ datos =
   existe:boolean;
   existenDetalles:boolean;
   loading:boolean;
+  logueado:boolean = true;
 
   //parametros
   pData: any;
@@ -221,11 +222,13 @@ urlAnterior: string;
                 console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
                 this.token = localStorage.getItem('TOKEN')
                // this.token = this.storage.get(TOKEN);
-
-                window.onbeforeunload = function() {
-                  
-                    return "¿Estás seguro que deseas salir de la actual página?"
-                }
+               if (localStorage.length == 0){
+                this.loading = true;
+                this.logueado = false;     
+              } else {
+                this.loading = false;
+              } 
+              
     this.forma = new FormGroup({
       'fecha': new FormControl('',Validators.required),
       'tipo': new FormControl(),

@@ -1,5 +1,8 @@
-<app-loading *ngIf="loading"></app-loading>
-
+<app-loading *ngIf="loading&&logueado"></app-loading>
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado">
 <div [ngStyle]="{'display':loading ? 'none' : 'block' }">
 <h2>RETENCIONES</h2>
 
@@ -136,3 +139,4 @@
      </div>
     </mat-expansion-panel>
      </div>
+</div>

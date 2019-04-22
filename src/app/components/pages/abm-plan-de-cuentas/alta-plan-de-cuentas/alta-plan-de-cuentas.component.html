@@ -1,3 +1,7 @@
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado">
 <h2 *ngIf="!existe">NUEVA CUENTA CONTABLE</h2>
 <h2 *ngIf="existe">EDITANDO CUENTA CONTABLE</h2>
 <button [routerLink]="['/plan-cuentas',urla]" class="mine-btnbig-grey" mat-flat-button style="margin-right:10px;">
@@ -250,3 +254,4 @@
   </div>
 
 </form>
+</div>

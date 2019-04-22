@@ -138,15 +138,11 @@ export class AltaRemesaComponent implements OnInit {
     this.itemDeConsulta = null;
     console.clear();
     let datosModal : {
-     // consulta: string;
       permiteMultiples: boolean;
       selection: any;
       modal: string;
-      // valores: any;
-      // columnSelection: any
     }
     datosModal = {
-   //   consulta: consulta,
       permiteMultiples: false,
       selection: null,
       modal: 'imputCompModal'

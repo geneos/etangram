@@ -1,6 +1,10 @@
 <!-- <pre>A cargar: {{partesACargar}}</pre>
 <pre>Cargado: {{partesCargadas}}</pre>
 <pre>Son distintos? {{(partesACargar != partesCargadas)}}</pre> -->
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado">
 <h2>PROVEEDORES</h2>
 <button [routerLink]="['/proveedores']" class="mine-btnbig-grey" mat-flat-button>
   VOLVER A LISTA
@@ -982,3 +986,4 @@
 
 </form>
 <app-cons-din></app-cons-din>
+</div>

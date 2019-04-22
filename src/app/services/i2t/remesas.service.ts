@@ -115,4 +115,17 @@ getRemesaComprobantes( body: string, token:string ){
     return this.http.post( url , body, { headers });
   }
 
+  // Traer comprobantes a imputar
+  postComprobantesImputar( body: string, token:string ){
+    const headers = new HttpHeaders({
+      'x-access-token': token,
+      'Content-Type': 'application/json'
+    });
+
+    let query = `api/proc/Comprobantes_RemLiq`;
+    let url = this.preUrl + query;
+
+    return this.http.post( url , body, { headers });
+  }
+
 }

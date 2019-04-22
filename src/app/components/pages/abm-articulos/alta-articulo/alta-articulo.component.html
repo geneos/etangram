@@ -4,6 +4,10 @@
 <pre>Iguales: {{(partesCargadas==partesACargar)}}</pre> -->
 <!-- <pre *ngIf="marca">marca: {{marca}}</pre> -->
 <!-- <pre>marca: {{marca.name}}</pre> -->
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado"> 
 <h2>ARTÍCULOS</h2>
 <button [routerLink]="['/articulos']" class="mine-btnbig-grey" mat-flat-button>
   VOLVER A LISTA
@@ -1088,3 +1092,4 @@
   </div>
 </form>
 <app-cons-din></app-cons-din>
+</div>

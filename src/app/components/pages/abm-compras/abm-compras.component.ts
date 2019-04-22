@@ -129,12 +129,10 @@ export class AbmComprasComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.logueado = false;     
-     //   this.openSnackBar('No ha iniciado sesión')
       }, 1000);  //2s
     } else {
       this.loading = false;
     }
-  //  this.token = this.storage.get(TOKEN);
 
     this.forma = new FormGroup({
       'proveedor': new FormControl('',Validators.required,this.existeProveedor),

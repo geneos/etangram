@@ -215,6 +215,7 @@ export class AltaProveedorComponent implements OnInit {
   provCabecera: ProveedorCabecera;
 
   loginData: any;
+  logueado: boolean = true;
 
   constructor(private route:ActivatedRoute, 
               private FormBuilder: FormBuilder,
@@ -243,8 +244,16 @@ export class AltaProveedorComponent implements OnInit {
   {
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem('TOKEN');
-
-    this.loading = true;
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+        this.openSnackBar('No se ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    }
+    
     this.partesCargadas = 0;
 
     this.forma = this.FormBuilder.group({ 

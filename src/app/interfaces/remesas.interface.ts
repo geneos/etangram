@@ -25,3 +25,15 @@ export interface RemesaComprobantes {
     Total: number,
     Saldo: string
 }
+
+export interface RemesaComprobantesImputar {
+    Razon_Social: string,
+    Categoria_Proveedor: string,
+    Criticidad_Proveedor: string,
+    Comprobante: string
+    Fecha_Comprobante: string
+    Criticidad_Comprobante: string,
+    Fecha_Vencimiento: string,
+    Monto_Total: number,
+    Saldo: string
+}

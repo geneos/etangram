@@ -67,7 +67,7 @@ export class AccesoFormulariosComponent implements OnInit {
     this.dynamicParameter = this.formaFormulario.controls['idPortal'].value;
   }
   minCont(){
-    //this.routerLinkVariable = '/consulta-retenciones'
+    this.routerLinkVariable = '/min-contables'
     this.dynamicParameter = this.formaFormulario.controls['idMCont'].value;
   }
   ordPubli(){

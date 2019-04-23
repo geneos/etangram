@@ -292,9 +292,9 @@ export class AltaProveedorComponent implements OnInit {
         //parametros
         idlistaPrecios: new FormControl('', [], this.existeListaPrecios),
         condComercial: new FormControl('', [], this.existeCondComercial),
-        idPartidaPresupuestaria: new FormControl('', [], this.existePartidaPresupuestaria),
+        idPartidaPresupuestaria: new FormControl('', [Validators.required], this.existePartidaPresupuestaria),
         refContable: new FormControl('', [], this.existeRefContable),
-        idTipoComprobante: new FormControl('', [], this.existeTipoComprobante),
+        idTipoComprobante: new FormControl('', [Validators.required], this.existeTipoComprobante),
           //descripciones de parametros
           descListaPrecios: new FormControl(),
           descCondComercial: new FormControl(),
@@ -1209,6 +1209,7 @@ export class AltaProveedorComponent implements OnInit {
   buscarCondComercial(){
     // this._condicionComercialService.getCondicionPorID(this.forma.controls['condComercial'].value, this.token )
     // cambiado por sólo los válidos, con origen COM
+    console.log('buscando condición de comercialización con ', this.forma.controls['condComercial'].value)
     this._condicionComercialService.getCondicionPorIDCompra(this.forma.controls['condComercial'].value, this.token )
       .subscribe( data => {
           this.ccData = data;
@@ -1219,6 +1220,7 @@ export class AltaProveedorComponent implements OnInit {
             this.forma.disable();
             this.openSnackBar('Sesión expirada.')
             } else {
+              console.log('encontrada condicion, ', this.ccData)
               if(this.ccData.dataset.length>0){
                 this.condicionComercial = this.ccData.dataset[0];
                 //this.loading = false;
@@ -1941,6 +1943,9 @@ export class AltaProveedorComponent implements OnInit {
         break;
       case 'c_tipocomprobante_compras':
         atributoAUsar = 'idtipocomp';
+        break;
+      case 'tg01_condicioncomercial':
+        atributoAUsar = 'idcondicion';
         break;
       default:
         atributoAUsar = 'id';

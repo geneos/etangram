@@ -134,7 +134,8 @@ datos =
   //referenciasDataSource = new MatTableDataSource(this.referenciasData);
 
   loginData: any;
-  token: string = "a";
+  // token: string = "a";
+  token: string;
   existe:boolean;
   existenDetalles:boolean;
   loading:boolean;
@@ -265,6 +266,7 @@ urlAnterior: string;
     this.formaReferencias.controls['haber'].disable();
 
     //cargar listas para combobox
+    console.log('rellenando comboboxes')
     this.buscarCajas();
     
     
@@ -292,10 +294,10 @@ urlAnterior: string;
         console.log('Obtener parametros');
 
         //obtener valores parametrizados
+        this.buscarParametros(true);
         this.forma.reset()
         this.forma.controls['caja'].enable();
-        this.buscarParametros(true);
-        console.log(this.editingCabecera)
+        console.log('editando cabecera? ', this.editingCabecera)
         //establecer valores de salida
         //this.buscarTipoComprobante(this.parametrosSistema.tg01_tipocomprobante_id_c);
         //this.forma.controls['tipo'].setValue(this.tipoComprobante.name);
@@ -343,10 +345,12 @@ urlAnterior: string;
   
   
   buscarParametros(incluirOrg: boolean){
+    
+    console.log('buscando parametros');
     this._parametrosService.getParametros( this.token )
     //this._refContableService.getProveedores()
       .subscribe( dataP => {
-        console.log(dataP);
+        console.log('datap = ', dataP);
           this.pData = dataP;
           //auxRefConData = this.mcData.dataset.length;
           if(this.pData.returnset[0].RCode=="-6003"){
@@ -362,6 +366,7 @@ urlAnterior: string;
                 this.buscarParametros(incluirOrg);
               });
             } else {
+              console.log('respuesta buscar parametros', this.pData);
               if(this.pData.dataset.length>0){
                 this.parametrosSistema = this.pData.dataset[0];
                 this.buscarTipoComprobante(this.parametrosSistema.tg01_tipocomprobante_id_c);
@@ -369,6 +374,12 @@ urlAnterior: string;
                 if (incluirOrg){
                   this.buscarOrganizacion(this.parametrosSistema.account_id1_c);
                 }
+                console.log('parametros encontrados ok: ', this.pData);
+
+              }
+              else
+              {
+                console.log('no se encontro parametros')
               }
             }
       });
@@ -394,12 +405,12 @@ urlAnterior: string;
               });*/
               console.log('token invalido')
             } else {
+              console.log('buscando tipo de comprobante con ' + auxid);
               if(this.tcData.dataset.length>0){
                 this.tipoComprobante = this.tcData.dataset[0];
                 this.forma.controls['tipo'].setValue(this.tipoComprobante.name);
 
-                console.log('buscando tipo de comprobante con ' + auxid);
-                console.log(this.tipoComprobante);
+                console.log('tipo comprobante recuperado: ', this.tipoComprobante);
 
               }
               console.log('buscando tipo de comprobante con ' + auxid + ': NO ENCONTRADO');
@@ -428,9 +439,14 @@ urlAnterior: string;
                 this.buscarMoneda(auxid);
               });
             } else {
+              console.log('buscada moneda con ', auxid)
               if(this.mData.dataset.length>0){
                 this.moneda = this.mData.dataset[0];
                 this.forma.controls['moneda'].setValue(this.moneda.name);
+                console.log('moneda encontrada: ', this.moneda)
+              }
+              else{
+                console.log('no s eencontro moneda')
               }
             }
 
@@ -457,11 +473,11 @@ urlAnterior: string;
                 this.buscarOrganizacion(auxid);
               });
             } else {
+              console.log('organizacion con '+auxid+': ');
               if(this.oData.dataset.length>0){
-                console.log('organizacion con '+auxid+': ');
                 this.organizacion = this.oData.dataset[0];
                 this.forma.controls['organizacion'].setValue(this.organizacion.NAME);
-                console.log(this.organizacion);
+                console.log('org encontrada: ', this.organizacion);
               }
               console.log('organizacion con '+auxid+': no encontrada');
             }
@@ -470,6 +486,7 @@ urlAnterior: string;
   }
 
   buscarCajas(){
+    console.log('buscando cajas');
     this._cajasService.getCajas( this.token )
       .subscribe( dataC => {
         //console.log(dataC);
@@ -489,6 +506,7 @@ urlAnterior: string;
             });
           } else {
             if(this.cData.dataset.length>0){
+              console.log('cajas encontradas: ', this.cajasAll);
               this.cajasAll = this.cData.dataset;
               console.log(this.cajasAll);
               this.loading = false;
@@ -502,6 +520,7 @@ urlAnterior: string;
               //this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
 
             } else {
+              console.log('No se encontró cajas');
               this.cajasAll = null;
             }
           }

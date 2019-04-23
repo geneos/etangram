@@ -452,7 +452,7 @@ export class AltaRefContableComponent implements OnInit {
         atributoAUsar = 'name';
         break;
       case 'tg01_grupofinanciero':
-        atributoAUsar = 'codigo';
+        atributoAUsar = 'name';
         // atributoDesc = 'Nombre';
         break;
       default:

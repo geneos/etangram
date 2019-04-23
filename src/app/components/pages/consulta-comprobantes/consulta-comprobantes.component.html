@@ -1,3 +1,7 @@
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado">
 <app-loading *ngIf="loading"></app-loading>
 
 <div [ngStyle]="{'display':loading ? 'none' : 'block' }">
@@ -199,3 +203,4 @@
 
      <!--</mat-expansion-panel>-->
      </div>
+</div>

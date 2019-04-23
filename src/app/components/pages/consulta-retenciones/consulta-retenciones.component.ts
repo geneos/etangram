@@ -30,6 +30,7 @@ export class ConsultaRetencionesComponent implements OnInit {
   compraProveedor: CompraProveedor;
   loginData: any;
   token: string;
+  logueado:boolean = true;
   proveedorData: any;
   consultaRetenciones: consultaRetenciones[] = [];
   respCabecera: any;
@@ -83,7 +84,17 @@ export class ConsultaRetencionesComponent implements OnInit {
           })
           this.route.params.subscribe( parametros=>{
             this.id = parametros['id'];
-            //this.token = parametros['token'];
+            
+            if (localStorage.length == 0){
+              this.loading = true;
+              setTimeout(() => {
+                this.logueado = false;     
+             //   this.openSnackBar('No ha iniciado sesión')
+              }, 1000);  //2s
+            } else {
+              this.loading = false;
+            };
+
             this.buscarProveedor();
           });
       }

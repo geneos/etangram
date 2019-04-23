@@ -46,6 +46,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
 
   selection = new SelectionModel(true, []);
   loading:boolean;
+  logueado: boolean = true;
   token: string;
   loginData: any;
 
@@ -122,7 +123,15 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
   //  this.token = this.storage.get(TOKEN);
     this.token = localStorage.getItem('TOKEN')
-
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+     //   this.openSnackBar('No ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    } 
 
     if (this.nivel == null){
       this.nivel = 1;

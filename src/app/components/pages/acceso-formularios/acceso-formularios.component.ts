@@ -38,13 +38,7 @@ export class AccesoFormulariosComponent implements OnInit {
     })
 
     this.token = localStorage.getItem('TOKEN')
-    if (localStorage.length == 0){
-      this.loading = true
-    //  this.openSnackBar('No ha inicado sesión')
-      
-    } else {
-      this.loading = false;
-    }
+   this.loading = false;
   }
 
   ngOnInit() {

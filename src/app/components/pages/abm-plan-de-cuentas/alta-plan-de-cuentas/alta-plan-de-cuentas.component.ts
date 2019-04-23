@@ -31,6 +31,7 @@ export class AltaPlanDeCuentasComponent implements OnInit {
   pcData: any;
   planDeCuentas: PlanCuenta;
   loginData: any;
+  logueado: any;
 
   loading:boolean;
   auxresp: any;
@@ -67,10 +68,20 @@ export class AltaPlanDeCuentasComponent implements OnInit {
     private _refContablesService:RefContablesService,
     @Inject(SESSION_STORAGE) private storage: StorageService
   ) {
-    this.loading = true;
+    
 
     console.log(localStorage.getItem(TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem('TOKEN')
+
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+     //   this.openSnackBar('No ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    } 
 
     this.forma = new FormGroup({
       //'id': new FormControl('',Validators.required),

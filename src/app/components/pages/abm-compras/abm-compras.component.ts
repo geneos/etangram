@@ -129,12 +129,10 @@ export class AbmComprasComponent implements OnInit {
       this.loading = true;
       setTimeout(() => {
         this.logueado = false;     
-        this.openSnackBar('No ha iniciado sesión')
       }, 1000);  //2s
     } else {
       this.loading = false;
     }
-  //  this.token = this.storage.get(TOKEN);
 
     this.forma = new FormGroup({
       'proveedor': new FormControl('',Validators.required,this.existeProveedor),
@@ -545,7 +543,7 @@ export class AbmComprasComponent implements OnInit {
       {
              "Token": "Token",
              "Sign": "Sign",
-             "Cuit": 30709041483
+             "Cuit":  30709041483
          },
       "CmpReq": {
              "CbteModo": this.forma.controls['cbtemodo'].value,
@@ -567,34 +565,39 @@ export class AbmComprasComponent implements OnInit {
           this.datosCbteAfip = af;
           this.constCbteAfip = this.datosCbteAfip.ComprobanteConstatarResult;
           this.resultado = this.datosCbteAfip.ComprobanteConstatarResult.Resultado;
-          
-          if(this.datosCbteAfip.statusCode){
-            switch (this.datosCbteAfip.statusCode) {
-              case 500:
-              this.obsMsg = "Error interno de aplicación."
-                  break;
-              case 501:
-              this.obsMsg = "Error interno de base de datos"
-                  break;
-              case 502:
-              this.obsMsg = "Transacción Activa"
-                  break;
-              case 503:
-              this.obsMsg = "No existen datos en nuestros registros"
-                  break;
-              default:
-  
-          }
-          }
-          
+         
+      if(this.resultado = 'A'){
+        this.editingCabecera = false;
+      } else {
+        if(this.datosCbteAfip.statusCode){
+          switch (this.datosCbteAfip.statusCode) {
+            case 500:
+            this.obsMsg = "Error interno de aplicación."
+                break;
+            case 501:
+            this.obsMsg = "Error interno de base de datos"
+                break;
+            case 502:
+            this.obsMsg = "Transacción Activa"
+                break;
+            case 503:
+            this.obsMsg = "No existen datos en nuestros registros"
+                break;
+            default:
 
-          if(this.datosCbteAfip.ComprobanteConstatarResult.Errors){
-            this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Errors.Err[0].Msg
-          }
-          if(this.datosCbteAfip.ComprobanteConstatarResult.Observaciones) {
-          this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Observaciones.Obs[0].Msg;
-          }
-          this.openSnackBar(this.obsMsg);
+        }
+        }
+        
+
+        if(this.datosCbteAfip.ComprobanteConstatarResult.Errors){
+          this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Errors.Err[0].Msg
+        }
+        if(this.datosCbteAfip.ComprobanteConstatarResult.Observaciones) {
+        this.obsMsg = this.datosCbteAfip.ComprobanteConstatarResult.Observaciones.Obs[0].Msg;
+        }
+        this.openSnackBar(this.obsMsg);
+      }
+         
         })
 
   if(this.resultado = 'R'){

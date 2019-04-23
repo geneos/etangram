@@ -53,6 +53,7 @@ export class AltaArticuloComponent implements OnInit {
   partesACargar: number = 8; //listas desplegables: 8
   partesCargadas: number;
   existe:boolean;
+  logueado: boolean = true;
 
   fotos:any[]=[{'nroFoto':0},];
   proveedores:any[]=[{'nroProveedor':0},];
@@ -173,8 +174,16 @@ export class AltaArticuloComponent implements OnInit {
     
     console.log(localStorage.getItem (TOKEN) || 'Local storage is empty');
     this.token = localStorage.getItem('TOKEN');            
+    if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+        this.openSnackBar('No se ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    }
     
-    this.loading = true;
     this.partesCargadas = 0;  
 
     this.forma = this.FormBuilder.group({

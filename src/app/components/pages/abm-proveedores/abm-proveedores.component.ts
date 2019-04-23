@@ -27,7 +27,7 @@ const TOKEN = '';
 export class AbmProveedoresComponent implements OnInit {
   constProveedores = new MatTableDataSource();
   token: string;
-
+  logueado: boolean = true;
   proveedoresAll:Proveedor[];
 
   reportesAll: Reporte[] = [];
@@ -63,7 +63,16 @@ export class AbmProveedoresComponent implements OnInit {
       console.log(this.storage.get('TOKEN') || 'Local storage is empty');
       this.token = this.storage.get('TOKEN');
 
-      this.loading = true;
+      if (localStorage.length == 0){
+        this.loading = true;
+        setTimeout(() => {
+          this.logueado = false;     
+       //   this.openSnackBar('No ha iniciado sesión')
+        }, 1000);  //2s
+      } else {
+        this.loading = false;
+      } 
+
       this.buscarProveedores();
   }
 

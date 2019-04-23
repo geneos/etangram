@@ -42,6 +42,7 @@ export class AbmRefContablesComponent implements OnInit {
   
   refContablesAll:RefContable[];
   loading:boolean;
+  logueado: boolean = true;
   constRefContables = new MatTableDataSource();
 
   @ViewChild(MatSort) sort: MatSort;
@@ -61,7 +62,15 @@ export class AbmRefContablesComponent implements OnInit {
                 this.token = localStorage.getItem('TOKEN')
               //  this.token = this.storage.get(TOKEN);
 
-    this.loading = true;
+              if (localStorage.length == 0){
+                this.loading = true;
+                setTimeout(() => {
+                  this.logueado = false;     
+               //   this.openSnackBar('No ha iniciado sesión')
+                }, 1000);  //2s
+              } else {
+                this.loading = false;
+              } 
     this.buscarRefContable();
     this.buscarReportes();
   }

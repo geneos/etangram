@@ -52,6 +52,7 @@ export class ConsultaCrdComponent implements OnInit {
   selection = new SelectionModel(true, []);
   id: any;
   loading: boolean = true;
+  logueado:boolean = true;
 
   constructor(private route:ActivatedRoute,private router: Router,
               private _ConsultaCrdService:ConsultaCrdService,
@@ -71,7 +72,15 @@ export class ConsultaCrdComponent implements OnInit {
    this.token = localStorage.getItem('TOKEN')
    this.route.params.subscribe( parametros=>{
      this.id = parametros['id'];
-     //this.token = parametros['token'];
+     if (localStorage.length == 0){
+      this.loading = true;
+      setTimeout(() => {
+        this.logueado = false;     
+     //   this.openSnackBar('No ha iniciado sesión')
+      }, 1000);  //2s
+    } else {
+      this.loading = false;
+    };
      this.consultar();
    });
 

@@ -1,4 +1,8 @@
 <!-- <h2>PROVEEDORES</h2> -->
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado"> 
 <button [routerLink]="['/proveedores','nuevo']" class="mine-btnbig" mat-flat-button>
   NUEVO
 </button>
@@ -57,4 +61,5 @@
       <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen proveedores</i></mat-card>
     </div>
   </div>
+</div>
 </div>

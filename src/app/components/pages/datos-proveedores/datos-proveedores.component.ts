@@ -63,6 +63,7 @@ export class DatosProveedoresComponent implements OnInit {
   respLocalidad: any;
   idLocalidad: any;
   modificando:boolean = false;
+  logueado:boolean = true;
 
   dataSource = new MatTableDataSource<datosImpuesto>(this.datosImpuesto);
   dataSource2 = new MatTableDataSource<datosFormularios>(this.datosFormularios);
@@ -83,6 +84,15 @@ export class DatosProveedoresComponent implements OnInit {
       this.route.params.subscribe( parametros=>{
         this.idProv = parametros['id'];
       });
+      if (localStorage.length == 0){
+        this.loading = true;
+        setTimeout(() => {
+          this.logueado = false;     
+       //   this.openSnackBar('No ha iniciado sesión')
+        }, 1000);  //2s
+      } else {
+        this.loading = false;
+      };
 
     this.forma = new FormGroup({
       'calleFac': new FormControl(),

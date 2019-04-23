@@ -38,6 +38,7 @@ export class ConsultaOrdPagosComponent implements OnInit {
   forma: FormGroup;
   compraProveedor: CompraProveedor;
   loginData: any;
+  logueado:boolean = true;
   token: string = "a";
   proveedorData: any;
   ProveedorData: any;
@@ -93,7 +94,17 @@ export class ConsultaOrdPagosComponent implements OnInit {
     })
     this.route.params.subscribe( parametros=>{
       this.id = parametros['id'];
-      //this.token = parametros['token'];
+      
+      if (localStorage.length == 0){
+        this.loading = true;
+        setTimeout(() => {
+          this.logueado = false;     
+       //   this.openSnackBar('No ha iniciado sesión')
+        }, 1000);  //2s
+      } else {
+        this.loading = false;
+      };
+
       this.buscarProveedor();
     });
    }

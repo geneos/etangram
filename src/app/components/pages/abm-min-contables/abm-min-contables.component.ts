@@ -24,6 +24,7 @@ export class AbmMinContablesComponent implements OnInit {
 
   minContablesAll:MinContable[];
   loading:boolean;
+  logueado: boolean = true;
   constMinContables = new MatTableDataSource();
 
   @ViewChild(MatSort) sort: MatSort;
@@ -104,7 +105,15 @@ export class AbmMinContablesComponent implements OnInit {
     this.token = localStorage.getItem('TOKEN')
   //  this.token = this.storage.get(TOKEN);
 
+  if (localStorage.length == 0){
     this.loading = true;
+    setTimeout(() => {
+      this.logueado = false;     
+   //   this.openSnackBar('No ha iniciado sesión')
+    }, 1000);  //2s
+  } else {
+    this.loading = false;
+  } 
     this.buscarMinContable();
   }
 

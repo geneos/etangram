@@ -44,6 +44,7 @@ export class OrdenesPublicidadComponent implements OnInit {
   suscripcionEvidencias: Subscription;
   itemDeConsulta: any;
   exp: any;
+  logueado:boolean = true;
 
   //datos para impresion
   baseDatos: any;
@@ -97,6 +98,15 @@ export class OrdenesPublicidadComponent implements OnInit {
     //this.Controles['proveedor'].setValue(this.id);
     this.buscarProveedor();
     this.ordenPub = parametros['ord'];
+     if (localStorage.length == 0){
+        this.loading = true;
+        setTimeout(() => {
+          this.logueado = false;     
+       //   this.openSnackBar('No ha iniciado sesión')
+        }, 1000);  //2s
+      } else {
+        this.loading = false;
+      };
     if(this.ordenPub != null){
       this.actualizaOrden();
     }

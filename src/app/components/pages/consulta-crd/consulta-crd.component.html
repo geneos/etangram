@@ -1,3 +1,7 @@
+<div *ngIf="loading&&!logueado">
+ <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+</div>
+<div *ngIf="!loading&&logueado">
 <h2>CERTIFICADOS DE RECEPCIÓN DEFINITIVA</h2>
 <app-loading *ngIf="loading"></app-loading>
 
@@ -106,3 +110,4 @@
   </div>
 
 </mat-expansion-panel>
+</div>

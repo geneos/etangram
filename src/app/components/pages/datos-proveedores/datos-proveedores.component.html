@@ -1,5 +1,9 @@
 <!-- <h2>DATOS PROVEEDOR</h2> -->
-<app-loading *ngIf="loading"></app-loading>
+<app-loading *ngIf="loading&&logueado"></app-loading>
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado">
 <mat-expansion-panel [expanded]=true [disabled]=true *ngIf="!loading">
     <div class="row" style="margin-top:15px; margin-bottom:10px;" *ngIf="!loading">
         <div class="col s3 m2 l3">
@@ -263,3 +267,4 @@
 <app-cons-din></app-cons-din>
 <app-formularios></app-formularios>
 <app-img></app-img>
+</div>

@@ -1,3 +1,6 @@
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
 <h2 style="margin-bottom:15px;">{{reportesAll && reportesAll[this.reporteSeleccionado]?.titulo | uppercase }}</h2>
 {{records && (records[0] | json)}}
 <!-- <h2>{{reportesAll[this.reporteSeleccionado]?.titulo || "Consulta Dinámica (Cargando)" }}</h2> -->

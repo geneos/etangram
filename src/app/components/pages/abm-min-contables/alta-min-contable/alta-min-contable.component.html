@@ -1,3 +1,7 @@
+<div *ngIf="loading&&!logueado">
+  <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
+ </div>
+ <div *ngIf="!loading&&logueado"> 
 <h2 *ngIf="!existe">NUEVA MINUTA CONTABLE</h2>
 <h2 *ngIf="existe">EDITANDO MINUTA CONTABLE</h2>
 
@@ -219,10 +223,10 @@
 <!-- <div class="row" style="height:0px;"></div> -->
 
 <div class="row" style="margin-top: 10px; width: 100%; text-align: right;">
-  <button type="submit" class="mine-btnbig" mat-flat-button 
+  <!-- <button type="submit" class="mine-btnbig" mat-flat-button 
     *ngIf="(editingCabecera && !existe) || (!editingCabecera )" [disabled]="!forma.valid">
     GUARDAR
-  </button>
+  </button> -->
   <a class="mine-btnbig" (click)="confirmar()" mat-flat-button style="margin-left: 10px"
     *ngIf="!editingCabecera" [disabled]="editingCabecera||addingReferencia||editingAI">
     CONFIRMAR
@@ -243,3 +247,4 @@
   
 </div>
 <app-cons-din></app-cons-din>
+</div>

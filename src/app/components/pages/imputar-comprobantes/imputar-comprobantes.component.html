@@ -49,6 +49,29 @@
     <mat-expansion-panel-header>
       <mat-title-panel>PROVEEDOR</mat-title-panel>
     </mat-expansion-panel-header>
+  <form [formGroup]="forma" novalidate="novalidate">  
+    <div class="row" style="margin-top:15px;margin-bottom: 0px" *ngIf="!loading">
+      <div class="col s6 m3 l2">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Categoria</mat-label>
+          <input matInput type="text" formControlName="categoria">
+          
+          <!-- <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker> -->
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row" style="margin-top:15px;margin-bottom: 0px" *ngIf="!loading">
+      <div class="col s6 m3 l4">
+        <mat-form-field appearance="outline" floatLabel="always" style="width:100%;">
+          <mat-label>Nombre</mat-label>
+          <input (keyup)="filtro()" matInput type='text' formControlName="nombre">
+          <!-- <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker> -->
+        </mat-form-field>
+      </div>
+    </div>
+  </form>  
     </mat-expansion-panel>
     <div class="mat-elevation-z8" [ngStyle]="{'display':!loading ? 'block' : 'none' }">
 
@@ -63,7 +86,7 @@
         <!-- fecha Column -->
         <ng-container matColumnDef="proveedor">
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Proveedor</th>
-          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Proveedor }} </td>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Razon_Social }} </td>
         </ng-container>
   
   
@@ -84,7 +107,13 @@
           <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Comprobante </th>
           <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Comprobante }} </td>
         </ng-container>
-  
+        
+        <!-- importe Column -->
+        <ng-container matColumnDef="fechaComprobante">
+          <th mat-header-cell *matHeaderCellDef style="text-align:left;"> Comprobante </th>
+          <td mat-cell *cdkCellDef="let element" style="text-align:left;"> {{ element.Fecha_Comprobante }} </td>
+        </ng-container>
+
         <!-- importe Column -->
         <ng-container matColumnDef="criticidadComp">
             <th mat-header-cell *matHeaderCellDef style="text-align:left;"> CriticidadComp </th>
@@ -119,8 +148,8 @@
             </td>
         </ng-container>
   
-        <tr mat-header-row *cdkHeaderRowDef="['simbolo', 'proveedor', 'categoria', 'criticidadProv', 'comprobante', 'criticidadComp', 'vencimiento','total','saldo','pagar']"></tr>
-        <tr mat-row *cdkRowDef="let row; columns: ['simbolo', 'proveedor', 'categoria', 'criticidadProv', 'comprobante', 'criticidadComp', 'vencimiento','total','saldo','pagar'];"></tr>
+        <tr mat-header-row *cdkHeaderRowDef="['simbolo', 'proveedor', 'categoria', 'criticidadProv', 'comprobante', 'fechaComprobante', 'criticidadComp', 'vencimiento','total','saldo','pagar']"></tr>
+        <tr mat-row *cdkRowDef="let row; columns: ['simbolo', 'proveedor', 'categoria', 'criticidadProv', 'comprobante', 'fechaComprobante', 'criticidadComp', 'vencimiento','total','saldo','pagar'];"></tr>
       </table>
       <!-- <mat-paginator [pageSizeOptions]="[20]" showFirstLastButtons [ngStyle]="{'display':loading ? 'none' : 'block' }"></mat-paginator> -->
     </div>  

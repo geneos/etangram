@@ -491,16 +491,16 @@ export class AltaRefContableComponent implements OnInit {
           }
 
           //escribir el valor en el primer control, para el id
-          fg.controls[controlID].setValue(respuesta.selection[0][atributoAUsar]);
+          fg.controls[controlID].setValue(respuesta.selection[0]);
 
           //si hay que guardar descripción:
           if (controlDesc != null){
             if (respuesta.selection[0][atributoDesc] != null){
-              fg.controls[controlDesc].setValue(respuesta.selection[0][atributoDesc]);
+              fg.controls[controlDesc].setValue(respuesta.selection[0]);
             }
             else{
               fg.controls[controlDesc].setValue('');
-              console.log('Valor de ' + controlDesc + ' vaciado, no se encontró ' + atributoDesc + ' en la seleccion');
+              console.log('Valor de ' + controlDesc + ' vaciado, no se encontró ' +  + ' en la seleccion');
             }
           }
 

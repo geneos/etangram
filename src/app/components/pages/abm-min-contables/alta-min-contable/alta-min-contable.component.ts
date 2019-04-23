@@ -326,7 +326,7 @@ urlAnterior: string;
     // });
     location.onPopState(() => {
       console.log('Atras')
-      this.router.navigate(["/min-conables"]); 
+      this.router.navigate(["/min-contables"]); 
       });
   }
 

@@ -500,7 +500,7 @@ export class AltaRefContableComponent implements OnInit {
             }
             else{
               fg.controls[controlDesc].setValue('');
-              console.log('Valor de ' + controlDesc + ' vaciado, no se encontró ' +  + ' en la seleccion');
+      //        console.log('Valor de ' + controlDesc + ' vaciado, no se encontró '  + ' en la seleccion');
             }
           }
 

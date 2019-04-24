@@ -255,11 +255,13 @@ export class ConsultaDinamicaService {
 
       console.log('lista de operadores', operadores);
       console.log(operadores.find(operador => operador.condicion == 'equal'));
+      console.log(operadores.find(operador => operador.condicion == 'like'));
       
       Array.from(filtrosMapa.entries()).
       forEach(entry => {
           if (!((entry[1]== null)||(entry[1]==''))){
-            let op = operadores.find(operador => operador.condicion == 'equal');
+            // let op = operadores.find(operador => operador.condicion == 'equal');
+            let op = operadores.find(operador => operador.condicion == 'like');
             console.log('Key: ' + entry[0] + ' Value: ' + entry[1])
             apendiceURL = apendiceURL +  entry[0] + '=' + op.texto + '[' + entry[1] + ']' + '&';
           }

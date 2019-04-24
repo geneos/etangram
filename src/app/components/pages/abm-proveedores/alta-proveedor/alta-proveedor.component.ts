@@ -292,9 +292,9 @@ export class AltaProveedorComponent implements OnInit {
         //parametros
         idlistaPrecios: new FormControl('', [], this.existeListaPrecios),
         condComercial: new FormControl('', [], this.existeCondComercial),
-        idPartidaPresupuestaria: new FormControl('', [Validators.required], this.existePartidaPresupuestaria),
+        idPartidaPresupuestaria: new FormControl('', [], this.existePartidaPresupuestaria),
         refContable: new FormControl('', [], this.existeRefContable),
-        idTipoComprobante: new FormControl('', [Validators.required], this.existeTipoComprobante),
+        idTipoComprobante: new FormControl('', [], this.existeTipoComprobante),
           //descripciones de parametros
           descListaPrecios: new FormControl(),
           descCondComercial: new FormControl(),
@@ -1254,26 +1254,34 @@ export class AltaProveedorComponent implements OnInit {
       });
   }
   buscarPartidaPresupuestaria(){
-    console.log('buscando partida con ', this.forma.controls['idPartidaPresupuestaria'].value)
-    this._partidasPresupuestariasService.getPartida(this.forma.controls['idPartidaPresupuestaria'].value, this.token )
-      .subscribe( data => {
-          this.ppData = data;
-          auxPartidaPresupuestaria = this.ppData.dataset.length;
-          if(this.ppData.returnset[0].RCode=="-6003"){
-            //token invalido
-            this.partidaPresupuestaria = null;
-            this.forma.disable();
-            this.openSnackBar('Sesión expirada.')
-            } else {
-              console.log('encontrada partida, ', this.ppData)
-              if(this.ppData.dataset.length>0){
-                this.partidaPresupuestaria = this.ppData.dataset[0];
-                //this.loading = false;
+     
+    if (String(this.forma.controls['idPartidaPresupuestaria'].value).trim().length == 0){
+      auxPartidaPresupuestaria = 1;
+      this.ppData = null;
+      this.partidaPresupuestaria = null;
+    }
+    else{
+      console.log('buscando partida con ', this.forma.controls['idPartidaPresupuestaria'].value)
+      this._partidasPresupuestariasService.getPartida(this.forma.controls['idPartidaPresupuestaria'].value, this.token )
+        .subscribe( data => {
+            this.ppData = data;
+            auxPartidaPresupuestaria = this.ppData.dataset.length;
+            if(this.ppData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.partidaPresupuestaria = null;
+              this.forma.disable();
+              this.openSnackBar('Sesión expirada.')
               } else {
-                this.partidaPresupuestaria = null;
+                console.log('encontrada partida, ', this.ppData)
+                if(this.ppData.dataset.length>0){
+                  this.partidaPresupuestaria = this.ppData.dataset[0];
+                  //this.loading = false;
+                } else {
+                  this.partidaPresupuestaria = null;
+                }
               }
-            }
-      });
+        });
+    }
   }
   buscarRefContable(){
     this._refContablesService.getRefContable(this.forma.controls['refContable'].value, this.token )
@@ -1316,24 +1324,32 @@ export class AltaProveedorComponent implements OnInit {
       });
   } */
   buscarTipoComprobante(){
-    this._tiposComprobanteService.geTipoComprobanteCompras(this.forma.controls['idTipoComprobante'].value, this.token )
-      .subscribe( data => {
-          this.tcData = data;
-          auxTipoComprobante = this.tcData.dataset.length;
-          if(this.tcData.returnset[0].RCode=="-6003"){
-            //token invalido
-            this.tipoComprobante = null;
-            this.forma.disable();
-            this.openSnackBar('Sesión expirada.')
-            } else {
-              if(this.tcData.dataset.length>0){
-                this.tipoComprobante = this.tcData.dataset[0];
-                //this.loading = false;
+    
+    if (String(this.forma.controls['idTipoComprobante'].value).trim().length == 0){
+      auxTipoComprobante = 1;
+      this.tcData = null;
+      this.tipoComprobante = null;
+    }
+    else{
+      this._tiposComprobanteService.geTipoComprobanteCompras(this.forma.controls['idTipoComprobante'].value, this.token )
+        .subscribe( data => {
+            this.tcData = data;
+            auxTipoComprobante = this.tcData.dataset.length;
+            if(this.tcData.returnset[0].RCode=="-6003"){
+              //token invalido
+              this.tipoComprobante = null;
+              this.forma.disable();
+              this.openSnackBar('Sesión expirada.')
               } else {
-                this.tipoComprobante = null;
+                if(this.tcData.dataset.length>0){
+                  this.tipoComprobante = this.tcData.dataset[0];
+                  //this.loading = false;
+                } else {
+                  this.tipoComprobante = null;
+                }
               }
-            }
-      });
+        });
+    }
   }
   buscarArticulo(indice: number){
     console.log('llamado buscar articulo para articulo nro ', indice)

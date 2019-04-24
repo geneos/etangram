@@ -15,6 +15,7 @@ import { ArticulosService } from 'src/app/services/i2t/articulos.service';
 import { ImageService } from 'src/app/services/i2t/image.service';
 import { ProductoCategoria, Marca, AtributoArticulo, ValorAtributoArticulo, Deposito, DepostitoArticulo, ProveedorArticulo, ArticuloSustituto, FotoArticulo, cArticulo, datosArticulos, ArticuloHijo } from 'src/app/interfaces/articulo.interface';
 import { UnidadMedida } from 'src/app/interfaces/unidad-medida.interface';
+import { ConsDinConfig } from 'src/app/classes/cons-din-config';
 
 const ARTICULOS:any[] = [
   {'nroArticulo':0,'articulo':'Caramelos Misky','unidadMedida':'Bolsa(s)','precioUnitario':40},
@@ -169,7 +170,8 @@ export class AltaArticuloComponent implements OnInit {
               private _unidadMedidaService: UnidadMedidaService,
               private _imageService: ImageService,
               private ref: ChangeDetectorRef,
-              @Inject(SESSION_STORAGE) private storage: StorageService
+              @Inject(SESSION_STORAGE) private storage: StorageService,
+              private configConsulta: ConsDinConfig,
               ) {
     
     console.log(localStorage.getItem (TOKEN) || 'Local storage is empty');
@@ -920,6 +922,12 @@ construirFoto(){
             this.forma.disable();
             this.openSnackBar('El artículo no existe.')
           }
+
+          if (this.configConsulta.accion == 'ver'){
+            this.forma.disable();
+            this.openSnackBar('Artículo mostrado en modo "Visualizar"');
+          }
+          
         }
       })
       

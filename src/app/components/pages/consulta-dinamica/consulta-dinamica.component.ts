@@ -1204,6 +1204,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     if ((this.reportesAll[this.reporteSeleccionado].accion_editar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_editar != '')){
       if (this.selection.selected.length != 0){
         // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+        this.configConsulta.accion = 'editar';
         this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_editar, this.selection.selected[0]['id']]);
       }
       else{
@@ -1221,6 +1222,7 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
     if ((this.reportesAll[this.reporteSeleccionado].accion_mostrar != null)&&(this.reportesAll[this.reporteSeleccionado].accion_mostrar != '')){
       if (this.selection.selected.length != 0){
         // this.router.navigate(['ref-contables', this.selection.selected[0]['id']]);
+        this.configConsulta.accion = 'ver';
         this.router.navigate([this.reportesAll[this.reporteSeleccionado].accion_mostrar, this.selection.selected[0]['id']]);
       }
       else{

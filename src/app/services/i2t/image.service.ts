@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { PreUrlImage } from './url';
-
+import { PreUrl } from './url';
+import { AppConfig } from 'src/app/app.config';
 @Injectable({
   providedIn: 'root'
 })
 export class ImageService {
-  preUrl:string = PreUrlImage;
+  preUrl:string = this.config.getConfig('api_url')
 
-  constructor( private http:HttpClient ) { }
+  constructor(private http:HttpClient, private config: AppConfig) { }
 
   postImage( adjunto, token ){
     const headers = new HttpHeaders({
@@ -24,7 +24,7 @@ export class ImageService {
     console.log(JSON.stringify(formData));
     console.log(formData.getAll('file'));
 
-    let query = `api/attachments`;
+    let query = `api/imagenes/attachments`;
     let url = this.preUrl + query;
     console.log(url);
 

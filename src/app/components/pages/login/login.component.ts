@@ -8,6 +8,7 @@ import { PlatformLocation } from '@angular/common';
 import { UserService } from 'src/app/services/i2t/user.service';
 import { Router, ActivatedRoute } from "@angular/router";
 import { Http } from '@angular/http';
+import { PreUrl } from 'src/app/services/i2t/url';
 import { AppConfig } from 'src/app/app.config';
 
 // key that is used to access the data in local storage
@@ -37,7 +38,7 @@ export class LoginComponent implements OnInit {
   forma: FormGroup;
   formaFormulario: FormGroup;
   username: any;
-
+  preUrl:string = this.config.getConfig('api_url')
   constructor(private _LoginService:LoginService, @Inject(SESSION_STORAGE) private storage: StorageService,
               private userService: UserService,
               private route:ActivatedRoute,private router: Router,
@@ -58,8 +59,8 @@ export class LoginComponent implements OnInit {
       'idPortal': new FormControl(''),
       'idOrdPubli': new FormControl('')
     })
-
     
+    console.log(this.preUrl)
    }
 
   //  public storeOnLocalStorage(auxtoken: string, auxuser: string): void {

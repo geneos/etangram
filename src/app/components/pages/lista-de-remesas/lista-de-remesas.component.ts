@@ -29,9 +29,14 @@ export class ListaDeRemesasComponent implements OnInit {
   delData: any;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource(this.listaRemesas);
+  filterValues: {
+    fechaPagoDesde: any,
+    fechaPagoHasta: any,
+    descripcion:any,
+    medioPago: any,
+    estado: any,
+  };
 
-  get fecdesde(): any { return this.forma.get('fecdesde'); }
-  get fechasta(): any { return this.forma.get('fechasta'); }
   
   constructor(private _remesasService: RemesasService,
               private route:ActivatedRoute,private router: Router,
@@ -44,7 +49,37 @@ export class ListaDeRemesasComponent implements OnInit {
       'fechasta': new FormControl(),
       'soloPendientes': new FormControl(true),
     })
-    
+    this.forma.controls['soloPendientes'].setValue(true);
+
+    this.filterValues = {
+      fechaPagoDesde: '',
+      fechaPagoHasta: '',
+      descripcion: '',
+      medioPago: '',
+      estado: 'Provisorio'
+    }
+
+    console.log('Filtros iniciales: ', this.filterValues);
+
+    //suscripciones a fechas y checkbox
+    this.forma.controls['fecdesde'].valueChanges.subscribe(fecdesde => {
+      // this.filterValues.fechaPagoDesde = fechaDesde;
+      this.filterValues.fechaPagoDesde = this.extraerFecha(<FormControl>this.forma.controls['fecdesde']);
+      // this.applyFilter();
+      this.filtrar();
+    });
+    this.forma.controls['fechasta'].valueChanges.subscribe(fechaHasta => {
+      // this.filterValues.fechaPagoHasta = fechaHasta;
+      this.filterValues.fechaPagoHasta = this.extraerFecha(<FormControl>this.forma.controls['fechasta']);
+      // this.applyFilter();
+      this.filtrar();
+    });
+    this.forma.controls['soloPendientes'].valueChanges.subscribe(valor => {
+      // this.filterValues.estado = this.forma.controls['soloPendientes'].value == true ? 'Pendiente' : '';
+      this.filterValues.estado = valor == true ? 'Provisiorio' : '';
+      // this.applyFilter();
+      this.filtrar();
+    });
   }
 
 
@@ -56,14 +91,14 @@ export class ListaDeRemesasComponent implements OnInit {
     this.forma.controls['fechasta'].setValue(this.fechaActual);
     this.forma.controls['fecdesde'].setValue(this.fechaDesde);
 
-    setTimeout(() => {
-      console.log(this.forma.controls['soloPendientes'].value)
-    if (this.forma.controls['soloPendientes'].value == true){
-      this.dataSource.filter = 'Provisorio'
-    } else {
-      this.dataSource.filter = ''
-    }
-    }, 1000);  //2s
+    // setTimeout(() => {
+    //   console.log(this.forma.controls['soloPendientes'].value)
+    // if (this.forma.controls['soloPendientes'].value == true){
+    //   this.dataSource.filter = 'Provisorio'
+    // } else {
+    //   this.dataSource.filter = ''
+    // }
+    // }, 1000);  //2s
    
   }
   
@@ -71,6 +106,60 @@ export class ListaDeRemesasComponent implements OnInit {
     this.snackBar.open(message,"Cerrar", {
       duration: 3000,
     });
+  }
+
+  filtrar() {
+    let filtros = Object.keys(this.filterValues);
+    let key: string;
+    let valores = this.filterValues;
+    console.log(this.filterValues)
+    for (let index = 0; index < filtros.length; index++) {
+      key = filtros[index];
+      console.log('filtrando por ' + key);
+      if ((valores[key] != null)&&(valores[key] != '')){
+        // console.log('filtrando por ' + key + ' con ' + this.filterValues[key]);
+        if (key.includes('Desde')||key.includes('Hasta')){
+          // console.log('el filtro es desde/hasta');
+          if (key.includes('Desde')){
+            let atributo = key.slice(0, key.indexOf('Desde'));
+            // listaTemp = listaTemp.filter(temp => temp.fechaPago <= valores[key]);
+            // listaTemp = listaTemp.filter(temp => temp[atributo] >= valores[key]);
+            console.log('trayendo los que tienen ' + atributo + ' >= ' + valores[key]);
+            this.listaRemesas = this.listaRemesas.filter(temp => temp[atributo] >= valores[key]);
+          }
+          else{
+            let atributo = key.slice(0, key.indexOf('Hasta'));
+            // listaTemp = listaTemp.filter(temp => temp.fechaPago >= valores[key]);
+            console.log('trayendo los que tienen ' + atributo + ' <= ' + valores[key]);
+            this.listaRemesas = this.listaRemesas.filter(temp => temp[atributo] <= valores[key]);
+          }
+        }
+        else{
+          console.log('trayendo los que tienen ' + key + ' = ' + valores[key]);
+          this.listaRemesas = this.listaRemesas.filter(temp => temp[key] == valores[key]);
+        }
+      }
+    }
+    this.dataSource = new MatTableDataSource(this.listaRemesas);
+  }
+
+  extraerFecha(control: FormControl){
+    console.log('control a usar para fecha: ', control)
+    let auxFecha: string;
+    if (control.value != null){
+      let ano = control.value.getFullYear().toString();
+      let mes = (control.value.getMonth()+1).toString();
+      if(mes.length==1){mes="0"+mes};
+      let dia = control.value.getDate().toString();
+      if(dia.length==1){dia="0"+dia};
+      // auxFecha = ano+"-"+mes+"-"+dia;
+      auxFecha = dia+'/'+mes+'/'+ano;
+      console.log('string de fecha generado: ', auxFecha);
+      return auxFecha;
+    }
+    else{
+      return null;
+    }
   }
 
   obtenerRemesas(){

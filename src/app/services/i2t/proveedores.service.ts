@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
 import { ConsDinService } from 'src/app/classes/cons-din-service';
-
+import { AppConfig } from 'src/app/app.config';
 //const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTQwNDQyMDY0LCJleHAiOjE1NDA0NjAwNjR9.OZ0MRo_fNuVpXx-9SJCUBRud_bR3wNSfNAJUfn9O1i8';
 
 @Injectable({
@@ -14,9 +14,9 @@ export class ProveedoresService implements ConsDinService {
   compraProveedores:any [] = [];
 
   //preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
-  preUrl:string = PreUrl;
+  preUrl:string = this.config.getConfig('api_url')
 
-  constructor( private http:HttpClient ) { }
+  constructor(private http:HttpClient, private config: AppConfig) { }
 
   login( body:string ){
     const headers = new HttpHeaders({

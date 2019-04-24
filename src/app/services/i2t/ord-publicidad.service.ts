@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
-
+import { AppConfig } from 'src/app/app.config';
 @Injectable({
   providedIn: 'root'
 })
 export class OrdPublicidadService {
+  preUrl:string = this.config.getConfig('api_url')
 
-  urlProveedor:string = PreUrl;
-
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private config: AppConfig) { }
   login( body:string ){
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
     let query = "login/";
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }
@@ -28,7 +27,7 @@ export class OrdPublicidadService {
     });
 
     let query = `api/proc/PRENSA_Proveedor`;
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }
@@ -39,7 +38,7 @@ export class OrdPublicidadService {
     });
 
     let query = `api/proc/SP_PRENSA_EstadoOP_UPD`;
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }

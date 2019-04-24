@@ -217,16 +217,16 @@ export function ConsDinServiceFactory(http: HttpClient, config: ConsDinConfig){
   let servicio;
   switch (config.nombreServicio) {
     case 'RefContablesService':
-      servicio = new RefContablesService(http);
+      servicio = new RefContablesService(http, this.config);
       break;
     case 'ArticulosService':
-      servicio = new ArticulosService(http);
+  //    servicio = new ArticulosService(http, this.config);
       break;
     case 'ProveedoresService':
-      servicio = new ProveedoresService(http);
+      servicio = new ProveedoresService(http, this.config);
       break;
     case 'MinContablesService':
-      servicio = new MinContablesService(http);
+      servicio = new MinContablesService(http, this.config);
       break;
     default:
       break;

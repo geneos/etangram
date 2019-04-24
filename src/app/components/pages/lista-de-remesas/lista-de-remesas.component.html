@@ -33,8 +33,8 @@
         <mat-checkbox (click)="applyFilter()" formControlName="soloPendientes">Solo Pendientes</mat-checkbox>
     </div>
 </form>
-<button [routerLink]="['/lista-remesas','nuevo']" class="mine-btnbig" mat-flat-button>
-  NUEVO
+<button [routerLink]="['/lista-remesas','nuevo']" class="mine-btnbig" mat-flat-button style="margin-bottom:10px;">
+  NUEVA
 </button>
 <!-- [routerLink]="['/proveedores','nuevo']" -->
 <div class="mat-elevation-z8" [ngStyle]="{'display':!loading ? 'block' : 'none' }">

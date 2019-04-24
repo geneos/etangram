@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
-
+import { AppConfig } from 'src/app/app.config';
 @Injectable({
   providedIn: 'root'
 })
 export class UnidadMedidaService {
 
-  preUrl:string = PreUrl;
- 
-  constructor( private http:HttpClient ) { }
+  preUrl:string = this.config.getConfig('api_url')
+
+  constructor(private http:HttpClient, private config: AppConfig) { }
+
 
   getUnidadMedida( token:string ){
     const headers = new HttpHeaders({

@@ -6,7 +6,7 @@ import { Http } from '@angular/http';
 //import { map } from 'rxjs/internal/operators/map';
 import 'rxjs/Rx';
 import { map } from "rxjs/operators";
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 
 @Injectable()

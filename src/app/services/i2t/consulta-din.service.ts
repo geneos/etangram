@@ -3,7 +3,7 @@ import { Injectable, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpHandler } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { stringify } from '@angular/compiler/src/util';
-
+import { AppConfig } from 'src/app/app.config';
 // const operadores: Map<string, string> = [
 // const operadores = [
 //   { equal : 'eq'},  //igual que
@@ -50,7 +50,7 @@ var parametrosServiceFactory;
 export class ConsultaDinamicaService {
 
   //compraProveedores:any [] = [];
-  preUrl:string = PreUrl;
+  preUrl:string = this.config.getConfig('api_url')
 
   //servicio a usar
   // servicio: ConsDinService;
@@ -63,7 +63,7 @@ export class ConsultaDinamicaService {
   // datosFiltrosAct = this.datosFiltros.asObservable();
   datosFiltrosAct: Observable<Map<string, string>>;
 
-  constructor(public http:HttpClient,
+  constructor(public http:HttpClient, private config: AppConfig,
               private injectorInstance: Injector) {
     let mapa = new Map<string, string>();
     this.datosFiltros = new BehaviorSubject<Map<string, string>>(mapa);
@@ -295,10 +295,10 @@ export class ConsultaDinamicaService {
 // export function serviceFactory(nombreReporte: string){
   
 // export function serviceFactory(parametros: any){
-export function ConsDinServiceFactory(http: HttpClient){
+export function ConsDinServiceFactory(http: HttpClient, config: AppConfig){
   console.log('inyectando servicio');
 
-  return new RefContablesService(http);
+  return new RefContablesService(http, config);
 
   // console.log('Se generará el servicio correspondiente con: ' + parametros);
   // console.log('nombre: ', parametros.nombre);

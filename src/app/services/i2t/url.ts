@@ -10,18 +10,17 @@ const preUrlImage:string = "http://172.30.0.129:5002/";
 
 export class PreUrl {
 
+  //api_url_var: string;
+  static api_url_var: string;
+
+  constructor(private config: AppConfig){
+    PreUrl.api_url_var = this.config.getConfig('api_url');
+}
+
   static getUrl(): string {
-    throw new Error("Method not implemented.");
+    return PreUrl.api_url_var
+    //throw new Error("Method not implemented.");
   }
-  
-    api_url_var: string;
-
-    constructor(private config: AppConfig){
-        this.api_url_var = this.config.getConfig('api_url');
-    }
-
-    getUrl(){
-        return this.api_url_var
-    }
+    
 
 }

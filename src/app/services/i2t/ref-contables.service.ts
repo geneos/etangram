@@ -4,16 +4,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
 import { ConsDinService } from 'src/app/classes/cons-din-service';
 import { RefContable } from 'src/app/interfaces/ref-contable.interface';
-
+import { AppConfig } from 'src/app/app.config';
 @Injectable({
   providedIn: 'root'
 })
 export class RefContablesService implements ConsDinService {
 
   //compraProveedores:any [] = [];
-  preUrl:string = PreUrl;
+  preUrl:string = this.config.getConfig('api_url')
 
-  constructor( private http:HttpClient ) { }
+  constructor(private http:HttpClient, private config: AppConfig) { }
 
   login( body:string ){
     const headers = new HttpHeaders({

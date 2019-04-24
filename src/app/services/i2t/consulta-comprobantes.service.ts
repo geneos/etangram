@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
-
+import { AppConfig } from 'src/app/app.config';
 @Injectable({
   providedIn: 'root'
 })
@@ -9,16 +9,16 @@ export class ConsultaComprobantesService {
 
   Proveedor:any [] = [];
 
-  urlProveedor:string = PreUrl;
+  preUrl:string = this.config.getConfig('api_url')
 
-  constructor(private http:HttpClient) { }
+  constructor( private http:HttpClient, private config: AppConfig ) { }
   login( body:string ){
     const headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
 
     let query = "login/";
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }
@@ -29,7 +29,7 @@ export class ConsultaComprobantesService {
     });
 
       let query = "api/proc/CabeceraGet";
-      let url = this.urlProveedor + query;
+      let url = this.preUrl + query;
 
       return this.http.post( url, body, { headers });
   }

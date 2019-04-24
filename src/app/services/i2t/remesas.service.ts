@@ -3,15 +3,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
 import { Body } from '@angular/http/src/body';
-
+import { AppConfig } from 'src/app/app.config';
 @Injectable({
   providedIn: 'root'
 })
 export class RemesasService {
 
-  preUrl:string = PreUrl;
+  preUrl:string = this.config.getConfig('api_url')
 
-  constructor( private http:HttpClient ) { }
+  constructor(private http:HttpClient, private config: AppConfig) { }
 
 // Obtener listado de las remesas
 

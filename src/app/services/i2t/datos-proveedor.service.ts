@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PreUrl } from './url';
-
+import { AppConfig } from 'src/app/app.config';
 @Injectable({
   providedIn: 'root'
 })
@@ -9,9 +9,9 @@ export class DatosProveedorService {
 
   Proveedor:any [] = [];
 
-  urlProveedor:string = PreUrl;
+  preUrl:string = this.config.getConfig('api_url')
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private config: AppConfig) { }
 
   login( body:string ){
     const headers = new HttpHeaders({
@@ -19,7 +19,7 @@ export class DatosProveedorService {
     });
 
     let query = "login/";
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }
@@ -31,7 +31,7 @@ export class DatosProveedorService {
     });
 
     let query = "api/proc/datosproveedor_GET_SP/";
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }
@@ -43,7 +43,7 @@ export class DatosProveedorService {
     });
 
     let query = "api/proc/proveedores_impuesto_GET_SP/"
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }
@@ -55,7 +55,7 @@ export class DatosProveedorService {
     });
 
     let query = "api/proc/proveedores_formulario_GET_SP/"
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }
@@ -67,7 +67,7 @@ export class DatosProveedorService {
     });
 
     let query = "api/proc/datosproveedor_UPD_SP/"
-    let url = this.urlProveedor + query;
+    let url = this.preUrl + query;
 
     return this.http.post( url, body, { headers } );
   }

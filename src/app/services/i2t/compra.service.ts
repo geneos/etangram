@@ -11,7 +11,7 @@ export class CompraService {
   compraProveedores:any [] = [];
 
   //preUrl:string = "http://tstvar.i2tsa.com.ar:3000/";
-  preUrl:string = PreUrl;
+  preUrl:string = PreUrl.getUrl();
 
   constructor( private http:HttpClient ) { }
 

@@ -27,6 +27,11 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 //tabla dinamica
 import { CdkTableModule } from '@angular/cdk/table';
 
+//config file externo
+import { APP_INITIALIZER } from '@angular/core';
+import {AppConfig} from './app.config';
+//import {HttpModule} from '@angular/http';
+
 //
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/shared/navbar/navbar.component';
@@ -94,7 +99,9 @@ import { ImputarComprobantesComponent } from './components/pages/imputar-comprob
 import { ImputCompComponent } from './components/shared/modals/imput-comp/imput-comp.component';
 import { LiquidacionPorLoteComponent } from './components/pages/abm-liquidaciones/liquidacion-por-lote/liquidacion-por-lote.component';
 
-
+export function initConfig(config: AppConfig) {
+  return () => config.load();
+}
 
 @NgModule({
   declarations: [
@@ -184,7 +191,14 @@ import { LiquidacionPorLoteComponent } from './components/pages/abm-liquidacione
     {provide: MAT_DATE_LOCALE, useValue: 'es-AR'},
     {provide: ConsDinService, useFactory: ConsDinServiceFactory, deps: [HttpClient, ConsDinConfig]},
     ConsDinConfig,
-    UserService
+    UserService,
+    AppConfig,
+          { 
+            provide: APP_INITIALIZER,
+            useFactory: initConfig,
+            deps: [AppConfig],
+            multi: true 
+          }
   ],
   bootstrap: [AppComponent],
 

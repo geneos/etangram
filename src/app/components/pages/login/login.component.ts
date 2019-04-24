@@ -7,6 +7,8 @@ import { User } from 'src/app/components/shared/user/user.model';
 import { PlatformLocation } from '@angular/common';
 import { UserService } from 'src/app/services/i2t/user.service';
 import { Router, ActivatedRoute } from "@angular/router";
+import { Http } from '@angular/http';
+import { AppConfig } from 'src/app/app.config';
 
 // key that is used to access the data in local storage
 const TOKEN = '';
@@ -35,10 +37,13 @@ export class LoginComponent implements OnInit {
   forma: FormGroup;
   formaFormulario: FormGroup;
   username: any;
+
   constructor(private _LoginService:LoginService, @Inject(SESSION_STORAGE) private storage: StorageService,
               private userService: UserService,
               private route:ActivatedRoute,private router: Router,
-              private location: PlatformLocation) {
+              private location: PlatformLocation,private http: Http, private config: AppConfig) {
+                
+    console.log(this.config.getConfig('api_url'));
 
     this.forma = new FormGroup({
       'usuario': new FormControl(''),

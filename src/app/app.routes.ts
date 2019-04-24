@@ -46,7 +46,7 @@ const APP_ROUTES: Routes = [
   { path: 'plan-cuentas/alta/:id', component: AltaPlanDeCuentasComponent },
   { path: 'plan-cuentas/alta/:id/:padre', component: AltaPlanDeCuentasComponent },
   { path: 'prueba', component: TreeComponent },
-  { path: 'min-contables', component: AbmMinContablesComponent },
+  /*{ path: 'min-contables', component: AbmMinContablesComponent },*/
   { path: 'min-contables/:id', component: AltaMinContableComponent },
   { path: 'consulta', component: ConsultaDinamicaComponent },
   { path: 'consulta/:id', component: ConsultaDinamicaComponent },

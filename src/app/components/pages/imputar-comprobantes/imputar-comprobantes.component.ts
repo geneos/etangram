@@ -63,11 +63,9 @@ export class ImputarComprobantesComponent implements OnInit {
   }
 
   filtro() {
-    //this.forma.controls['nombre'].statusChanges.subscribe((nameFilterValue) => {
       this.filteredValues['Razon_Social'] = this.forma.controls['nombre'].value;
       this.dataSource.filter = JSON.stringify(this.filteredValues);
-  //  });
-    this.dataSource.filterPredicate = this.customFilterPredicate();
+      this.dataSource.filterPredicate = this.customFilterPredicate();
   }
 
   customFilterPredicate() {

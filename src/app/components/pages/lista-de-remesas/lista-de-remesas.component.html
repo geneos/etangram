@@ -77,7 +77,7 @@
         <th mat-header-cell *matHeaderCellDef> Acciones </th>
         <td mat-cell *cdkCellDef="let element">
         <i matTooltip="Editar Remesa" (click)="editarRemesa(element.id,element.estado)" class="material-icons" [ngStyle]="{'cursor': element.estado === 'Provisorio' ? 'pointer' : 'auto'}">edit</i>
-        <i matTooltip="Consulta" class="material-icons" style="cursor: pointer">visibility</i>
+        <i matTooltip="Consulta" class="material-icons" style="cursor: pointer">search</i>
         <i matTooltip="Borrar Remesa" (click)="borrarRemesa(element.id)" class="material-icons" style="cursor: pointer">delete</i>
         <i matTooltip="Liquidacion" class="material-icons" style="cursor: pointer">attach_money</i></td>
       </ng-container>

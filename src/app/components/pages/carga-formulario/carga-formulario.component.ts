@@ -121,7 +121,7 @@ export class CargaFormularioComponent implements OnInit {
   }
 
   guardar(){
-  if(this.urlImagen === "" || this.urlImagen === this.urlAnterior){
+  if(this.urlImagen === ""){
     this.openSnackBar('No se selecionó ninguna imagen')
   } else {
     if(this.formData[0].periodicidad === "M"){

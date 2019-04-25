@@ -1,9 +1,13 @@
 <!-- <pre>{{loading}}</pre>
 <pre>a cargar: {{partesACargar}}</pre>
 <pre>Cargadas: {{partesCargadas}}</pre>
-<pre>Iguales: {{(partesCargadas==partesACargar)}}</pre> -->
-<!-- <pre *ngIf="marca">marca: {{marca}}</pre> -->
-<!-- <pre>marca: {{marca.name}}</pre> -->
+<pre>Iguales: {{(partesCargadas==partesACargar)}}</pre>
+<pre>form deshabilitado?: {{forma.disabled}}</pre>
+<pre>form invalido|incompleto?: {{!forma.valid}}</pre>
+<pre>modo?: {{configConsulta.accion}}</pre>
+<pre>entonces, deshabilito por el modo?: {{configConsulta.accion == 'ver'}}</pre>
+<pre>entonces, deshabilito por el modo? (corregido para nuevos): {{(configConsulta.accion == 'ver' && id != 'nuevo' )}}</pre>
+ -->
 <div *ngIf="loading&&!logueado">
   <p style="text-align:center; font-weight: bold">No se ha iniciado sesión</p>
  </div>
@@ -1079,10 +1083,11 @@
     <div class="col s12" style="text-align: right;">
       <!-- todo cambiar -->
       <!-- <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" [disabled]="!forma.valid"> -->
-      <button type="submit" class="mine-btnbig" mat-flat-button style="margin-right:10px;" >
+      <!-- <button type="submit" [disabled]="forma.disabled" class="mine-btnbig" mat-flat-button style="margin-right:10px;" > -->
+      <button type="submit" [disabled]="!forma.valid || (configConsulta.accion == 'ver' && id != 'nuevo' )" class="mine-btnbig" mat-flat-button style="margin-right:10px;" >
         GUARDAR
       </button>
-      <button type="reset" class="mine-btnbig-grey" mat-flat-button>
+      <button type="reset" [disabled]="(configConsulta.accion == 'ver' && id != 'nuevo' )" class="mine-btnbig-grey" mat-flat-button>
         CANCELAR
       </button>
       <!-- <a (click)="testcampos()" class="mine-btnbig-grey" mat-flat-button>

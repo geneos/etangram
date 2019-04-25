@@ -266,10 +266,11 @@ export class AltaArticuloComponent implements OnInit {
       unidadMedidaBase: new FormControl(),
       aplicaConversionUnidadPrecio: new FormControl(),
       unidadMedidaLP: new FormControl(),
-      largo: new FormControl(null, [Validators.pattern("^([0-9]{12})$")]),
-      ancho: new FormControl(null, [Validators.pattern("^([0-9]{12})$")]),
-      profundidad: new FormControl(null, [Validators.pattern("^([0-9]{12})$")]),
-      m3: new FormControl(null, [Validators.pattern("^([0-9]{12})$")]),
+      largo: new FormControl(null, [Validators.pattern("^([0-9]{1,12})$")]),
+      ancho: new FormControl(null, [Validators.pattern("^([0-9]{1,12})$")]),
+      profundidad: new FormControl(null, [Validators.pattern("^([0-9]{1,12})$")]),
+      // m3: new FormControl(null, [Validators.pattern("^([0-9]{1,12})$")]),
+      m3: new FormControl(null, []),
         //Unidades de medida alternativas
         // unidadesAlternativas: this.FormBuilder.array([]),
         umCompras: new FormControl(),
@@ -609,10 +610,12 @@ construirFoto(){
             if(this.mData.dataset.length>0){
               this.monedasAll = this.mData.dataset;
               // this.forma.controls['moneda'].setValue(this.moneda.name);
-                this.partesCargadas = this.partesCargadas +1;
+              this.partesCargadas = this.partesCargadas +1;
+              console.log('Sumando 1 al contador porque se llenó Monedas');
             }
             else{
               this.monedasAll = null;
+              console.log('Error al llenar el combobox de Monedas');
             }
           }
 
@@ -633,8 +636,10 @@ construirFoto(){
             if(this.cbData.dataset.length>0){
               this.catsBloqueoAll = this.cbData.dataset;
               this.partesCargadas = this.partesCargadas +1;
+              console.log('Sumando 1 al contador porque se llenó Cats. Bloqueo');
             } else {
               this.catsBloqueoAll = null;
+              console.log('Error al llenar el combobox de Cats. Bloqueo');
             }
           }
     });
@@ -654,8 +659,10 @@ construirFoto(){
             if(this.grcaData.dataset.length>0){
               this.gruposRefContableArticuloAll = this.grcaData.dataset;
               this.partesCargadas = this.partesCargadas +1;
+              console.log('Sumando 1 al contador porque se llenó Grupos');
             } else {
               this.gruposRefContableArticuloAll = null;
+              console.log('Error al llenar el combobox de Grupos');
             }
           }
     });
@@ -675,8 +682,10 @@ construirFoto(){
             if(this.aliData.dataset.length>0){
               this.alicuotasAll = this.aliData.dataset;
               this.partesCargadas = this.partesCargadas +1;
+              console.log('Sumando 1 al contador porque se llenó Alicuotas');
             } else {
               this.alicuotasAll = null;
+              console.log('Error al llenar el combobox de Alicuotas');
             }
           }
     });
@@ -696,8 +705,10 @@ construirFoto(){
             if(this.ali2Data.dataset.length>0){
               this.alicuotas2All = this.ali2Data.dataset;
               this.partesCargadas = this.partesCargadas +1;
+              console.log('Sumando 1 al contador porque se llenó Alicuotas 2');
             } else {
               this.alicuotas2All = null;
+              console.log('Error al llenar el combobox de Alicuotas 2');
             }
           }
     });
@@ -718,8 +729,10 @@ construirFoto(){
             if(this.umData.dataset.length>0){
               this.unidadesMedidaAll = this.umData.dataset;
               this.partesCargadas = this.partesCargadas +1;
+              console.log('Sumando 1 al contador porque se llenó Unidades');
             } else {
               this.unidadesMedidaAll = null;
+              console.log('Error al llenar el combobox de Unidades');
             }
           }
     });
@@ -739,9 +752,13 @@ construirFoto(){
             if(this.aaData.dataset.length>0){
               this.atributosArticuloAll = this.aaData.dataset;
               this.partesCargadas = this.partesCargadas +1;
-              // this.buscarValoresAtributos();
+              console.log('Sumando 1 al contador porque se llenó Atributos');
+              if (this.id == "nuevo"){
+                this.buscarValoresAtributos();
+              }
             } else {
               this.atributosArticuloAll = null;
+              console.log('Error al llenar el combobox de Atributos');
             }
           }
     });
@@ -803,11 +820,13 @@ construirFoto(){
                 //
               } else {
                 this.valoresAtributosArticuloAll[indice] = null;
+                console.log('Error al llenar el combobox de Valores de atributos parte '+ indice);
               }
             }
           });
         });
-        this.partesCargadas = this.partesCargadas +1; 
+    this.partesCargadas = this.partesCargadas +1;
+    console.log('Sumando 1 al contador porque se llenó Valores'); 
   }
   //#endregion datosCombobox
 
@@ -1262,7 +1281,8 @@ construirFoto(){
         "campo2": this.forma.controls['idCampo2'].value,
         "campo3": this.forma.controls['idCampo3'].value,
         "estado": this.forma.controls['estado'].value,// "Activo", 
-        "cat_b": this.forma.controls['categoria_bloqueo'].value,
+        // "cat_b": this.forma.controls['categoria_bloqueo'].value,
+        "id_cat_bloqueo": this.forma.controls['categoria_bloqueo'].value,
         // "Obs_auto_vta":this.forma.controls['obsRegistroAutoVta'].value, // , 0 false , 1 true
         // "Obs_auto_cpa":this.forma.controls['obsRegistroAutoCpa'].value, //,0 false , 1 true
         // "Obs_ingr_cpa":this.forma.controls['obsIngresoCpa'].value, //,0 false , 1 true
@@ -1397,6 +1417,7 @@ construirFoto(){
         "pesableE": this.forma.controls['Pesable_Estandar'].value,
         "idUM": this.forma.controls['unidadMedidaBase'].value,//char(36),id de UM,consulta dinamica,
         "idUM1": this.forma.controls['unidadMedidaLP'].value,// char(36) id de UM,consulta dinamica,
+        //todo cambiar por "" si es necesario
         "idUM2": this.forma.controls['umCompras'].value,
         "idUM3": this.forma.controls['umOCompra'].value,
         "idUM4": this.forma.controls['umPCompra'].value,

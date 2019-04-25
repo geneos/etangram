@@ -4,4 +4,8 @@ import { Injectable } from '@angular/core';
 export class ConsDinConfig {
     nombreServicio: string;
     accion: string;
+
+    constructor(){
+        this.accion = 'ver';
+    }
 }

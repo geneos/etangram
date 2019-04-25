@@ -265,11 +265,13 @@ export class AltaProveedorComponent implements OnInit {
       nroDocumento: new FormControl('',Validators.required),
       facCalle: new FormControl('',Validators.required),
       facCiudad: new FormControl('',Validators.required),
+        facLocID: new FormControl(),
       facProvincia: new FormControl('',Validators.required),
       facCodigoPostal: new FormControl('', Validators.required, this.existeLocalidadFac),
       facPais: new FormControl('',Validators.required),
       envCalle: new FormControl(),
       envCiudad: new FormControl(),
+        envLocID: new FormControl(),
       envProvincia: new FormControl(),
       envCodigoPostal: new FormControl(null, [], this.existeLocalidadEnv),
       envPais: new FormControl(),
@@ -1431,12 +1433,15 @@ export class AltaProveedorComponent implements OnInit {
                 this.forma.controls['nroDocumento'].setValue(this.provCabecera.nro_documento);
                 this.forma.controls['facCalle'].setValue(this.provCabecera.direccion_compra);
                 this.forma.controls['facCiudad'].setValue(this.provCabecera.ciudad_compra);
-                this.forma.controls['facProvincia'].setValue(this.provCabecera.provincia_compra);
-                this.forma.controls['facCodigoPostal'].setValue(this.provCabecera.codigopostal_compra);
-                this.forma.controls['facPais'].setValue(this.provCabecera.pais_compra);
-                this.forma.controls['envCalle'].setValue(this.provCabecera.direccion_envio);
-                this.forma.controls['envCiudad'].setValue(this.provCabecera.ciudad_envio);
-                this.forma.controls['envProvincia'].setValue(this.provCabecera.provincia_envio);
+                  //todo ver de donde sale en el get
+                  // this.forma.controls['facLocID'].setValue(this.provCabecera.ciudad_compra);
+                  this.forma.controls['facProvincia'].setValue(this.provCabecera.provincia_compra);
+                  this.forma.controls['facCodigoPostal'].setValue(this.provCabecera.codigopostal_compra);
+                  this.forma.controls['facPais'].setValue(this.provCabecera.pais_compra);
+                  this.forma.controls['envCalle'].setValue(this.provCabecera.direccion_envio);
+                  this.forma.controls['envCiudad'].setValue(this.provCabecera.ciudad_envio);
+                  // this.forma.controls['envLocID'].setValue(this.provCabecera.ciudad_compra);
+                  this.forma.controls['envProvincia'].setValue(this.provCabecera.provincia_envio);
                 this.forma.controls['envCodigoPostal'].setValue(this.provCabecera.codigopostal_envio);
                 this.forma.controls['envPais'].setValue(this.provCabecera.pais_envio);
                 this.forma.controls['telefono1'].setValue(this.provCabecera.telefono);
@@ -2056,11 +2061,13 @@ export class AltaProveedorComponent implements OnInit {
         "p_fac_ciudad": this.localidadFac.name, //"Lopez", //Id de la consulta dinámica a la tabla tg01_localidades
         "p_fac_prov": this.provinciaFac.name, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
         "p_fac_cp": this.forma.controls['facCodigoPostal'].value,
+          "p_id_localidad_facturacion": this.localidadFac.id,
         "p_fac_pais": this.paisFac.name,//this.paisFac.id, //Id de la consulta dinámica a la tabla tg01_paises
         "p_env_calle": this.forma.controls['envCalle'].value,
         "p_env_ciudad": this.localidadEnv.id, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_localidades
         "p_env_prov": this.provinciaEnv.id, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
         "p_env_cp": this.forma.controls['envCodigoPostal'].value,
+          "p_id_localidad_envio": this.localidadEnv.id,
         "p_env_pais":  this.paisEnv.name,//this.paisEnv.id, //Id de la consulta dinámica a la tabla tg01_paises
         "p_tel_1": this.forma.controls['telefono1'].value,
         "p_tel_2": this.forma.controls['telefono2'].value,
@@ -2398,11 +2405,13 @@ export class AltaProveedorComponent implements OnInit {
       "p_fac_ciudad": this.localidadFac.name, //"Lopez", //Id de la consulta dinámica a la tabla tg01_localidades
       "p_fac_prov": this.provinciaFac.name, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
       "p_fac_cp": this.forma.controls['facCodigoPostal'].value,
+        "p_id_localidad_facturacion": this.localidadFac.id,
       "p_fac_pais": this.paisFac.id, //Id de la consulta dinámica a la tabla tg01_paises
       "p_env_calle": this.forma.controls['envCalle'].value,
       "p_env_ciudad": this.localidadEnv.id, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_localidades
       "p_env_prov": this.provinciaEnv.id, //"Santa Fe", //Id de la consulta dinámica a la tabla tg01_provincias
       "p_env_cp": this.forma.controls['envCodigoPostal'].value,
+        "p_id_localidad_envio": this.localidadEnv.id,
       "p_env_pais":  this.paisEnv.id, //Id de la consulta dinámica a la tabla tg01_paises
       "p_tel_1": this.forma.controls['telefono1'].value,
       "p_tel_2": this.forma.controls['telefono2'].value,

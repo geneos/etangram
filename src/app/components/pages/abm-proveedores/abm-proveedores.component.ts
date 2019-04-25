@@ -77,9 +77,9 @@ export class AbmProveedoresComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
+    /* this.paginator._intl.itemsPerPageLabel = 'Artículos por página:';
     this.constProveedores.sort = this.sort;
-    this.constProveedores.paginator = this.paginator;
+    this.constProveedores.paginator = this.paginator; */
   }
 
   openSnackBar(message: string) {

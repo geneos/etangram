@@ -102,7 +102,7 @@ export class CdFiltrosComponent implements AfterViewInit, OnInit {
         console.log('no hay valores para llenar el filtro actual');
         valorAEnviar = null;
       }
-
+      console.log('Armando control de filtro: ', atributoActual.tipo_dato,atributoActual.desc_atributo,atributoActual.valores,atributoActual.atributo_bd,valorAEnviar);
       let control = this.generadorDeComponentes.getComponent(atributoActual.tipo_dato, //tipo de componente
                                                               atributoActual.desc_atributo, //titulo
                                                               'Esta es una prueba',//placeholder

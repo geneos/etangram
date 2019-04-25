@@ -993,6 +993,11 @@ export class ConsultaDinamicaComponent implements OnInit, AfterViewInit {
                 // this.constDatos.sort = this.sort;
                 // this.constDatos.paginator = this.paginator;
                 console.log('Lista mostrada vacía');
+                this.loading = false;
+
+                if (this.consData.returnset[0].RCode=="-1020"){
+                  this.openSnackBar('Filtro inválido. Solicite que se compruebe que se haya ingresado el filtro correctamente en base de datos (tabla "tg06_tg_atributos").');
+                }
               }
             }
             //console.log(this.refContablesAll);

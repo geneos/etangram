@@ -26,7 +26,7 @@ export class NumeroComponent implements CompGen, OnInit, AfterViewInit, OnChange
   ngOnInit(){
     console.log('constructor de numero ngoninit: ', this.data);
     // this.datosInternos = 'test seteo literal';
-    this.datosInternos = this.data.datos.valor;
+    this.datosInternos = Number(this.data.datos.valor);
     // this.datosInternos = this.data.valor;
   } 
   

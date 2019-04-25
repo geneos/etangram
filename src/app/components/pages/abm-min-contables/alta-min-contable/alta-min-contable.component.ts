@@ -20,6 +20,7 @@ import { MinContablesService } from 'src/app/services/i2t/min-contables.service'
 import { SelectionModel } from '@angular/cdk/collections';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 import { Subscription } from 'rxjs';
+import { UsuariosService } from 'src/app/services/i2t/usuarios.service'
 import { CdkRowDef } from '@angular/cdk/table';
 import { SESSION_STORAGE, StorageService } from 'angular-webstorage-service';
 import { filter } from "rxjs/operators";
@@ -46,6 +47,7 @@ var auxDebe, auxHaber:any;
 export class AltaMinContableComponent implements OnInit {
   history: History;
   dataDet: any;
+  usuario: any;
 /*
 //todo borrar, cambiar por lo real
 datos =
@@ -111,7 +113,7 @@ datos =
 */
   // editingRenglones:boolean = false;
   // agregarReng:boolean = true;
-
+auxresp: any;
   editingCabecera:boolean = true;
   addingReferencia:boolean = false;
   addingItem:boolean = false;
@@ -214,6 +216,7 @@ urlAnterior: string;
               private _cajasService: CajasService,
               private route:ActivatedRoute,
               private router: Router,
+              private _usuariosService:UsuariosService,
               private activatedRoute: ActivatedRoute,
               public snackBar: MatSnackBar,
               public ngxSmartModalService: NgxSmartModalService,
@@ -229,7 +232,7 @@ urlAnterior: string;
               } else {
                 this.loading = false;
               } 
-              
+              this.usuario = this.obtenerIDUsuario()
     this.forma = new FormGroup({
       'fecha': new FormControl('',Validators.required),
       'tipo': new FormControl(),
@@ -278,6 +281,8 @@ urlAnterior: string;
         this.editingCabecera=true;
         this.buscarMinutasContables(this.cabeceraId);
         //cargar lista de referencias contables
+        this.forma.controls['fecha'].disable();
+        this.forma.controls['observaciones'].enable();
         if (this.minutaContable != null){
           this.buscarMinutasContablesDet(this.minutaContable.id);
           //habilitar campos de detalles/renglones
@@ -286,6 +291,7 @@ urlAnterior: string;
           this.formaReferencias.controls['centroDeCosto'].enable();
           this.formaReferencias.controls['debe'].enable();
           this.formaReferencias.controls['haber'].enable();
+          
   
         }
       } else  {
@@ -600,7 +606,7 @@ urlAnterior: string;
                   this.forma.controls['fecha'].setValue(fecha);
 
                   this.forma.controls['observaciones'].setValue(this.minutaContable.description);
-                  this.forma.controls['observaciones'].disable();
+                //  this.forma.controls['observaciones'].disable();
 
                   this.forma.controls['caja'].setValue(this.minutaContable.idcajaorigen);
                   this.forma.controls['caja'].disable();
@@ -1508,9 +1514,9 @@ urlAnterior: string;
     if(Number(this.totaldebe) == Number(this.totalhaber)){
       let jsbody = {
         "ID_Comprobante":this.cabeceraId,
-        "ID_Usuario": '72e55348-8e82-7c98-4227-4e1731c20080', //morecchia //todo cambiar por uno real,
+        "ID_Usuario": this.usuario.id, //'72e55348-8e82-7c98-4227-4e1731c20080', //morecchia //todo cambiar por uno real,
         "P_Total": Number(this.totalhaber) - Number(this.totaldebe),
-        "P_Obs": this.minutaContable.description, //todo revisar
+        "P_Obs": this.forma.controls['observaciones'].value, //todo revisar
         "Id_Cliente": this.parametrosSistema.account_id1_c,
         "P_Estado": 1,
         "P_UpdImp":"S"
@@ -1520,9 +1526,10 @@ urlAnterior: string;
       console.log(jsonbody);
 
       this._minContableService.putCabecera( jsonbody,this.token ).subscribe( resp => {
-        //console.log(resp.returnset[0].RId);
+        console.log(resp);
         this.respCabecera = resp;
-        if(this.respCabecera.returnset[0].RCode=="-6003"){
+        if(this.respCabecera.returnset.length!=0){
+          if(this.respCabecera.returnset[0].RCode=="-6003"){
           //token invalido
           // this.refContable = null;
           /*let jsbody = {"usuario":"usuario1","pass":"password1"}
@@ -1535,16 +1542,20 @@ urlAnterior: string;
               this.confirmar();
             });*/
             console.log('token invalido')
+          } else {
+            console.log(this.respCabecera);
+            this.openSnackBar('No se pudo confirmar la Minuta Contable');
+          }
         }
         else{
           console.log(this.respCabecera);
 
-          if (this.respCabecera.returnset[0].RCode === 0){
+          //if (this.respCabecera.returnset[0].RCode === 0){
             this.openSnackBar('Se confirmó la Minuta Contable');
-          }
-          else{
-            this.openSnackBar('No se pudo confirmar la Minuta Contable');
-          }
+          //}
+          //else{
+          //  this.openSnackBar('No se pudo confirmar la Minuta Contable');
+          //}
         }
 
       })
@@ -1553,7 +1564,41 @@ urlAnterior: string;
       this.openSnackBar('El Debe y el Haber deben tener el mismo importe');
     }
   }
+  obtenerIDUsuario(){
+    //todo: traer usuario de login, ahora no tienen relación en la base
+    this._usuariosService.getUsuarioPorUsername('usuario1', this.token)
+    .subscribe( resp => {
+      //console.log(resp);
+      this.auxresp = resp;
+      console.log(this.auxresp);
+      if(this.auxresp.returnset[0].RCode=="-6003"){
+        //token invalido
+        console.log('token invalido');
+        //this.refContable = null;
+        /*let jsbody = {"usuario":"usuario1","pass":"password1"}
+        let jsonbody = JSON.stringify(jsbody);
+        this._refContablesService.login(jsonbody)
+          .subscribe( dataL => {
+            console.log(dataL);
+            this.loginData = dataL;
+            this.token = this.loginData.dataset[0].jwt;
+            this.obtenerIDUsuario();
+          });*/
+        } else {
+          if (this.auxresp.returnset[0].RCode=="1"){
+            //obtenido ok
+            console.log('obtenido: ');
+            console.log(this.auxresp.dataset[0]);
+            this.usuario = this.auxresp.dataset[0];
+          } else {
+            //error al obtener el id de usuario
+            this.openSnackBar("Error. No se pudo obtener el id de usuario.");
+          }
+      }
+    });
 
+    return this.usuario;
+  }
 
   /*
   confirmar(){

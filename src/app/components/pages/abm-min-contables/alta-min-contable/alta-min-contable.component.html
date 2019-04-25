@@ -224,17 +224,17 @@
 
 <div class="row" style="margin-top: 10px; width: 100%; text-align: right;">
   <button type="submit" class="mine-btnbig" mat-flat-button 
-    *ngIf="(editingCabecera && !existe) || (!editingCabecera )" [disabled]="!forma.valid">
+    *ngIf="(editingCabecera && !existe)" [disabled]="!forma.valid">
     GUARDAR
   </button>
   <a class="mine-btnbig" (click)="confirmar()" mat-flat-button style="margin-left: 10px"
     *ngIf="!editingCabecera" [disabled]="editingCabecera||addingReferencia||editingAI">
     CONFIRMAR
   </a>
-  <a class="mine-btnbig-grey" (click)="cancelar()"   mat-flat-button style="margin-left: 10px"
+  <!-- <a class="mine-btnbig-grey" (click)="cancelar()"   mat-flat-button style="margin-left: 10px"
     *ngIf="!editingCabecera" [disabled]="false">
     CANCELAR
-  </a>
+  </a> -->
 </div>
 </form>
 

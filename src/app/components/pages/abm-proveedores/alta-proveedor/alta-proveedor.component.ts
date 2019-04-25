@@ -3438,11 +3438,16 @@ export class AltaProveedorComponent implements OnInit {
       .subscribe( respC => {
         console.log("Respuesta de verificaCuit: ", respC)
         this.respCuit = respC
-        if(this.respCuit.statusCode == 500){
-          this.forma.controls['estadoAfip'].setValue('');
-          
+        if(this.forma.controls['cuit'].value.length==11){
+          if(this.respCuit.statusCode == 500){
+            this.forma.controls['estadoAfip'].setValue('');
+            console.log('cuit no existe') 
+          } else {
+            this.forma.controls['estadoAfip'].setValue(this.respCuit.personaReturn.datosGenerales.estadoClave)
+          }
         } else {
-          this.forma.controls['estadoAfip'].setValue(this.respCuit.personaReturn.datosGenerales.estadoClave)
+          this.forma.controls['estadoAfip'].setValue('');
+          console.log('formato de cuit no valido') 
         }
         
       })

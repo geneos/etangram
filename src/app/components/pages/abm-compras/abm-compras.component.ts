@@ -566,7 +566,7 @@ export class AbmComprasComponent implements OnInit {
           this.constCbteAfip = this.datosCbteAfip.ComprobanteConstatarResult;
           this.resultado = this.datosCbteAfip.ComprobanteConstatarResult.Resultado;
          
-      if(this.resultado = 'A'){
+      if(this.resultado == 'A'){
         this.editingCabecera = false;
       } else {
         if(this.datosCbteAfip.statusCode){
@@ -598,14 +598,15 @@ export class AbmComprasComponent implements OnInit {
         this.openSnackBar(this.obsMsg);
       }
          
-        })
+      
 
-  if(this.resultado = 'R'){
+  if(this.resultado == 'R'){
   
   this.editingCabecera = true;
    // FIN CONSTATACION COMPROBANTE AFIP
 
   } else {
+
     this.editingCabecera = false;
 
     let jsbody = {
@@ -651,6 +652,7 @@ export class AbmComprasComponent implements OnInit {
     this.forma.controls['totalCabecera'].disable();
     this.forma.controls['expediente'].disable();
   }
+})
   
 }
   guardarArticulo(){

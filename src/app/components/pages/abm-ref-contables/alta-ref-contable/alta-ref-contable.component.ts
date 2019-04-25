@@ -201,7 +201,10 @@ export class AltaRefContableComponent implements OnInit {
                   this.forma.controls['id_ref_contable'].setValue(this.refContable.id);
                   this.forma.controls['id_ref_contable'].disable();
                   this.forma.controls['nombre_ref_contable'].setValue(this.refContable.name);
-                  this.forma.controls['cuenta_contable'].setValue(this.refContable.tg01_cuentascontables_id_c);
+                  if (this.refContable.tg01_cuentascontables_id_c !== 'null'){
+                    this.forma.controls['cuenta_contable'].setValue(this.refContable.tg01_cuentascontables_id_c);
+                  }
+
                   //this.forma.controls['cuenta_contable'].disable();
                   this.forma.controls['grupo_financiero'].setValue(this.refContable.idgrupofinanciero);
                   //this.forma.controls['grupo_financiero'].disable();

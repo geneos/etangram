@@ -1,7 +1,6 @@
 <app-loading *ngIf="loading"></app-loading>
 <div [ngStyle]="{'display':loading ? 'none' : 'block' }">
 <h2>REMESAS</h2>
-<button (click)="filtrar()">filtarr</button>
 <mat-expansion-panel [expanded]=true [disabled]=true>
     <mat-expansion-panel-header>
     </mat-expansion-panel-header>
@@ -29,14 +28,22 @@
           </div>
           <!-- <button (click)="applyFilter()">Filtrar</button> -->
     </div>
-    <div class="row" style="margin-top:15px;" *ngIf="!loading">
-
-        <mat-checkbox formControlName="soloPendientes">Solo Pendientes</mat-checkbox>
+    <div class="row" style="margin-top:10px; margin-bottom:5px;">
+      <div class="col s4 m2 l2">
+        <!-- <mat-form-field appearance="outline" floatLabel="always" style="width:100%;"> -->
+          <mat-checkbox style="margin-top:12px !important;" #pendientes formControlName="soloPendientes">Solo Pendientes</mat-checkbox>
+        <!-- </mat-form-field> -->
+      </div>
+      <div class="col s8 m10 l10" style="text-align: right;">
+        <button [routerLink]="['/lista-remesas','nuevo']" class="mine-btnbig" mat-flat-button style="margin-bottom:10px; align: right">
+          NUEVA
+        </button>
+    
+      </div>
+    
     </div>
 </form>
-<button [routerLink]="['/lista-remesas','nuevo']" class="mine-btnbig" mat-flat-button style="margin-bottom:10px;">
-  NUEVA
-</button>
+
 <!-- [routerLink]="['/proveedores','nuevo']" -->
 <div class="mat-elevation-z8" [ngStyle]="{'display':!loading ? 'block' : 'none' }">
 

@@ -74,8 +74,9 @@ export class ListaDeRemesasComponent implements OnInit {
       this.filtrar();
     });
     this.forma.controls['soloPendientes'].valueChanges.subscribe(valor => {
+      console.log(valor)
       // this.filterValues.estado = this.forma.controls['soloPendientes'].value == true ? 'Pendiente' : '';
-      this.filterValues.estado = valor == true ? 'Pendiente' : '';
+      this.filterValues.estado = valor == true ? 'Provisorio' : '';
       // this.applyFilter();
       this.filtrar();
     });
@@ -144,14 +145,14 @@ export class ListaDeRemesasComponent implements OnInit {
       //  this.dataSource.filter = 'Provisorio'
       })
   }
-  applyFilter() {
+  // applyFilter() {
 
-    if (!this.forma.controls['soloPendientes'].value ){
-      this.dataSource.filter = 'Provisorio'
-    } else {
-      this.dataSource.filter = ''
-    }
-   }
+  //   if (!this.forma.controls['soloPendientes'].value ){
+  //     this.dataSource.filter = 'Provisorio'
+  //   } else {
+  //     this.dataSource.filter = ''
+  //   }
+  //  }
 
   editarRemesa(id: string,estado: string){
     if (estado == 'Provisorio'){

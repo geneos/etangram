@@ -76,6 +76,7 @@ export class ImputarComprobantesComponent implements OnInit {
     return myFilterPredicate;
   }
 
+
   obtenerComprobantes(){
     let jsbody = {
       "Razon_Social_Proveedor": "JCABR",
@@ -88,6 +89,7 @@ export class ImputarComprobantesComponent implements OnInit {
       "param_limite": 5,
       "param_offset": 0
     }
+    
     let jsonbody = JSON.stringify(jsbody)
     this._remesasService.postComprobantesImputar(jsonbody, this.token)
       .subscribe( resp =>{

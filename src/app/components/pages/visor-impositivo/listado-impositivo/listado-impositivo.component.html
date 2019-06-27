@@ -1,0 +1,120 @@
+<!-- AGREGAR -->
+<div class="row" style="float: right;">
+  <button mat-fab aria-label="Agregar impuesto" (click)="agregarImpuesto()" style="background-color: #f08377">
+    <mat-icon mat-fab >add</mat-icon>
+  </button>
+</div>
+
+<!-- LISTADO -->
+<div class="row">
+  <table mat-table [dataSource]="_impuestosComprobante" matSort class="mat-elevation-z1"
+    style="font-family: 'Lato', sans-serif !important;">
+
+    <!-- columna Cuenta -->
+    <ng-container matColumnDef="cuenta">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%">
+        Cuenta
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.Nro_RefContable}}
+      </td>
+    </ng-container>
+
+    <!-- columna descripcion -->
+    <ng-container matColumnDef="descripcion">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 15%">
+        Descripcion
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.Descripcion}}
+      </td>
+    </ng-container>
+
+    <!-- columna Impuesto -->
+    <ng-container matColumnDef="impuesto">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 20%">
+        Impuesto
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.Concepto}}
+      </td>
+    </ng-container>
+
+    <!-- columna Imponible -->
+    <ng-container matColumnDef="imponible">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 8%">
+        Imponible
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.Imponible}}
+      </td>
+    </ng-container>
+
+    <!-- columna Importe -->
+    <ng-container matColumnDef="importe">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 6%">
+        Importe
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.MontoRetenido}}
+      </td>
+    </ng-container>
+
+    <!-- columna Observaciones -->
+    <ng-container matColumnDef="observaciones">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 25%">
+        Observaciones
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.Observaciones}}
+      </td>
+    </ng-container>
+
+    <!-- columna edicion -->
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef style="width: 7%"></th>
+      <td mat-cell *matCellDef="let row" >
+        <a (click)="editarImpuesto(row.ID_Renglon)">
+          <mat-icon>edit</mat-icon>
+        </a>
+        
+        <a (click)="borrarImpuesto(row.ID_Renglon)">
+          <mat-icon>delete</mat-icon>
+        </a>
+        
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+  </table>
+
+  <!-- <mat-paginator 
+    [length]="100"
+    [pageSizeOptions]="[5, 10, 20]" 
+    (page)="pageEvent = $event" 
+    showFirstLastButtons 
+    class="mat-elevation-z1" 
+    >
+  </mat-paginator> -->
+
+  <div class="col s12" style="margin-top:5px;" *ngIf="_impuestosComprobante.length < 1">
+    <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen impuestos</i></mat-card>
+  </div>
+
+</div>
+
+<!-- TOTAL -->
+<div class="row">
+  <mat-form-field style="float: right;">
+    <input matInput placeholder="Total" [(value)]="total" disabled>
+  </mat-form-field>
+</div>
+
+<app-form-impositivo 
+  [hidden]="ocultarForm" 
+  [linea]="linea" 
+  (savedLine)=cargarLista() 
+  (canceled)=ocultarFormulario()
+>
+</app-form-impositivo>

@@ -1,0 +1,43 @@
+<div style="border-style: solid; border-width: 1px; padding: 1%; margin-bottom: 1%;border-color: #66727d; border-radius: 5px;">
+<div class="row">
+  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+    <mat-label>Cuenta</mat-label>
+    <mat-select [(value)]="linea.Nro_RefContable" (selectionChange)="seleccionarCuenta($event.value)" [disabled]="linea.ID_Renglon != '0'">
+      <mat-option *ngFor="let cuenta of cuentas_contables" [value]="cuenta.idreferenciacontable">
+        {{cuenta.idreferenciacontable}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+    <mat-label>Descripcion</mat-label>
+    <input matInput [value]="linea.Nombre_RefContable" readonly="true">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+    <mat-label>Centro de costo</mat-label>
+    <mat-select [(value)]="linea.IdCtoCosto" (selectionChange)="seleccionarCentro($event.value)" [disabled]="linea.TieneCtoCosto < 2">
+      <mat-option *ngFor="let centro of centros_costo" [value]="centro.idcentrocosto">
+        {{centro.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+    <mat-label>Debe</mat-label>
+    <input matInput [(ngModel)]="linea.debe">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+    <mat-label>Haber</mat-label>
+    <input matInput [(ngModel)]="linea.haber">
+  </mat-form-field>
+</div>
+
+<!-- BOTONES -->
+<div class="row">
+  <button mat-raised-button (click)="cancelar()" style="float: right; margin-right: 1%;background-color: #808080;">Cancelar</button>
+  <button mat-raised-button (click)="guardar()" style="float: right; margin-right: 1%;background-color: #f08377" [hidden]="linea.ID_Renglon != 0">Guardar</button>
+  <button mat-raised-button (click)="actualizar()" style="float: right; margin-right: 1%;background-color: #f08377" [hidden]="linea.ID_Renglon == 0">Actualizar</button>
+</div>
+</div>

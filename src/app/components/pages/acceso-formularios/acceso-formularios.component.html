@@ -7,6 +7,17 @@
   </mat-expansion-panel-header>
   <form [formGroup]="formaFormulario" novalidate="novalidate">
 
+    <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
+      <div class="col s12 m4 l3">
+        <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Comprobantes: </p>
+      </div>
+      <div class="col s6 m3 l1">
+        <button [routerLink]="['/comprobantes']" style="margin-top:10px;" class="mine-btnbig" mat-flat-button>
+          IR
+        </button>
+      </div>
+    </div>
+
   <div class="row" style="margin-top:15px; margin-bottom:30px !important;">
       <div class="col s12 m4 l3">
         <p style="font-size:16px;margin-top:20px;margin-bottom:0px;color:#000">Compras: </p>

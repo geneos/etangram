@@ -201,3 +201,7 @@ app-cons-din-n2 ngx-smart-modal div {
   z-index: 1000;
 } */
 .mat-checkbox-layout { white-space: normal !important; }
+
+[hidden] {
+  display:none !important; 
+}

@@ -1,0 +1,96 @@
+<div class="row" style="float: right;">
+  <button mat-fab aria-label="Agregar contabilidad" (click)="agregarLineaContable()" style="background-color: #f08377">
+    <mat-icon mat-fab >add</mat-icon>
+  </button>
+</div>
+
+<div class="row">
+  <table mat-table [dataSource]="_contabilidadComprobantes" matSort class="mat-elevation-z1"
+    style="font-family: 'Lato', sans-serif !important;">
+
+    <!-- columna Cuenta -->
+    <ng-container matColumnDef="cuenta">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Cuenta
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.Nro_RefContable}}
+      </td>
+    </ng-container>
+
+    <!-- columna descripcion -->
+    <ng-container matColumnDef="descripcion">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Descripcion
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.Nombre_RefContable}}
+      </td>
+    </ng-container>
+
+    <!-- columna Centro de costo -->
+    <ng-container matColumnDef="centro">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Centro de Costo
+      </th>       
+      <td mat-cell *matCellDef="let row" >
+        {{row.Nombre_CtoCosto}}
+      </td>
+    </ng-container>
+
+    <!-- columna DEBE -->
+    <ng-container matColumnDef="debe">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        DEBE
+      </th>
+      <td mat-cell *matCellDef="let row" style="width:60px;">
+        {{row.debe}}
+      </td>
+    </ng-container>
+
+    <!-- columna HABER -->
+    <ng-container matColumnDef="haber">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        HABER
+      </th>
+      <td mat-cell *matCellDef="let row" style="width:60px;">
+        {{row.haber}}
+      </td>
+    </ng-container>
+
+    <!-- columna edicion -->
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let row" >
+        <a (click)="editarLineaContable(row.ID_Renglon)">
+          <mat-icon>edit</mat-icon>
+        </a>
+        
+        <a (click)="borrarLineaContable(row.ID_Renglon)">
+          <mat-icon>delete</mat-icon>
+        </a>
+        
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+  </table>
+</div>
+
+<div class="row">
+  <mat-form-field style="float: right;">
+    <input matInput placeholder="Credito total" [value]="haberTotal" disabled>
+  </mat-form-field>
+  <mat-form-field style="float: right;">
+    <input matInput placeholder="Debito total" [value]="debeTotal" disabled>
+  </mat-form-field>
+</div>
+
+<app-form-contable
+  [hidden]="ocultarForm" 
+  [linea]="linea" 
+  (savedLine)="cargarListado()" 
+  (canceled)="cancelarLinea()"
+>
+</app-form-contable>

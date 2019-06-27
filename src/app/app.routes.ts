@@ -28,6 +28,12 @@ import { AltaRemesaComponent } from './components/pages/lista-de-remesas/alta-re
 import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/abm-liquidaciones.component';
 import { ImputarComprobantesComponent } from './components/pages/imputar-comprobantes/imputar-comprobantes.component';
 import { LiquidacionPorLoteComponent } from './components/pages/abm-liquidaciones/liquidacion-por-lote/liquidacion-por-lote.component';
+import { ListaComprobantesComponent } from './components/pages/lista-comprobantes/lista-comprobantes.component';
+import { VisorImpositivoComponent } from './components/pages/visor-impositivo/visor-impositivo.component';
+import { VisorContableComponent } from './components/pages/visor-contable/visor-contable.component';
+import { DetalleComprobanteComponent } from './components/pages/detalle-comprobante/detalle-comprobante.component';
+import { VisorPresupuestarioComponent } from './components/pages/visor-presupuestario/visor-presupuestario.component';
+
 
 const APP_ROUTES: Routes = [
   { path: 'test', component: ImageComponent },
@@ -65,6 +71,11 @@ const APP_ROUTES: Routes = [
   { path: 'lista-remesas', component: ListaDeRemesasComponent },
   { path: 'lista-remesas/:id', component: AltaRemesaComponent },
   { path: 'imputar-comprobantes', component: ImputarComprobantesComponent },
+  { path: 'comprobantes', component: ListaComprobantesComponent },
+  { path: 'visor-impositivo/:id', component: VisorImpositivoComponent },
+  { path: 'visor-contable/:id', component: VisorContableComponent },
+  { path: 'visor-presupuestario/:id', component: VisorPresupuestarioComponent },
+  { path: 'comprobante/:id', component: DetalleComprobanteComponent},
   { path: 'login', component: LoginComponent },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

@@ -1,0 +1,108 @@
+<div class="row">
+  <h1>Detalle de comprobante</h1>
+</div>
+
+<div class="row">
+  <mat-form-field>
+    <input matInput placeholder="Nro de comprobante" value="{{comprobante.Comprobante}}" readonly>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Fecha" value="{{comprobante.Fecha}}" readonly>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Proveedor" value="{{comprobante.RazonSocial_Referente}}" readonly>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Razón social" value="{{comprobante.RazonSocial_Referente}}" readonly>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput placeholder="Total" value="{{comprobante.Total}}" readonly>
+  </mat-form-field>
+</div>
+
+<div class="row">
+  <table mat-table [dataSource]="_lineasComprobante" matSort class="mat-elevation-z1"
+    style="font-family: 'Lato', sans-serif !important;">
+
+    <!-- columna Producto -->
+    <ng-container matColumnDef="producto">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Producto
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.name}}
+      </td>
+    </ng-container>
+
+    <!-- columna cantidad -->
+    <ng-container matColumnDef="cantidad">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Cantidad
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.cantidad}}
+      </td>
+    </ng-container>
+
+    <!-- columna UM -->
+    <ng-container matColumnDef="UM">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        U.M
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.um}}
+      </td>
+    </ng-container>
+
+    <!-- columna precio unitario -->
+    <ng-container matColumnDef="precioUnitario">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Precio unitario
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.precioUnitario}}
+      </td>
+    </ng-container>
+
+    <!-- columna descuento -->
+    <ng-container matColumnDef="descuento">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Descuento
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.descuento}}
+      </td>
+    </ng-container>
+
+    <!-- columna Total -->
+    <ng-container matColumnDef="total">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Total
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        {{row.total}}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+  </table>
+
+  <!-- <mat-paginator 
+    [length]="100"
+    [pageSizeOptions]="[5, 10, 20]" 
+    (page)="pageEvent = $event" 
+    showFirstLastButtons 
+    class="mat-elevation-z1" 
+    >
+  </mat-paginator> -->
+
+  <div class="col s12" style="margin-top:5px;" *ngIf="_lineasComprobante.length < 1">
+    <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen impuestos</i></mat-card>
+  </div>
+
+</div>

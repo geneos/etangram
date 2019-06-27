@@ -1,0 +1,57 @@
+<div class="row" style="align-content: right;">
+  <mat-icon (click)="agregarLinea()">add</mat-icon>
+</div>
+
+<div class="row">
+  <table mat-table [dataSource]="_centrosDeLinea" matSort class="mat-elevation-z1"
+    style="font-family: 'Lato', sans-serif !important;">
+
+    <!-- columna Cuenta -->
+    <ng-container matColumnDef="centro">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Centro de costo
+      </th>
+      <td mat-cell *matCellDef="let row" >
+        <mat-select [(value)]="row.idCentro" [disabled]="row.editing == false" (selectionChange)="seleccionarCentro(row.id)">
+          <mat-option value="0" disabled>Seleccione uno</mat-option>
+          <mat-option *ngFor="let centro of centrosDeCosto" [value]="centro.id">
+            {{centro.nombre}}
+          </mat-option>
+        </mat-select>
+      </td>
+    </ng-container>
+
+    <!-- columna Importe -->
+    <ng-container matColumnDef="importe">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        Importe
+      </th>
+      <td mat-cell *matCellDef="let row" style="width:60px;">
+        <input matInput type="number" step="0.01" [value]="row.importe" (input)="actualizarImporte(row.id, $event.target.value)" [readonly]="row.editing == false">
+      </td>
+    </ng-container>
+
+    <!-- columna edicion -->
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let row" >
+        
+        <mat-icon (click)="editarLinea(row.id)">edit</mat-icon>
+        
+        <a (click)="borrarLinea(row.id)">
+          <mat-icon>delete</mat-icon>
+        </a>
+        
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+  </table>
+</div>
+
+<div class="row">
+  <mat-form-field>
+    <input matInput placeholder="Total" [value]="total" disabled>
+  </mat-form-field>
+</div>

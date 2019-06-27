@@ -1,0 +1,55 @@
+<div class="row">
+  <h1>Visor Contable</h1>
+</div>
+
+<div class="row" [hidden]="ocultarComprobante">
+  <!-- <a mat-fab aria-label="Ver detalle de comprobante" 
+    [routerLink]="['/comprobante', idParam]" 
+    [queryParams]="{ flag: 'true'}" 
+    queryParamsHandling="merge"
+    style="float: right; background-color: #f08377">
+    <i class="material-icons">list_alt</i>
+  </a> -->
+  <a mat-fab aria-label="Ver detalle de comprobante"
+    style="float: right; background-color: #f08377">
+    <i class="material-icons">list_alt</i>
+  </a>
+</div>
+
+<div class="row">
+  <mat-form-field style="width: 20%">
+    <input matInput placeholder="Comprobante" [value]="comprobante.Comprobante" readonly>
+  </mat-form-field>
+
+  <mat-form-field style="width: 20%">
+    <input matInput  placeholder="Subdiario" [value]="comprobante.subdiario" readonly>
+  </mat-form-field>
+
+  <mat-form-field style="width: 20%">
+    <input matInput  placeholder="Fecha" [value]="comprobante.Fecha" readonly>
+  </mat-form-field>
+
+  <mat-form-field style="width: 20%">
+    <input matInput  placeholder="Referente" [value]="comprobante.RazonSocial_Referente" readonly>
+  </mat-form-field>
+
+  <mat-form-field style="width: 20%">
+    <input matInput  placeholder="Total" [value]="comprobante.Total" readonly>
+  </mat-form-field>
+</div>
+
+<app-listado-contable 
+  [idComprobante]="idParam" 
+>
+</app-listado-contable>
+
+<div class="row">
+  <!-- <button style="margin-left: 15%"> -->
+    <a mat-raised-button [routerLink]="['/comprobantes']" style="margin-left: 40%;background-color: #808080">
+      Cancelar
+    </a>
+  <!-- </button> -->
+  <button mat-raised-button (click)="autorizar()" style="margin-left: 1%;background-color: #f08377">Autorizar</button>
+</div>
+
+

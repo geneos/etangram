@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ErrorHandler } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule, HttpClient, HttpHeaders } from '@angular/common/http';
 import { LOCALE_ID} from '@angular/core';
 
 // rutas
@@ -98,6 +98,21 @@ import { AbmLiquidacionesComponent } from './components/pages/abm-liquidaciones/
 import { ImputarComprobantesComponent } from './components/pages/imputar-comprobantes/imputar-comprobantes.component';
 import { ImputCompComponent } from './components/shared/modals/imput-comp/imput-comp.component';
 import { LiquidacionPorLoteComponent } from './components/pages/abm-liquidaciones/liquidacion-por-lote/liquidacion-por-lote.component';
+import { ListaComprobantesComponent } from './components/pages/lista-comprobantes/lista-comprobantes.component';
+import { VisorImpositivoComponent } from './components/pages/visor-impositivo/visor-impositivo.component';
+import { VisorContableComponent } from './components/pages/visor-contable/visor-contable.component';
+import { CentroCostoComponent } from './components/pages/visor-contable/centro-costo/centro-costo.component';
+
+import { ComprobantesService } from './services/i2t/comprobantes.service';
+import { DialogoConfComponent } from './components/shared/modals/dialogo-conf/dialogo-conf.component';
+
+import { EstadosComprobantesPipe } from './pipes/estados-comprobantes.pipe';
+import { DetalleComprobanteComponent } from './components/pages/detalle-comprobante/detalle-comprobante.component';
+import { VisorPresupuestarioComponent } from './components/pages/visor-presupuestario/visor-presupuestario.component';
+import { ListadoImpositivoComponent } from './components/pages/visor-impositivo/listado-impositivo/listado-impositivo.component';
+import { FormImpositivoComponent } from './components/pages/visor-impositivo/form-impositivo/form-impositivo.component';
+import { FormContableComponent } from './components/pages/visor-contable/form-contable/form-contable.component';
+import { ListadoContableComponent } from './components/pages/visor-contable/listado-contable/listado-contable.component'
 
 export function initConfig(config: AppConfig) {
   return () => config.load();
@@ -163,6 +178,18 @@ export function initConfig(config: AppConfig) {
     ImputarComprobantesComponent,
     ImputCompComponent,
     LiquidacionPorLoteComponent,
+    ListaComprobantesComponent,
+    VisorImpositivoComponent,
+    VisorContableComponent,
+    CentroCostoComponent,
+    DialogoConfComponent,
+    EstadosComprobantesPipe,
+    DetalleComprobanteComponent,
+    VisorPresupuestarioComponent,
+    ListadoImpositivoComponent,
+    FormImpositivoComponent,
+    FormContableComponent,
+    ListadoContableComponent
   ],
   imports: [
     BrowserModule,
@@ -176,8 +203,7 @@ export function initConfig(config: AppConfig) {
     APP_ROUTING,
     CdkTableModule,
     NgxSmartModalModule.forRoot(),
-    StorageServiceModule,
-    
+    StorageServiceModule
   ],
   entryComponents: [
     TextoComponent,
@@ -185,7 +211,8 @@ export function initConfig(config: AppConfig) {
     FechaComponent,
     ListaComponent,
     ConsultaComponent,
-    TablaComponent
+    TablaComponent,
+    DialogoConfComponent
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'es-AR'},
@@ -198,7 +225,8 @@ export function initConfig(config: AppConfig) {
             useFactory: initConfig,
             deps: [AppConfig],
             multi: true 
-          }
+          },
+    ComprobantesService
   ],
   bootstrap: [AppComponent],
 

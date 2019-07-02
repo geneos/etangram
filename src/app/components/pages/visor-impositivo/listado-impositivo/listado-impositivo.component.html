@@ -23,7 +23,7 @@
     <!-- columna descripcion -->
     <ng-container matColumnDef="descripcion">
       <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 15%">
-        Descripcion
+        Descripción
       </th>
       <td mat-cell *matCellDef="let row" >
         {{row.Descripcion}}
@@ -74,11 +74,11 @@
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef style="width: 7%"></th>
       <td mat-cell *matCellDef="let row" >
-        <a (click)="editarImpuesto(row.ID_Renglon)">
+        <a class="list_icons" (click)="editarImpuesto(row.ID_Renglon)">
           <mat-icon>edit</mat-icon>
         </a>
         
-        <a (click)="borrarImpuesto(row.ID_Renglon)">
+        <a class="list_icons" (click)="borrarImpuesto(row.ID_Renglon)">
           <mat-icon>delete</mat-icon>
         </a>
         
@@ -112,7 +112,7 @@
 </div>
 
 <app-form-impositivo 
-  [hidden]="ocultarForm" 
+  *ngIf="!ocultarForm"
   [linea]="linea" 
   (savedLine)=cargarLista() 
   (canceled)=ocultarFormulario()

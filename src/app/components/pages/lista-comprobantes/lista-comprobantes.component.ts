@@ -29,6 +29,7 @@ export class ListaComprobantesComponent implements OnInit {
   desde = new FormControl();
   hasta = new FormControl();
   referente = new FormControl();
+  name_referente = new FormControl();
   estado_cai : number = -1;
   estado_doc : number = -1;
   autorizacion : number = -1;
@@ -125,18 +126,6 @@ export class ListaComprobantesComponent implements OnInit {
       this.columnsToDisplay = ['numCompr', 'fecha', 'referente', 'total', 'estado_cai', 'estado_doc', 'autorizacion', 'contabilidad', 'edit'];
   }
 
-  saludar() : void {
-    alert(`FILTROS: 
-      ${this.desde.value})
-      ${this.hasta.value}
-      ${this.estado_cai} 
-      ${this.estado_doc}
-      ${this.autorizacion}
-      ${this.contabilidad}
-      ${this.imputacion}
-      ${this.referente}
-    ` )
-  }
 
   abrirConsulta(consulta: string){
     let datosModal = {
@@ -158,7 +147,8 @@ export class ListaComprobantesComponent implements OnInit {
         }
         else{
           console.log("Elegido: ", respuesta.selection[0])
-          this.referente.setValue(respuesta.selection[0].name);
+          this.name_referente.setValue(respuesta.selection[0].name);
+          this.referente.setValue(respuesta.selection[0].codigo);
           this.referenteId = respuesta.selection[0].id;
         }
 

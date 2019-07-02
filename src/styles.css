@@ -205,3 +205,13 @@ app-cons-din-n2 ngx-smart-modal div {
 [hidden] {
   display:none !important; 
 }
+
+
+.row .col > mat-form-field {
+  width:100%;
+}
+
+.list_icons {
+  cursor: pointer;
+  color: black;
+}

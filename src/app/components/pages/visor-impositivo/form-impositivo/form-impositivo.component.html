@@ -1,20 +1,23 @@
 <div style="border-style: solid; border-width: 1px; padding: 1%; margin-bottom: 1%;border-color: #66727d; border-radius: 5px;">
 <div class="row">
-  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+  <div class="col s8 m6 l4">
+  <mat-form-field appearance="outline" floatLabel="always">
     <mat-label>Cuenta</mat-label>
     <input matInput [(ngModel)]="linea.Nro_RefContable" readonly>
   </mat-form-field>
-
-  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
-    <mat-label>Descripcion</mat-label>
+  </div>
+  <div class="col s8 m6 l4">
+  <mat-form-field appearance="outline" floatLabel="always">
+    <mat-label>Descripción</mat-label>
     <mat-select [(value)]="linea.Descripcion" (selectionChange)="seleccionarTipoImpuesto($event.value)">
       <mat-option *ngFor="let tipo of tipo_impuestos" [value]="tipo.name">
         {{tipo.name}}
       </mat-option>
     </mat-select>
   </mat-form-field>
-
-  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+  </div>
+  <div class="col s8 m6 l4">
+  <mat-form-field appearance="outline" floatLabel="always">
     <mat-label>Impuesto</mat-label>
     <mat-select [(value)]="linea.Concepto" (selectionChange)="seleccionarImpuesto($event.value)">
       <mat-option *ngFor="let impuesto of impuestos" [value]="impuesto.Nombre_Impuesto">
@@ -22,21 +25,32 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-
-  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+  </div>
+</div>
+<div class="row">
+  <div class="col s8 m6 l4">
+  <mat-form-field appearance="outline" floatLabel="always">
     <mat-label>Imponible</mat-label>
-    <input matInput [value]="linea.Imponible">
+    <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.Imponible">
+    <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
   </mat-form-field>
+  </div>
 
-  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+  <div class="col s8 m6 l4">
+    <mat-form-field appearance="outline" floatLabel="always">
     <mat-label>Importe</mat-label>
-    <input matInput [(ngModel)]="linea.MontoRetenido">
+    <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.MontoRetenido">
+    <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
   </mat-form-field>
+  </div>
 
-  <mat-form-field appearance="outline" floatLabel="always" style="width:30%; margin-right: 1%">
+  <div class="col s8 m6 l4">
+    <mat-form-field appearance="outline" floatLabel="always">
     <mat-label>Observaciones</mat-label>
     <input matInput [(ngModel)]="linea.Observaciones">
   </mat-form-field>
+  </div>
+
 </div>
 
 <!-- BOTONES -->

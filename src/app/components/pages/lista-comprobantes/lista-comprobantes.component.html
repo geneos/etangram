@@ -23,16 +23,16 @@
           <input #codProv matInput placeholder="" [formControl]="referente">
         </mat-form-field>
       </div>
-      <div class="col s8 m6 l2">
+      <div class="col s8 m6 l1">
+        <button type="button" class="mine-btnforms btn-mg-field" mat-flat-button (click)="abrirConsulta('c_proveedores')">
+          <i class="material-icons" style="font-size:20px;">more_horiz</i>
+        </button>
+      </div>
+      <div class="col s8 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always">
           <mat-label>Razón Social</mat-label>
           <input #name disabled Prov matInput placeholder="" [formControl]="name_referente">       
         </mat-form-field>
-      </div>
-      <div class="col s8 m6 l2">
-        <button type="button" class="mine-btnforms" mat-flat-button (click)="abrirConsulta('c_proveedores')">
-          <i class="material-icons" style="font-size:20px;">more_horiz</i>
-        </button>
       </div>
     </div>
 
@@ -88,7 +88,7 @@
         </mat-form-field>
       </div>
       <div class="col s8 m6 l2">
-          <button class="mine-btnbig" mat-flat-button (click)="filtrar()" >APLICAR</button>
+          <button class="mine-btnbig btn-mg-field" mat-flat-button (click)="filtrar()" >APLICAR</button>
       </div> 
     </div>
 

@@ -1,41 +1,41 @@
 <div class="row">
-  <h4>Visor Contable</h4>
-</div>
-
-<div class="row" [hidden]="ocultarComprobante">
-  <!-- <a mat-fab aria-label="Ver detalle de comprobante" 
-    [routerLink]="['/comprobante', idParam]" 
-    [queryParams]="{ flag: 'true'}" 
-    queryParamsHandling="merge"
-    style="float: right; background-color: #f08377">
-    <i class="material-icons">list_alt</i>
-  </a> -->
-  <a mat-fab aria-label="Ver detalle de comprobante"
-    style="float: right; background-color: #f08377">
-    <i class="material-icons">list_alt</i>
-  </a>
+    <div class="col s8 m6 l10">
+      <h2>Visor Contable</h2>
+    </div>
 </div>
 
 <div class="row">
-  <mat-form-field style="width: 20%">
+  <div class="col s8 m6 l2">
+  <mat-form-field>
     <input matInput placeholder="Comprobante" [value]="comprobante.Comprobante" readonly>
   </mat-form-field>
-
-  <mat-form-field style="width: 20%">
+  </div>
+  <div class="col s8 m6 l2">
+  <mat-form-field>
     <input matInput  placeholder="Subdiario" [value]="comprobante.subdiario" readonly>
   </mat-form-field>
-
-  <mat-form-field style="width: 20%">
+  </div>
+  <div class="col s8 m6 l2">
+  <mat-form-field>
     <input matInput  placeholder="Fecha" [value]="comprobante.Fecha" readonly>
   </mat-form-field>
-
-  <mat-form-field style="width: 20%">
+  </div>
+  <div class="col s8 m6 l2">
+  <mat-form-field>
     <input matInput  placeholder="Referente" [value]="comprobante.RazonSocial_Referente" readonly>
   </mat-form-field>
-
-  <mat-form-field style="width: 20%">
+  </div>
+  <div class="col s8 m6 l2">
+  <mat-form-field>
     <input matInput  placeholder="Total" [value]="comprobante.Total" readonly>
   </mat-form-field>
+  </div>
+  <div class="col s8 m6 l2">
+    <a mat-mini-fab class="btn-etangram-ok" aria-label="Ver detalle de comprobante">
+      <!-- <i class="material-icons">list_alt</i> -->
+      <mat-icon>list_alt</mat-icon>
+    </a>
+  </div>
 </div>
 
 <app-listado-contable 
@@ -43,13 +43,12 @@
 >
 </app-listado-contable>
 
+<!-- BOTONES -->
 <div class="row">
-  <!-- <button style="margin-left: 15%"> -->
-    <a mat-raised-button [routerLink]="['/comprobantes']" style="margin-left: 40%;background-color: #808080">
-      Cancelar
-    </a>
-  <!-- </button> -->
-  <button mat-raised-button (click)="autorizar()" style="margin-left: 1%;background-color: #f08377">Autorizar</button>
+  <div class="col s12 m12 l12" class="btn-etangram-div">
+    <button mat-raised-button [routerLink]="['/comprobantes']" class="btn-etangram-ko">CANCELAR</button>
+    <button mat-raised-button (click)="autorizar()" class="btn-etangram-ok">AUTORIZAR</button>
+  </div>
 </div>
 
 

@@ -1,10 +1,11 @@
-<!-- AGREGAR -->
-<div class="row" style="float: right;">
-  <button mat-fab aria-label="Agregar impuesto" (click)="agregarImpuesto()" style="background-color: #f08377">
-    <mat-icon mat-fab >add</mat-icon>
-  </button>
+<div class="row">
+  <!-- AGREGAR -->
+  <div class="col s8 m6 l12" class="btn-etangram-div">
+    <button mat-mini-fab class="btn-etangram-ok" aria-label="Agregar impuesto" (click)="agregarImpuesto()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
 </div>
-
 <!-- LISTADO -->
 <div class="row">
   <table mat-table [dataSource]="_impuestosComprobante" matSort class="mat-elevation-z1"

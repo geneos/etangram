@@ -1,4 +1,4 @@
-<div style="border-style: solid; border-width: 1px; padding: 1%; margin-bottom: 1%;border-color: #66727d; border-radius: 5px;">
+<div class="frm-line-etangram">
 <div class="row">
   <div class="col s8 m6 l4">
   <mat-form-field appearance="outline" floatLabel="always">
@@ -46,8 +46,11 @@
 
 <!-- BOTONES -->
 <div class="row">
-  <button mat-raised-button (click)="guardar()" style="float: right; margin-right: 1%;background-color: #f08377" [hidden]="linea.ID_Renglon != 0">Guardar</button>
-  <button mat-raised-button (click)="actualizar()" style="float: right; margin-right: 1%;background-color: #f08377" [hidden]="linea.ID_Renglon == 0">Actualizar</button>
-  <button mat-raised-button (click)="cancelar()" style="float: right; margin-right: 1%;background-color: #808080;">Cancelar</button>
+  <div class="col s12 m12 l12" class="btn-etangram-div">
+    <button mat-raised-button (click)="cancelar()" class="btn-etangram-ko">CANCELAR</button>
+    <button mat-raised-button (click)="guardar()" class="btn-etangram-ok" [hidden]="linea.ID_Renglon != 0">GUARDAR</button>
+    <button mat-raised-button (click)="actualizar()" class="btn-etangram-ok" [hidden]="linea.ID_Renglon == 0">ACTUALIZAR</button>
+  </div>
 </div>
+
 </div>

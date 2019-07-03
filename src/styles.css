@@ -215,3 +215,31 @@ app-cons-din-n2 ngx-smart-modal div {
   cursor: pointer;
   color: black;
 }
+
+.btn-mg-field {
+  margin-top: 11px !important;
+}
+
+.btn-etangram-ok {
+  background-color: #f08377 !important;
+}
+
+.btn-etangram-ko {
+  background-color: #808080 !important;
+  margin-right: 10px !important;
+}
+
+.btn-etangram-div {
+  text-align: right;
+  padding-top: 15px;
+}
+
+.frm-line-etangram {
+  border-style: solid;
+  border-width: 2px; 
+  border-top-width: 1px; 
+  border-left-width: 1px; 
+  padding: 1%;
+  border-color: #66727d; 
+  background-color: #FFF;
+}

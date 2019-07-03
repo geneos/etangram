@@ -19,14 +19,15 @@ import { DialogoConfComponent } from '../../shared/modals/dialogo-conf/dialogo-c
 export class VisorPresupuestarioComponent implements OnInit {
   columnsToDisplay = ['expediente', 'tramite', 'fecha', 'partida', 'descripcion', 'imputado', 'estado', 'edit']
 
-  rowID : number = 0;
-  total : number = 0;
-  diferencia : number = 0;
+  rowID: number = 0;
+  total: number = 0;
+  diferencia: number = 0;
 
-  idParam : string;
-  ocultarComprobante : boolean = true;
+  idParam: string;
+  comprobante: any;
+  ocultarComprobante: boolean = false;
   
-  presupuestosComprobante : any[];
+  presupuestosComprobante: any[];
   _presupuestosComprobante = new MatTableDataSource(this.presupuestosComprobante);
 
   constructor(
@@ -42,10 +43,21 @@ export class VisorPresupuestarioComponent implements OnInit {
     this.route.queryParamMap.subscribe(queryParams => {
       let flag = queryParams.get("flag");
       this.ocultarComprobante =  (flag && flag === "true") ? false : true;
-    })
+    });
+
+    this.comprobante = {
+      Comprobante: "",
+      Fecha: "",
+      RazonSocial_Referente: "",
+      Total: 0
+    }
   }
 
   ngOnInit() {
+    this.comprobantesService.getComprobante(this.idParam).subscribe(data => {
+      console.log("Visor - Comprobante:", data);
+      this.comprobante = data;
+    });
   }
 
   openSnackBar(message: string, action: string) {

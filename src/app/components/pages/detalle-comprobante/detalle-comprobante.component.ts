@@ -41,7 +41,16 @@ export class DetalleComprobanteComponent implements OnInit {
         this.comprobante = data;
         console.log("Comprobante:", data)
       })
-      console.log(this._lineasComprobante)
+
+    this.comprobantesService.getDetalle(this.idParam).subscribe(
+      data => {
+        console.log("Lineas detalle",data)
+        this.lineasComprobante = data;
+        this._lineasComprobante.data = this.lineasComprobante;
+        console.log(this._lineasComprobante)
+      }
+    );
+    
   }
 
 }

@@ -2,9 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angu
 import { MatTableDataSource, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { ComprobantesService } from '../../../../services/i2t/comprobantes.service';
-
 import { DialogoConfComponent } from '../../../shared/modals/dialogo-conf/dialogo-conf.component'
+
+import { VisorContableService } from 'src/app/services/i2t/visor-contable.service';
 
 @Component({
   selector: 'app-listado-contable',
@@ -28,7 +28,7 @@ export class ListadoContableComponent implements OnInit {
   haberTotal : number;
 
   constructor(
-    private comprobantesService: ComprobantesService,
+    private visorContableService: VisorContableService,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar) {
 
@@ -42,7 +42,7 @@ export class ListadoContableComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.comprobantesService.getContabilidadComprobante(this.idComprobante)
+    this.visorContableService.getContabilidadComprobante(this.idComprobante)
       .subscribe(data => {
         console.log("Lineas Contables", data)
         this.contabilidadComprobantes = data;
@@ -54,7 +54,7 @@ export class ListadoContableComponent implements OnInit {
   }
 
   cargarListado() : void {
-    this.comprobantesService.getContabilidadComprobante(this.idComprobante)
+    this.visorContableService.getContabilidadComprobante(this.idComprobante)
       .subscribe(data => {
         this.contabilidadComprobantes = data;
         this._contabilidadComprobantes.data = this.contabilidadComprobantes;
@@ -124,7 +124,7 @@ export class ListadoContableComponent implements OnInit {
           ID_Imputacion: id
         }
         console.log("Borrando", linea)
-        this.comprobantesService.borrarLineaContable(linea)
+        this.visorContableService.borrarLineaContable(linea)
           .subscribe(data => {
             if(data[0] && data[0].error){
               return this.openSnackBar(data[0].error, "Error")

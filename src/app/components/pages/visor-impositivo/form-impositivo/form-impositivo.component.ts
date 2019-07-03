@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { ComprobantesService } from '../../../../services/i2t/comprobantes.service';
+// import { ComprobantesService } from '../../../../services/i2t/comprobantes.service';
+import { VisorImpositivoService } from '../../../../services/i2t/visor-impositivo.service'
 
 @Component({
   selector: 'app-form-impositivo',
@@ -24,20 +25,23 @@ export class FormImpositivoComponent implements OnInit {
   public tipo_imp_id : number;
   public imp_id : number;
 
-  tipo_impuestos : any[];
-  impuestos : any[];
+  tipo_impuestos : any[] = [];
+  impuestos : any[] = [];
 
   constructor(
-    private comprobantesService: ComprobantesService,
+    private visorImpositivoService: VisorImpositivoService,
     private _snackBar: MatSnackBar) { 
       this.tipo_imp_id = 0;
       this.imp_id = 0;
     }
 
   ngOnInit() {
-    console.log("Iniciando formulario")
-    this.comprobantesService.getTipoDeImpuestos().subscribe(data => {
+    console.log("Iniciando formulario") 
+    this.visorImpositivoService.getTipoDeImpuestos().subscribe(data => {
       this.tipo_impuestos = data;
+      if(this.linea.ID_Renglon != 0) {
+        this.seleccionarTipoImpuesto(this.linea.Descripcion);
+      }
     });
   }
 
@@ -50,7 +54,7 @@ export class FormImpositivoComponent implements OnInit {
   seleccionarTipoImpuesto(value: string) : void {
     let tipo_imp = this.tipo_impuestos.find(t => {return t.name == value});
     
-    this.comprobantesService.getImpuestosPorTipo(tipo_imp.idmodeloimpuesto)
+    this.visorImpositivoService.getImpuestosPorTipo(tipo_imp.idmodeloimpuesto)
       .subscribe(data => {
         this.impuestos = data;
       });
@@ -66,7 +70,7 @@ export class FormImpositivoComponent implements OnInit {
       Id_Impuesto: Number(selected.ID_Impuesto),
       Id_comprobante: this.linea.ID_Comprobante
     };
-    this.comprobantesService.getImporteLineaImpositiva(body)
+    this.visorImpositivoService.getImporteLineaImpositiva(body)
       .subscribe(data => {
         this.linea.MontoRetenido = Number(data[0].importeretencion); 
       });
@@ -84,7 +88,7 @@ export class FormImpositivoComponent implements OnInit {
       Observaciones: this.linea.Observaciones
     };
     console.log("Guardanto Impuesto", nuevaLinea)
-    this.comprobantesService.insertarLineaImpositiva(nuevaLinea).subscribe(
+    this.visorImpositivoService.insertarLineaImpositiva(nuevaLinea).subscribe(
       data => {
         if(data[0] && data[0].error){
           return this.openSnackBar(data[0].error, "Cerrar")
@@ -107,7 +111,7 @@ export class FormImpositivoComponent implements OnInit {
       Observaciones: this.linea.Observaciones
     };
     console.log("Actualizando Impuesto", editada)
-    this.comprobantesService.actualizarLineaImpositiva(editada).subscribe(
+    this.visorImpositivoService.actualizarLineaImpositiva(editada).subscribe(
       data => {
         if(data[0] && data[0].error){
           return this.openSnackBar(data[0].error, "Cerrar")

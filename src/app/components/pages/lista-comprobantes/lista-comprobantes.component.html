@@ -219,7 +219,15 @@
             <i class="material-icons">edit</i>
           </a>
         </span>
-        <mat-icon (click)="ocultarColumna()" style="color:#66ff33;">edit</mat-icon>
+        <span>
+          <a 
+            [routerLink]="['/visor-presupuestario', row.ID_Comprobante]" 
+            [queryParams]="{ flag: 'true'}" 
+            queryParamsHandling="merge"  
+            style="color:#66ff33;">
+            <i class="material-icons">edit</i>
+          </a>
+        </span>
       </td>
     </ng-container>
 

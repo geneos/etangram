@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatDialog, MatPaginator, MatSort } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FormImpositivoComponent } from '../form-impositivo/form-impositivo.component';
 
 import { ComprobantesService } from '../../../../services/i2t/comprobantes.service';
-
 import { DialogoConfComponent } from '../../../shared/modals/dialogo-conf/dialogo-conf.component'
+import { VisorImpositivoService } from 'src/app/services/i2t/visor-impositivo.service';
 
 @Component({
   selector: 'app-listado-impositivo',
@@ -15,7 +14,6 @@ import { DialogoConfComponent } from '../../../shared/modals/dialogo-conf/dialog
 export class ListadoImpositivoComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(FormImpositivoComponent) form: FormImpositivoComponent;
 
   @Input() idComprobante : string;
   comprobante : any;
@@ -36,6 +34,7 @@ export class ListadoImpositivoComponent implements OnInit {
 
   constructor(
     private comprobantesService: ComprobantesService,
+    private visorImpositivoService: VisorImpositivoService,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar) { 
       this.linea = {
@@ -56,7 +55,7 @@ export class ListadoImpositivoComponent implements OnInit {
         this.comprobante = data;
       });
 
-    this.comprobantesService.getTipoDeImpuestos()
+    this.visorImpositivoService.getTipoDeImpuestos()
       .subscribe(data => {
         this.tipo_impuestos = data;
       });
@@ -100,8 +99,6 @@ export class ListadoImpositivoComponent implements OnInit {
       Observaciones: row.Observaciones
     }
 
-    this.form.seleccionarTipoImpuesto(row.Descripcion);
-
     this.ocultarForm = false;
   }
 
@@ -120,7 +117,7 @@ export class ListadoImpositivoComponent implements OnInit {
         let impuesto = { ID_Renglon: rowId }
         console.log("Borrando", impuesto)
         // La borro en el server
-        this.comprobantesService.borrarLineaImpositiva(impuesto).subscribe(
+        this.visorImpositivoService.borrarLineaImpositiva(impuesto).subscribe(
           data => {
             if(data[0] && data[0].error){
               return this.openSnackBar(data[0].error, "Cerrar")
@@ -136,14 +133,11 @@ export class ListadoImpositivoComponent implements OnInit {
   }
 
   calcularTotal() : void {
-    this.total = Number(0);
-    this.impuestosComprobante.forEach(imp => {
-      this.total += imp.MontoRetenido;
-    })
+    this.total = this.impuestosComprobante.reduce((total, elem) => {return total + Number(elem.MontoRetenido)}, 0);
   }
 
   cargarLista() : void {
-    this.comprobantesService.getImpuestosComprobante(this.idComprobante)
+    this.visorImpositivoService.getImpuestosComprobante(this.idComprobante)
       .subscribe(impc => {
         console.log("Impuestos del comprobante", impc)
         this.impuestosComprobante = impc;

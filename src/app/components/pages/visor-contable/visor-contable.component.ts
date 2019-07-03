@@ -3,11 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import { MatTableDataSource } from '@angular/material';
 import {MatSnackBar} from '@angular/material/snack-bar';
 
-import { Comprobante } from '../../../interfaces/comprobante.interface'
-
 import { ComprobantesService } from '../../../services/i2t/comprobantes.service';
-
-import { mockLineasContables } from '../../../services/mocks/comprobante-service-mock'
+import { VisorContableService } from 'src/app/services/i2t/visor-contable.service';
 
 @Component({
   selector: 'app-visor-contable',
@@ -24,6 +21,7 @@ export class VisorContableComponent implements OnInit {
 
   constructor(
     private comprobantesService: ComprobantesService,
+    private visorContableService: VisorContableService,
     private route : ActivatedRoute,
     private _snackBar: MatSnackBar) {
 
@@ -64,7 +62,7 @@ export class VisorContableComponent implements OnInit {
   rechazar() : void {}
 
   autorizar() : void {
-    this.comprobantesService.autorizarContabilidad(this.comprobante.ID_Comprobante)
+    this.visorContableService.autorizarContabilidad(this.comprobante.ID_Comprobante)
       .subscribe(data => {
         if(data[0] && data[0].error){
           return this.openSnackBar(data[0].error, "Error")

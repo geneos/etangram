@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { ComprobantesService } from '../../../../services/i2t/comprobantes.service';
+// import { ComprobantesService } from '../../../../services/i2t/comprobantes.service';
+import { VisorContableService } from 'src/app/services/i2t/visor-contable.service';
 
 @Component({
   selector: 'app-form-contable',
@@ -17,20 +18,20 @@ export class FormContableComponent implements OnInit {
   cuentas_contables : any[];
 
   constructor(
-    private comprobantesService: ComprobantesService,
+    private visorContableService: VisorContableService,
     private _snackBar: MatSnackBar) {
 
   }
 
   ngOnInit() {
-    this.comprobantesService.getCentrosDeCosto().subscribe(
+    this.visorContableService.getCentrosDeCosto().subscribe(
       data => {
         // console.log("Centros de costo", data)
         this.centros_costo = data;
       }
     );
 
-    this.comprobantesService.getCuentasContables().subscribe(
+    this.visorContableService.getCuentasContables().subscribe(
       data => {
         // console.log("Cuentas contables", data)
         this.cuentas_contables = data;
@@ -65,7 +66,7 @@ export class FormContableComponent implements OnInit {
       Haber: Number(this.linea.haber)
     }
     console.log("Guardando linea contable", nuevaLinea)
-    this.comprobantesService.insertarLineaContable(nuevaLinea).subscribe(
+    this.visorContableService.insertarLineaContable(nuevaLinea).subscribe(
       data => {
         if(data[0] && data[0].error){
           return this.openSnackBar(data[0].error, "Cerrar")
@@ -84,7 +85,7 @@ export class FormContableComponent implements OnInit {
       Haber: Number(this.linea.haber)
     }
     console.log("Actualizando linea contable", nuevaLinea)
-    this.comprobantesService.actualizarLineaContable(nuevaLinea).subscribe(
+    this.visorContableService.actualizarLineaContable(nuevaLinea).subscribe(
       data => {
         if(data[0] && data[0].error){
           return this.openSnackBar(data[0].error, "Cerrar")

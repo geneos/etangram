@@ -112,7 +112,9 @@ import { VisorPresupuestarioComponent } from './components/pages/visor-presupues
 import { ListadoImpositivoComponent } from './components/pages/visor-impositivo/listado-impositivo/listado-impositivo.component';
 import { FormImpositivoComponent } from './components/pages/visor-impositivo/form-impositivo/form-impositivo.component';
 import { FormContableComponent } from './components/pages/visor-contable/form-contable/form-contable.component';
-import { ListadoContableComponent } from './components/pages/visor-contable/listado-contable/listado-contable.component'
+import { ListadoContableComponent } from './components/pages/visor-contable/listado-contable/listado-contable.component';
+import { FormPresupuestarioComponent } from './components/pages/visor-presupuestario/form-presupuestario/form-presupuestario.component';
+import { ListadoPresupuestarioComponent } from './components/pages/visor-presupuestario/listado-presupuestario/listado-presupuestario.component'
 
 export function initConfig(config: AppConfig) {
   return () => config.load();
@@ -189,7 +191,9 @@ export function initConfig(config: AppConfig) {
     ListadoImpositivoComponent,
     FormImpositivoComponent,
     FormContableComponent,
-    ListadoContableComponent
+    ListadoContableComponent,
+    FormPresupuestarioComponent,
+    ListadoPresupuestarioComponent
   ],
   imports: [
     BrowserModule,

@@ -3,23 +3,23 @@
 </div>
 
 <div class="row">
-  <mat-form-field>
+  <mat-form-field style="width: 20%">
     <input matInput placeholder="Nro de comprobante" value="{{comprobante.Comprobante}}" readonly>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field style="width: 20%">
     <input matInput placeholder="Fecha" value="{{comprobante.Fecha}}" readonly>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field style="width: 20%">
     <input matInput placeholder="Proveedor" value="{{comprobante.RazonSocial_Referente}}" readonly>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field style="width: 20%">
     <input matInput placeholder="Razón social" value="{{comprobante.RazonSocial_Referente}}" readonly>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field style="width: 20%">
     <input matInput placeholder="Total" value="{{comprobante.Total}}" readonly>
   </mat-form-field>
 </div>
@@ -34,7 +34,7 @@
         Producto
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.name}}
+        {{row.Producto}}
       </td>
     </ng-container>
 
@@ -44,7 +44,7 @@
         Cantidad
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.cantidad}}
+        {{row.Cantidad}}
       </td>
     </ng-container>
 
@@ -54,7 +54,7 @@
         U.M
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.um}}
+        {{row.UM}}
       </td>
     </ng-container>
 
@@ -64,7 +64,7 @@
         Precio unitario
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.precioUnitario}}
+        {{row.Precio_Unitario}}
       </td>
     </ng-container>
 
@@ -74,7 +74,7 @@
         Descuento
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.descuento}}
+        {{row.Descuento}}
       </td>
     </ng-container>
 
@@ -84,7 +84,7 @@
         Total
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.total}}
+        {{row.Total}}
       </td>
     </ng-container>
 

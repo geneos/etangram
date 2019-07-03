@@ -10,6 +10,7 @@ import { Impuesto } from 'src/app/interfaces/impuesto.interface';
 import { ComprobantesService } from '../../../services/i2t/comprobantes.service';
 
 import { DialogoConfComponent } from '../../shared/modals/dialogo-conf/dialogo-conf.component'
+import { VisorImpositivoService } from 'src/app/services/i2t/visor-impositivo.service';
 
 @Component({
   selector: 'app-visor-impositivo',
@@ -26,6 +27,7 @@ export class VisorImpositivoComponent implements OnInit {
 
   constructor(
       private comprobantesService: ComprobantesService,
+      private visorImpositivoService: VisorImpositivoService,
       private route : ActivatedRoute,
       private _snackBar: MatSnackBar) {
 
@@ -59,7 +61,7 @@ export class VisorImpositivoComponent implements OnInit {
   rechazar() : void {}
 
   autorizar() : void {
-    this.comprobantesService.autorizarLineaImpositiva(this.comprobante.ID_Comprobante).subscribe(data => {
+    this.visorImpositivoService.autorizarLineaImpositiva(this.comprobante.ID_Comprobante).subscribe(data => {
       if(data[0] && data[0].error){
         return this.openSnackBar(data[0].error, "Cerrar")
       }

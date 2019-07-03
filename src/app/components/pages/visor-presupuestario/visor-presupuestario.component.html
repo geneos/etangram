@@ -1,179 +1,53 @@
 <div class="row">
-  <h1>Visor Impositivo</h1>
-</div>
-
-<div class="row" [hidden]="ocultarComprobante">
-  <a 
-    [routerLink]="['/comprobante', idParam]" 
-    [queryParams]="{ flag: 'true'}" 
-    queryParamsHandling="merge"
-    style="float: right">
-    <i class="material-icons">list_alt</i>
-  </a>
-</div>
-
+    <div class="col s8 m6 l10">
+      <h2>Visor Presupuestario</h2>
+    </div>
+  </div>
+  
+<!-- CABECERA -->
 <div class="row">
-  <mat-form-field style="width: 25%">
-    <input matInput placeholder="Comprobante" value="{{comprobante.Comprobante}}" readonly>
-  </mat-form-field>
-
-  <mat-form-field style="width: 25%">
-    <input matInput placeholder="Fecha" value="{{comprobante.Fecha}}" readonly>
-  </mat-form-field>
-
-  <mat-form-field style="width: 25%">
-    <input matInput placeholder="Referente" value="{{comprobante.RazonSocial_Referente}}" readonly>
-  </mat-form-field>
-
-  <mat-form-field style="width: 25%">
-    <input matInput placeholder="Total" value="{{comprobante.Total}}" readonly>
-  </mat-form-field>
-</div>
-
-<div class="row" style="float: right;">
-  <mat-icon (click)="agregarLinea()">add</mat-icon>
-</div>
-
-<div class="row">
-  <table mat-table [dataSource]="_presupuestosComprobante" matSort class="mat-elevation-z1"
-    style="font-family: 'Lato', sans-serif !important;">
-
-    <!-- columna Expediente -->
-    <ng-container matColumnDef="expediente">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%">
-        Expediente
-      </th>
-      <td mat-cell *matCellDef="let row" >
-        {{row.expediente}}
-      </td>
-    </ng-container>
-
-    <!-- columna tramite -->
-    <ng-container matColumnDef="tramite">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 15%">
-        Tramite
-      </th>
-      <td mat-cell *matCellDef="let row" >
-        <mat-select [(value)]="row.Descripcion" [disabled]="row.editing == false" (selectionChange)="seleccionarTipoImpuesto(row.ID_Renglon)">
-          <mat-option *ngFor="let tipo of tipo_impuestos" [value]="tipo.name">
-            {{tipo.name}}
-          </mat-option>
-        </mat-select>
-      </td>
-    </ng-container>
-
-    <!-- columna fecha -->
-    <ng-container matColumnDef="fecha">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 20%">
-        Fecha
-      </th>
-      <td mat-cell *matCellDef="let row">
-        <mat-select [disabled]="row.editing == false" [(value)]="row.Concepto" (selectionChange)="seleccionarImpuesto(row.ID_Renglon)">
-          <mat-option *ngFor="let impuesto of row.listaImpuestos" [value]="impuesto.Nombre_Impuesto" >
-            {{impuesto.Nombre_Impuesto}}
-          </mat-option>
-        </mat-select>
-      </td>
-    </ng-container>
-
-    <!-- columna partida -->
-    <ng-container matColumnDef="partida">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 8%">
-        Partida
-      </th>
-      <td mat-cell *matCellDef="let row" >
-        {{row.Imponible}}
-      </td>
-    </ng-container>
-
-    <!-- columna Descripcion -->
-    <ng-container matColumnDef="descripcion">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 6%">
-        Descripcion
-      </th>
-      <td mat-cell *matCellDef="let row" style="width:60px;">
-        <input matInput [value]="row.MontoRetenido" (input)="seleccionarImporte(row.ID_Renglon, $event.target.value)" [readonly]="row.editing == false">
-      </td>
-    </ng-container>
-
-    <!-- columna Imputado -->
-    <ng-container matColumnDef="imputado">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 25%">
-        Imputado
-      </th>
-      <td mat-cell *matCellDef="let row" style="width:60px;">
-        <input matInput [value]="row.Observaciones" (input)="actualizarObservacion(row.ID_Renglon, $event.target.value)" [readonly]="row.editing == false">
-      </td>
-    </ng-container>
-
-    <!-- columna estado -->
-    <ng-container matColumnDef="estado">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 8%">
-        Estado
-      </th>
-      <td mat-cell *matCellDef="let row" >
-        {{row.Estado}}
-      </td>
-    </ng-container>
-
-    <!-- columna edicion -->
-    <ng-container matColumnDef="edit">
-      <th mat-header-cell *matHeaderCellDef style="width: 7%"></th>
-      <td mat-cell *matCellDef="let row" >
-        <a (click)="autorizarLinea(row.ID_Renglon)" [hidden]="row.editing">
-          <mat-icon>check</mat-icon>
-        </a>
-
-        <a (click)="editarLinea(row.ID_Renglon)" [hidden]="row.editing">
-          <mat-icon>edit</mat-icon>
-        </a>
-          
-        <!-- <a (click)="guardarImpuesto(row.ID_Renglon)" [hidden]="!row.editing || row.saved">
-          <mat-icon style="color: red">save</mat-icon>
-        </a>
-
-        <a (click)="guardarImpuesto(row.ID_Renglon)" [hidden]="!row.editing || !row.saved">
-          <mat-icon>save</mat-icon>
-        </a> -->
-
-        <a (click)="borrarLinea(row.ID_Renglon)">
-          <mat-icon>delete</mat-icon>
-        </a>
-        
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
-  </table>
-
-  <!-- <mat-paginator 
-    [length]="100"
-    [pageSizeOptions]="[5, 10, 20]" 
-    (page)="pageEvent = $event" 
-    showFirstLastButtons 
-    class="mat-elevation-z1" 
-    >
-  </mat-paginator> -->
-
-  <div class="col s12" style="margin-top:5px;" *ngIf="_impuestosComprobante.length < 1">
-    <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen impuestos</i></mat-card>
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Comprobante" value="{{comprobante.Comprobante}}" readonly>
+    </mat-form-field>
   </div>
 
-</div>
-
-<div class="row">
-  <mat-form-field style="float: right;">
-    <input matInput placeholder="Total" [(value)]="total" disabled>
-  </mat-form-field>
-  <mat-form-field style="float: right;">
-      <input matInput placeholder="Diferencia" [(value)]="diferencia" disabled>
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Fecha" value="{{comprobante.Fecha}}" readonly>
     </mat-form-field>
+  </div>
+
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Referente" value="{{comprobante.RazonSocial_Referente}}" readonly>
+    </mat-form-field>
+  </div>
+
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Total" value="{{comprobante.Total}}" readonly>
+    </mat-form-field>
+  </div>
+
+  <!-- BOTON COMPROBANTE -->
+  <div class="col s8 m6 l2">
+    <a mat-mini-fab class="btn-etangram-ok" aria-label="Ver detalle de comprobante" 
+      [routerLink]="['/comprobante', idParam]" >
+      <mat-icon>list_alt</mat-icon>
+    </a>
+  </div>
 </div>
 
+<app-listado-presupuestario
+  [idComprobante]="idParam"  
+>
+</app-listado-presupuestario>
+
+<!-- BOTONES -->
 <div class="row">
-  <button (click)="cancelar()" style="margin-left: 15%">Cancelar</button>
-  <button (click)="guardar()" style="margin-left: 1%">Guardar</button>
-  <!-- <button (click)="rechazar()">Rechazar</button> -->
-  <button (click)="autorizar()" style="float: right; margin-right: 15%">Autorizar</button>
+  <div class="col s12 m12 l12" class="btn-etangram-div">
+      <button mat-raised-button [routerLink]="['/comprobantes']" class="btn-etangram-ko">CANCELAR</button>
+      <button mat-raised-button (click)="autorizar()" class="btn-etangram-ok">AUTORIZAR</button>
+  </div>
 </div>

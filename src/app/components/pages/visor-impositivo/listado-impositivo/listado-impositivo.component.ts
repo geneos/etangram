@@ -23,7 +23,7 @@ export class ListadoImpositivoComponent implements OnInit {
   rowID : number = 0;
   total : number = 0;
 
-  impuestosComprobante : any;
+  impuestosComprobante : any[] = [];
   _impuestosComprobante = new MatTableDataSource(this.impuestosComprobante);
 
   ocultarForm : boolean = true;

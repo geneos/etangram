@@ -24,7 +24,7 @@ export class ListadoPresupuestarioComponent implements OnInit {
 
   ocultarForm: boolean = true;
   linea: any;
-  presupuestosComprobante: any[];
+  presupuestosComprobante: any[] = [];
   _presupuestosComprobante = new MatTableDataSource(this.presupuestosComprobante)
 
   constructor(

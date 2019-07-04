@@ -1,30 +1,42 @@
 <div class="row">
-  <h1>Detalle de comprobante</h1>
+  <div class="col s8 m6 l10">
+    <h2>Detalle de comprobante</h2>
+  </div>
 </div>
 
 <div class="row">
-  <mat-form-field style="width: 20%">
-    <input matInput placeholder="Nro de comprobante" value="{{comprobante.Comprobante}}" readonly>
-  </mat-form-field>
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Nro de comprobante" value="{{comprobante.Comprobante}}" readonly>
+    </mat-form-field>
+  </div>
 
-  <mat-form-field style="width: 20%">
-    <input matInput placeholder="Fecha" value="{{comprobante.Fecha}}" readonly>
-  </mat-form-field>
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Fecha" value="{{comprobante.Fecha}}" readonly>
+    </mat-form-field>
+  </div>
 
-  <mat-form-field style="width: 20%">
-    <input matInput placeholder="Proveedor" value="{{comprobante.RazonSocial_Referente}}" readonly>
-  </mat-form-field>
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Proveedor" value="{{comprobante.RazonSocial_Referente}}" readonly>
+    </mat-form-field>
+  </div>
 
-  <mat-form-field style="width: 20%">
-    <input matInput placeholder="Razón social" value="{{comprobante.RazonSocial_Referente}}" readonly>
-  </mat-form-field>
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Razón social" value="{{comprobante.RazonSocial_Referente}}" readonly>
+    </mat-form-field>
+  </div>
 
-  <mat-form-field style="width: 20%">
-    <input matInput placeholder="Total" value="{{comprobante.Total}}" readonly>
-  </mat-form-field>
+  <div class="col s8 m6 l2">
+    <mat-form-field>
+      <input matInput placeholder="Total" value="{{comprobante.Total}}" readonly>
+    </mat-form-field>
+  </div>
 </div>
 
-<div class="row">
+<div class="row" *ngIf="lineasComprobante.length > 0">
   <table mat-table [dataSource]="_lineasComprobante" matSort class="mat-elevation-z1"
     style="font-family: 'Lato', sans-serif !important;">
 
@@ -100,9 +112,15 @@
     class="mat-elevation-z1" 
     >
   </mat-paginator> -->
+</div>
 
-  <div class="col s12" style="margin-top:5px;" *ngIf="_lineasComprobante.length < 1">
-    <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen impuestos</i></mat-card>
+<div class="col s12" style="margin-top:5px;" *ngIf="lineasComprobante.length == 0">
+  <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen productos</i></mat-card>
+</div>
+
+<!-- BOTONES -->
+<div class="row">
+  <div class="col s12 m12 l12" class="btn-etangram-div">
+    <button mat-raised-button (click)="volver()" class="btn-etangram-ok">VOLVER</button>
   </div>
-
 </div>

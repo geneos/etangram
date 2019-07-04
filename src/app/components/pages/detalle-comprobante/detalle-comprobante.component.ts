@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { MatTableDataSource } from '@angular/material';
+import {Location} from '@angular/common';
 
 import { ComprobantesService } from '../../../services/i2t/comprobantes.service';
 
@@ -15,12 +16,13 @@ export class DetalleComprobanteComponent implements OnInit {
   idParam : string;
   comprobante : any = {};
 
-  lineasComprobante : any[];
+  lineasComprobante : any[] = [];
   _lineasComprobante = new MatTableDataSource(this.lineasComprobante);
 
   constructor(
     private comprobantesService: ComprobantesService,
-    private route : ActivatedRoute) { 
+    private route: ActivatedRoute,
+    private location: Location) { 
 
     this.route.params.subscribe(parametros => {
       this.idParam = parametros['id'];
@@ -47,10 +49,13 @@ export class DetalleComprobanteComponent implements OnInit {
         console.log("Lineas detalle",data)
         this.lineasComprobante = data;
         this._lineasComprobante.data = this.lineasComprobante;
-        console.log(this._lineasComprobante)
       }
     );
     
+  }
+
+  volver() : void {
+    this.location.back();
   }
 
 }

@@ -8,7 +8,7 @@
 </div>
   
 <!-- LISTADO --> 
-<div class="row">
+<div class="row" *ngIf="presupuestosComprobante.length > 0">
   <table mat-table [dataSource]="_presupuestosComprobante" matSort class="mat-elevation-z1"
     style="font-family: 'Lato', sans-serif !important;">
 
@@ -108,20 +108,19 @@
     class="mat-elevation-z1" 
     >
   </mat-paginator> -->
-
-  <div class="col s12" style="margin-top:5px;" *ngIf="_presupuestosComprobante.length == 0">
-    <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen líneas presupuestarias</i></mat-card>
-  </div>
-  
 </div>
 
-<div class="row">
+<div class="row" *ngIf="presupuestosComprobante.length > 0">
   <mat-form-field style="float: right;">
     <input matInput placeholder="Diferencia" [(value)]="diferencia" disabled>
   </mat-form-field>
   <mat-form-field style="float: right;">
     <input matInput placeholder="Total" [(value)]="total" disabled>
   </mat-form-field>
+</div>
+
+<div class="col s12" style="margin-top:5px;" *ngIf="presupuestosComprobante.length == 0">
+  <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen líneas presupuestarias</i></mat-card>
 </div>
 
 <app-form-presupuestario

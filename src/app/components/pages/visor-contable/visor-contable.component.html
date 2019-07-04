@@ -6,35 +6,38 @@
 
 <div class="row">
   <div class="col s8 m6 l2">
-  <mat-form-field>
-    <input matInput placeholder="Comprobante" [value]="comprobante.Comprobante" readonly>
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Comprobante" [value]="comprobante.Comprobante" readonly>
+    </mat-form-field>
   </div>
   <div class="col s8 m6 l2">
-  <mat-form-field>
-    <input matInput  placeholder="Subdiario" [value]="comprobante.subdiario" readonly>
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput  placeholder="Subdiario" [value]="comprobante.subdiario" readonly>
+    </mat-form-field>
   </div>
   <div class="col s8 m6 l2">
-  <mat-form-field>
-    <input matInput  placeholder="Fecha" [value]="comprobante.Fecha" readonly>
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput  placeholder="Fecha" [value]="comprobante.Fecha" readonly>
+    </mat-form-field>
   </div>
   <div class="col s8 m6 l2">
-  <mat-form-field>
-    <input matInput  placeholder="Referente" [value]="comprobante.RazonSocial_Referente" readonly>
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput  placeholder="Referente" [value]="comprobante.RazonSocial_Referente" readonly>
+    </mat-form-field>
   </div>
   <div class="col s8 m6 l2">
-  <mat-form-field>
-    <input matInput  placeholder="Total" [value]="comprobante.Total" readonly>
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput  placeholder="Total" [value]="comprobante.Total" readonly>
+    </mat-form-field>
   </div>
 
   <!-- BOTON DETALLE COMPROBANTE -->
   <div class="col s8 m6 l2">
-    <a mat-mini-fab class="btn-etangram-ok" aria-label="Ver detalle de comprobante"
+    <!-- <a mat-mini-fab class="btn-etangram-ok" aria-label="Ver detalle de comprobante"
       [routerLink]="['/comprobante', idParam]">
+      <mat-icon>list_alt</mat-icon>
+    </a> -->
+    <a mat-mini-fab class="btn-etangram-ok" aria-label="Ver detalle de comprobante">
       <mat-icon>list_alt</mat-icon>
     </a>
   </div>

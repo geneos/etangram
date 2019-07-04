@@ -7,9 +7,10 @@ import { Comprobante } from '../../../interfaces/comprobante.interface';
 import { ImpuestoComprobante } from '../../../interfaces/impuesto-comprobante.interface';
 import { Impuesto } from 'src/app/interfaces/impuesto.interface';
 
-import { ComprobantesService } from '../../../services/i2t/comprobantes.service';
-
 import { DialogoConfComponent } from '../../shared/modals/dialogo-conf/dialogo-conf.component';
+
+import { VisorPresupuestarioService } from 'src/app/services/i2t/visor-presupuestario.service';
+import { ComprobantesService } from '../../../services/i2t/comprobantes.service';
 
 @Component({
   selector: 'app-visor-presupuestario',
@@ -32,6 +33,7 @@ export class VisorPresupuestarioComponent implements OnInit {
 
   constructor(
     private comprobantesService: ComprobantesService,
+    private visorPresupuestarioService: VisorPresupuestarioService,
     private route: ActivatedRoute,
     public dialog: MatDialog,
     private _snackBar: MatSnackBar) {
@@ -66,20 +68,14 @@ export class VisorPresupuestarioComponent implements OnInit {
     });
   }
 
-  agregarLinea() : void {}
-
-  guardarLinea(rowId : string) : void {}
-
-  editarLinea(rowId : string) : void {}
-
-  borrarLinea(rowId : string) : void {}
-
-  autorizarLinea(rowId : string) : void {}
-
-  guardar() : void {}
-
-  cancelar() : void {}
-
-  autorizar() : void {}
+  autorizar() : void {
+    this.visorPresupuestarioService.autorizarPresupuesto(this.comprobante).subscribe(
+      data => {
+        if(data[0] && data[0].error){
+          return this.openSnackBar(data[0].error, "Cerrar")
+        }
+      }
+    )
+  }
 
 }

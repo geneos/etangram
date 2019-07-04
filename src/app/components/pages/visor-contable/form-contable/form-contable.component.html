@@ -1,56 +1,58 @@
 <div class="frm-line-etangram">
-<div class="row">
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Cuenta</mat-label>
-    <mat-select [(value)]="linea.Nro_RefContable" (selectionChange)="seleccionarCuenta($event.value)" [disabled]="linea.ID_Renglon != '0'">
-      <mat-option *ngFor="let cuenta of cuentas_contables" [value]="cuenta.idreferenciacontable">
-        {{cuenta.idreferenciacontable}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  </div>
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Descripcion</mat-label>
-    <input matInput [value]="linea.Nombre_RefContable" readonly="true">
-  </mat-form-field>
-  </div>
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Centro de costo</mat-label>
-    <mat-select [(value)]="linea.IdCtoCosto" (selectionChange)="seleccionarCentro($event.value)" [disabled]="linea.TieneCtoCosto < 2">
-      <mat-option *ngFor="let centro of centros_costo" [value]="centro.idcentrocosto">
-        {{centro.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  </div>
-</div>  
-<div class="row">
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Debe</mat-label>
-    <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.debe">
-    <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
-  </mat-form-field>
-  </div>
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Haber</mat-label>
-    <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.haber">
-    <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
-  </mat-form-field>
-  </div>
-</div>
+  
+  <div class="row">
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Cuenta</mat-label>
+        <mat-select [(value)]="linea.Nro_RefContable" (selectionChange)="seleccionarCuenta($event.value)" [disabled]="linea.ID_Renglon != '0'">
+          <mat-option *ngFor="let cuenta of cuentas_contables" [value]="cuenta.idreferenciacontable">
+            {{cuenta.idreferenciacontable}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Descripcion</mat-label>
+        <input matInput [value]="linea.Nombre_RefContable" readonly="true">
+      </mat-form-field>
+    </div>
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Centro de costo</mat-label>
+        <mat-select [(value)]="linea.IdCtoCosto" (selectionChange)="seleccionarCentro($event.value)" [disabled]="linea.TieneCtoCosto < 2">
+          <mat-option *ngFor="let centro of centros_costo" [value]="centro.idcentrocosto">
+            {{centro.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>  
 
-<!-- BOTONES -->
-<div class="row">
-  <div class="col s12 m12 l12" class="btn-etangram-div">
-    <button mat-raised-button (click)="cancelar()" class="btn-etangram-ko">CANCELAR</button>
-    <button mat-raised-button (click)="guardar()" class="btn-etangram-ok" [hidden]="linea.ID_Renglon != 0">GUARDAR</button>
-    <button mat-raised-button (click)="actualizar()" class="btn-etangram-ok" [hidden]="linea.ID_Renglon == 0">ACTUALIZAR</button>
+  <div class="row">
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Debe</mat-label>
+        <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.debe">
+        <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+      </mat-form-field>
+    </div>
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Haber</mat-label>
+        <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.haber">
+        <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+      </mat-form-field>
+    </div>
   </div>
-</div>
+
+  <!-- BOTONES -->
+  <div class="row">
+    <div class="col s12 m12 l12" class="btn-etangram-div">
+      <button mat-raised-button (click)="cancelar()" class="btn-etangram-ko">CANCELAR</button>
+      <button mat-raised-button (click)="guardar()" class="btn-etangram-ok" [hidden]="linea.ID_Renglon != 0">GUARDAR</button>
+      <button mat-raised-button (click)="actualizar()" class="btn-etangram-ok" [hidden]="linea.ID_Renglon == 0">ACTUALIZAR</button>
+    </div>
+  </div>
 
 </div>

@@ -48,7 +48,14 @@ export class FormContableComponent implements OnInit {
 
   seleccionarCuenta(value : string) : void {
     let cuenta = this.cuentas_contables.find(cta => {return cta.idreferenciacontable == value});
+    console.log("Cuenta",cuenta)
     this.linea.Nombre_RefContable = cuenta.name;
+    if(cuenta.tienectocosto == 0) {
+      this.linea.IdCtoCosto = 0;
+      this.linea.TieneCtoCosto = 0
+    } else {
+      this.linea.TieneCtoCosto = 2
+    }
   }
 
   seleccionarCentro(value : string) : void {

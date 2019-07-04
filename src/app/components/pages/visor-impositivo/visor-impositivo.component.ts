@@ -54,12 +54,6 @@ export class VisorImpositivoComponent implements OnInit {
     });
   }
 
-  cancelar() : void {}
-
-  guardar() : void {}
-
-  rechazar() : void {}
-
   autorizar() : void {
     this.visorImpositivoService.autorizarLineaImpositiva(this.comprobante.ID_Comprobante).subscribe(data => {
       if(data[0] && data[0].error){

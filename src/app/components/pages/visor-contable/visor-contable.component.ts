@@ -14,7 +14,6 @@ import { VisorContableService } from 'src/app/services/i2t/visor-contable.servic
 export class VisorContableComponent implements OnInit {
   idParam : string;
   idLinea : string;
-  ocultarCentros : boolean = true;
   ocultarComprobante : boolean = true;
 
   comprobante : any;
@@ -55,12 +54,6 @@ export class VisorContableComponent implements OnInit {
     });
   }
 
-  cancelar() : void {}
-
-  guardar() : void {}
-
-  rechazar() : void {}
-
   autorizar() : void {
     this.visorContableService.autorizarContabilidad(this.comprobante.ID_Comprobante)
       .subscribe(data => {
@@ -69,14 +62,4 @@ export class VisorContableComponent implements OnInit {
         }
       })
   }
-
-  seleccionarLinea(id : string) : void {
-    this.idLinea = id;
-    this.ocultarCentros = !this.ocultarCentros;
-  }
-
-  mostrarComprobante() : void {
-    alert("Esto deberia ser el comprobante")
-  }
-
 }

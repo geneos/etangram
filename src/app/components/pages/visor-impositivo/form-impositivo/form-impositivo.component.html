@@ -1,66 +1,63 @@
 <div class="frm-line-etangram">
   <div class="row">
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Cuenta</mat-label>
-    <input matInput [(ngModel)]="linea.Nro_RefContable" readonly>
-  </mat-form-field>
-  </div>
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Descripción</mat-label>
-    <mat-select [(value)]="linea.Descripcion" (selectionChange)="seleccionarTipoImpuesto($event.value)">
-      <mat-option *ngFor="let tipo of tipo_impuestos" [value]="tipo.name">
-        {{tipo.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  </div>
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Impuesto</mat-label>
-    <mat-select [(value)]="linea.Concepto" (selectionChange)="seleccionarImpuesto($event.value)">
-      <mat-option *ngFor="let impuesto of impuestos" [value]="impuesto.Nombre_Impuesto">
-        {{impuesto.Nombre_Impuesto}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  </div>
-</div>
-<div class="row">
-  <div class="col s8 m6 l4">
-  <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Imponible</mat-label>
-    <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.Imponible">
-    <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
-  </mat-form-field>
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Cuenta</mat-label>
+        <input matInput [(ngModel)]="linea.Nro_RefContable" readonly>
+      </mat-form-field>
+    </div>
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Descripción</mat-label>
+        <mat-select [(value)]="linea.Descripcion" (selectionChange)="seleccionarTipoImpuesto($event.value)">
+          <mat-option *ngFor="let tipo of tipo_impuestos" [value]="tipo.name">
+            {{tipo.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Impuesto</mat-label>
+        <mat-select [(value)]="linea.Concepto" (selectionChange)="seleccionarImpuesto($event.value)">
+          <mat-option *ngFor="let impuesto of impuestos" [value]="impuesto.Nombre_Impuesto">
+            {{impuesto.Nombre_Impuesto}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
 
-  <div class="col s8 m6 l4">
-    <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Importe</mat-label>
-    <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.MontoRetenido">
-    <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
-  </mat-form-field>
+  <div class="row">
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Imponible</mat-label>
+        <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.Imponible">
+        <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+      </mat-form-field>
+    </div>
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Importe</mat-label>
+        <input matInput type="number" style="text-align:right;" [(ngModel)]="linea.MontoRetenido">
+        <span matPrefix style="font-family: 'Lato', sans-serif !important;">$&nbsp;</span>
+      </mat-form-field>
+    </div>
+    <div class="col s8 m6 l4">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Observaciones</mat-label>
+        <input matInput [(ngModel)]="linea.Observaciones">
+      </mat-form-field>
+    </div>
   </div>
 
-  <div class="col s8 m6 l4">
-    <mat-form-field appearance="outline" floatLabel="always">
-    <mat-label>Observaciones</mat-label>
-    <input matInput [(ngModel)]="linea.Observaciones">
-  </mat-form-field>
-  </div>
-
-</div>
-
-<!-- BOTONES -->
-<div class="row">
+  <!-- BOTONES -->
+  <div class="row">
     <div class="col s12 m12 l12" class="btn-etangram-div">
       <button mat-raised-button (click)="cancelar()" class="btn-etangram-ko">CANCELAR</button>
       <button mat-raised-button (click)="guardar()" class="btn-etangram-ok" [hidden]="linea.ID_Renglon != 0">GUARDAR</button>
       <button mat-raised-button (click)="actualizar()" class="btn-etangram-ok" [hidden]="linea.ID_Renglon == 0">ACTUALIZAR</button>
     </div>
   </div>
-
 
 </div>

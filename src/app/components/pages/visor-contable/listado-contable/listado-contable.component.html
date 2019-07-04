@@ -7,7 +7,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row" *ngIf="contabilidadComprobantes.length > 0">
   <table mat-table [dataSource]="_contabilidadComprobantes" matSort class="mat-elevation-z1"
     style="font-family: 'Lato', sans-serif !important;">
 
@@ -79,15 +79,20 @@
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
   </table>
+
+  <div class="row" *ngIf="contabilidadComprobantes.length == 0">
+    <mat-form-field style="float: right;">
+      <input matInput placeholder="Credito total" [value]="haberTotal" disabled>
+    </mat-form-field>
+    <mat-form-field style="float: right;">
+      <input matInput placeholder="Debito total" [value]="debeTotal" disabled>
+    </mat-form-field>
+  </div>
+    
 </div>
 
-<div class="row">
-  <mat-form-field style="float: right;">
-    <input matInput placeholder="Credito total" [value]="haberTotal" disabled>
-  </mat-form-field>
-  <mat-form-field style="float: right;">
-    <input matInput placeholder="Debito total" [value]="debeTotal" disabled>
-  </mat-form-field>
+<div class="col s12" style="margin-top:5px;" *ngIf="contabilidadComprobantes.length == 0">
+  <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen líneas contables</i></mat-card>
 </div>
 
 <app-form-contable

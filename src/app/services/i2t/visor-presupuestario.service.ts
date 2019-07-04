@@ -74,7 +74,7 @@ export class VisorPresupuestarioService extends GenericoService {
 
   autorizarPresupuesto(presupuesto : any) : Observable<any> {
     let body = {
-      ID_AppReserva: presupuesto.ID_AppReserva
+      ID_AppReserva: presupuesto.ID_Comprobante
     }
     return new Observable((observer) => {
       this.httpClient.post(`${this.getApiUrl()}api/proc/DetallePresupuestarioAUT`, JSON.stringify(body), this.getGenericJsonHeader())

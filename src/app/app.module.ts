@@ -101,7 +101,6 @@ import { LiquidacionPorLoteComponent } from './components/pages/abm-liquidacione
 import { ListaComprobantesComponent } from './components/pages/lista-comprobantes/lista-comprobantes.component';
 import { VisorImpositivoComponent } from './components/pages/visor-impositivo/visor-impositivo.component';
 import { VisorContableComponent } from './components/pages/visor-contable/visor-contable.component';
-import { CentroCostoComponent } from './components/pages/visor-contable/centro-costo/centro-costo.component';
 
 import { ComprobantesService } from './services/i2t/comprobantes.service';
 import { DialogoConfComponent } from './components/shared/modals/dialogo-conf/dialogo-conf.component';
@@ -183,7 +182,6 @@ export function initConfig(config: AppConfig) {
     ListaComprobantesComponent,
     VisorImpositivoComponent,
     VisorContableComponent,
-    CentroCostoComponent,
     DialogoConfComponent,
     EstadosComprobantesPipe,
     DetalleComprobanteComponent,

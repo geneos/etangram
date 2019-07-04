@@ -10,6 +10,7 @@ import { Comprobante } from '../../../interfaces/comprobante.interface';
 import { ComprobantesService } from '../../../services/i2t/comprobantes.service';
 
 import * as moment from 'moment';
+import { CompraService } from 'src/app/services/i2t/compra.service';
 
 @Component({
   selector: 'app-lista-comprobantes',
@@ -55,7 +56,9 @@ export class ListaComprobantesComponent implements OnInit {
   pageSizeOptions: number[] = [5, 10, 25, 100];
   pageEvent: PageEvent;
   
-  constructor(private comprobantesService: ComprobantesService,
+  constructor(
+    private comprobantesService: ComprobantesService,
+    private comprasService: CompraService,
     private ngxSmartModalService: NgxSmartModalService,
     private snackBar: MatSnackBar) { 
   }
@@ -155,6 +158,28 @@ export class ListaComprobantesComponent implements OnInit {
         this.suscripcionConsDin.unsubscribe();
       });
     this.ngxSmartModalService.open(datosModal.modal);
+  }
+
+  buscarProveedor(){
+    let token  = this.comprobantesService.getToken();
+    this.comprasService.getProveedor(this.referente.value, token).subscribe(dataP => {
+      if(dataP['returnset'][0].RCode == "-6003"){
+        //token invalido
+        console.log('token invalido')
+      } else {
+        if(dataP['dataset'].length > 0){
+          let proveedor = dataP['dataset'][0];
+          console.log("Encontrado...", proveedor, this.referente.status)
+          this.referente.setValue(proveedor.codigo);
+          this.name_referente.setValue(proveedor.name);
+          this.referenteId = proveedor.id;  
+        } else {
+          this.referente.setValue(null);
+          this.name_referente.setValue(null);
+          this.referenteId = null;
+        }
+      }
+    });
   }
 
   openSnackBar(message: string) {

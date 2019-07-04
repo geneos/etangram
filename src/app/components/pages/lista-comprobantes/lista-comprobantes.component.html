@@ -20,7 +20,13 @@
       <div class="col s8 m6 l2">
         <mat-form-field appearance="outline" floatLabel="always">
           <mat-label>Cod. Referente</mat-label>
-          <input #codProv matInput placeholder="" [formControl]="referente">
+          <input #codProv matInput (keyup)="buscarProveedor()" placeholder="" [formControl]="referente">
+          <mat-hint *ngIf="referente.status=='PENDING'">
+            Buscando código...
+          </mat-hint>
+          <mat-hint *ngIf="referente.errors?.noExiste">
+            El proveedor no existe
+          </mat-hint>
         </mat-form-field>
       </div>
       <div class="col s8 m6 l1">
@@ -31,7 +37,7 @@
       <div class="col s8 m6 l3">
         <mat-form-field appearance="outline" floatLabel="always">
           <mat-label>Razón Social</mat-label>
-          <input #name disabled Prov matInput placeholder="" [formControl]="name_referente">       
+          <input #name Prov matInput placeholder="" [formControl]="name_referente" [readonly]="true">       
         </mat-form-field>
       </div>
     </div>
@@ -220,10 +226,14 @@
           </a>
         </span>
         <span>
-          <a 
+          <!-- <a 
             [routerLink]="['/visor-presupuestario', row.ID_Comprobante]" 
             [queryParams]="{ flag: 'true'}" 
             queryParamsHandling="merge"  
+            style="color:#66ff33;">
+            <i class="material-icons">edit</i>
+          </a> -->
+          <a   
             style="color:#66ff33;">
             <i class="material-icons">edit</i>
           </a>

@@ -1,13 +1,14 @@
+<!-- AGREGAR -->
 <div class="row">
-  <!-- AGREGAR -->
   <div class="col s8 m6 l12" class="btn-etangram-div">
     <button mat-mini-fab class="btn-etangram-ok" aria-label="Agregar impuesto" (click)="agregarImpuesto()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
 </div>
+
 <!-- LISTADO -->
-<div class="row">
+<div class="row" *ngIf="impuestosComprobante.length > 0">
   <table mat-table [dataSource]="_impuestosComprobante" matSort class="mat-elevation-z1"
     style="font-family: 'Lato', sans-serif !important;">
 
@@ -98,18 +99,17 @@
     class="mat-elevation-z1" 
     >
   </mat-paginator> -->
-
-  <div class="col s12" style="margin-top:5px;" *ngIf="_impuestosComprobante.length < 1">
-    <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen impuestos</i></mat-card>
-  </div>
-
 </div>
 
 <!-- TOTAL -->
-<div class="row">
+<div class="row" *ngIf="impuestosComprobante.length > 0">
   <mat-form-field style="float: right;">
     <input matInput placeholder="Total" [(value)]="total" disabled>
   </mat-form-field>
+</div>
+
+<div class="col s12" style="margin-top:5px;" *ngIf="impuestosComprobante.length == 0">
+  <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen líneas impositivas</i></mat-card>
 </div>
 
 <app-form-impositivo 

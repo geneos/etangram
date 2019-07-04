@@ -21,7 +21,7 @@ export class ListadoContableComponent implements OnInit {
   columnsToDisplay : string[] = ["cuenta", "descripcion", "centro", "debe", "haber", "edit"]
   ocultarForm : boolean = true;
 
-  contabilidadComprobantes : any[];
+  contabilidadComprobantes : any[] = [];
   _contabilidadComprobantes = new MatTableDataSource(this.contabilidadComprobantes);
 
   debeTotal : number;

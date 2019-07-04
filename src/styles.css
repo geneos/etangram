@@ -231,7 +231,12 @@ app-cons-din-n2 ngx-smart-modal div {
 
 .btn-etangram-div {
   text-align: right;
-  padding-top: 15px;
+  padding-top: 10px;
+}
+
+.btn-etangram-list-div {
+  text-align: right;
+  padding-top: 0px;
 }
 
 .frm-line-etangram {
@@ -242,4 +247,19 @@ app-cons-din-n2 ngx-smart-modal div {
   padding: 1%;
   border-color: #66727d; 
   background-color: #FFF;
+}
+
+.cont-etangram {
+  padding: 10px 2% 10px 2%;
+}
+
+.cont-etangram-message {
+  margin-top:5px;
+  margin-bottom:5px;
+  text-align:center;
+  color:grey;
+}
+
+.row {
+  margin-bottom: 5px;
 }

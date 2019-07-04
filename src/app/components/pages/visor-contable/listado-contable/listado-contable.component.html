@@ -1,6 +1,6 @@
 <div class="row">
   <!-- AGREGAR -->
-  <div class="col s8 m6 l12" class="btn-etangram-div">
+  <div class="col s8 m6 l12" class="btn-etangram-list-div">
     <button mat-mini-fab class="btn-etangram-ok" aria-label="Agregar impuesto" (click)="agregarLineaContable()">
       <mat-icon>add</mat-icon>
     </button>
@@ -91,8 +91,8 @@
     
 </div>
 
-<div class="col s12" style="margin-top:5px;" *ngIf="contabilidadComprobantes.length == 0">
-  <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen líneas contables</i></mat-card>
+<div class="col s8 m6 l12" class="cont-etangram-message" *ngIf="contabilidadComprobantes.length == 0">
+  <mat-card><i>No existen líneas contables</i></mat-card>
 </div>
 
 <app-form-contable

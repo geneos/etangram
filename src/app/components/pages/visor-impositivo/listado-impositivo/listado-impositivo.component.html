@@ -108,8 +108,8 @@
   </mat-form-field>
 </div>
 
-<div class="col s12" style="margin-top:5px;" *ngIf="impuestosComprobante.length == 0">
-  <mat-card style="text-align:center; padding-top:10px; padding-bottom:10px; color:grey;"><i>No existen líneas impositivas</i></mat-card>
+<div class="col s12" class="cont-etangram-message" *ngIf="impuestosComprobante.length == 0">
+  <mat-card><i>No existen líneas impositivas</i></mat-card>
 </div>
 
 <app-form-impositivo 

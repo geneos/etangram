@@ -22,6 +22,7 @@ export class FormPresupuestarioComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("linea", this.linea)
     this.visorPresupuestarioService.getPartidas(this.linea.ID_Partida_Afecta).subscribe(
       data => {
         this.partidas = data;
@@ -45,7 +46,11 @@ export class FormPresupuestarioComponent implements OnInit {
   guardar() : void {
     this.visorPresupuestarioService.insertarLineaPresupuestaria(this.linea).subscribe(
       data => {
-        this.savedLine.emit();
+        if(data[0] && data[0].error){
+          return this.openSnackBar(data[0].error, "Cerrar")
+        } else {
+          this.savedLine.emit();
+        }
       }
     );
   }
@@ -53,7 +58,11 @@ export class FormPresupuestarioComponent implements OnInit {
   actualizar() : void {
     this.visorPresupuestarioService.actualizarLineaPresupuestaria(this.linea).subscribe(
       data => {
-        this.savedLine.emit();
+        if(data[0] && data[0].error){
+          return this.openSnackBar(data[0].error, "Cerrar")
+        } else {
+          this.savedLine.emit();
+        }
       }
     );
   }

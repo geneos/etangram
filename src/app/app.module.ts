@@ -106,6 +106,8 @@ import { ComprobantesService } from './services/i2t/comprobantes.service';
 import { DialogoConfComponent } from './components/shared/modals/dialogo-conf/dialogo-conf.component';
 
 import { EstadosComprobantesPipe } from './pipes/estados-comprobantes.pipe';
+import { ToMoneyPipe } from './pipes/to-money.pipe';
+
 import { DetalleComprobanteComponent } from './components/pages/detalle-comprobante/detalle-comprobante.component';
 import { VisorPresupuestarioComponent } from './components/pages/visor-presupuestario/visor-presupuestario.component';
 import { ListadoImpositivoComponent } from './components/pages/visor-impositivo/listado-impositivo/listado-impositivo.component';
@@ -191,7 +193,8 @@ export function initConfig(config: AppConfig) {
     FormContableComponent,
     ListadoContableComponent,
     FormPresupuestarioComponent,
-    ListadoPresupuestarioComponent
+    ListadoPresupuestarioComponent,
+    ToMoneyPipe
   ],
   imports: [
     BrowserModule,

@@ -92,8 +92,9 @@ export class FormImpositivoComponent implements OnInit {
       data => {
         if(data[0] && data[0].error){
           return this.openSnackBar(data[0].error, "Cerrar")
+        } else {
+          this.savedLine.emit();
         }
-        this.savedLine.emit(nuevaLinea);
       }
     );
   }
@@ -115,8 +116,9 @@ export class FormImpositivoComponent implements OnInit {
       data => {
         if(data[0] && data[0].error){
           return this.openSnackBar(data[0].error, "Cerrar")
+        } else {
+          this.savedLine.emit();
         }
-        this.savedLine.emit(editada);
       }
     );
   }

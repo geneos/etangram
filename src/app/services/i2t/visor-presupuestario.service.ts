@@ -29,10 +29,10 @@ export class VisorPresupuestarioService extends GenericoService {
     });
   }
 
-  insertarLineaPresupuestaria(presupuesto : any) : Observable<any> {
+  insertarLineaPresupuestaria(presupuesto: any) : Observable<any> {
     let body = {
       ID_Comprobante: presupuesto.ID_Comprobante,
-      ID_Reserva: presupuesto.ID_AppReserva,
+      ID_Reserva: presupuesto.ID_Reserva,
       ID_Partida: presupuesto.ID_Partida,
       Fecha: presupuesto.Fecha,
       Importe: presupuesto.Imputado
@@ -45,12 +45,12 @@ export class VisorPresupuestarioService extends GenericoService {
     });
   }
 
-  actualizarLineaPresupuestaria(presupuesto : any) : Observable<any> {
+  actualizarLineaPresupuestaria(presupuesto: any) : Observable<any> {
     let body = {
-      ID_Reserva: presupuesto.ID_AppReserva,
+      ID_AppReserva: presupuesto.ID_AppReserva,
       ID_Partida: presupuesto.ID_Partida,
       Fecha: presupuesto.Fecha,
-      Importe: presupuesto.Imputado
+      Importe: Number(presupuesto.Imputado)
     }
     return new Observable((observer) => {
       this.httpClient.post(`${this.getApiUrl()}api/proc/DetallePresupuestarioUPD`, JSON.stringify(body), this.getGenericJsonHeader())
@@ -60,7 +60,7 @@ export class VisorPresupuestarioService extends GenericoService {
     });
   }
 
-  borrarLineaPresupuestaria(presupuesto : any) : Observable<any> {
+  borrarLineaPresupuestaria(presupuesto: any) : Observable<any> {
     let body = {
       ID_AppReserva: presupuesto.ID_AppReserva
     }
@@ -72,9 +72,9 @@ export class VisorPresupuestarioService extends GenericoService {
     });
   }
 
-  autorizarPresupuesto(presupuesto : any) : Observable<any> {
+  autorizarPresupuesto(presupuesto: any) : Observable<any> {
     let body = {
-      ID_AppReserva: presupuesto.ID_Comprobante
+      ID_Comprobante: presupuesto.ID_Comprobante
     }
     return new Observable((observer) => {
       this.httpClient.post(`${this.getApiUrl()}api/proc/DetallePresupuestarioAUT`, JSON.stringify(body), this.getGenericJsonHeader())
@@ -95,6 +95,21 @@ export class VisorPresupuestarioService extends GenericoService {
       this.httpClient.post(`${this.getApiUrl()}api/proc/PartidaPresupuestariaGET`, JSON.stringify(body), this.getGenericJsonHeader())
         .subscribe(data => {
           observer.next(this.processResponse(data, 'PartidaPresupuestariaGET'))
+        });
+    });
+  }
+
+  getReservaPresupuestaria(id: string) : Observable<any> {
+    let body = {
+      ID_Reserva: id,
+      param_limite: 10,
+      param_offset: 0
+    }
+
+    return new Observable((observer) => {
+      this.httpClient.post(`${this.getApiUrl()}api/proc/ReservaPresupuestariaGET`, JSON.stringify(body), this.getGenericJsonHeader())
+        .subscribe(data => {
+          observer.next(this.processResponse(data, 'ReservaPresupuestariaGET'))
         });
     });
   }

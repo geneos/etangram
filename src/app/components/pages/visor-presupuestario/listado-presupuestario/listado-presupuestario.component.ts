@@ -7,6 +7,8 @@ import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 import { NgxSmartModalService, NgxSmartModalComponent } from 'ngx-smart-modal';
 
+import { ToMoneyPipe } from '../../../../pipes/to-money.pipe';
+
 @Component({
   selector: 'app-listado-presupuestario',
   templateUrl: './listado-presupuestario.component.html',
@@ -23,6 +25,9 @@ export class ListadoPresupuestarioComponent implements OnInit {
 
   total: number = 0;
   diferencia: number = 0;
+
+  str_total: string = "";
+  str_diferencia: string = "";
 
   ocultarForm: boolean = true;
   linea: any;
@@ -42,7 +47,7 @@ export class ListadoPresupuestarioComponent implements OnInit {
         ID_AppReserva: "0",
         Expediente: "",
         Tramite: "",
-        Fecha: moment(new Date()).format("YYYY-MM-DD"),
+        Fecha: moment(new Date()).format("DD-MM-YYYY"),
         Partida: "",
         Descripcion: "",
         Imputado: "",
@@ -86,8 +91,10 @@ export class ListadoPresupuestarioComponent implements OnInit {
   }
 
   calcularTotal() : void {
-    this.total = this.presupuestosComprobante.reduce((total, elem) => {return total + Number(elem.Imputado)}, 0);
-    this.diferencia = Number(this.comprobante.Total) - this.total;
+      this.total = this.presupuestosComprobante.reduce((total, elem) => {return total + Number(elem.Imputado)}, 0);
+      this.diferencia = Number(this.comprobante.Total) - this.total;
+      this.str_total = new ToMoneyPipe().transform(this.total.toString());
+      this.str_diferencia = new ToMoneyPipe().transform(this.diferencia.toString());
   }
 
   agregarPresupuesto(idReserva: string) : void {
@@ -99,7 +106,7 @@ export class ListadoPresupuestarioComponent implements OnInit {
           ID_AppReserva: "0",
           Expediente: reserva.Expediente,
           Tramite: reserva.Tramite,
-          Fecha: moment(new Date()).format("YYYY-MM-DD"),
+          Fecha: moment(new Date()).format("DD-MM-YYYY"),
           Partida: "",
           Descripcion_Partida: "",
           Imputado: reserva.Imputado,
@@ -129,14 +136,15 @@ export class ListadoPresupuestarioComponent implements OnInit {
       ID_AppReserva: row.ID_AppReserva,
       Expediente: row.Expediente,
       Tramite: row.Tramite,
-      Fecha: row.Fecha,
+      Fecha: moment(row.Fecha).format("DD-MM-YYYY"),
       Partida: row.Descripcion_Partida,
       Descripcion_Partida: row.Descripcion_Partida,
       Imputado: row.Imputado,
       Estado_Presupuestario: row.Estado_Presupuestario,
       ID_Partida: row.ID_Partida,
       ID_Partida_Afecta: row.ID_Partida_Afecta,
-      ID_Reserva: row.ID_Reserva
+      ID_Reserva: row.ID_Reserva,
+      Codigo_Partida: row.Codigo_Partida,
     }
     this.ocultarForm = false;
   }

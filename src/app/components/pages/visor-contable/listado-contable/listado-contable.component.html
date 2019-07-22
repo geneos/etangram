@@ -47,7 +47,7 @@
         DEBE
       </th>
       <td mat-cell *matCellDef="let row" style="width:60px;">
-        {{row.debe}}
+        {{row.debe | toMoney}}
       </td>
     </ng-container>
 
@@ -57,7 +57,7 @@
         HABER
       </th>
       <td mat-cell *matCellDef="let row" style="width:60px;">
-        {{row.haber}}
+        {{row.haber | toMoney}}
       </td>
     </ng-container>
 

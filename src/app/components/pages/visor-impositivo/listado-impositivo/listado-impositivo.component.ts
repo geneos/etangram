@@ -6,6 +6,8 @@ import { ComprobantesService } from '../../../../services/i2t/comprobantes.servi
 import { DialogoConfComponent } from '../../../shared/modals/dialogo-conf/dialogo-conf.component'
 import { VisorImpositivoService } from 'src/app/services/i2t/visor-impositivo.service';
 
+import { ToMoneyPipe } from '../../../../pipes/to-money.pipe';
+
 @Component({
   selector: 'app-listado-impositivo',
   templateUrl: './listado-impositivo.component.html',
@@ -22,6 +24,7 @@ export class ListadoImpositivoComponent implements OnInit {
 
   rowID : number = 0;
   total : number = 0;
+  str_total: string = "";
 
   impuestosComprobante : any[] = [];
   _impuestosComprobante = new MatTableDataSource(this.impuestosComprobante);
@@ -134,6 +137,7 @@ export class ListadoImpositivoComponent implements OnInit {
 
   calcularTotal() : void {
     this.total = this.impuestosComprobante.reduce((total, elem) => {return total + Number(elem.MontoRetenido)}, 0);
+    this.str_total = new ToMoneyPipe().transform(this.total.toString());
   }
 
   cargarLista() : void {

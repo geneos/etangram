@@ -17,7 +17,7 @@
   </div>
   <div class="col s8 m6 l2">
     <mat-form-field>
-      <input matInput  placeholder="Fecha" [value]="comprobante.Fecha" readonly>
+      <input matInput  placeholder="Fecha" [value]="comprobante.Fecha | toDate" readonly>
     </mat-form-field>
   </div>
   <div class="col s8 m6 l2">
@@ -27,7 +27,7 @@
   </div>
   <div class="col s8 m6 l2">
     <mat-form-field>
-      <input matInput  placeholder="Total" [value]="comprobante.Total" readonly>
+      <input matInput  placeholder="Total" [value]="comprobante.Total | toMoney" readonly>
     </mat-form-field>
   </div>
 

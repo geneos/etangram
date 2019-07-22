@@ -129,7 +129,7 @@
         Fecha
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.Fecha}}
+        {{row.Fecha | toDate}}
       </td>
     </ng-container>
 
@@ -149,7 +149,7 @@
         Total
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.Total}}
+        {{row.Total | toMoney}}
       </td>
     </ng-container>
 

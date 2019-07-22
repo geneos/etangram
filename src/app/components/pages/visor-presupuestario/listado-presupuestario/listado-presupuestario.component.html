@@ -14,7 +14,7 @@
 
     <!-- columna Expediente -->
     <ng-container matColumnDef="expediente">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 12%">
         Expediente
       </th>
       <td mat-cell *matCellDef="let row" >
@@ -24,7 +24,7 @@
 
     <!-- columna tramite -->
     <ng-container matColumnDef="tramite">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 8%">
         Tramite
       </th>
       <td mat-cell *matCellDef="let row" >
@@ -34,11 +34,11 @@
 
     <!-- columna fecha -->
     <ng-container matColumnDef="fecha">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 20%">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 8%">
         Fecha
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.Fecha}}
+        {{row.Fecha | toDate}}
       </td>
     </ng-container>
 
@@ -48,13 +48,13 @@
         Partida
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.Descripcion_Partida}}
+        {{row.Codigo_Partida}}
       </td>
     </ng-container>
 
     <!-- columna Descripcion -->
     <ng-container matColumnDef="descripcion">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 6%">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 40%">
         Descripcion
       </th>
       <td mat-cell *matCellDef="let row" style="width:60px;">
@@ -64,7 +64,7 @@
 
     <!-- columna Imputado -->
     <ng-container matColumnDef="imputado">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 25%">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 10%">
         Imputado
       </th>
       <td mat-cell *matCellDef="let row" style="width:60px;">
@@ -84,7 +84,7 @@
 
     <!-- columna edicion -->
     <ng-container matColumnDef="edit">
-      <th mat-header-cell *matHeaderCellDef style="width: 7%"></th>
+      <th mat-header-cell *matHeaderCellDef style="width: 6%"></th>
       <td mat-cell *matCellDef="let row" >
         <a (click)="editarLinea(row.ID_AppReserva)" class="list_icons">
           <mat-icon>edit</mat-icon>
@@ -112,10 +112,10 @@
 
 <div class="row" *ngIf="presupuestosComprobante.length > 0">
   <mat-form-field style="float: right;">
-    <input matInput placeholder="Diferencia" [(value)]="diferencia" disabled>
+    <input matInput placeholder="Diferencia" [(value)]="str_diferencia" disabled>
   </mat-form-field>
   <mat-form-field style="float: right;">
-    <input matInput placeholder="Total" [(value)]="total" disabled>
+    <input matInput placeholder="Total" [(value)]="str_total" disabled>
   </mat-form-field>
 </div>
 

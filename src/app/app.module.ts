@@ -107,6 +107,7 @@ import { DialogoConfComponent } from './components/shared/modals/dialogo-conf/di
 
 import { EstadosComprobantesPipe } from './pipes/estados-comprobantes.pipe';
 import { ToMoneyPipe } from './pipes/to-money.pipe';
+import { ToDatePipe } from './pipes/to-date.pipe';
 
 import { DetalleComprobanteComponent } from './components/pages/detalle-comprobante/detalle-comprobante.component';
 import { VisorPresupuestarioComponent } from './components/pages/visor-presupuestario/visor-presupuestario.component';
@@ -194,7 +195,8 @@ export function initConfig(config: AppConfig) {
     ListadoContableComponent,
     FormPresupuestarioComponent,
     ListadoPresupuestarioComponent,
-    ToMoneyPipe
+    ToMoneyPipe,
+    ToDatePipe
   ],
   imports: [
     BrowserModule,

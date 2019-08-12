@@ -13,7 +13,7 @@
 
   <div class="col s8 m6 l2">
     <mat-form-field>
-      <input matInput placeholder="Fecha" value="{{comprobante.Fecha}}" readonly>
+      <input matInput placeholder="Fecha" value="{{comprobante.Fecha | toDate}}" readonly>
     </mat-form-field>
   </div>
 
@@ -31,7 +31,7 @@
 
   <div class="col s8 m6 l2">
     <mat-form-field>
-      <input matInput placeholder="Total" value="{{comprobante.Total}}" readonly>
+      <input matInput placeholder="Total" value="{{comprobante.Total | toMoney}}" readonly>
     </mat-form-field>
   </div>
 </div>
@@ -76,7 +76,7 @@
         Precio unitario
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.Precio_Unitario}}
+        {{row.Precio_Unitario | toMoney}}
       </td>
     </ng-container>
 
@@ -86,7 +86,7 @@
         Descuento
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.Descuento}}
+        {{row.Descuento | toMoney}}
       </td>
     </ng-container>
 
@@ -96,7 +96,7 @@
         Total
       </th>
       <td mat-cell *matCellDef="let row" >
-        {{row.Total_Renglon}}
+        {{row.Total_Renglon | toMoney}}
       </td>
     </ng-container>
 

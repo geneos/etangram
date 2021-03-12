@@ -26,7 +26,7 @@
     "angular-webstorage-service": "^1.0.2",
     "core-js": "^2.5.4",
     "html2canvas": "^1.0.0-alpha.12",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.3.1",
     "jspdf-autotable": "^3.0.2",
     "moment": "^2.24.0",
     "ngx-smart-modal": "^7.1.0",

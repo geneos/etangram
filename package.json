@@ -28,7 +28,7 @@
     "html2canvas": "^1.0.0-alpha.12",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.0.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "ngx-smart-modal": "^7.1.0",
     "pdfmake": "^0.1.54",
     "react": "^16.7.0",
